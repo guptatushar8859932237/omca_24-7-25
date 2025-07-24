@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.8937bf36.css",
+    "main.js": "/static/js/main.04cd0410.js",
+    "static/js/977.0fe9cbde.chunk.js": "/static/js/977.0fe9cbde.chunk.js",
+    "static/js/732.1b281d8a.chunk.js": "/static/js/732.1b281d8a.chunk.js",
+    "static/media/dashboard-doc.png": "/static/media/dashboard-doc.f03f443e05acd5633e20.png",
+    "static/media/login-bg2.jpg": "/static/media/login-bg2.6c36e70540693ea38524.jpg",
+    "static/media/login-logo-bg.jpg": "/static/media/login-logo-bg.b8ddc2831df29c21e51b.jpg",
+    "static/media/hospital 3.jpg": "/static/media/hospital 3.37cbd906e42ca6a09173.jpg",
+    "static/media/logo-web-large2.png": "/static/media/logo-web-large2.80b1768bd011e519d7a8.png",
+    "static/media/doctor-03.jpg": "/static/media/doctor-03.81f1385647235f9713c3.jpg",
+    "static/media/logo-dark.png": "/static/media/logo-dark.5913cbaed6b16cd0fbc0.png",
+    "index.html": "/index.html",
+    "main.8937bf36.css.map": "/static/css/main.8937bf36.css.map",
+    "main.04cd0410.js.map": "/static/js/main.04cd0410.js.map",
+    "977.0fe9cbde.chunk.js.map": "/static/js/977.0fe9cbde.chunk.js.map",
+    "732.1b281d8a.chunk.js.map": "/static/js/732.1b281d8a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8937bf36.css",
+    "static/js/main.04cd0410.js"
+  ]
+}
