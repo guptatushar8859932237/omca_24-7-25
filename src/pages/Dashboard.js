@@ -67,81 +67,81 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{cursor:"pointer"}} onClick={() => navigate("/Admin/staff")}>
-              <div className="dash-widget">
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/staff")}>
+              <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i className="fa fa-users" aria-hidden="true"></i>
                 </div>
-                <div className="dash-widget-info">
+                <div className="dash-widget-info1">
                   <h3>{count.totalStaff}</h3>
                   <span className="widget-title">Total Staff</span>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{cursor:"pointer"}} onClick={() => navigate("/Admin/Inquiry")}>
-              <div className="dash-widget">
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Inquiry")}>
+              <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i className="fa fa-user-md"></i>
                 </div>
-                <div className="dash-widget-info">
+                <div className="dash-widget-info1">
                   <h3>{count.all_Enquiry}</h3>
                   <span className="widget-title">Enquiries</span>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{cursor:"pointer"}} onClick={() => navigate("/Admin/Appointments")}>
-              <div className="dash-widget">
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Appointments")}>
+              <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i className="fa fa-calendar-check-o" aria-hidden="true"></i>
                 </div>
-                <div className="dash-widget-info">
+                <div className="dash-widget-info1">
                   <h3>{count.totalAppointment}</h3>
                   <span className="widget-title">Total Appointments</span>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{cursor:"pointer"}} onClick={() => navigate("/Admin/patients")}>
-              <div className="dash-widget">
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/patients")}>
+              <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i class="fas fa-user-injured"></i>
                 </div>
-                <div className="dash-widget-info">
+                <div className="dash-widget-info1">
                   <h3>{count.Patients}</h3>
                   <span className="widget-title">Total Patients</span>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{cursor:"pointer"}} onClick={() => navigate("/Admin/Earnings")}>
-              <div className="dash-widget">
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}>
+              <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i className="fa fa-clipboard" aria-hidden="true"></i>
                 </div>
-                <div className="dash-widget-info">
+                <div className="dash-widget-info1">
                   <h3>{count.OMCA_total_Earning}</h3>
                   <span className="widget-title">Fees Paid Patients</span>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{cursor:"pointer"}} onClick={() => navigate("/Admin/Hospitals")}>
-              <div className="dash-widget">
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Hospitals")}>
+              <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i class="fa-solid fa-hospital"></i>
                 </div>
-                <div className="dash-widget-info">
+                <div className="dash-widget-info1">
                   <h3>{count.totalHospital}</h3>
                   <span className="widget-title">Hospitals</span>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{cursor:"pointer"}} onClick={() => navigate("/Admin/Earnings")}>
-              <div className="dash-widget">
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}>
+              <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i
                     className="fa-solid fa-cash-register"
                     aria-hidden="true"
                   ></i>
                 </div>
-                <div className="dash-widget-info">
+                <div className="dash-widget-info1">
                   <h3>{count.duePaymentAll}</h3>
                   <span className="widget-title">Due Payments</span>
                 </div>
@@ -165,12 +165,12 @@ export default function Dashboard() {
                 </div>
               </div>
             </div> */}
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{cursor:"pointer"}} onClick={() => navigate("/Admin/Services")}>
-              <div className="dash-widget">
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Services")}>
+              <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i class="fa-solid fa-server"></i>
                 </div>
-                <div className="dash-widget-info">
+                <div className="dash-widget-info1">
                   <h3>{count.services}</h3>
                   <span className="widget-title">Services</span>
                 </div>
@@ -187,14 +187,18 @@ export default function Dashboard() {
             {arraycount &&
               arraycount.length > 0 &&
               arraycount.map((item, index) => (
-                <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" key={index} style={{cursor:"pointer"}} onClick={() => navigate("/Admin/patients")}>
+                <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" key={index} style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/patients")}>
                   <div className="dash-widget">
-                    <div className="dash-bg">
-                      <i ><img className="dash-imge" src={`${image}${item.image}`} /></i>
-                    </div>
-                    <div className="dash-widget-info">
-                      <h3>{item.count}</h3>
+                    <div className="">
                       <span className="widget-title">{item.course_name}</span>
+                    </div>
+                    <div className="dash-box">
+                      <div className="dash-widget-info">
+                        <h3>{item.count}</h3>
+                      </div>
+                      <div className="dash-bg">
+                        <img className="dash-imge" src={`${image}${item.image}`} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -202,7 +206,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
     </>
   );
 }

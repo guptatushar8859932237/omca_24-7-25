@@ -11,7 +11,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
-
 export default function AddEnquiry() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,9 +21,7 @@ export default function AddEnquiry() {
   useEffect(() => {
     dispatch(GetAllCountries2());
   }, [dispatch]);
-
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
   const basicSchema = Yup.object().shape({
     name: Yup.string().min(2).max(50).required("Name is required"),
     disease_name: Yup.string().required("Disease name is required"),
@@ -33,6 +30,7 @@ export default function AddEnquiry() {
     email: Yup.string().matches(emailRegex, "Invalid email").required(),
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
+    Referral_Name: Yup.string().required("Referral Name is required"),
     emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
       .required("Phone number is required"),
@@ -43,7 +41,6 @@ export default function AddEnquiry() {
       .oneOf(["Male", "Female", "Others"])
       .required("Gender is required"),
   });
-
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -74,6 +71,7 @@ export default function AddEnquiry() {
                   patient_emergency_contact_no: "",
                   country: "",
                   address: "",
+                  Referral_Name: "",
                   disease_name: "",
                   patient_relation_name: "",
                   patient_relation: "",
@@ -348,6 +346,19 @@ export default function AddEnquiry() {
                           />
                           <ErrorMessage
                             name="patient_id_proof"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                       <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Referral Name<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" name="Referral_Name" />
+                          <ErrorMessage
+                            name="Referral_Name"
                             component="div"
                             className="text-danger"
                           />

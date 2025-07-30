@@ -399,7 +399,7 @@ export default function EditService() {
                                             type="submit"
                                             disabled={isSubmitting}
                                         >
-                                            {isSubmitting ? "Submitting..." : "Create Service"}
+                                            {isSubmitting ? "Submitting..." : "Update Service"}
                                         </button>
                                     </div>
                                 </Form>

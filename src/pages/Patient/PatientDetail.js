@@ -319,166 +319,166 @@ function PatientDetail() {
     }
   };
   const handlesubmitAppoint = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const isOffline = statuddropdown === 'offline';
+    const isOffline = statuddropdown === 'offline';
 
-  setAppointErr({
-    note: false,
-    date: false,
-    drivername: false,
-    vehicalnumber: false,
-    drivercontact: false,
-    pickuptime: false,
-    appHospital: false,
-    hospitalcharge: false,
-  });
+    setAppointErr({
+      note: false,
+      date: false,
+      drivername: false,
+      vehicalnumber: false,
+      drivercontact: false,
+      pickuptime: false,
+      appHospital: false,
+      hospitalcharge: false,
+    });
 
-  let hasError = false;
+    let hasError = false;
 
-  if (!appHospital) {
-    setAppointErr((prev) => ({ ...prev, appHospital: true }));
-    hasError = true;
-  }
-  if (!note) {
-    setAppointErr((prev) => ({ ...prev, note: true }));
-    hasError = true;
-  }
-
-  if (!date) {
-    setAppointErr((prev) => ({ ...prev, date: true }));
-    hasError = true;
-  }
-
-  if (!pickuptime) {
-    setAppointErr((prev) => ({ ...prev, pickuptime: true }));
-    hasError = true;
-  }
-
-  if (isOffline) {
-    if (!drivername) {
-      setAppointErr((prev) => ({ ...prev, drivername: true }));
+    if (!appHospital) {
+      setAppointErr((prev) => ({ ...prev, appHospital: true }));
+      hasError = true;
+    }
+    if (!note) {
+      setAppointErr((prev) => ({ ...prev, note: true }));
       hasError = true;
     }
 
-    if (!drivercontact) {
-      setAppointErr((prev) => ({ ...prev, drivercontact: true }));
+    if (!date) {
+      setAppointErr((prev) => ({ ...prev, date: true }));
       hasError = true;
     }
 
-    if (!vehicalnumber) {
-      setAppointErr((prev) => ({ ...prev, vehicalnumber: true }));
+    if (!pickuptime) {
+      setAppointErr((prev) => ({ ...prev, pickuptime: true }));
       hasError = true;
     }
-  }
 
-  // If any required field is missing, stop the submission
-  if (hasError) {
-    return;
-  }
+    if (isOffline) {
+      if (!drivername) {
+        setAppointErr((prev) => ({ ...prev, drivername: true }));
+        hasError = true;
+      }
 
-  try {
-    const result = await dispatch(
-      AppointmentForPatient({
-        patientId: location.state.patientId,
-        hospitalId: appHospital,
-        treatment_id: treatmentId,
-        note: note,
-        mode:statuddropdown ,
-        appointment_Date: date,
-        pickup_time: pickuptime,
-        vehicle_no: vehicalnumber,
-        driver_name: drivername,
-        driver_contact: drivercontact,
-      })
-    ).unwrap();
+      if (!drivercontact) {
+        setAppointErr((prev) => ({ ...prev, drivercontact: true }));
+        hasError = true;
+      }
 
-    setOpen1(false);
-    Swal.fire("Patient assigned to Appointment successfully!", "", "success");
-    dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      if (!vehicalnumber) {
+        setAppointErr((prev) => ({ ...prev, vehicalnumber: true }));
+        hasError = true;
+      }
+    }
 
-    // Reset form fields
-    setTreatmentId("");
-    sethospitalharge("");
-    setHospitalId("");
-    setNote("");
-    setDate("");
-    setDrivercontact("");
-    setPickuptime("");
-    setDrivername("");
-    setVehicalnumber("");
-    setAppointErr(false);
-  } catch (err) {
-    Swal.fire("Error!", err?.message || "An error occurred", "error");
-  }
-};
+    // If any required field is missing, stop the submission
+    if (hasError) {
+      return;
+    }
+
+    try {
+      const result = await dispatch(
+        AppointmentForPatient({
+          patientId: location.state.patientId,
+          hospitalId: appHospital,
+          treatment_id: treatmentId,
+          note: note,
+          mode: statuddropdown,
+          appointment_Date: date,
+          pickup_time: pickuptime,
+          vehicle_no: vehicalnumber,
+          driver_name: drivername,
+          driver_contact: drivercontact,
+        })
+      ).unwrap();
+
+      setOpen1(false);
+      Swal.fire("Patient assigned to Appointment successfully!", "", "success");
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+
+      // Reset form fields
+      setTreatmentId("");
+      sethospitalharge("");
+      setHospitalId("");
+      setNote("");
+      setDate("");
+      setDrivercontact("");
+      setPickuptime("");
+      setDrivername("");
+      setVehicalnumber("");
+      setAppointErr(false);
+    } catch (err) {
+      Swal.fire("Error!", err?.message || "An error occurred", "error");
+    }
+  };
   const handlesubmitAppoint111 = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const isOffline = statuddropdown === 'offline';
+    const isOffline = statuddropdown === 'offline';
 
-  setAppointErr({
-    note: false,
-    date: false,
-    appHospital: false,
-  });
+    setAppointErr({
+      note: false,
+      date: false,
+      appHospital: false,
+    });
 
-  let hasError = false;
+    let hasError = false;
 
-  if (!appHospital) {
-    setAppointErr((prev) => ({ ...prev, appHospital: true }));
-    hasError = true;
-  }
-  if (!note) {
-    setAppointErr((prev) => ({ ...prev, note: true }));
-    hasError = true;
-  }
+    if (!appHospital) {
+      setAppointErr((prev) => ({ ...prev, appHospital: true }));
+      hasError = true;
+    }
+    if (!note) {
+      setAppointErr((prev) => ({ ...prev, note: true }));
+      hasError = true;
+    }
 
-  if (!date) {
-    setAppointErr((prev) => ({ ...prev, date: true }));
-    hasError = true;
-  }
+    if (!date) {
+      setAppointErr((prev) => ({ ...prev, date: true }));
+      hasError = true;
+    }
 
-  // If any required field is missing, stop the submission
-  if (hasError) {
-    return;
-  }
+    // If any required field is missing, stop the submission
+    if (hasError) {
+      return;
+    }
 
-  try {
-    const result = await dispatch(
-      AppointmentForPatient({
-        patientId: location.state.patientId,
-        hospitalId: appHospital,
-        treatment_id: treatmentId,
-        note: note,
-        mode:statuddropdown ,
-        appointment_Date: date,
-      })
-    ).unwrap();
+    try {
+      const result = await dispatch(
+        AppointmentForPatient({
+          patientId: location.state.patientId,
+          hospitalId: appHospital,
+          treatment_id: treatmentId,
+          note: note,
+          mode: statuddropdown,
+          appointment_Date: date,
+        })
+      ).unwrap();
 
-    setOpen1(false);
-    Swal.fire("Patient assigned to Appointment successfully!", "", "success");
-    dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      setOpen1(false);
+      Swal.fire("Patient assigned to Appointment successfully!", "", "success");
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
 
-    // Reset form fields
-    setTreatmentId("");
-    sethospitalharge("");
-    setHospitalId("");
-    setNote("");
-    setDate("");
-    setDrivercontact("");
-    setPickuptime("");
-    setDrivername("");
-    setVehicalnumber("");
-    setAppointErr(false);
-  } catch (err) {
-    Swal.fire("Error!", err?.message || "An error occurred", "error");
-  }
-};
+      // Reset form fields
+      setTreatmentId("");
+      sethospitalharge("");
+      setHospitalId("");
+      setNote("");
+      setDate("");
+      setDrivercontact("");
+      setPickuptime("");
+      setDrivername("");
+      setVehicalnumber("");
+      setAppointErr(false);
+    } catch (err) {
+      Swal.fire("Error!", err?.message || "An error occurred", "error");
+    }
+  };
 
   // const handlesubmitAppoint = async (e) => {
   //   e.preventDefault();
-    
+
   //   setAppointErr({
   //     note: false,
   //     date: false,
@@ -1349,7 +1349,7 @@ function PatientDetail() {
                                                 <p>
                                                   {item.price} {"  "}{" "}
                                                   {item.duration}<br />
-                                                  {new Date(item.startTime).toLocaleDateString("en-GB")} to {new Date(item.endTime).toLocaleDateString("en-GB")	}
+                                                  {new Date(item.startTime).toLocaleDateString("en-GB")} to {new Date(item.endTime).toLocaleDateString("en-GB")}
                                                 </p>
                                               </div>
                                             </div>
@@ -1391,7 +1391,7 @@ function PatientDetail() {
                                                 <div className="para-main-div1">
                                                   <p>{item.appointment_Date}</p>
                                                   {item.status ===
-                                                  "Complete" ? (
+                                                    "Complete" ? (
                                                     <p>{item.status}</p>
                                                   ) : (
                                                     <FormControl
@@ -1405,18 +1405,18 @@ function PatientDetail() {
                                                       <Select
                                                         value={
                                                           item.status ===
-                                                          "pending"
+                                                            "pending"
                                                             ? "1"
                                                             : item.status ===
                                                               "Follow-Up"
-                                                            ? "2"
-                                                            : item.status ===
-                                                              "Complete"
-                                                            ? "3"
-                                                            : item.status ===
-                                                              "Cancelled"
-                                                            ? "4"
-                                                            : "1"
+                                                              ? "2"
+                                                              : item.status ===
+                                                                "Complete"
+                                                                ? "3"
+                                                                : item.status ===
+                                                                  "Cancelled"
+                                                                  ? "4"
+                                                                  : "1"
                                                         }
                                                         onChange={(e) =>
                                                           handleChangeDetails(
@@ -1800,55 +1800,55 @@ function PatientDetail() {
                     {kys?.length === 0
                       ? "No passport details found"
                       : kys?.map((info, index) => (
-                          <div key={index} className="card-box">
-                            <div className="pass-detail">
-                              <div className="img-patient">
-                                <h6>Patient Image</h6>
-                                <img
-                                  src={`${image}${info.photo}`}
-                                  alt="no image"
-                                  className="rounded-circle shadow"
-                                  width="100"
-                                  height="100"
-                                />
-                              </div>
-                              <div className="id-proof">
-                                <h6>Id Proof</h6>
-                                {info.id_proof ? (
+                        <div key={index} className="card-box">
+                          <div className="pass-detail">
+                            <div className="img-patient">
+                              <h6>Patient Image</h6>
+                              <img
+                                src={`${image}${info.photo}`}
+                                alt="no image"
+                                className="rounded-circle shadow"
+                                width="100"
+                                height="100"
+                              />
+                            </div>
+                            <div className="id-proof">
+                              <h6>Id Proof</h6>
+                              {info.id_proof ? (
+                                <a
+                                  href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="btn btn-outline-primary btn-sm"
+                                >
+                                  View PDF
+                                </a>
+                              ) : (
+                                <span className="text-muted">
+                                  Not Uploaded
+                                </span>
+                              )}
+                              <div className="">
+                                <h6>Passport</h6>
+                                {info.passport ? (
                                   <a
-                                    href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
+                                    href={`https://sisccltd.com/omca_crm/${info.passport}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="btn btn-outline-primary btn-sm"
+                                    className="view-pass"
                                   >
-                                    View PDF
+                                    View Passport
                                   </a>
                                 ) : (
                                   <span className="text-muted">
                                     Not Uploaded
                                   </span>
                                 )}
-                                <div className="">
-                                  <h6>Passport</h6>
-                                  {info.passport ? (
-                                    <a
-                                      href={`https://sisccltd.com/omca_crm/${info.passport}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="view-pass"
-                                    >
-                                      View Passport
-                                    </a>
-                                  ) : (
-                                    <span className="text-muted">
-                                      Not Uploaded
-                                    </span>
-                                  )}
-                                </div>
                               </div>
                             </div>
                           </div>
-                        ))}
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -2481,48 +2481,37 @@ function PatientDetail() {
                   method="post"
                   role="form"
                 >
-                  
                   <div className="field-set">
-                       <div>
-      <p>Appointment will be:</p>
-      <div className="d-flex">
-      <div className="me-5">
- <label>
-        <input
-          type="radio"
-          name="status"
-          value="online"
-          
-          checked={statuddropdown === 'online'}
-                      onChange={(e) => setStatuddropdown(e.target.value)}
-
-          // onChange={handleChange}
-        />
-        Online
-      </label>
-      </div>
-     
-      <br />
-      <div>
- <label>
-        <input
-          type="radio"
-          name="status"
-          value="offline"
-          checked={statuddropdown === 'offline'}
-                                onChange={(e) => setStatuddropdown(e.target.value)}
-
-          // onChange={handleChange}
-        />
-        Offline
-      </label>
-      </div>
-     </div>
-
-      {/* <p>Your selected status: <strong>{status}</strong></p> */}
-    </div>
-                    <label>
-                      Hospital<span className="text-danger">*</span>
+                    <div>
+                      <h6>Appointment will be:</h6>
+                      <div className="d-flex gap-3">
+                        <div className="radio-on">
+                          <label>
+                            <input
+                              type="radio"
+                              name="status"
+                              value="online"
+                              checked={statuddropdown === 'online'}
+                              onChange={(e) => setStatuddropdown(e.target.value)}
+                            />
+                            Online
+                          </label>
+                        </div>
+                        <div className="radio-on">
+                          <label>
+                            <input
+                              type="radio"
+                              name="status"
+                              value="offline"
+                              checked={statuddropdown === 'offline'}
+                              onChange={(e) => setStatuddropdown(e.target.value)}
+                            />
+                            Offline
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <label> Hospital<span className="text-danger">*</span>
                     </label>
                     <Autocomplete
                       disablePortal
@@ -2549,7 +2538,7 @@ function PatientDetail() {
                       }}
                     />
                   </div>
-                 
+
                   <div className="field-set">
                     <label>
                       Notes<span className="text-danger">*</span>
@@ -2589,93 +2578,93 @@ function PatientDetail() {
                   </div>
                   {
                     statuddropdown === 'offline' ?
-                    <>
-                   
-                    <div className="field-set">
-                    <label>
-                      Pickup Time<span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="time"
-                      id="birthday"
-                      name="pickup_time"
-                      placeholder="pickup_time"
-                      className="form-control"
-                      onChange={(e) => setPickuptime(e.target.value)}
-                      value={pickuptime}
-                      // min={new Date().toISOString().split("T")[0]}
-                    />
-                    <span style={{ color: "red" }}>
-                      {appointErr && !pickuptime
-                        ? "*Please Select Pickup Time"
-                        : ""}
-                    </span>
-                    {/* <span style={{ color: "red" }}>
+                      <>
+
+                        <div className="field-set">
+                          <label>
+                            Pickup Time<span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="time"
+                            id="birthday"
+                            name="pickup_time"
+                            placeholder="pickup_time"
+                            className="form-control"
+                            onChange={(e) => setPickuptime(e.target.value)}
+                            value={pickuptime}
+                          // min={new Date().toISOString().split("T")[0]}
+                          />
+                          <span style={{ color: "red" }}>
+                            {appointErr && !pickuptime
+                              ? "*Please Select Pickup Time"
+                              : ""}
+                          </span>
+                          {/* <span style={{ color: "red" }}>
                       {appointErr && !note ? "*Please Enter Your date" : ""}
                     </span> */}
-                  </div>
-                  
-                  <div className="field-set">
-                    <label>
-                      Driver Name<span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="birthday"
-                      name="driver_name"
-                      placeholder="Driver Name"
-                      className="form-control"
-                      onChange={(e) => setDrivername(e.target.value)}
-                      value={drivername}
-                    />
-                    <span style={{ color: "red" }}>
-                      {appointErr && !drivername
-                        ? "*Please Enter the Driver Name"
-                        : ""}
-                    </span>
-                  </div>
-                  <div className="field-set">
-                    <label>
-                      Driver Contact<span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      id="birthday"
-                      name="driver_contact"
-                      placeholder="Driver Contact"
-                      className="form-control"
-                      onChange={(e) => setDrivercontact(e.target.value)}
-                      value={drivercontact}
-                    />
-                    <span style={{ color: "red" }}>
-                      {appointErr && !drivercontact
-                        ? "*Please Enter the Driver Name"
-                        : ""}
-                    </span>
-                  </div>
-                  <div className="field-set">
-                    <label>
-                      Vehicle Number<span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="type"
-                      id="birthday"
-                      name="vehicle_no"
-                      placeholder="Vehicle Number"
-                      className="form-control"
-                      onChange={(e) => setVehicalnumber(e.target.value)}
-                      value={vehicalnumber}
-                    />
-                    <span style={{ color: "red" }}>
-                      {appointErr && !vehicalnumber
-                        ? "*Please Enter the Driver Name"
-                        : ""}
-                    </span>
-                  </div> 
-                   </>: ""
+                        </div>
+
+                        <div className="field-set">
+                          <label>
+                            Driver Name<span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="birthday"
+                            name="driver_name"
+                            placeholder="Driver Name"
+                            className="form-control"
+                            onChange={(e) => setDrivername(e.target.value)}
+                            value={drivername}
+                          />
+                          <span style={{ color: "red" }}>
+                            {appointErr && !drivername
+                              ? "*Please Enter the Driver Name"
+                              : ""}
+                          </span>
+                        </div>
+                        <div className="field-set">
+                          <label>
+                            Driver Contact<span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="birthday"
+                            name="driver_contact"
+                            placeholder="Driver Contact"
+                            className="form-control"
+                            onChange={(e) => setDrivercontact(e.target.value)}
+                            value={drivercontact}
+                          />
+                          <span style={{ color: "red" }}>
+                            {appointErr && !drivercontact
+                              ? "*Please Enter the Driver Name"
+                              : ""}
+                          </span>
+                        </div>
+                        <div className="field-set">
+                          <label>
+                            Vehicle Number<span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="type"
+                            id="birthday"
+                            name="vehicle_no"
+                            placeholder="Vehicle Number"
+                            className="form-control"
+                            onChange={(e) => setVehicalnumber(e.target.value)}
+                            value={vehicalnumber}
+                          />
+                          <span style={{ color: "red" }}>
+                            {appointErr && !vehicalnumber
+                              ? "*Please Enter the Driver Name"
+                              : ""}
+                          </span>
+                        </div>
+                      </> : ""
                   }
-                  
-              {statuddropdown === 'offline'?    <DialogActions className="submit-main">
+
+                  {statuddropdown === 'offline' ? <DialogActions className="submit-main">
                     <Button
                       type="submit"
                       onClick={(e) => handlesubmitAppoint(e)}
@@ -2683,7 +2672,7 @@ function PatientDetail() {
                     >
                       Submit
                     </Button>
-                  </DialogActions>: <DialogActions className="submit-main">
+                  </DialogActions> : <DialogActions className="submit-main">
                     <Button
                       type="submit"
                       onClick={(e) => handlesubmitAppoint111(e)}
@@ -2692,7 +2681,7 @@ function PatientDetail() {
                       Submit
                     </Button>
                   </DialogActions>
-}
+                  }
                 </form>
               </Box>
             </Box>

@@ -24,7 +24,7 @@ import { Pagination, Stack } from "@mui/material";
 import { usePDF } from 'react-to-pdf';
 import axios from "axios";
 export default function Hospitals() {
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const { toPDF, targetRef } = usePDF({ filename: "hospitals.pdf" });
 
   const [page, setPage] = useState(0);
@@ -212,7 +212,7 @@ export default function Hospitals() {
   };
 
   return (
-  <>
+    <>
       <div className="page-wrapper">
         <div className="content">
           {/* HEADER */}
@@ -220,7 +220,8 @@ export default function Hospitals() {
             <div className="col-md-12">
               <div className="country-top">
                 <h4 className="page-title mb-0">Manage Hospitals</h4>
-                <div className="search-btn-main d-flex align-items-center gap-2">
+                <div className="search-btn-main">
+                  <div className="">
                   <TextField
                     className="field-count"
                     sx={{ width: "100%" }}
@@ -242,12 +243,15 @@ export default function Hospitals() {
                       ),
                     }}
                   />
-                  <Link to="/Admin/add-hospitals" className="add-button">
+                  </div>
+                  <div className="">
+                    <Link to="/Admin/add-hospitals" className="add-button">
                     <i className="fa fa-plus"></i> New Hospital
                   </Link>
                   <Link onClick={handlePDFGenerateWithLimit} className="add-button ms-2">
                     <i className="fa fa-file-pdf-o"></i> Pdf
                   </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -282,9 +286,9 @@ export default function Hospitals() {
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                          )
                         ).map((info, i) => (
                           <TableRow key={info.hospitalId}>
                             <TableCell>

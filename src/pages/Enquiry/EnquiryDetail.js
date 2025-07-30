@@ -160,6 +160,17 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-6">
                     <div className="field-set">
+                      <label>Referral Name<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.Referral_Name}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="field-set">
                       <label>Patient ID<span className="text-danger">*</span></label>
                       <div className="imgid-main">
                         <img

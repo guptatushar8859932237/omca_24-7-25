@@ -1371,9 +1371,6 @@ textarea.form-control {
   position: relative;
   box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
   transition: all 0.25s ease;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .dash-widget:hover {
@@ -1608,12 +1605,12 @@ ul.chat-user-total li i.old-users {
   vertical-align: middle;
 }
 
-.dash-widget-info > h3 {
+/* .dash-widget-info > h3 {
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 0.5rem;
   text-align: end;
-}
+} */
 
 .dash-widget-info span i {
   width: 16px;
@@ -1627,9 +1624,11 @@ ul.chat-user-total li i.old-users {
   margin-left: 5px;
 }
 
-.dash-widget-info > span.widget-title {
-  font-size: 14px;
+.widget-title {
+  font-size: 12px;
   font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-align: end;
 }
 
 .member-panel .contact-list > li:last-child {
@@ -6253,6 +6252,7 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
 .search-btn-main {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 .country-top {
   display: flex;
@@ -6260,11 +6260,11 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
   justify-content: space-between;
   margin-bottom: 15px;
 }
-.field-count label {
+/* .field-count label {
   font-size: 16px;
   line-height: 26px;
   font-weight: 500;
-}
+} */
 .field-count input {
   padding: 5px 15px;
 }
@@ -6272,9 +6272,13 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
   height: 35px !important;
 }
 .field-count .rmdp-input {
-  height: 35px !important;
+  height: 40px !important;
   margin: 0px !important;
   background-color: unset !important;
+  width: 100% !important;
+}
+.field-count .rmdp-container {
+  display: block !important;
 }
 .input-set {
   margin-left: 0px !important;
@@ -6772,28 +6776,81 @@ input:checked + .slider:before {
   height: 38px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
-.checkbox-align{
+.checkbox-align {
   margin-left: 40px;
 }
-.dash-imge{
-  height: 50px;
-  width: 50px;
+.dash-imge {
+  height: 40px;
+  width: 40px;
   border-radius: 50%;
 }
 .dash-bg {
-  width: 50px;
+  width: 40px;
   color: #fff;
   display: block;
   font-size: 20px;
   /* padding: 10px; */
   text-align: center;
   border-radius: 50%;
-  height: 50px;
+  height: 40px;
   background: linear-gradient(
     181deg,
     var(--bs-primary-color) 0%,
     var(--bs-blue-color) 72%
   );
+}
+/* ----------------------------------surbhi(29-7-25)------------------------------- */
+.dash-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dash-widget-info h3 {
+  margin-bottom: 0px;
+  font-size: 25px;
+}
+.dash-widget1 {
+  background-color: #fff;
+  border-radius: 5px;
+  margin-bottom: 25px;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+  transition: all 0.25s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dash-widget1:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 24px rgba(62, 57, 107, 0.2);
+}
+.dash-widget-info1 > h3 {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-align: end;
+}
+
+.dash-widget-info1 span i {
+  width: 16px;
+  background: #fff;
+  border-radius: 50%;
+  color: var(--bs-text-color);
+  font-size: 9px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  margin-left: 5px;
+}
+.css-1bug3cd-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected{
+  background-color: #00000014 !important;
+  border-radius: 5px !important;
+}
+.radio-on input{
+  vertical-align: middle;
+  margin-right: 10px;
 }

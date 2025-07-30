@@ -197,236 +197,161 @@ export default function Reports() {
                 <h4 className="page-title mb-0">Reports</h4>
               </div>
             </div>
-            <div className="search-btn-main mb-4">
-              <div className="mr-3 field-count">
-                <DatePicker
-                  value={dateRange}
-                  format="MM/DD/YYYY"
-                  placeholder="Start Date To End Date"
-                  onChange={setDateRange}
-                  range
-                  numberOfMonths={2}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </div>
-              <div className="mr-3">
-                {/* {/* <TextField
-                  id="country"
-                  label="Country"
-                  variant="outlined"
-                  size="small"
-                  onChange={submitInputdata}
-                  name="country"
-                  value={report.country}
-                  fullWidth
-                  className="field-count"
-                  InputLabelProps={{ shrink: true }}
-                /> */}
-                {/* <div className="col-sm-6">
-                                        <div className="field-set">
-                                          <label>
-                                            Country<span className="text-danger">*</span>
-                                          </label>
-                                          < name="country">
-                                            {({ field, form }) => (
-                                              <>
-                                                <FormControl fullWidth size="small">
-                                                  <Select
-                                                    value={report.country}
-                                                     onChange={submitInputdata}
-                                                    input={
-                                                      <OutlinedInput placeholder="Select Country" />
-                                                    }
-                                                    displayEmpty
-                                                    sx={{ height: 40 }}
-                                                    className="select-country form-control"
-                                                    MenuProps={{
-                                                      PaperProps: {
-                                                        style: { maxHeight: 200 },
-                                                      },
-                                                    }}
-                                                  >
-                                                    <MenuItem value="">
-                                                      <em>Select Country</em>
-                                                    </MenuItem>
-                                                    {Countries && Countries.length > 0 ? (
-                                                      Countries.map((con, idx) => (
-                                                        <MenuItem key={idx} value={con.name}>
-                                                          {con.name}
-                                                        </MenuItem>
-                                                      ))
-                                                    ) : (
-                                                      <MenuItem disabled>
-                                                        No countries available
-                                                      </MenuItem>
-                                                    )}
-                                                  </Select>
-                                                </FormControl>
-                                                <ErrorMessage
-                                                  name="country"
-                                                  component="div"
-                                                  style={{ color: "red" }}
-                                                />
-                                              </>
-                                            )}
-                                          </Field>
-                                        </div>
-                                      </div> */}
-                <div className="col-sm-12">
-                  <div className="field-set">
-                    <label>
-                      Country <span className="text-danger">*</span>
-                    </label>
-                    <FormControl fullWidth size="small">
-                      <Select
-                        name="country"
-                        value={report.country}
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="card">
+              <div className="card-body">
+                <div className="row align-items-end">
+                  <div className="col-md-3">
+                    <div className="field-set">
+                      <label>Country<span className="text-danger">*</span></label>
+                      <FormControl fullWidth size="small">
+                        <Select
+                          name="country"
+                          value={report.country}
+                          onChange={submitInputdata}
+                          displayEmpty
+                          input={<OutlinedInput placeholder="Select Country" />}
+                          sx={{ height: 40 }}
+                          className="select-country form-control"
+                          MenuProps={{
+                            PaperProps: {
+                              style: { maxHeight: 200 },
+                            },
+                          }}
+                        >
+                          <MenuItem value="">
+                            <em>Select Country</em>
+                          </MenuItem>
+                          {Countries && Countries.length > 0 ? (
+                            Countries.map((con, idx) => (
+                              <MenuItem key={idx} value={con.name}>
+                                {con.name}
+                              </MenuItem>
+                            ))
+                          ) : (
+                            <MenuItem disabled>No countries available</MenuItem>
+                          )}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="field-set">
+                      <label>Treatment Name<span className="text-danger">*</span></label>
+                      <FormControl fullWidth size="small">
+                        <Select
+                          name="treatment"
+                          value={report.treatment}
+                          onChange={submitInputdata}
+                          displayEmpty
+                          input={<OutlinedInput placeholder="Select Treatment" />}
+                          sx={{ height: 40 }}
+                          className="select-treatment form-control"
+                          MenuProps={{
+                            PaperProps: {
+                              style: { maxHeight: 200 },
+                            },
+                          }}
+                        >
+                          <MenuItem value="">
+                            <em>Select Treatment</em>
+                          </MenuItem>
+                          {treatmentname && treatmentname.length > 0 ? (
+                            treatmentname.map((item, index) => (
+                              <MenuItem key={index} value={item.course_name}>
+                                {item.course_name}
+                              </MenuItem>
+                            ))
+                          ) : (
+                            <MenuItem disabled>No treatments available</MenuItem>
+                          )}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="field-set">
+                      <label>Hospital<span className="text-danger">*</span></label>
+                      <FormControl fullWidth size="small">
+                        <Select
+                          name="hospital"
+                          value={report.hospital}
+                          onChange={submitInputdata}
+                          displayEmpty
+                          input={<OutlinedInput placeholder="Select Hospital" />}
+                          sx={{ height: 40 }}
+                          className="select-hospital form-control"
+                          MenuProps={{
+                            PaperProps: {
+                              style: { maxHeight: 200 },
+                            },
+                          }}
+                        >
+                          <MenuItem value="">
+                            <em>Select Hospital</em>
+                          </MenuItem>
+                          {hospital && hospital.length > 0 ? (
+                            hospital.map((item, index) => (
+                              <MenuItem key={index} value={item.hospitalName}>
+                                {item.hospitalName}
+                              </MenuItem>
+                            ))
+                          ) : (
+                            <MenuItem disabled>No hospitals available</MenuItem>
+                          )}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="field-set field-count">
+                      <label>Select Date<span className="text-danger">*</span></label>
+                      <DatePicker
+                        value={dateRange}
+                        format="MM/DD/YYYY"
+                        placeholder="Start Date To End Date"
+                        onChange={setDateRange}
+                        range
+                        numberOfMonths={2}
+                        InputLabelProps={{ shrink: true }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="field-set">
+                      <label>Age<span className="text-danger">*</span></label>
+                      <TextField
+                        id="age"
+                        placeholder="Enter Age"
+                        variant="outlined"
+                        size="small"
                         onChange={submitInputdata}
-                        displayEmpty
-                        input={<OutlinedInput placeholder="Select Country" />}
-                        sx={{ height: 40 }}
-                        className="select-country form-control"
-                        MenuProps={{
-                          PaperProps: {
-                            style: { maxHeight: 200 },
-                          },
-                        }}
-                      >
-                        <MenuItem value="">
-                          <em>Select Country</em>
-                        </MenuItem>
-                        {Countries && Countries.length > 0 ? (
-                          Countries.map((con, idx) => (
-                            <MenuItem key={idx} value={con.name}>
-                              {con.name}
-                            </MenuItem>
-                          ))
-                        ) : (
-                          <MenuItem disabled>No countries available</MenuItem>
-                        )}
-                      </Select>
-                    </FormControl>
+                        name="age"
+                        value={report.age}
+                        fullWidth
+                        className="field-count"
+                        InputLabelProps={{ shrink: true }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-4">
+                      <button className="add-button" onClick={getReportData}>
+                        Report
+                      </button>
+                    </div>
+                    {/* <div className="search-btn-main mb-4">
+            </div> */}
                   </div>
                 </div>
-              </div>
-              {/* <div className="mr-3">
-                  <TextField
-                    id="treatment"
-                    label="Treatment Name"
-                    variant="outlined"
-                    size="small"
-                    onChange={submitInputdata}
-                    name="treatment"
-                    value={report.treatment}
-                    fullWidth
-                    className="field-count"
-                    InputLabelProps={{ shrink: true }}
-                  /> */}
-              {/* </div> */}
-              <div className="mr-3">
-                <label>
-                  Treatment Name <span className="text-danger">*</span>
-                </label>
-                <FormControl fullWidth size="small">
-                  <Select
-                    name="treatment"
-                    value={report.treatment}
-                    onChange={submitInputdata}
-                    displayEmpty
-                    input={<OutlinedInput placeholder="Select Treatment" />}
-                    sx={{ height: 40 }}
-                    className="select-treatment form-control"
-                    MenuProps={{
-                      PaperProps: {
-                        style: { maxHeight: 200 },
-                      },
-                    }}
-                  >
-                    <MenuItem value="">
-                      <em>Select Treatment</em>
-                    </MenuItem>
-                    {treatmentname && treatmentname.length > 0 ? (
-                      treatmentname.map((item, index) => (
-                        <MenuItem key={index} value={item.course_name}>
-                          {item.course_name}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem disabled>No treatments available</MenuItem>
-                    )}
-                  </Select>
-                </FormControl>
-              </div>
-              <div className="mr-3">
-                <TextField
-                  id="age"
-                  label="Age"
-                  variant="outlined"
-                  size="small"
-                  onChange={submitInputdata}
-                  name="age"
-                  value={report.age}
-                  fullWidth
-                  className="field-count"
-                  InputLabelProps={{ shrink: true }}
-                />
-              </div>
-              {/* <div className="mr-3">
-                <TextField
-                  id="hospital"
-                  label="Hospital"
-                  variant="outlined"
-                  size="small"
-                  onChange={submitInputdata}
-                  name="hospital"
-                  value={report.hospital}
-                  fullWidth
-                  className="field-count"
-                  InputLabelProps={{ shrink: true }}
-                />
-              </div> */}
-              <div className="mr-3">
-                <label>
-                  Hospital <span className="text-danger">*</span>
-                </label>
-                <FormControl fullWidth size="small">
-                  <Select
-                    name="hospital"
-                    value={report.hospital}
-                    onChange={submitInputdata}
-                    displayEmpty
-                    input={<OutlinedInput placeholder="Select Hospital" />}
-                    sx={{ height: 40 }}
-                    className="select-hospital form-control"
-                    MenuProps={{
-                      PaperProps: {
-                        style: { maxHeight: 200 },
-                      },
-                    }}
-                  >
-                    <MenuItem value="">
-                      <em>Select Hospital</em>
-                    </MenuItem>
-                    {hospital && hospital.length > 0 ? (
-                      hospital.map((item, index) => (
-                        <MenuItem key={index} value={item.hospitalName}>
-                          {item.hospitalName}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem disabled>No hospitals available</MenuItem>
-                    )}
-                  </Select>
-                </FormControl>
-              </div>
-              <div className="">
-                <button className="add-button" onClick={getReportData}>
-                  Report
-                </button>
               </div>
             </div>
           </div>
         </div>
+
         <div className="main_content">
           <div className="row">
             <div className="col-md-12">

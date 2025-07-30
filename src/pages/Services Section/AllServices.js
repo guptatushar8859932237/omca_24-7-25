@@ -256,8 +256,8 @@ const { toPDF, targetRef } = usePDF({filename: 'page.pdf'});
           </label>
         </TableCell>
         <TableCell className="action-icon">
-          <VisibilityIcon
-            className="eye-icon"
+          <i
+            className="fa-solid fa-pen-to-square"
             onClick={(e) => EditButton(e, info.serviceId)}
           />
           {localStorage.getItem("Role") === "Admin" && (

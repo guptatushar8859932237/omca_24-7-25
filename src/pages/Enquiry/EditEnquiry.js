@@ -714,6 +714,7 @@ export default function EditEnquiry() {
       .required("Email is required"),
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
+    Referral_Name: Yup.string().required("Referral_Name is required"),
     address: Yup.string().required("Address is required"),
     emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
@@ -765,6 +766,7 @@ export default function EditEnquiry() {
                   patient_emergency_contact_no:
                     editenquiry?.patient_emergency_contact_no || "",
                   patient_relation: editenquiry?.patient_relation || "",
+                  Referral_Name: editenquiry?.Referral_Name || "",
                   relation_id: null,
                   patient_id_proof: null,
                 }}
@@ -1096,7 +1098,24 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
+                         <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Referral Name<span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="Referral_Name"
+                          />
+                          <ErrorMessage
+                            name="Referral_Name"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
                     </div>
+                   
                     <div className="treat-hd">
                       <h6>Attendant Details</h6>
                       <span className="line"></span>

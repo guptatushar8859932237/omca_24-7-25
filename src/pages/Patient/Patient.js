@@ -40,11 +40,11 @@ export default function Patient() {
   const { Treatment } = useSelector((state) => state.Treatment);
   const [seekerStatus, setSeekerStatus] = React.useState({});
   const [treatmentname, setTreatmentname] = useState([]);
-   const { toPDF, targetRef } = usePDF({filename: 'Patient.pdf'});
+  const { toPDF, targetRef } = usePDF({ filename: "Patient.pdf" });
   const [selectedJobTitle, setSelectedJobTitle] = useState("");
   const [filterValue, setFilterValue] = useState("");
   const [searchApiData, setSearchApiData] = useState([]);
-  const [pdfRowLimit,setPdfRowLimit]=useState(null)
+  const [pdfRowLimit, setPdfRowLimit] = useState(null);
   console.log(Treatment);
   const [report, setReport] = useState({
     country: " ",
@@ -280,91 +280,94 @@ export default function Patient() {
   //   }
   // };
 
- const downloadPdf = async () => {
- const maxRows = rows.length || 1;
-        Swal.fire({
-             title: "Enter number of rows for PDF",
-             input: "number",
-             inputLabel: `Choose between 1 and ${maxRows}`,
-             inputAttributes: {
-               min: "1",
-               max: maxRows.toString(),
-               step: "1",
-             },
-             inputValue: rowsPerPage,
-             showCancelButton: true,
-             confirmButtonText: "Generate PDF",
-           }).then((result) => {
-             if (result.isConfirmed) {
-               const userInput = parseInt(result.value, 10);
-               if (isNaN(userInput) || userInput < 1 || userInput > maxRows) {
-                 Swal.fire(
-                   "Invalid entry",
-                   `Please enter a number between 1 and ${maxRows}`,
-                   "error"
-                 );
-                 return;
-               }
-       
-               setPdfRowLimit(userInput);
-       
-               setTimeout(() => {
-                 toPDF();
-                 setPdfRowLimit(null); // reset to normal view
-               }, 300);
-             }
-           });
-     
-};
+  const downloadPdf = async () => {
+    const maxRows = rows.length || 1;
+    Swal.fire({
+      title: "Enter number of rows for PDF",
+      input: "number",
+      inputLabel: `Choose between 1 and ${maxRows}`,
+      inputAttributes: {
+        min: "1",
+        max: maxRows.toString(),
+        step: "1",
+      },
+      inputValue: rowsPerPage,
+      showCancelButton: true,
+      confirmButtonText: "Generate PDF",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const userInput = parseInt(result.value, 10);
+        if (isNaN(userInput) || userInput < 1 || userInput > maxRows) {
+          Swal.fire(
+            "Invalid entry",
+            `Please enter a number between 1 and ${maxRows}`,
+            "error"
+          );
+          return;
+        }
 
-    const handleChangefffff = async (e, i) => {
-      console.log(e,i)
-      try {
-        const token = localStorage.getItem("token");
-  
-        if (!token) {
-          throw new Error("Authorization token is missing");
-        }
-  
-        const response = await axios.post(
-          `${baseurl}changePatientStatus/${i}`,
-          { p_status : e.target.value},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-  
-        // If response is OK, show success
-        if (response.status === 200 || response.status === 201) {
-                   dispatch(GetAllPatients());
-          Swal.fire("Success!", "patient status updated successfully!", "success");
-  
-          try {
-            // await getAppointments(); // make sure it's awaited if it’s async
-          } catch (refreshError) {
-            console.error("Error refreshing appointments:", refreshError);
-            toast.error("Failed to refresh appointments!");
-          }
-  
-          return response.data;
-        } else {
-          // Handle unexpected non-200 responses
-          throw new Error("Failed to update status. Please try again!");
-        }
-      } catch (err) {
-        console.error("Full Error:", err);
-        if (err.response && err.response.data && err.response.data.message) {
-          toast.error(err.response.data.message);
-        } else if (err.message) {
-          toast.error(err.message);
-        } else {
-          toast.error("Something went wrong. Please try again!");
-        }
+        setPdfRowLimit(userInput);
+
+        setTimeout(() => {
+          toPDF();
+          setPdfRowLimit(null); // reset to normal view
+        }, 300);
       }
-    };
+    });
+  };
+
+  const handleChangefffff = async (e, i) => {
+    console.log(e, i);
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("Authorization token is missing");
+      }
+
+      const response = await axios.post(
+        `${baseurl}changePatientStatus/${i}`,
+        { p_status: e.target.value },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // If response is OK, show success
+      if (response.status === 200 || response.status === 201) {
+        dispatch(GetAllPatients());
+        Swal.fire(
+          "Success!",
+          "patient status updated successfully!",
+          "success"
+        );
+
+        try {
+          // await getAppointments(); // make sure it's awaited if it’s async
+        } catch (refreshError) {
+          console.error("Error refreshing appointments:", refreshError);
+          toast.error("Failed to refresh appointments!");
+        }
+
+        return response.data;
+      } else {
+        // Handle unexpected non-200 responses
+        throw new Error("Failed to update status. Please try again!");
+      }
+    } catch (err) {
+      console.error("Full Error:", err);
+      if (err.response && err.response.data && err.response.data.message) {
+        toast.error(err.response.data.message);
+      } else if (err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error("Something went wrong. Please try again!");
+      }
+    }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -413,10 +416,7 @@ export default function Patient() {
                     </span>
                     Export File
                   </button>
-                  <button
-                    onClick={downloadPdf}
-                    className="add-button ms-2"
-                  >
+                  <button onClick={downloadPdf} className="add-button ms-2">
                     <span>
                       <i className="fa fa-file-pdf-o"></i>
                     </span>
@@ -429,11 +429,10 @@ export default function Patient() {
           <div className="main_content">
             <div className="row">
               <div className="col-md-12">
-                <div className="table-responsive">
+                <div className="table-responsive" ref={targetRef}> 
                   <TableContainer
                     component={Paper}
                     style={{ overflowX: "auto" }}
-                    ref={targetRef}
                   >
                     <Table
                       stickyHeader
@@ -462,127 +461,145 @@ export default function Patient() {
                             </TableCell>
                           </TableRow>
                         ) : (
-                          (pdfRowLimit?
-                         rows.slice(0, pdfRowLimit)
-                          : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
-                        ).map((info, i) => {
-                              console.log(info)
-                              return(
-                                <>
-                                <TableRow
-                                role="checkbox"
-                                tabIndex={-1}
-                                key={info.code}
-                              >
-                                <TableCell>
-                          {pdfRowLimit ? i + 1 : page * rowsPerPage + i + 1}
-                                </TableCell>
-                                <TableCell>
-                                  {info?.patientNumber
-                                    ? info?.patientNumber
-                                    : info.patientId}
-                                </TableCell>
-                                <TableCell>{info.patient_name}</TableCell>
-                                <TableCell>{info.emergency_contact}</TableCell>
-                                <TableCell>
-                                  {new Date(info.createdAt).toLocaleDateString(
-                                    "en-GB"
-                                  )}
-                                </TableCell>
-                                <TableCell>{info.email}</TableCell>
-                                <TableCell>{info.country}</TableCell>
-                               
-                                <TableCell>
-                                  {info.patient_disease
-                                    .map((item) => item.disease_name)
-                                    .join(", ")}
-                                </TableCell>
-                                 <TableCell>
-                                  <FormControl
-                                    sx={{ m: 1, minWidth: 120 }}
-                                    size="small"
-                                    className="cont-main"
-                                  >
-                                    <Select
-                                      value={
-                                        info.p_staus	
-                                      }
-                                      onChange={(e) =>
-                                        handleChangefffff(e, info.patientId)
-                                      }
-                                      displayEmpty
-                                      inputProps={{
-                                        "aria-label": "Without label",
-                                      }}
-                                      className="status-direct"
-                                      >
-                                      <MenuItem value="Foundation" disabled>
-                                        Foundation
-                                      </MenuItem>
-                                      <MenuItem value="Private">Private</MenuItem>
-                                      <MenuItem value="Travelled"> Travelled</MenuItem>
-                                      <MenuItem value="Confirmed">Confirmed</MenuItem>
-                                      <MenuItem value="Pending">Pending</MenuItem>
-                                      <MenuItem value="On Hold">On Hold</MenuItem>
-                                      <MenuItem value="Cancel">Cancel</MenuItem>
-                                      <MenuItem value="Local Case">Local Case</MenuItem>
-                                      <MenuItem value="Follow Up">Follow Up</MenuItem>
-                                      <MenuItem value="Passed Away">Passed Away</MenuItem>
-                                    </Select>
-                                  </FormControl>
-                                </TableCell>
-                                <TableCell className="action-icon">
-                                  <VisibilityIcon
-                                    className="eye-icon"
-                                    onClick={(e) =>
-                                      PatientDetail(
-                                        e,
-                                        info.patientId,
-                                        info.enquiryId
-                                      )
-                                    }
-                                  />
-                                  <i
-                                    className="fa-solid fa-pen-to-square"
-                                    onClick={(e) =>
-                                      EditButton(e, info.patientId)
-                                    }
-                                  ></i>
-                                  {localStorage.getItem("Role") === "Admin" ? (
-                                    <i
-                                      className="fa-solid fa-trash"
-                                      onClick={(e) => {
-                                        handledelet(e, info.patientId);
-                                      }}
-                                    ></i>
-                                  ) : (
-                                    ""
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                                </>
+                          (pdfRowLimit
+                            ? rows.slice(0, pdfRowLimit)
+                            : rows.slice(
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage
                               )
-                            }
-                              
-                            )
+                          ).map((info, i) => {
+                            console.log(info);
+                            return (
+                              <>
+                                <TableRow
+                                  role="checkbox"
+                                  tabIndex={-1}
+                                  key={info.code}
+                                >
+                                  <TableCell>
+                                    {pdfRowLimit
+                                      ? i + 1
+                                      : page * rowsPerPage + i + 1}
+                                  </TableCell>
+                                  <TableCell>
+                                    {info?.patientNumber
+                                      ? info?.patientNumber
+                                      : info.patientId}
+                                  </TableCell>
+                                  <TableCell>{info.patient_name}</TableCell>
+                                  <TableCell>
+                                    {info.emergency_contact}
+                                  </TableCell>
+                                  <TableCell>
+                                    {new Date(
+                                      info.createdAt
+                                    ).toLocaleDateString("en-GB")}
+                                  </TableCell>
+                                  <TableCell>{info.email}</TableCell>
+                                  <TableCell>{info.country}</TableCell>
+                                  <TableCell>
+                                    {info.patient_disease
+                                      .map((item) => item.disease_name)
+                                      .join(", ")}
+                                  </TableCell>
+                                  <TableCell>
+                                    <FormControl
+                                      sx={{ m: 1, minWidth: 120 }}
+                                      size="small"
+                                      className="cont-main"
+                                    >
+                                      <Select
+                                        value={info.p_staus}
+                                        onChange={(e) =>
+                                          handleChangefffff(e, info.patientId)
+                                        }
+                                        displayEmpty
+                                        inputProps={{
+                                          "aria-label": "Without label",
+                                        }}
+                                        className="status-direct"
+                                      >
+                                        <MenuItem value="Foundation">
+                                          Foundation
+                                        </MenuItem>
+                                        <MenuItem value="Private">
+                                          Private
+                                        </MenuItem>
+                                        <MenuItem value="Travelled">
+                                          {" "}
+                                          Travelled
+                                        </MenuItem>
+                                        <MenuItem value="Confirmed">
+                                          Confirmed
+                                        </MenuItem>
+                                        <MenuItem value="Pending">
+                                          Pending
+                                        </MenuItem>
+                                        <MenuItem value="On Hold">
+                                          On Hold
+                                        </MenuItem>
+                                        <MenuItem value="Cancel">
+                                          Cancel
+                                        </MenuItem>
+                                        <MenuItem value="Local Case">
+                                          Local Case
+                                        </MenuItem>
+                                        <MenuItem value="Follow Up">
+                                          Follow Up
+                                        </MenuItem>
+                                        <MenuItem value="Passed Away">
+                                          Passed Away
+                                        </MenuItem>
+                                      </Select>
+                                    </FormControl>
+                                  </TableCell>
+                                  <TableCell className="action-icon">
+                                    <VisibilityIcon
+                                      className="eye-icon"
+                                      onClick={(e) =>
+                                        PatientDetail(
+                                          e,
+                                          info.patientId,
+                                          info.enquiryId
+                                        )
+                                      }
+                                    />
+                                    <i
+                                      className="fa-solid fa-pen-to-square"
+                                      onClick={(e) =>
+                                        EditButton(e, info.patientId)
+                                      }
+                                    ></i>
+                                    {localStorage.getItem("Role") ===
+                                    "Admin" ? (
+                                      <i
+                                        className="fa-solid fa-trash"
+                                        onClick={(e) => {
+                                          handledelet(e, info.patientId);
+                                        }}
+                                      ></i>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+                              </>
+                            );
+                          })
                         )}
                       </TableBody>
                     </Table>
                     {!pdfRowLimit && (
                       <Stack spacing={2}>
-                      <Pagination
-                        className="page-nation"
-                        count={Math.ceil(rows.length / rowsPerPage)}
-                        page={page + 1}
-                        onChange={(event, value) => setPage(value - 1)}
-                        color="primary"
-                      />
-                    </Stack>)
-                      }
-                    
+                        <Pagination
+                          className="page-nation"
+                          count={Math.ceil(rows.length / rowsPerPage)}
+                          page={page + 1}
+                          onChange={(event, value) => setPage(value - 1)}
+                          color="primary"
+                        />
+                      </Stack>
+                    )}
                   </TableContainer>
                 </div>
               </div>

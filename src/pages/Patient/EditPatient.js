@@ -84,15 +84,13 @@ export default function EditPatient() {
                     patientDisease:
                       ispatient?.patient_disease?.[0]?.disease_name || "",
                     created_at: ispatient?.createdAt
-                      ? ispatient.createdAt.split("T")[0]
-                      : "",
+                      ? ispatient.createdAt.split("T")[0]: "",
                     emergency_contact_no: ispatient?.emergency_contact || "",
                     country: ispatient?.country || "",
                     patient_relation: ispatient?.patient_relation || "",
                     patient_relation_name:
                       ispatient?.patient_relation_name || "",
-                    patientNumber: ispatient?.patientNumber || "",
-                  }}
+                    patientNumber: ispatient?.patientNumber || "", }}
                   validationSchema={basicSchema}
                   onSubmit={async (values, { setSubmitting }) => {
                     console.log("Submitting values:", values);
@@ -153,7 +151,6 @@ export default function EditPatient() {
                             />
                           </div>
                         </div>
-
                         <div className="col-sm-6">
                           <div className="field-set">
                             <label>
@@ -318,9 +315,12 @@ export default function EditPatient() {
                               className="text-danger"
                             />
                           </div>
-                          <div className="col-sm-6">
+                          <label className="gen-label fw-normal">
+                            Patient Id<span className="text-danger">*</span>
+                          </label>
+                          <div className="col-sm-6 p-0 ">
                             <Field
-                              className="form-control"
+                              className="form-control "
                               type="text"
                               name="patientNumber"
                             />

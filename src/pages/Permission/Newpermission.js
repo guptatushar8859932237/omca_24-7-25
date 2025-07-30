@@ -97,7 +97,7 @@ export default function PermissionPage() {
           <div className="row">
             <div className="col-md-12">
               <div className="table-responsive">
-                <table className="table table-border  datatable table-no-card">
+                <table className="table table-border datatable table-no-card">
                   <thead>
                     <tr>
                       <th>ENDPOINTS</th>
