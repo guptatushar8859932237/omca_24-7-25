@@ -62,7 +62,6 @@ function App() {
       <Provider store={store}>
         <Router>
           <Routes>
-            {/* <div className="main-wrapper"> */}
             <Route path="/" element={<AdminLogin />} />
             <Route path="/Forgot" element={<Forgot />} />
             <Route path="/opt" element={<AuthOpt />} />
@@ -71,7 +70,6 @@ function App() {
               path="/Dashboard"
               element={<Protected Component={Dashboard} />}
             />
-            {/* <div className="content-wrapper"> */}
             <Route path="/Admin" element={<Protected Component={Main} />}>
               <Route index path="/Admin/Permission" element={<Permission />} />
               <Route

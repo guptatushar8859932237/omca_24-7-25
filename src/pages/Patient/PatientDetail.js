@@ -191,9 +191,6 @@ function PatientDetail() {
   const handleClose10 = () => {
     setOpen10(false);
   };
-  // const handleClose4 = () => {
-  //   setOpen4(false);
-  // };
   const PatientDetailButton = (e, id) => {
     navigate("/Admin/add-patient-treatment", {
       state: {
@@ -321,7 +318,7 @@ function PatientDetail() {
   const handlesubmitAppoint = async (e) => {
     e.preventDefault();
 
-    const isOffline = statuddropdown === 'offline';
+    const isOffline = statuddropdown === "offline";
 
     setAppointErr({
       note: false,
@@ -415,7 +412,7 @@ function PatientDetail() {
   const handlesubmitAppoint111 = async (e) => {
     e.preventDefault();
 
-    const isOffline = statuddropdown === 'offline';
+    const isOffline = statuddropdown === "offline";
 
     setAppointErr({
       note: false,
@@ -439,7 +436,6 @@ function PatientDetail() {
       hasError = true;
     }
 
-    // If any required field is missing, stop the submission
     if (hasError) {
       return;
     }
@@ -476,73 +472,6 @@ function PatientDetail() {
     }
   };
 
-  // const handlesubmitAppoint = async (e) => {
-  //   e.preventDefault();
-
-  //   setAppointErr({
-  //     note: false,
-  //     date: false,
-  //     drivername: false,
-  //     vehicalnumber: false,
-  //     drivercontact: false,
-  //   });
-
-  //   if (!appHospital) {
-  //     setAppointErr((prevState) => ({ ...prevState, appHospital: true }));
-  //   }
-  //   if (!note) {
-  //     setAppointErr((prevState) => ({ ...prevState, note: true }));
-  //   }
-  //   if (!date) {
-  //     setAppointErr((prevState) => ({ ...prevState, hospitalcharge: true }));
-  //   }
-  //   if (!drivername) {
-  //     setAppointErr((prevState) => ({ ...prevState, drivername: true }));
-  //   }
-  //   if (!drivercontact) {
-  //     setAppointErr((prevState) => ({ ...prevState, drivercontact: true }));
-  //   }
-  //   if (!vehicalnumber) {
-  //     setAppointErr((prevState) => ({ ...prevState, vehicalnumber: true }));
-  //   }
-  //   if (!pickuptime) {
-  //     setAppointErr((prevState) => ({ ...prevState, pickuptime: true }));
-  //   }
-  //   // If any field is empty, stop the submission
-  //   if (!note || !date) {
-  //     return;
-  //   }
-  //   const result = await dispatch(
-  //     AppointmentForPatient({
-  //       patientId: location.state.patientId,
-  //       hospitalId: appHospital,
-  //       treatment_id: treatmentId,
-  //       note: note,
-  //       appointment_Date: date,
-  //       pickup_time: pickuptime,
-  //       vehicle_no: vehicalnumber,
-  //       driver_name: drivername,
-  //       driver_contact: drivercontact,
-  //     })
-  //   ).unwrap();
-  //   try {
-  //     setOpen1(false);
-  //     Swal.fire("Patient assigned to Appointment successfully!", "", "success");
-  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  //     setTreatmentId("");
-  //     sethospitalharge("");
-  //     setHospitalId("");
-  //     setNote("");
-  //     setDate("");
-  //     setDrivercontact("");
-  //     setPickuptime("");
-  //     setDrivername("");
-  //     setVehicalnumber("");
-  //     setAppointErr(false);
-  //   } catch (err) {
-  //     Swal.fire("Error!", err?.message || "An error occurred", "error");
-  //   }
-  // };
   const [filesData, setFilesData] = useState({});
   const getdataApi = async () => {
     try {
@@ -568,7 +497,7 @@ function PatientDetail() {
     if (!file) return;
 
     // Only validate image type for 'photo' field
-    if (fieldName === "photo") {
+    if (fieldName === "photo" && fieldName === "Attende_photo") {
       const isImage = file.type.startsWith("image/");
       if (!isImage) {
         alert("Please upload an image file only for photo.");
@@ -591,6 +520,9 @@ function PatientDetail() {
         id_proof: filesData.id_proof,
         passport: filesData.passport,
         photo: filesData.photo,
+        Attende_id_proof: filesData.Attende_id_proof,
+        Attende_passport: filesData.Attende_passport,
+        Attende_photo: filesData.Attende_photo,
       })
     ).unwrap();
     console.log(filesData);
@@ -1348,8 +1280,17 @@ function PatientDetail() {
                                               <div className="para-main-div">
                                                 <p>
                                                   {item.price} {"  "}{" "}
-                                                  {item.duration}<br />
-                                                  {new Date(item.startTime).toLocaleDateString("en-GB")} to {new Date(item.endTime).toLocaleDateString("en-GB")}
+                                                  {item.duration}
+                                                  <br />
+                                                  {new Date(
+                                                    item.startTime
+                                                  ).toLocaleDateString(
+                                                    "en-GB"
+                                                  )}{" "}
+                                                  to{" "}
+                                                  {new Date(
+                                                    item.endTime
+                                                  ).toLocaleDateString("en-GB")}
                                                 </p>
                                               </div>
                                             </div>
@@ -1391,7 +1332,7 @@ function PatientDetail() {
                                                 <div className="para-main-div1">
                                                   <p>{item.appointment_Date}</p>
                                                   {item.status ===
-                                                    "Complete" ? (
+                                                  "Complete" ? (
                                                     <p>{item.status}</p>
                                                   ) : (
                                                     <FormControl
@@ -1405,18 +1346,18 @@ function PatientDetail() {
                                                       <Select
                                                         value={
                                                           item.status ===
-                                                            "pending"
+                                                          "pending"
                                                             ? "1"
                                                             : item.status ===
                                                               "Follow-Up"
-                                                              ? "2"
-                                                              : item.status ===
-                                                                "Complete"
-                                                                ? "3"
-                                                                : item.status ===
-                                                                  "Cancelled"
-                                                                  ? "4"
-                                                                  : "1"
+                                                            ? "2"
+                                                            : item.status ===
+                                                              "Complete"
+                                                            ? "3"
+                                                            : item.status ===
+                                                              "Cancelled"
+                                                            ? "4"
+                                                            : "1"
                                                         }
                                                         onChange={(e) =>
                                                           handleChangeDetails(
@@ -1522,52 +1463,8 @@ function PatientDetail() {
                                         </ul>
                                       )
                                     )}
-
-                                  {/* <div>
-                                      <div className="row">
-                                        <div className="col-sm-3 mb-2">
-                                          <h6>Vehicle Number:</h6>
-                                          <p>
-                                            {
-                                              info.appointments_details[0]
-                                                .vehicle_no
-                                            }
-                                          </p>
-                                        </div>
-                                        <div className="col-sm-3 mb-2">
-                                          <h6>Driver Name:</h6>
-                                          <p>
-                                            {
-                                              info.appointments_details[0]
-                                                .driver_name
-                                            }
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div className="row">
-                                        <div className="col-sm-3 mb-2">
-                                          <h6>Driver Contact:</h6>
-                                          <p>
-                                            {
-                                              info.appointments_details[0]
-                                                .driver_contact
-                                            }
-                                          </p>
-                                        </div>
-                                        <div className="col-sm-3 mb-2">
-                                          <h6>Pickup Time:</h6>
-                                          <p>
-                                            {
-                                              info.appointments_details[0]
-                                                .pickup_time
-                                            }
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </div> */}
                                 </div>
                               </div>
-
                               <hr></hr>
                               <div className="row justify-content-end">
                                 <div className="col-md-12">
@@ -1583,195 +1480,6 @@ function PatientDetail() {
                                   </div>
                                 </div>
                               </div>
-                              {/* <div className="experience-box">
-                                <ul className="experience-list">
-                                  <li>
-                                    <div className="experience-user">
-                                      <div className="before-circle"></div>
-                                    </div>
-                                    <div className="experience-box">
-                                      <ul className="experience-list">
-                                        <li>
-                                          <div className="experience-user">
-                                            <div className="before-circle"></div>
-                                          </div>
-                                          <div className="experience-content">
-                                            <div className="timeline-content">
-                                              <a className="name">
-                                                Treatment Name-
-                                                {info.treatment_name}
-                                              </a>
-
-                                            </div>
-                                            {info.Hospital_details.map(
-                                              (item) => {
-                                                console.log(item);
-                                                return (
-                                                  <>
-                                                    <div className="timeline-content">
-                                                      <a className="name">
-                                                        Hospital Name-
-                                                        {item.hospital_Name}
-                                                      </a>
-                                                      <div className="ms-4 d-flex">
-                                                        Hospital charge-
-                                                        {item.hospital_charge}
-                                                        <p>{item.status}</p>
-                                                      </div>
-                                                    </div>
-                                                  </>
-                                                );
-                                              }
-                                            )}
-                                            {info.appointments_details.map(
-                                              (item) => {
-                                                console.log(item);
-                                                return (
-                                                  <>
-                                                    <div className="timeline-content">
-                                                      <a className="name">
-                                                        Appointment ID-
-                                                        {item.appointmentId}
-                                                      </a>
-                                                      <div className="d-flex">
-                                                        Appointment Date-
-                                                        {item.appointment_Date}
-                                                        {item.status ===
-                                                          "Complete" ? (
-                                                          <p className="ms-5">
-                                                            {item.status}
-                                                          </p>
-                                                        ) : (
-                                                          <p className="ms-4">
-                                                            <FormControl
-                                                              sx={{
-                                                                m: 1,
-                                                                minWidth: 120,
-                                                              }}
-                                                              size="small"
-                                                            >
-                                                              <Select
-                                                                value={
-                                                                  item.status ===
-                                                                    "pending"
-                                                                    ? "1"
-                                                                    : item.status ===
-                                                                      "Follow-Up"
-                                                                      ? "2"
-                                                                      : item.status ===
-                                                                        "Complete"
-                                                                        ? "3"
-                                                                        : item.status ===
-                                                                          "Cancelled"
-                                                                          ? "4"
-                                                                          : "1"
-                                                                }
-                                                                onChange={(e) =>
-                                                                  handleChangeDetails(
-                                                                    e,
-                                                                    item.appointmentId
-                                                                  )
-                                                                }
-                                                                displayEmpty
-                                                                inputProps={{
-                                                                  "aria-label":
-                                                                    "Without label",
-                                                                }}
-                                                              >
-                                                                <MenuItem value="1">
-                                                                  Schedule
-                                                                </MenuItem>
-                                                                <MenuItem value="2">
-                                                                  Follow-Up
-                                                                </MenuItem>
-                                                                <MenuItem value="3">
-                                                                  Complete
-                                                                </MenuItem>
-                                                                <MenuItem value="4">
-                                                                  Cancelled
-                                                                </MenuItem>
-                                                              </Select>
-                                                            </FormControl>
-                                                          </p>
-                                                        )}
-                                                      </div>
-                                                    </div>
-                                                  </>
-                                                );
-                                              }
-                                            )}
-
-                                            Paid Extra Services -<br />
-                                            {info?.services?.map((item) => {
-                                              if (!item.price) return null;
-
-                                              return (
-                                                <div
-                                                  className="timeline-content"
-                                                  key={
-                                                    item._id ||
-                                                    item.service_type
-                                                  }
-                                                >
-                                                  <a className="name">
-
-                                                    {item.serviceName}
-                                                  </a>
-
-                                                  {item.serviceType && (
-                                                    <div className="d-flex">
-                                                      Type - {item.serviceType}
-                                                    </div>
-                                                  )}
-
-                                                  <div className="d-flex">
-                                                    Price - {item.price}
-                                                  </div>
-                                                </div>
-                                              );
-                                            })}
-
-                                            <div className="timeline-content mt-3">
-                                              <a className="name">
-                                                Free Services -<br />
-                                                {info?.services?.map((item) => {
-                                                  if (
-                                                    item.service_type === "Free"
-                                                  ) {
-                                                    return (
-                                                      <div
-                                                        className="timeline-content"
-                                                        key={
-                                                          item._id ||
-                                                          item.serviceName
-                                                        }
-                                                      >
-                                                        <a className="name">
-                                                          {item.serviceName}
-                                                        </a>
-                                                      </div>
-                                                    );
-                                                  }
-                                                  return null;
-                                                })}
-                                              </a>
-                                            </div>
-                                            <div>
-                                              Total Charge-
-                                              {info.treatment_total_charge}
-                                            </div>
-                                            <span className="time d-flex">
-                                              treatment due payment-
-                                              {info.treatment_due_payment}
-                                            </span>
-                                          </div>
-                                        </li>
-                                      </ul>
-
-                                    </div>
-                                  </li>
-                                </ul>
-                              </div> */}
                             </div>
                           );
                         })}
@@ -1800,55 +1508,105 @@ function PatientDetail() {
                     {kys?.length === 0
                       ? "No passport details found"
                       : kys?.map((info, index) => (
-                        <div key={index} className="card-box">
-                          <div className="pass-detail">
-                            <div className="img-patient">
-                              <h6>Patient Image</h6>
-                              <img
-                                src={`${image}${info.photo}`}
-                                alt="no image"
-                                className="rounded-circle shadow"
-                                width="100"
-                                height="100"
-                              />
-                            </div>
-                            <div className="id-proof">
-                              <h6>Id Proof</h6>
-                              {info.id_proof ? (
-                                <a
-                                  href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn btn-outline-primary btn-sm"
-                                >
-                                  View PDF
-                                </a>
-                              ) : (
-                                <span className="text-muted">
-                                  Not Uploaded
-                                </span>
-                              )}
-                              <div className="">
-                                <h6>Passport</h6>
-                                {info.passport ? (
-                                  <a
-                                    href={`https://sisccltd.com/omca_crm/${info.passport}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="view-pass"
-                                  >
-                                    View Passport
-                                  </a>
-                                ) : (
-                                  <span className="text-muted">
-                                    Not Uploaded
-                                  </span>
-                                )}
+                          <>
+                            <div key={index} className="card-box">
+                              <div className="pass-detail">
+                                <div className="img-patient">
+                                  <h6>Patient Image</h6>
+                                  <img
+                                    src={`${image}${info.photo}`}
+                                    alt="no image"
+                                    className="rounded-circle shadow"
+                                    width="100"
+                                    height="100"
+                                  />
+                                </div>
+                                <div className="id-proof">
+                                  <h6>Id Proof</h6>
+                                  {info.id_proof ? (
+                                    <a
+                                      href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="btn btn-outline-primary btn-sm"
+                                    >
+                                      View PDF
+                                    </a>
+                                  ) : (
+                                    <span className="text-muted">
+                                      Not Uploaded
+                                    </span>
+                                  )}
+                                  <div className="">
+                                    <h6>Passport</h6>
+                                    {info.passport ? (
+                                      <a
+                                        href={`https://sisccltd.com/omca_crm/${info.passport}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="view-pass"
+                                      >
+                                        View Passport
+                                      </a>
+                                    ) : (
+                                      <span className="text-muted">
+                                        Not Uploaded
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      ))}
+                            <div key={index} className="card-box">
+                              <div className="pass-detail">
+                                <div className="img-patient">
+                                  <h6>Attende Image</h6>
+                                  <img
+                                    src={`${image}${info.Attende_photo}`}
+                                    alt="no image"
+                                    className="rounded-circle shadow"
+                                    width="100"
+                                    height="100"
+                                  />
+                                </div>
+                                <div className="id-proof">
+                                  <h6>Attende id Proof </h6>
+                                  {info.Attende_id_proof ? (
+                                    <a
+                                      href={`https://sisccltd.com/omca_crm/${info.Attende_id_proof}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="btn btn-outline-primary btn-sm"
+                                    >
+                                      View PDF
+                                    </a>
+                                  ) : (
+                                    <span className="text-muted">
+                                      Not Uploaded
+                                    </span>
+                                  )}
+                                  <div className="">
+                                    <h6>Attende Passport</h6>
+                                    {info.Attende_passport ? (
+                                      <a
+                                        href={`https://sisccltd.com/omca_crm/${info.Attende_passport}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="view-pass"
+                                      >
+                                        View Passport
+                                      </a>
+                                    ) : (
+                                      <span className="text-muted">
+                                        Not Uploaded
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        ))}
                   </div>
                 </div>
               </div>
@@ -1932,109 +1690,10 @@ function PatientDetail() {
                 </div>
                 <div className="row">
                   <div className="col-md-12">
-                    {/* {payment_details?.length === 0 ? (
+                                       {payment_details?.length === 0 ? (
                       "No payment details for patients"
                     ) : (
                       <>
-                        {" "}
-                        {payment_details?.map((info, index) => {
-                          console.log(info)
-                          return(
-                            <>
- <div className="card-box">
-                            <div className=" ">
-                            
-                              <button
-                                className="btn btn btn-primary btn-rounded float-right"
-                                onClick={(e) =>
-                                  handleClickOpen3(e, info.treatment_id)
-                                }
-                              >
-                                <i className="fa fa-plus"></i> Add Amount
-                              </button>
-                            </div>
-                            <h3 className="card-title">
-                              Payment Date-
-                              {moment(info.payment_Date).format("L")}
-                            </h3>
-                            <p>Treatment ID-{info.treatment_id}</p>
-                            <div className="experience-box">
-                              <ul className="experience-list">
-                                <li>
-                                  <div className="experience-user">
-                                    <div className="before-circle"></div>
-                                  </div>
-                                  <div className="experience-content">
-                                    <div className="timeline-content">
-                                      <a href=" " className="name">
-                                        Payment Method-{info.paymentMethod}
-                                      </a>
-                                      <div>Paid amount-{info.paid_amount}</div>
-
-
-                                      {/* {info.status} */}
-                    {/* <span className="time">payment_Date-{info.payment_Date}</span> */}
-                    {/* </div>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                            </>
-                          )
-                        }
-                        )}
-                      </>
-                    )} */}
-
-                    {payment_details?.length === 0 ? (
-                      "No payment details for patients"
-                    ) : (
-                      <>
-                        {/* {payment_details?.map((info, index) => {
-                          console.log(info);
-                          return (
-                            <div className="card-box" key={index}>
-                              <div className=" ">
-                                {/* Show button only for first item */}
-                        {/* {index === 0 && (
-                                  <button
-                                    className="btn btn btn-primary btn-rounded float-right"
-                                    onClick={(e) =>
-                                      handleClickOpen3(e, info.treatment_id)
-                                    }
-                                  >
-                                    <i className="fa fa-plus"></i> Add Amount
-                                  </button>
-                                )}
-                              </div>
-                              <h3 className="card-title">
-                                Payment Date -{" "}
-                                {moment(info.payment_Date).format("L")}
-                              </h3>
-                              <p>Treatment ID - {info.treatment_id}</p>
-                              <div className="experience-box">
-                                <ul className="experience-list">
-                                  <li>
-                                    <div className="experience-user">
-                                      <div className="before-circle"></div>
-                                    </div>
-                                    <div className="experience-content">
-                                      <div className="timeline-content">
-                                        <a href=" " className="name">
-                                          Payment Method - {info.paymentMethod}
-                                        </a>
-                                        <div>
-                                          Paid amount - {info.paid_amount}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          );
-                        })} */}
                         {groupedPayments &&
                           Object.entries(groupedPayments).map(
                             ([treatmentId, payments], index) => (
@@ -2195,7 +1854,6 @@ function PatientDetail() {
           </div>
         </div>
       </div>
-      {/* add-service-modal-start */}
       <React.Fragment>
         <Dialog fullWidth maxWidth="sm" open={openModal} onClose={closeModal}>
           <div className="main-card-header">
@@ -2324,7 +1982,6 @@ function PatientDetail() {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-      {/* add-service-modal-end */}
       {/* add-hospital-modal-start */}
       <React.Fragment>
         <Dialog
@@ -2491,8 +2148,10 @@ function PatientDetail() {
                               type="radio"
                               name="status"
                               value="online"
-                              checked={statuddropdown === 'online'}
-                              onChange={(e) => setStatuddropdown(e.target.value)}
+                              checked={statuddropdown === "online"}
+                              onChange={(e) =>
+                                setStatuddropdown(e.target.value)
+                              }
                             />
                             Online
                           </label>
@@ -2503,15 +2162,19 @@ function PatientDetail() {
                               type="radio"
                               name="status"
                               value="offline"
-                              checked={statuddropdown === 'offline'}
-                              onChange={(e) => setStatuddropdown(e.target.value)}
+                              checked={statuddropdown === "offline"}
+                              onChange={(e) =>
+                                setStatuddropdown(e.target.value)
+                              }
                             />
                             Offline
                           </label>
                         </div>
                       </div>
                     </div>
-                    <label> Hospital<span className="text-danger">*</span>
+                    <label>
+                      {" "}
+                      Hospital<span className="text-danger">*</span>
                     </label>
                     <Autocomplete
                       disablePortal
@@ -2576,112 +2239,115 @@ function PatientDetail() {
                       {appointErr && !note ? "*Please Enter Your date" : ""}
                     </span>
                   </div>
-                  {
-                    statuddropdown === 'offline' ?
-                      <>
-
-                        <div className="field-set">
-                          <label>
-                            Pickup Time<span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="time"
-                            id="birthday"
-                            name="pickup_time"
-                            placeholder="pickup_time"
-                            className="form-control"
-                            onChange={(e) => setPickuptime(e.target.value)}
-                            value={pickuptime}
+                  {statuddropdown === "offline" ? (
+                    <>
+                      <div className="field-set">
+                        <label>
+                          Pickup Time<span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="time"
+                          id="birthday"
+                          name="pickup_time"
+                          placeholder="pickup_time"
+                          className="form-control"
+                          onChange={(e) => setPickuptime(e.target.value)}
+                          value={pickuptime}
                           // min={new Date().toISOString().split("T")[0]}
-                          />
-                          <span style={{ color: "red" }}>
-                            {appointErr && !pickuptime
-                              ? "*Please Select Pickup Time"
-                              : ""}
-                          </span>
-                          {/* <span style={{ color: "red" }}>
+                        />
+                        <span style={{ color: "red" }}>
+                          {appointErr && !pickuptime
+                            ? "*Please Select Pickup Time"
+                            : ""}
+                        </span>
+                        {/* <span style={{ color: "red" }}>
                       {appointErr && !note ? "*Please Enter Your date" : ""}
                     </span> */}
-                        </div>
+                      </div>
 
-                        <div className="field-set">
-                          <label>
-                            Driver Name<span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="birthday"
-                            name="driver_name"
-                            placeholder="Driver Name"
-                            className="form-control"
-                            onChange={(e) => setDrivername(e.target.value)}
-                            value={drivername}
-                          />
-                          <span style={{ color: "red" }}>
-                            {appointErr && !drivername
-                              ? "*Please Enter the Driver Name"
-                              : ""}
-                          </span>
-                        </div>
-                        <div className="field-set">
-                          <label>
-                            Driver Contact<span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="number"
-                            id="birthday"
-                            name="driver_contact"
-                            placeholder="Driver Contact"
-                            className="form-control"
-                            onChange={(e) => setDrivercontact(e.target.value)}
-                            value={drivercontact}
-                          />
-                          <span style={{ color: "red" }}>
-                            {appointErr && !drivercontact
-                              ? "*Please Enter the Driver Name"
-                              : ""}
-                          </span>
-                        </div>
-                        <div className="field-set">
-                          <label>
-                            Vehicle Number<span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="type"
-                            id="birthday"
-                            name="vehicle_no"
-                            placeholder="Vehicle Number"
-                            className="form-control"
-                            onChange={(e) => setVehicalnumber(e.target.value)}
-                            value={vehicalnumber}
-                          />
-                          <span style={{ color: "red" }}>
-                            {appointErr && !vehicalnumber
-                              ? "*Please Enter the Driver Name"
-                              : ""}
-                          </span>
-                        </div>
-                      </> : ""
-                  }
+                      <div className="field-set">
+                        <label>
+                          Driver Name<span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="birthday"
+                          name="driver_name"
+                          placeholder="Driver Name"
+                          className="form-control"
+                          onChange={(e) => setDrivername(e.target.value)}
+                          value={drivername}
+                        />
+                        <span style={{ color: "red" }}>
+                          {appointErr && !drivername
+                            ? "*Please Enter the Driver Name"
+                            : ""}
+                        </span>
+                      </div>
+                      <div className="field-set">
+                        <label>
+                          Driver Contact<span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="birthday"
+                          name="driver_contact"
+                          placeholder="Driver Contact"
+                          className="form-control"
+                          onChange={(e) => setDrivercontact(e.target.value)}
+                          value={drivercontact}
+                        />
+                        <span style={{ color: "red" }}>
+                          {appointErr && !drivercontact
+                            ? "*Please Enter the Driver Name"
+                            : ""}
+                        </span>
+                      </div>
+                      <div className="field-set">
+                        <label>
+                          Vehicle Number<span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="type"
+                          id="birthday"
+                          name="vehicle_no"
+                          placeholder="Vehicle Number"
+                          className="form-control"
+                          onChange={(e) => setVehicalnumber(e.target.value)}
+                          value={vehicalnumber}
+                        />
+                        <span style={{ color: "red" }}>
+                          {appointErr && !vehicalnumber
+                            ? "*Please Enter the Driver Name"
+                            : ""}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )}
 
-                  {statuddropdown === 'offline' ? <DialogActions className="submit-main">
-                    <Button
-                      type="submit"
-                      onClick={(e) => handlesubmitAppoint(e)}
-                      variant="contained"
-                    >
-                      Submit
-                    </Button>
-                  </DialogActions> : <DialogActions className="submit-main">
-                    <Button
-                      type="submit"
-                      onClick={(e) => handlesubmitAppoint111(e)}
-                      variant="contained"
-                    >
-                      Submit
-                    </Button>
-                  </DialogActions>
-                  }
+                  {statuddropdown === "offline" ? (
+                    <DialogActions className="submit-main">
+                      <Button
+                        type="submit"
+                        onClick={(e) => handlesubmitAppoint(e)}
+                        variant="contained"
+                      >
+                        Submit
+                      </Button>
+                    </DialogActions>
+                  ) : (
+                    <DialogActions className="submit-main">
+                      <Button
+                        type="submit"
+                        onClick={(e) => handlesubmitAppoint111(e)}
+                        variant="contained"
+                      >
+                        Submit
+                      </Button>
+                    </DialogActions>
+                  )}
                 </form>
               </Box>
             </Box>
@@ -2752,6 +2418,43 @@ function PatientDetail() {
                         accept="image/*"
                         className="form-control"
                         onChange={(e) => onChangeFile(e, "photo")}
+                      />
+                    </div>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Attende ID Proof<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+                      <input
+                        type="file"
+                        className="form-control"
+                        onChange={(e) => onChangeFile(e, "Attende_id_proof")}
+                      />
+                    </div>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Attende Passport<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+                      <input
+                        type="file"
+                        className="form-control"
+                        onChange={(e) => onChangeFile(e, "Attende_passport")}
+                      />
+                    </div>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Attende Photo<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="form-control"
+                        onChange={(e) => onChangeFile(e, "Attende_photo")}
                       />
                     </div>
                   </div>
@@ -3055,21 +2758,6 @@ function PatientDetail() {
                       />
                     </div>
                   </div>
-                  {/* <div className="field-set">
-                    <label>
-                      Date<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="date"
-                        value={nodaestInput.date}
-                        className="form-control"
-                        name="date"
-                        onChange={handlechangenotesdata}
-                      />
-                    </div>
-                  </div> */}
-
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"
