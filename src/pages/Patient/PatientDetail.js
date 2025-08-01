@@ -35,6 +35,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { CopyAll, PictureAsPdf } from "@mui/icons-material";
 
 function PatientDetail() {
   const navigate = useNavigate();
@@ -782,7 +783,6 @@ function PatientDetail() {
       })
       .then((response) => {
         setUndadedservice(response.data.availableServices, "treatment data");
-        // setData({ ...data, price: response.data.price });
       })
       .catch((error) => {
         console.error("Error fetching unadded services:", error);
@@ -1059,15 +1059,6 @@ function PatientDetail() {
                 </div>
                 <div className="row">
                   <div className="col-md-12">
-                    {/* {tretment.length === 0 ? (
-                      <button style={{ display: 'block' }} onClick={PatientDetailButton} className="btn btn btn-primary btn-rounded float-right mx-2">
-                        <i className="fa fa-plus"></i>Add Treatment
-                      </button>
-                    ) : (
-                      <button style={{ display: 'none' }} onClick={PatientDetailButton} className="btn btn btn-primary btn-rounded float-right mx-2">
-                        <i className="fa fa-plus"></i>Add Treatment
-                      </button>
-                    )} */}
                     {tretment?.length === 0 ? (
                       "No Treatment  Added for this patients"
                     ) : (
@@ -1079,10 +1070,7 @@ function PatientDetail() {
                               <div className="treat-card">
                                 <div className="treat-id">
                                   <div>
-                                    <h3>
-                                      Treatment ID-{info.treatment_id}{" "}
-                                      {/* <p className="mx-5">{info.treatment_status}</p>{" "} */}
-                                    </h3>
+                                    <h3>Treatment ID-{info.treatment_id} </h3>
                                   </div>
                                 </div>
                                 <div className="d-flex">
@@ -1687,10 +1675,11 @@ function PatientDetail() {
                   <div className="all-hd">
                     <h6>Payment Details</h6>
                   </div>
+                  <PictureAsPdf  style={{cursor:"pointer"}} onClick={()=>{navigate("/Admin/Patient-Pdfdetails",{state:{data:location.state.patientId}})}}/>
                 </div>
                 <div className="row">
                   <div className="col-md-12">
-                                       {payment_details?.length === 0 ? (
+                    {payment_details?.length === 0 ? (
                       "No payment details for patients"
                     ) : (
                       <>
@@ -2083,28 +2072,17 @@ function PatientDetail() {
                       type="submit"
                       onClick={(e) => handlesubmit(e)}
                       variant="contained"
-                      disabled={isSubmitting} // ✅ disables button while submitting
+                      disabled={isSubmitting} //✅ disables button while submitting
                     >
                       {isSubmitting ? "Submitting..." : "Submit"}
                     </Button>
                   </DialogActions>
-                  {/* <DialogActions className="submit-main">
-                    <Button
-                      type="submit"
-                      onClick={(e) => handlesubmit(e)}
-                      variant="contained"
-                    >
-                      Submit
-                    </Button>
-                  </DialogActions> */}
                 </form>
               </Box>
             </Box>
           </DialogContent>
         </Dialog>
       </React.Fragment>
-      {/* add-hospital-modal-end */}
-      {/* add-appointment-modal-start */}
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}
@@ -2180,7 +2158,7 @@ function PatientDetail() {
                       disablePortal
                       options={
                         ishospitalArray?.map((job) => job.hospital_Name) || []
-                      } // Fallback to empty array
+                      } 
                       onChange={(e, value) => {
                         const selectedCourse = ishospitalArray?.find(
                           (job) => job.hospital_Name === value
@@ -2201,7 +2179,6 @@ function PatientDetail() {
                       }}
                     />
                   </div>
-
                   <div className="field-set">
                     <label>
                       Notes<span className="text-danger">*</span>
@@ -2253,18 +2230,13 @@ function PatientDetail() {
                           className="form-control"
                           onChange={(e) => setPickuptime(e.target.value)}
                           value={pickuptime}
-                          // min={new Date().toISOString().split("T")[0]}
                         />
                         <span style={{ color: "red" }}>
                           {appointErr && !pickuptime
                             ? "*Please Select Pickup Time"
                             : ""}
                         </span>
-                        {/* <span style={{ color: "red" }}>
-                      {appointErr && !note ? "*Please Enter Your date" : ""}
-                    </span> */}
                       </div>
-
                       <div className="field-set">
                         <label>
                           Driver Name<span className="text-danger">*</span>
@@ -2326,7 +2298,6 @@ function PatientDetail() {
                   ) : (
                     ""
                   )}
-
                   {statuddropdown === "offline" ? (
                     <DialogActions className="submit-main">
                       <Button
@@ -2354,8 +2325,6 @@ function PatientDetail() {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-      {/* add-appointment-modal-end */}
-      {/* add-password-modal-start */}
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}

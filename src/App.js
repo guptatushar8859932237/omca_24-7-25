@@ -48,6 +48,7 @@ import EnquiryDetail from "./pages/Enquiry/EnquiryDetail";
 import Newpermission from "./pages/Permission/Newpermission";
 import EditService from "./pages/Services Section/EditService";
 import Totaluser from "./pages/Hospitals/Totaluser";
+import PAymentpdf from "./pages/Patient/PAymentpdf";
 function App() {
   //   const [count, setCount] = useState(0);
 
@@ -173,6 +174,11 @@ function App() {
                 index
                 path="/Admin/Patient-Detail"
                 element={<PatientDetail />}
+              />
+              <Route
+                index
+                path="/Admin/Patient-Pdfdetails"
+                element={<PAymentpdf />}
               />
               <Route index path="/Admin/add-Enquiry" element={<AddEnquiry />} />
               <Route
