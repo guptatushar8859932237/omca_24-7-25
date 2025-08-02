@@ -76,7 +76,7 @@ export default function AddEnquiry() {
                   patient_relation_name: "",
                   patient_relation: "",
                   town: "",
-                  relation_id: null,
+                  patient_relation_id: null,
                   patient_id_proof: null,
                 }}
                 validationSchema={basicSchema}
@@ -439,16 +439,16 @@ export default function AddEnquiry() {
                               <input
                                 className="form-control"
                                 type="file"
-                                name="relation_id"
+                                name="patient_relation_id"
                                 onChange={(e) =>
                                   setFieldValue(
-                                    "relation_id",
+                                    "patient_relation_id",
                                     e.currentTarget.files[0]
                                   )
                                 }
                               />
                               <ErrorMessage
-                                name="relation_id"
+                                name="patient_relation_id"
                                 component="div"
                                 className="text-danger"
                               />

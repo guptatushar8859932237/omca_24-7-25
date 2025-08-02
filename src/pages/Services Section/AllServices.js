@@ -216,10 +216,21 @@ export default function AllServices() {
               <div className="table-responsive">
                 <TableContainer component={Paper} style={{ overflowX: "auto" }}>
                   <div className="action-icon d-flex justify-content-end p-3">
-                    {showActions ===true?
-                    <VisibilityIcon
-                      onClick={handleclickpostdatadesltes}
-                    ></VisibilityIcon>:<DeleteIcon onClick={handleclickondata} ></DeleteIcon>}
+                   {
+  localStorage.getItem("Role") === "Admin" ? (
+    showActions === true ? (
+      <button className="add-button" onClick={handleclickpostdatadesltes}>
+        Deleted Data
+      </button>
+    ) : (
+      <button className="add-button" onClick={handleclickondata}>
+        Services
+      </button>
+    )
+  ) : null
+}
+
+                   
                   </div>
                   <Table
                     stickyHeader

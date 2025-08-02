@@ -1,19 +1,15 @@
 import { DownloadDoneSharp } from "@mui/icons-material";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { usePDF } from "react-to-pdf";
 import { baseurl } from "../../Basurl/Baseurl";
-
 export default function PAymentpdf() {
   const [payments, setPayments] = useState([]);
   const [objdata, setObjdata] = useState({});
   const location = useLocation();
   const targetRef = useRef();
   const { toPDF } = usePDF({ filename: "example.pdf" });
-
-  console.log(location.state);
-
   const getAccordion = async () => {
     try {
       const response = await axios.get(
@@ -113,7 +109,6 @@ export default function PAymentpdf() {
                     <table style={{ width: "100%", marginBottom: 30 }}>
                       <tbody>
                         <tr>
-                          {/* Left side: Invoice To */}
                           <td style={{ width: "50%", verticalAlign: "top" }}>
                             <p
                               style={{
@@ -127,7 +122,6 @@ export default function PAymentpdf() {
                               Invoice To: {objdata?.patient_name}
                             </p>
                           </td>
-                          {/* Right side: Billing Details aligned to right like logo */}
                           <td
                             style={{
                               width: "50%",
@@ -266,45 +260,6 @@ export default function PAymentpdf() {
                           >
                             DESCRIPTION
                           </th>
-                          {/* <th
-                    style={{
-                      backgroundColor: "#0ba6df21",
-                      fontSize: 14,
-                      padding: 10,
-                      fontWeight: 500,
-                      color: "#0ba6df",
-                      border: "1px solid #fff",
-                      textAlign: "end"
-                    }}
-                  >
-                    QTY
-                  </th>
-                  <th
-                    style={{
-                      backgroundColor: "#0ba6df21",
-                      fontSize: 14,
-                      padding: 10,
-                      fontWeight: 500,
-                      color: "#0ba6df",
-                      border: "1px solid #fff",
-                      textAlign: "end"
-                    }}
-                  >
-                    RATE
-                  </th>
-                  <th
-                    style={{
-                      backgroundColor: "#0ba6df21",
-                      fontSize: 14,
-                      padding: 10,
-                      fontWeight: 500,
-                      color: "#0ba6df",
-                      border: "1px solid #fff",
-                      textAlign: "end"
-                    }}
-                  >
-                    AMOUNT
-                  </th> */}
                         </tr>
                       </thead>
                       <tbody>
@@ -344,36 +299,6 @@ export default function PAymentpdf() {
                                       item.payment_Date
                                     ).toLocaleDateString("en-GB")}
                                   </td>
-                                  {/* <td
-                    style={{
-                      textAlign: "end",
-                      backgroundColor: "#f2f2f2",
-                      padding: 10,
-                      border: "1px solid #fff"
-                    }}
-                  >
-                    fgs
-                  </td>
-                  <td
-                    style={{
-                      textAlign: "end",
-                      backgroundColor: "#f2f2f2",
-                      padding: 10,
-                      border: "1px solid #fff"
-                    }}
-                  >
-                    dgsfg
-                  </td>
-                  <td
-                    style={{
-                      textAlign: "end",
-                      backgroundColor: "#f2f2f2",
-                      padding: 10,
-                      border: "1px solid #fff"
-                    }}
-                  >
-                    fdsg
-                  </td> */}
                                 </tr>
                               </>
                             );

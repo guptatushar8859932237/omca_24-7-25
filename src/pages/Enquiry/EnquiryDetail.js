@@ -174,7 +174,7 @@ export default function EnquiryDetail() {
                       <label>Patient ID<span className="text-danger">*</span></label>
                       <div className="imgid-main">
                         <img
-                          src={`${image}${row.patient_relation_id}`}
+                          src={`${image}${row.patient_id_proof}`}
                           alt="No Document"
                         />
                       </div>
@@ -218,7 +218,7 @@ row.patient_relation ?
                       <label>Attendant Id<span className="text-danger">*</span></label>
                       <div className="imgid-main">
                         <img
-                          src={`${image}${row.patient_id_proof}`}
+                          src={`${image}${row.patient_relation_id}`}
                           alt="No Document" />
                       </div>
                     </div>
