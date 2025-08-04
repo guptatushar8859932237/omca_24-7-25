@@ -229,8 +229,6 @@ export default function AllServices() {
     )
   ) : null
 }
-
-                   
                   </div>
                   <Table
                     stickyHeader
