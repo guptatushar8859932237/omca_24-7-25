@@ -1,18 +1,15 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useState, useEffect } from "react";
 import { GetAllHositalData } from "../../reducer/HospitalSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { baseurl, image } from "../../Basurl/Baseurl";
-import BootstrapSwitchButton from "bootstrap-switch-button-react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { DeleteHospital } from "../../reducer/HospitalSlice";
@@ -21,36 +18,31 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Pagination, Stack } from "@mui/material";
-import { usePDF } from 'react-to-pdf';
+import { usePDF } from "react-to-pdf";
 import axios from "axios";
 export default function Hospitals() {
   const navigate = useNavigate();
   const { toPDF, targetRef } = usePDF({ filename: "hospitals.pdf" });
-
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [showActions, setShowActions] = useState(true);
   const [rows, setRows] = useState([]);
   const [pdfRowLimit, setPdfRowLimit] = useState(null); // ✅ NEW
-
   const dispatch = useDispatch();
   const [filterValue, setFilterValue] = useState("");
   const [searchApiData, setSearchApiData] = useState([]);
   const { hospital, loading, error } = useSelector((state) => state.hospital);
-
   useEffect(() => {
     dispatch(GetAllHositalData());
   }, [dispatch]);
-
   useEffect(() => {
     if (hospital) {
       setRows(hospital);
       setSearchApiData(hospital);
     }
   }, [hospital]);
-
   const handlePDFGenerateWithLimit = () => {
     const maxRows = rows.length || 1;
-
     Swal.fire({
       title: "Enter number of rows for PDF",
       input: "number",
@@ -74,9 +66,7 @@ export default function Hospitals() {
           );
           return;
         }
-
         setPdfRowLimit(userInput);
-
         setTimeout(() => {
           toPDF();
           setPdfRowLimit(null); // reset to normal view
@@ -84,16 +74,13 @@ export default function Hospitals() {
       }
     });
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const EditButton = (e, id) => {
     navigate("/Admin/edit-hospitals", {
       state: {
@@ -101,11 +88,8 @@ export default function Hospitals() {
       },
     });
   };
-
-
   const handledelet = (e, hospitalId) => {
     e.preventDefault();
-
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -113,11 +97,9 @@ export default function Hospitals() {
       },
       buttonsStyling: false,
     });
-
     swalWithBootstrapButtons
       .fire({
         title: "Are you sure?",
-        // text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, delete it!",
@@ -127,7 +109,7 @@ export default function Hospitals() {
       .then((result) => {
         if (result.isConfirmed) {
           dispatch(DeleteHospital({ id: hospitalId }))
-            .unwrap() // If using Redux Toolkit, unwrap to handle success/failure easily
+            .unwrap()
             .then(() => {
               return dispatch(GetAllHositalData());
             })
@@ -141,16 +123,13 @@ export default function Hospitals() {
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire({
             title: "Cancelled",
-            // text: "Hospital data is safe :)",
             icon: "error",
           });
         }
       });
   };
-
   const handleFilter = (event) => {
     const searchValue = event.target.value.toLowerCase();
-
     if (searchValue === "") {
       setRows(searchApiData);
     } else {
@@ -162,7 +141,6 @@ export default function Hospitals() {
         const hospitalCode = item.hospitalCode?.toLowerCase() || "";
         const country = item.country?.toLowerCase() || "";
         const contact = item.contact?.toString() || "";
-
         return (
           enquiryId.includes(searchValue) ||
           hospitalName.includes(searchValue) ||
@@ -177,27 +155,21 @@ export default function Hospitals() {
     }
     setFilterValue(event.target.value);
   };
-
   const handleClearFilter = () => {
     setFilterValue("");
     setRows(searchApiData);
   };
-
   const handleStatusToggle = async (hospitalId, newStatus) => {
     console.log(hospitalId, newStatus);
     try {
       const datapost = { status: newStatus === true ? 1 : 0 };
-
       const response = await axios.post(
         `${baseurl}/changeHospitalStatus/${hospitalId}`,
         datapost
       );
-
       if (response.status === 200) {
         Swal.fire("Status Updated!", "", "success");
         return dispatch(GetAllHositalData());
-        // Optionally refresh list or update UI
-        // await fetchHospitals();
       } else {
         Swal.fire("Error!", "Failed to update status", "error");
       }
@@ -210,7 +182,29 @@ export default function Hospitals() {
       );
     }
   };
-
+  const handleclickondata = () => {
+    setShowActions(true);
+    dispatch(GetAllHositalData());
+  };
+  const handleclickpostdatadesltes = async () => {
+    setShowActions(false);
+    try {
+      const response = await axios.get(`${baseurl}get_deleted_hospitals`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response) {
+        console.log(response.data.data);
+        setRows(response.data.data);
+      } else {
+        console.log("something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -222,35 +216,41 @@ export default function Hospitals() {
                 <h4 className="page-title mb-0">Manage Hospitals</h4>
                 <div className="search-btn-main">
                   <div className="">
-                  <TextField
-                    className="field-count"
-                    sx={{ width: "100%" }}
-                    label="Search By Hospitals Name"
-                    id="outlined-size-small"
-                    size="small"
-                    value={filterValue}
-                    onChange={handleFilter}
-                    InputLabelProps={{ shrink: true }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          {filterValue && (
-                            <IconButton onClick={handleClearFilter} edge="end">
-                              <ClearIcon />
-                            </IconButton>
-                          )}
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+                    <TextField
+                      className="field-count"
+                      sx={{ width: "100%" }}
+                      label="Search By Hospitals Name"
+                      id="outlined-size-small"
+                      size="small"
+                      value={filterValue}
+                      onChange={handleFilter}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {filterValue && (
+                              <IconButton
+                                onClick={handleClearFilter}
+                                edge="end"
+                              >
+                                <ClearIcon />
+                              </IconButton>
+                            )}
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
                   </div>
                   <div className="">
                     <Link to="/Admin/add-hospitals" className="add-button">
-                    <i className="fa fa-plus"></i> New Hospital
-                  </Link>
-                  <Link onClick={handlePDFGenerateWithLimit} className="add-button ms-2">
-                    <i className="fa fa-file-pdf-o"></i> Pdf
-                  </Link>
+                      <i className="fa fa-plus"></i> New Hospital
+                    </Link>
+                    <Link
+                      onClick={handlePDFGenerateWithLimit}
+                      className="add-button ms-2"
+                    >
+                      <i className="fa fa-file-pdf-o"></i> Pdf
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -260,9 +260,28 @@ export default function Hospitals() {
           {/* TABLE */}
           <div className="main_content">
             <div className="row">
+              <div className="mb-3 d-flex justify-content-end">
+                {localStorage.getItem("Role") === "Admin" ? (
+                  showActions === true ? (
+                    <button
+                      className="add-button"
+                      onClick={handleclickpostdatadesltes}
+                    >
+                      Deleted Data
+                    </button>
+                  ) : (
+                    <button className="add-button" onClick={handleclickondata}>
+                      Deleted Hospital
+                    </button>
+                  )
+                ) : null}
+              </div>
               <div className="col-md-12">
                 <div className="table-responsive">
-                  <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+                  <TableContainer
+                    component={Paper}
+                    style={{ overflowX: "auto" }}
+                  >
                     <Table
                       stickyHeader
                       aria-label="hospital table"
@@ -278,17 +297,23 @@ export default function Hospitals() {
                           <TableCell>Hospital Code</TableCell>
                           <TableCell>Contact</TableCell>
                           <TableCell>Num. of Patient</TableCell>
-                          <TableCell>Status</TableCell>
-                          <TableCell>Action</TableCell>
+                          {showActions === true ? (
+                            <>
+                              <TableCell>Status</TableCell>
+                              <TableCell>Action</TableCell>
+                            </>
+                          ) : (
+                            ""
+                          )}
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          )
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage
+                            )
                         ).map((info, i) => (
                           <TableRow key={info.hospitalId}>
                             <TableCell>
@@ -316,36 +341,49 @@ export default function Hospitals() {
                             >
                               {info.patientCount}
                             </TableCell>
-                            <TableCell>
-                              <label className="active-switch">
-                                <input
-                                  type="checkbox"
-                                  className="active-switch-input"
-                                  checked={info.status === 1}
-                                  onChange={(e) =>
-                                    handleStatusToggle(info.hospitalId, e.target.checked)
-                                  }
-                                />
-                                <span
-                                  className="active-switch-label"
-                                  data-on="Active"
-                                  data-off="Inactive"
-                                ></span>
-                                <span className="active-switch-handle"></span>
-                              </label>
-                            </TableCell>
-                            <TableCell className="action-icon">
-                              <i
-                                className="fa-solid fa-pen-to-square"
-                                onClick={(e) => EditButton(e, info.hospitalId)}
-                              />
-                              {localStorage.getItem("Role") === "Admin" && (
-                                <i
-                                  className="fa-solid fa-trash"
-                                  onClick={(e) => handledelet(e, info.hospitalId)}
-                                />
-                              )}
-                            </TableCell>
+                            {showActions === true ? (
+                              <>
+                                <TableCell>
+                                  <label className="active-switch">
+                                    <input
+                                      type="checkbox"
+                                      className="active-switch-input"
+                                      checked={info.status === 1}
+                                      onChange={(e) =>
+                                        handleStatusToggle(
+                                          info.hospitalId,
+                                          e.target.checked
+                                        )
+                                      }
+                                    />
+                                    <span
+                                      className="active-switch-label"
+                                      data-on="Active"
+                                      data-off="Inactive"
+                                    ></span>
+                                    <span className="active-switch-handle"></span>
+                                  </label>
+                                </TableCell>
+                                <TableCell className="action-icon">
+                                  <i
+                                    className="fa-solid fa-pen-to-square"
+                                    onClick={(e) =>
+                                      EditButton(e, info.hospitalId)
+                                    }
+                                  />
+                                  {localStorage.getItem("Role") === "Admin" && (
+                                    <i
+                                      className="fa-solid fa-trash"
+                                      onClick={(e) =>
+                                        handledelet(e, info.hospitalId)
+                                      }
+                                    />
+                                  )}
+                                </TableCell>
+                              </>
+                            ) : (
+                              ""
+                            )}
                           </TableRow>
                         ))}
                         {rows.length === 0 && (

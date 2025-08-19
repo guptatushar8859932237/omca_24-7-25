@@ -5,9 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
-
+import {
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Checkbox,
+  ListItemText
+} from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 export default function AddStaff() {
+    const statusOptions = ["Foundation","Private","Travelled","Confirmed","Pending","On Hold","Cancel", "Passed Away", "Local Case", "Follow Up"];
   const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(null);
   const { staff, loading, error } = useSelector((state) => state.staff);
@@ -32,37 +40,21 @@ export default function AddStaff() {
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"], "Invalid gender selection") // Predefined valid values
       .required("Gender is required"), // Make it mandatory
+          roleStatuses: Yup.array()
+      .min(1, "Please select at least one status")
+      .required("Status is required"),
     profileImage: Yup.mixed()
       .required("Profile Image is required")
       .test("fileSize", "File size is too large (Max: 2MB)", (value) =>
         value ? value.size <= 2 * 1024 * 1024 : true
       )
+      
       .test("fileType", "Unsupported file format", (value) =>
         value
           ? ["image/jpeg", "image/png", "application/pdf"].includes(value.type)
           : true
       ),
   });
-  // const handelSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     // Use unwrap to handle success or error directly
-  //     const result = await dispatch(AddAllStaffuser(formData)).unwrap();
-  //     Swal.fire({
-  //       title: "Staff added successfully!",
-  //       text: "You clicked the button!",
-  //       icon: "success",
-  //     });
-  //     navigate("/Admin/Staff");
-  //   } catch (err) {
-  //     Swal.fire({
-  //       title: "Error!",
-  //       text: err?.message || "An error occurred",
-  //       icon: "error",
-  //     });
-  //   }
-  // };
-
   return (
     <>
       <div className="page-wrapper">
@@ -95,9 +87,12 @@ export default function AddStaff() {
                 phone_no: "",
                 name: "",
                 profileImage: null,
+                  roleStatuses: []
               }}
               validationSchema={basicSchema}
-              onSubmit={async (values, { setSubmitting }) => {
+               onSubmit={async (values, { setSubmitting }) => {
+
+                console.log(values)
                 try {
                   const result = await dispatch(
                     AddAllStaffuser(values)
@@ -115,7 +110,7 @@ export default function AddStaff() {
                 setSubmitting(false);
               }}
             >
-              {({ isSubmitting, setFieldValue }) => (
+              {({ isSubmitting, setFieldValue, values }) => (
                 <Form>
                   <div className="row">
                     <div className="col-sm-6">
@@ -197,7 +192,6 @@ export default function AddStaff() {
                           <option value="Receptionist">Receptionist</option>
                           <option value="Finance">Finance</option>
                           <option value="Coordinator">Coordinator</option>
-
                         </Field>
                         <ErrorMessage
                           name="role"
@@ -268,10 +262,6 @@ export default function AddStaff() {
                               <img
                                 alt="default avatar"
                                 src="https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg"
-                                // style={{ width: "100px", height: "100px", objectFit: "cover" }}
-                                // onError={(e) => {
-                                //   e.target.src = "add-staffhttps://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1742210714~exp=1742214314~hmac=066462b7fb477ed29b4b2cc29bc6344db58dafc79f8ade48041d2670b04a90d3&w=740";
-                                // }}
                               />
                             )}
                           </div>
@@ -296,6 +286,40 @@ export default function AddStaff() {
                         />
                       </div>
                     </div>
+                     <div className="col-sm-6">
+                        <label>
+                          Give Permission<span className="text-danger">*</span>
+                        </label>
+                    <div className="field-set">
+                      <FormControl fullWidth>
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                          multiple
+                          value={values.roleStatuses}
+                          name="roleStatuses"
+                          onChange={(event) =>
+                            setFieldValue("roleStatuses", event.target.value)
+                          }
+                          className="form-control"
+                          renderValue={(selected) => selected.join(", ")}
+                        >
+                          {statusOptions.map((roleStatuses) => (
+                            <MenuItem key={roleStatuses} value={roleStatuses}>
+                              <Checkbox
+                                checked={values.roleStatuses.indexOf(roleStatuses) > -1}
+                              />
+                              <ListItemText primary={roleStatuses} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <ErrorMessage
+                        name="roleStatuses"
+                        component="div"
+                        style={{ color: "red" }}
+                      />
+                    </div>
+                  </div>
                   </div>
                   <div className="">
                     <button

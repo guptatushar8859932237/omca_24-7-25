@@ -122,38 +122,51 @@ export default function Inquiry() {
     }
   };
   const handleSampleFile = async () => {
-    try {
-      const response = await axios.get(
-        `${baseurl}export_enquiries`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+  try {
+    const response = await axios.get(
+      `${baseurl}export_enquiries`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        {
-          responseType: "blob",
-        }
-      );
-      console.log(response.data);
-      // Create a downloadable link
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "Sample_Enquiry.xlsx"); // File name
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        responseType: "blob", // keep inside same object
+      }
+    );
 
-      return response.data; // Success response
-    } catch (err) {
-      console.error(
-        "Error downloading the sample file:",
-        err.response?.data?.message || err.message
-      );
-      // Handle error properly or throw
-      throw err;
-    }
-  };
+    // Create a downloadable link
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "Sample Enquiry.xlsx");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Show popup after download
+    Swal.fire({
+      icon: "success",
+      title: "Download Complete",
+      text: "Sample_Enquiry.xlsx has been downloaded successfully!",
+      timer: 3000,
+      showConfirmButton: false
+    });
+
+    return response.data; 
+  } catch (err) {
+    console.error(
+      "Error downloading the sample file:",
+      err.response?.data?.message || err.message
+    );
+
+    Swal.fire({
+      icon: "error",
+      title: "Download Failed",
+      text: err.response?.data?.message || "Something went wrong!",
+    });
+
+    throw err;
+  }
+};
   // console.log(selectedImage)
   const handleImportFile = async (e) => {
     e.preventDefault();

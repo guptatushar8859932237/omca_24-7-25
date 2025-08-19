@@ -150,32 +150,48 @@ export default function Appointments() {
     setFilterValue("");
     setAppointments(searchApiData);
   };
-  const handleSampleFile =async () => {
-        try {
-      const response = await axios.get(`${baseurl}export_appointments`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }, {
-        responseType: "blob", 
-      });
-      console.log(response.data)
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "Sample_Enquiry.xlsx"); // File name
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      return response.data;
-    } catch (err) {
-      console.error(
-        "Error downloading the sample file:",
-        err.response?.data?.message || err.message
-      );
-      throw err;
+  // const handleSampleFile =async () => {
+  //       try {
+  //     const response = await axios.get(`${baseurl}export_appointments`, {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }, {
+  //       responseType: "blob", 
+  //     });
+  //     console.log(response.data)
+  //     const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.setAttribute("download", "Sample_Enquiry.xlsx"); // File name
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error(
+  //       "Error downloading the sample file:",
+  //       err.response?.data?.message || err.message
+  //     );
+  //     throw err;
+  //   }
+  //   };
+const handleSampleFile = () => {
+  fetch(`${baseurl}export_appointments`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     }
-    };
+  })
+    .then(res => res.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = ""; // Let browser use filename from API
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+};
 
 
 const downloadPdf  = async () => {

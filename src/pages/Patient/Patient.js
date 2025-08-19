@@ -32,6 +32,7 @@ import { toast } from "react-toastify";
 import { usePDF } from "react-to-pdf";
 export default function Patient() {
   const navigate = useNavigate();
+  const [showActions, setShowActions] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
@@ -245,7 +246,7 @@ export default function Patient() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "Sample_Enquiry.xlsx");
+      link.setAttribute("download", "Sample_Patient.xlsx");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -368,6 +369,29 @@ export default function Patient() {
       }
     }
   };
+  const handleclickondata = () => {
+    setShowActions(true);
+    dispatch(GetAllPatients());
+  };
+  const handleclickpostdatadesltes = async () => {
+    setShowActions(false);
+    try {
+      const response = await axios.get(`${baseurl}getAllDeletedPatients`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response) {
+        console.log(response.data);
+        setRows(response.data.data);
+      } else {
+        console.log("something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -428,8 +452,24 @@ export default function Patient() {
           </div>
           <div className="main_content">
             <div className="row">
+              <div className="action-icon d-flex justify-content-end p-3">
+                {localStorage.getItem("Role") === "Admin" ? (
+                  showActions === true ? (
+                    <button
+                      className="add-button"
+                      onClick={handleclickpostdatadesltes}
+                    >
+                      Deleted Data
+                    </button>
+                  ) : (
+                    <button className="add-button" onClick={handleclickondata}>
+                      Patient
+                    </button>
+                  )
+                ) : null}
+              </div>
               <div className="col-md-12">
-                <div className="table-responsive" ref={targetRef}> 
+                <div className="table-responsive" ref={targetRef}>
                   <TableContainer
                     component={Paper}
                     style={{ overflowX: "auto" }}
@@ -449,8 +489,14 @@ export default function Patient() {
                           <TableCell>Email</TableCell>
                           <TableCell>Country</TableCell>
                           <TableCell>Patient Disease</TableCell>
-                          <TableCell>Status</TableCell>
-                          <TableCell>Action</TableCell>
+                          {showActions === true ? (
+                            <>
+                              <TableCell>Status</TableCell>
+                              <TableCell>Action</TableCell>
+                            </>
+                          ) : (
+                            ""
+                          )}
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -502,86 +548,95 @@ export default function Patient() {
                                       .map((item) => item.disease_name)
                                       .join(", ")}
                                   </TableCell>
-                                  <TableCell>
-                                    <FormControl
-                                      sx={{ m: 1, minWidth: 120 }}
-                                      size="small"
-                                      className="cont-main"
-                                    >
-                                      <Select
-                                        value={info.p_staus}
-                                        onChange={(e) =>
-                                          handleChangefffff(e, info.patientId)
-                                        }
-                                        displayEmpty
-                                        inputProps={{
-                                          "aria-label": "Without label",
-                                        }}
-                                        className="status-direct"
-                                      >
-                                        <MenuItem value="Foundation">
-                                          Foundation
-                                        </MenuItem>
-                                        <MenuItem value="Private">
-                                          Private
-                                        </MenuItem>
-                                        <MenuItem value="Travelled">
-                                          {" "}
-                                          Travelled
-                                        </MenuItem>
-                                        <MenuItem value="Confirmed">
-                                          Confirmed
-                                        </MenuItem>
-                                        <MenuItem value="Pending">
-                                          Pending
-                                        </MenuItem>
-                                        <MenuItem value="On Hold">
-                                          On Hold
-                                        </MenuItem>
-                                        <MenuItem value="Cancel">
-                                          Cancel
-                                        </MenuItem>
-                                        <MenuItem value="Local Case">
-                                          Local Case
-                                        </MenuItem>
-                                        <MenuItem value="Follow Up">
-                                          Follow Up
-                                        </MenuItem>
-                                        <MenuItem value="Passed Away">
-                                          Passed Away
-                                        </MenuItem>
-                                      </Select>
-                                    </FormControl>
-                                  </TableCell>
-                                  <TableCell className="action-icon">
-                                    <VisibilityIcon
-                                      className="eye-icon"
-                                      onClick={(e) =>
-                                        PatientDetail(
-                                          e,
-                                          info.patientId,
-                                          info.enquiryId
-                                        )
-                                      }
-                                    />
-                                    <i
-                                      className="fa-solid fa-pen-to-square"
-                                      onClick={(e) =>
-                                        EditButton(e, info.patientId)
-                                      }
-                                    ></i>
-                                    {localStorage.getItem("Role") ===
-                                    "Admin" ? (
-                                      <i
-                                        className="fa-solid fa-trash"
-                                        onClick={(e) => {
-                                          handledelet(e, info.patientId);
-                                        }}
-                                      ></i>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </TableCell>
+                                  {showActions === true ? (
+                                    <>
+                                      <TableCell>
+                                        <FormControl
+                                          sx={{ m: 1, minWidth: 120 }}
+                                          size="small"
+                                          className="cont-main"
+                                        >
+                                          <Select
+                                            value={info.p_status}
+                                            onChange={(e) =>
+                                              handleChangefffff(
+                                                e,
+                                                info.patientId
+                                              )
+                                            }
+                                            displayEmpty
+                                            inputProps={{
+                                              "aria-label": "Without label",
+                                            }}
+                                            className="status-direct"
+                                          >
+                                            <MenuItem value="Foundation">
+                                              Foundation
+                                            </MenuItem>
+                                            <MenuItem value="Private">
+                                              Private
+                                            </MenuItem>
+                                            <MenuItem value="Travelled">
+                                              {" "}
+                                              Travelled
+                                            </MenuItem>
+                                            <MenuItem value="Confirmed">
+                                              Confirmed
+                                            </MenuItem>
+                                            <MenuItem value="Pending">
+                                              Pending
+                                            </MenuItem>
+                                            <MenuItem value="On Hold">
+                                              On Hold
+                                            </MenuItem>
+                                            <MenuItem value="Cancel">
+                                              Cancel
+                                            </MenuItem>
+                                            <MenuItem value="Local Case">
+                                              Local Case
+                                            </MenuItem>
+                                            <MenuItem value="Follow Up">
+                                              Follow Up
+                                            </MenuItem>
+                                            <MenuItem value="Passed Away">
+                                              Passed Away
+                                            </MenuItem>
+                                          </Select>
+                                        </FormControl>
+                                      </TableCell>
+                                      <TableCell className="action-icon">
+                                        <VisibilityIcon
+                                          className="eye-icon"
+                                          onClick={(e) =>
+                                            PatientDetail(
+                                              e,
+                                              info.patientId,
+                                              info.enquiryId
+                                            )
+                                          }
+                                        />
+                                        <i
+                                          className="fa-solid fa-pen-to-square"
+                                          onClick={(e) =>
+                                            EditButton(e, info.patientId)
+                                          }
+                                        ></i>
+                                        {localStorage.getItem("Role") ===
+                                        "Admin" ? (
+                                          <i
+                                            className="fa-solid fa-trash"
+                                            onClick={(e) => {
+                                              handledelet(e, info.patientId);
+                                            }}
+                                          ></i>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </TableCell>
+                                    </>
+                                  ) : (
+                                    ""
+                                  )}
                                 </TableRow>
                               </>
                             );

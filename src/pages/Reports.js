@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { GetAllTreatment } from "../reducer/TreatmentSlice";
 import axios from "axios";
-import { baseurl, excelExoprt, image } from "../Basurl/Baseurl";
+import { baseu11, baseurl, excelExoprt, image } from "../Basurl/Baseurl";
 import DatePicker from "react-multi-date-picker";
 import {
   FormControl,
@@ -30,7 +30,6 @@ import {
 } from "@mui/material";
 import { GetAllCountries2 } from "../reducer/Countries";
 import { GetAllHositalData } from "../reducer/HospitalSlice";
-
 export default function Reports() {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
@@ -74,16 +73,13 @@ export default function Reports() {
       setRows(patient);
     }
   }, [patient]);
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handledelet = (e, patientId) => {
     e.preventDefault();
     const swalWithBootstrapButtons = Swal.mixin({
@@ -141,7 +137,6 @@ export default function Reports() {
       Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
   };
-
   const getReportData = () => {
     try {
       axios
@@ -164,7 +159,7 @@ export default function Reports() {
 
           if (response.data.download_link) {
             const link = document.createElement("a");
-            link.href = `${baseurl}${response.data.download_link}`;
+            link.href = `${baseu11}${response.data.download_link}`;
             link.setAttribute("download", "report.xlsx");
             document.body.appendChild(link);
             link.click();
@@ -174,19 +169,16 @@ export default function Reports() {
         .catch((error) => {
           console.log(error);
           console.log(error?.response?.data);
-
           const errorMessage =
             error?.response?.data?.message ||
             error?.response?.data?.error ||
             "Something went wrong";
-
           Swal.fire("Error", errorMessage, "error");
         });
     } catch (error) {
       console.log(error);
     }
   };
-
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -343,15 +335,12 @@ export default function Reports() {
                         Report
                       </button>
                     </div>
-                    {/* <div className="search-btn-main mb-4">
-            </div> */}
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
         <div className="main_content">
           <div className="row">
             <div className="col-md-12">
@@ -360,8 +349,7 @@ export default function Reports() {
                   <Table
                     stickyHeader
                     aria-label="sticky table"
-                    className="table-no-card"
-                  >
+                    className="table-no-card">
                     <TableHead>
                       <TableRow>
                         <TableCell>Sr.No.</TableCell>
@@ -424,15 +412,6 @@ export default function Reports() {
                       className="page-item"
                     />
                   </Stack>
-                  {/* <TablePagination
-                    component="div"
-                    count={rows.length}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    rowsPerPageOptions={[]}
-                  /> */}
                 </TableContainer>
               </div>
             </div>

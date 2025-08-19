@@ -127,34 +127,72 @@ export default function Staff() {
         }
       });
   };
-
   const handleSampleFile = async () => {
-    try {
-      const response = await axios.get(
-        `${baseurl}export_staffs`,
-        {
-          responseType: "blob", // Important for downloading files
-        }
-      );
-      console.log(response.data);
-      // Create a downloadable link
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "Sample_Enquiry.xlsx"); // File name
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+  try {
+    const response = await axios.get(
+      `${baseurl}export_staffs`,
+      {
+        responseType: "blob", // For downloading files
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-      return response.data; // Success response
-    } catch (err) {
-      console.error(
-        "Error downloading the sample file:",
-        err.response?.data?.message || err.message
-      );
-      throw err;
-    }
-  };
+    // Create a downloadable link
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "Staff List.xlsx"); // File name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    return response.data; // Success response
+  } catch (err) {
+    console.error(
+      "Error downloading the sample file:",
+      err.response?.data?.message || err.message
+    );
+    throw err;
+  }
+};
+
+
+  // const handleSampleFile = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${baseurl}export_staffs`,
+  //       {
+  //         responseType: "blob", // Important for downloading files
+  //       },{
+  //          headers: {
+  //                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
+  //                 "Content-Type": "application/json",
+                   
+  //             },
+  //       }
+  //     );
+  //     console.log(response.data);
+  //     // Create a downloadable link
+  //     const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.setAttribute("download", "Sample_Enquiry.xlsx"); // File name
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+
+  //     return response.data; // Success response
+  //   } catch (err) {
+  //     console.error(
+  //       "Error downloading the sample file:",
+  //       err.response?.data?.message || err.message
+  //     );
+  //     throw err;
+  //   }
+  // };
   const handlegetpdfdata =()=>{
       const maxRows = rows.length || 1;
   Swal.fire({
@@ -180,9 +218,7 @@ export default function Staff() {
            );
            return;
          }
- 
-         setPdfRowLimit(userInput);
- 
+         setPdfRowLimit(userInput)
          setTimeout(() => {
            toPDF();
            setPdfRowLimit(null); // reset to normal view
