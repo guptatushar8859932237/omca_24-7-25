@@ -62,7 +62,7 @@ export default function AllServices() {
     );
     if (response.data.success === true) {
       await dispatch(GetAllServices());
-      Swal.fire("Status!", "Status updated successfully", "success");
+      Swal.fire("Status!", "Service Deleted successfully", "success");
     } else {
       console.log("coe error", error);
     }
@@ -141,7 +141,7 @@ export default function AllServices() {
         setPdfRowLimit(userInput);
         setTimeout(() => {
           toPDF();
-          setPdfRowLimit(null); // reset to normal view
+          setPdfRowLimit(null); 
         }, 300);
       }
     });
@@ -153,7 +153,12 @@ export default function AllServices() {
   const handleclickpostdatadesltes = async () => {
     setShowActions(false)
     try {
-      const response = await axios.get(`${baseurl}get_deleted_services`);
+      const response = await axios.get(`${baseurl}get_deleted_services`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
       if (response) {
         console.log(response.data.services);
         setRows(response.data.services);
@@ -239,10 +244,20 @@ export default function AllServices() {
                     <TableHead>
                       <TableRow>
                         <TableCell>Sr.No.</TableCell>
+                            {
+!showActions ===true?<>
+                        <TableCell>Deleted By Name</TableCell>
+                        <TableCell>Deleted By Email</TableCell>
+                        <TableCell>Deleted By Time</TableCell>
+                        <TableCell>Deleted By Date</TableCell>
+</>
+                        :""
+                       }
                         <TableCell>Service ID</TableCell>
                         <TableCell>Service Name</TableCell>
                         <TableCell>Price</TableCell>
                         <TableCell>Duration</TableCell>
+                        <TableCell>Description</TableCell>
                        {
 showActions ===true?<>
                         <TableCell>Status</TableCell>
@@ -264,10 +279,26 @@ showActions ===true?<>
                           <TableCell>
                             {pdfRowLimit ? i + 1 : page * rowsPerPage + i + 1}
                           </TableCell>
+                           {
+!showActions ===true?<>
+                        <TableCell>{info?.deletedBy?.name}</TableCell>
+                        <TableCell>{info?.deletedBy?.email}</TableCell>
+                        <TableCell> {info?.deletedAt &&
+                                          new Date(
+                                            info.deletedAt
+                                          ).toLocaleTimeString("en-GB", {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })}</TableCell>
+                        <TableCell>{new Date(info?.deletedAt).toLocaleDateString('en-GB')}</TableCell>
+</>
+                        :""
+                       }
                           <TableCell>{info.serviceId}</TableCell>
                           <TableCell>{info.serviceName}</TableCell>
                           <TableCell>{info.price}</TableCell>
                           <TableCell>{info.duration}</TableCell>
+                          <TableCell>{info.description}</TableCell>
                             {
 showActions ===true?<>
                          <TableCell>

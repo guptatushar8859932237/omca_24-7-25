@@ -200,20 +200,21 @@ export default function Inquiry() {
       const filterResult = searchApiData.filter((item) => {
         const enquiryId = item.enquiryId?.toLowerCase() || "";
         const emailMatches = item.email.toLowerCase();
+        const country = item.country.toLowerCase();
         const name = item.name?.toLowerCase() || "";
         const age = item.age?.toString().toLowerCase() || "";
         const comtact = item.emergency_contact?.toString().toLowerCase() || "";
-        const country = item.country?.toLowerCase() || "";
+        // const country = item.country?.toLowerCase() || "";
         const disease_name = item.disease_name?.toLowerCase() || "";
         const searchValue = event.target.value.toLowerCase();
         return (
           enquiryId.includes(searchValue) ||
           age.includes(searchValue) ||
           comtact.includes(searchValue) ||
+          country.includes(searchValue) ||
           disease_name.includes(searchValue) ||
           name.includes(searchValue) ||
           emailMatches.includes(searchValue) ||
-          country.includes(searchValue) ||
           name.includes(searchValue)
         );
       });
@@ -269,8 +270,6 @@ export default function Inquiry() {
 
   const handledelete = (e, patientId) => {
     console.log(e);
-    // e.preventDefault();
-
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -278,7 +277,6 @@ export default function Inquiry() {
       },
       buttonsStyling: false,
     });
-
     swalWithBootstrapButtons
       .fire({
         title: "Are you sure?",

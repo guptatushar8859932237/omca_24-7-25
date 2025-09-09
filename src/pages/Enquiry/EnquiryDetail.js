@@ -215,6 +215,28 @@ row.patient_relation ?
                   </div>
                   <div className="col-md-6">
                     <div className="field-set">
+                      <label>Attendant Address<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.address}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="field-set">
+                      <label>Attendant Relation Number<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.patient_relation_no}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="field-set">
                       <label>Attendant Id<span className="text-danger">*</span></label>
                       <div className="imgid-main">
                         <img
@@ -225,7 +247,7 @@ row.patient_relation ?
                   </div>
                 </div> :""
                 }
-               
+                 
                 <div className="row">
                   <div className="col-md-12">
                     <div className="treat-hd">

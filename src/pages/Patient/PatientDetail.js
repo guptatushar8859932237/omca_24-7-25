@@ -518,10 +518,8 @@ function PatientDetail() {
     const result = await dispatch(
       AddKysDetail({
         id: location.state.patientId,
-        id_proof: filesData.id_proof,
         passport: filesData.passport,
         photo: filesData.photo,
-        Attende_id_proof: filesData.Attende_id_proof,
         Attende_passport: filesData.Attende_passport,
         Attende_photo: filesData.Attende_photo,
       })
@@ -958,7 +956,7 @@ function PatientDetail() {
                     <div class="part-txt">
                       <h6>{ispatient?.patient_name}</h6>
                       {/* <p>{ispatient?.country}</p> */}
-                      <p>Patient ID : {ispatient?.patientId}</p>
+                      <p>Patient ID : {ispatient?.patientNumber?ispatient?.patientNumber:ispatient?.patientId}</p>
                     </div>
                   </div>
                 </div>
@@ -2496,18 +2494,7 @@ function PatientDetail() {
             >
               <Box>
                 <form id="contact-form" className="contact-form">
-                  <div className="field-set">
-                    <label>
-                      ID Proof<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="file"
-                        className="form-control"
-                        onChange={(e) => onChangeFile(e, "id_proof")}
-                      />
-                    </div>
-                  </div>
+                  
                   <div className="field-set">
                     <label>
                       Passport<span className="text-danger">*</span>
@@ -2533,18 +2520,7 @@ function PatientDetail() {
                       />
                     </div>
                   </div>
-                  <div className="field-set">
-                    <label>
-                      Attende ID Proof<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="file"
-                        className="form-control"
-                        onChange={(e) => onChangeFile(e, "Attende_id_proof")}
-                      />
-                    </div>
-                  </div>
+                 
                   <div className="field-set">
                     <label>
                       Attende Passport<span className="text-danger">*</span>

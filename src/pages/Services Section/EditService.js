@@ -347,7 +347,7 @@ export default function EditService() {
 
         },
       }); // 🔁 Change endpoint as needed
-                                    Swal.fire("Service added successfully!", "", "success");
+                                    Swal.fire("Service Update successfully!", "", "success");
                                     navigate("/Admin/Services");
                                 } catch (err) {
                                     console.error(err);

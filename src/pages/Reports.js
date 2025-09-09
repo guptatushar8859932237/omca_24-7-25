@@ -20,6 +20,7 @@ import { GetAllTreatment } from "../reducer/TreatmentSlice";
 import axios from "axios";
 import { baseu11, baseurl, excelExoprt, image } from "../Basurl/Baseurl";
 import DatePicker from "react-multi-date-picker";
+import { usePDF } from "react-to-pdf";
 import {
   FormControl,
   MenuItem,
@@ -37,6 +38,8 @@ export default function Reports() {
   const [rows, setRows] = useState([]);
   const dispatch = useDispatch();
   const { patient, loading, error } = useSelector((state) => state.patient);
+    const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
+   const [pdfRowLimit, setPdfRowLimit] = useState(null);
   const { Treatment } = useSelector((state) => state.Treatment);
   const [seekerStatus, setSeekerStatus] = React.useState({});
   const [treatmentname, setTreatmentname] = useState([]);
@@ -73,13 +76,6 @@ export default function Reports() {
       setRows(patient);
     }
   }, [patient]);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
   const handledelet = (e, patientId) => {
     e.preventDefault();
     const swalWithBootstrapButtons = Swal.mixin({
@@ -179,6 +175,39 @@ export default function Reports() {
       console.log(error);
     }
   };
+   const downloadPdf = async () => {
+      const maxRows = rows.length || 1;
+      Swal.fire({
+        title: "Enter number of rows for PDF",
+        input: "number",
+        inputLabel: `Choose between 1 and ${maxRows}`,
+        inputAttributes: {
+          min: "1",
+          max: maxRows.toString(),
+          step: "1",
+        },
+        inputValue: rowsPerPage,
+        showCancelButton: true,
+        confirmButtonText: "Generate PDF",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const userInput = parseInt(result.value, 10);
+          if (isNaN(userInput) || userInput < 1 || userInput > maxRows) {
+            Swal.fire(
+              "Invalid entry",
+              `Please enter a number between 1 and ${maxRows}`,
+              "error"
+            );
+            return;
+          }
+          setPdfRowLimit(userInput);
+          setTimeout(() => {
+            toPDF();
+            setPdfRowLimit(null); // reset to normal view
+          }, 300);
+        }
+      });
+    };
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -188,6 +217,13 @@ export default function Reports() {
               <div className="">
                 <h4 className="page-title mb-0">Reports</h4>
               </div>
+               {localStorage.getItem("Role") === "Admin" ? (
+               <button onClick={downloadPdf} className="add-button ms-2">
+                  <span>
+                    <i className="fa fa-file-pdf-o"></i>
+                  </span>
+                  PDF
+                </button>):("")}
             </div>
           </div>
         </div>
@@ -345,7 +381,7 @@ export default function Reports() {
           <div className="row">
             <div className="col-md-12">
               <div className="table-responsive">
-                <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+                <TableContainer component={Paper}  ref={targetRef} style={{ overflowX: "auto" }}>
                   <Table
                     stickyHeader
                     aria-label="sticky table"
@@ -395,7 +431,7 @@ export default function Reports() {
                                 </TableCell>
                                 <TableCell>{info.country}</TableCell>
                                 <TableCell>
-                                  {info.treatment_course_name}
+                                  {info.patient_disease[0].disease_name}
                                 </TableCell>
                               </TableRow>
                             </>

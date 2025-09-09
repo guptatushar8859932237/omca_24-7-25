@@ -30,7 +30,6 @@ export default function AddEnquiry() {
     email: Yup.string().matches(emailRegex, "Invalid email").required(),
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
-    Referral_Name: Yup.string().required("Referral Name is required"),
     emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
       .required("Phone number is required"),
@@ -76,6 +75,8 @@ export default function AddEnquiry() {
                   patient_relation_name: "",
                   patient_relation: "",
                   town: "",
+                  patient_relation_no: "",
+                  address: "",
                   patient_relation_id: null,
                   patient_id_proof: null,
                 }}
@@ -354,7 +355,7 @@ export default function AddEnquiry() {
                        <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Referral Name<span className="text-danger">*</span>
+                            Referral Name
                           </label>
                           <Field className="form-control" name="Referral_Name" />
                           <ErrorMessage
@@ -454,6 +455,41 @@ export default function AddEnquiry() {
                               />
                             </div>
                           </div>
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                                Attendant Address
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="address"
+                              />
+                              <ErrorMessage
+                                name="address"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
+                          </div>
+                       <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            {" "}
+                            Attendant Contact 
+                            <span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="patient_relation_no"
+                          />
+                          <ErrorMessage
+                            name="patient_relation_no"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
                         </div>
                       </>
                     )}

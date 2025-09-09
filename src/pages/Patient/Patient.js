@@ -260,27 +260,6 @@ export default function Patient() {
     }
   };
 
-  // const downloadPdf = async () => {
-  //   try {
-  //     const response = await axios.get(`${baseurl}all_patients_pdf`);
-  //     console.log(response);
-  //     if (response.status === 200) {
-  //       console.log("PDF Download Response:", response.data);
-  //       Swal.fire("Success", "PDF downloaded successfully", "success");
-  //       // If you're actually downloading a file, add file-saving logic here
-  //     } else {
-  //       Swal.fire(
-  //         "Failed",
-  //         "Something went wrong while generating PDF",
-  //         "error"
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.log("Download error:", error?.response?.data || error);
-  //     Swal.fire("Error", "Something went wrong while downloading PDF", "error");
-  //   }
-  // };
-
   const downloadPdf = async () => {
     const maxRows = rows.length || 1;
     Swal.fire({
@@ -482,6 +461,16 @@ export default function Patient() {
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
+                          {showActions === false ? (
+                            <>
+                              <TableCell>Deleted By</TableCell>
+                              <TableCell>Deleted BY Email</TableCell>
+                              <TableCell>Deleted Time</TableCell>
+                              <TableCell>Deleted Date</TableCell>
+                            </>
+                          ) : (
+                            ""
+                          )}
                           <TableCell>Patient Id</TableCell>
                           <TableCell>Patient Name</TableCell>
                           <TableCell>Emergency contact</TableCell>
@@ -527,6 +516,33 @@ export default function Patient() {
                                       ? i + 1
                                       : page * rowsPerPage + i + 1}
                                   </TableCell>
+                                  {showActions === false ? (
+                                    <>
+                                      <TableCell>
+                                        {info?.deletedBy?.name}
+                                      </TableCell>
+                                      <TableCell>
+                                        {info?.deletedBy?.email}
+                                      </TableCell>
+                                      <TableCell>
+                                        {info?.deletedAt &&
+                                          new Date(
+                                            info.deletedAt
+                                          ).toLocaleTimeString("en-GB", {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })}
+                                      </TableCell>
+                                      <TableCell>
+                                        {new Date(
+                                          info?.deletedAt
+                                        ).toLocaleDateString("en-GB")}
+                                      </TableCell>
+                                    </>
+                                  ) : (
+                                    ""
+                                  )}
+
                                   <TableCell>
                                     {info?.patientNumber
                                       ? info?.patientNumber
@@ -534,7 +550,8 @@ export default function Patient() {
                                   </TableCell>
                                   <TableCell>{info.patient_name}</TableCell>
                                   <TableCell>
-                                    {info.emergency_contact}
+                                    {info?.emergency_contact ||
+                                      info?.emergency_contact_no}
                                   </TableCell>
                                   <TableCell>
                                     {new Date(

@@ -291,6 +291,17 @@ export default function Hospitals() {
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
+                          {
+                            !showActions===true ?(
+                              <>
+                              <TableCell>Deleted By Name</TableCell>
+                              <TableCell>Deleted By Email</TableCell>
+                              <TableCell> Delete Time</TableCell>
+                              <TableCell>Delete Date</TableCell>
+                              </>
+
+                            ):("")
+                          }
                           <TableCell>Image</TableCell>
                           <TableCell>Hospital Name</TableCell>
                           <TableCell>Location</TableCell>
@@ -319,6 +330,29 @@ export default function Hospitals() {
                             <TableCell>
                               {pdfRowLimit ? i + 1 : page * rowsPerPage + i + 1}
                             </TableCell>
+                            {
+                            !showActions===true ?(
+                              <>
+                              <TableCell>  {info?.deletedBy?.name}</TableCell>
+                              <TableCell>  {info?.deletedBy?.email}</TableCell>
+                                <TableCell>
+                                                                     {info?.deletedAt &&
+                                                                       new Date(
+                                                                         info.deletedAt
+                                                                       ).toLocaleTimeString("en-GB", {
+                                                                         hour: "2-digit",
+                                                                         minute: "2-digit",
+                                                                       })}
+                                                                   </TableCell>
+                              <TableCell>
+                                                                      {new Date(
+                                                                        info?.deletedAt
+                                                                      ).toLocaleDateString("en-GB")}
+                                                                    </TableCell>
+                              </>
+
+                            ):("")
+                          }
                             <TableCell>
                               <img
                                 src={`${image}${info.hospitalImage}`}
@@ -371,14 +405,14 @@ export default function Hospitals() {
                                       EditButton(e, info.hospitalId)
                                     }
                                   />
-                                  {localStorage.getItem("Role") === "Admin" && (
+                                
                                     <i
                                       className="fa-solid fa-trash"
                                       onClick={(e) =>
                                         handledelet(e, info.hospitalId)
                                       }
                                     />
-                                  )}
+                                  
                                 </TableCell>
                               </>
                             ) : (

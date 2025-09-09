@@ -714,7 +714,6 @@ export default function EditEnquiry() {
       .required("Email is required"),
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
-    Referral_Name: Yup.string().required("Referral_Name is required"),
     address: Yup.string().required("Address is required"),
     emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
@@ -767,6 +766,8 @@ export default function EditEnquiry() {
                     editenquiry?.patient_emergency_contact_no || "",
                   patient_relation: editenquiry?.patient_relation || "",
                   Referral_Name: editenquiry?.Referral_Name || "",
+                  address: editenquiry?.address || "",
+                  patient_relation_no: editenquiry?.patient_relation_no || "",
                   relation_id: null,
                   patient_id_proof: null,
                 }}
@@ -1150,6 +1151,40 @@ export default function EditEnquiry() {
                           />
                           <ErrorMessage
                             name="patient_relation"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Attendant Address
+                            <span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="address"
+                          />
+                          <ErrorMessage
+                            name="address"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Attendant Relation Number
+                            <span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="patient_relation_no"
+                          />
+                          <ErrorMessage
+                            name="patient_relation_no"
                             component="div"
                             style={{ color: "red" }}
                           />
