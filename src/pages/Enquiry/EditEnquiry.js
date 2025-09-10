@@ -765,9 +765,10 @@ export default function EditEnquiry() {
                   patient_emergency_contact_no:
                     editenquiry?.patient_emergency_contact_no || "",
                   patient_relation: editenquiry?.patient_relation || "",
-                  Referral_Name: editenquiry?.Referral_Name || "",
+                  Referral_Name: editenquiry?.Referral_Name || "",   
                   address: editenquiry?.address || "",
                   patient_relation_no: editenquiry?.patient_relation_no || "",
+                  patient_relation_address: editenquiry?.patient_relation_address || "",
                   relation_id: null,
                   patient_id_proof: null,
                 }}
@@ -1164,10 +1165,10 @@ export default function EditEnquiry() {
                           </label>
                           <Field
                             className="form-control"
-                            name="address"
+                            name="patient_relation_address"
                           />
                           <ErrorMessage
-                            name="address"
+                            name="patient_relation_address"
                             component="div"
                             style={{ color: "red" }}
                           />

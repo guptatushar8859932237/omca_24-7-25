@@ -84,13 +84,17 @@ export default function EditPatient() {
                     patientDisease:
                       ispatient?.patient_disease?.[0]?.disease_name || "",
                     created_at: ispatient?.createdAt
-                      ? ispatient.createdAt.split("T")[0]: "",
+                      ? ispatient.createdAt.split("T")[0]
+                      : "",
                     emergency_contact_no: ispatient?.emergency_contact || "",
                     country: ispatient?.country || "",
                     patient_relation: ispatient?.patient_relation || "",
-                    patient_relation_name:
-                      ispatient?.patient_relation_name || "",
-                    patientNumber: ispatient?.patientNumber || "", }}
+                    patient_relation_no:
+                      ispatient?.patient_relation_no || "",
+                    patientNumber: ispatient?.patientNumber || "",
+                    Referral_Name: ispatient?.Referral_Name || "",
+                    patient_relation_name: ispatient?.patient_relation_name || "",
+                  }}
                   validationSchema={basicSchema}
                   onSubmit={async (values, { setSubmitting }) => {
                     console.log("Submitting values:", values);
@@ -272,63 +276,85 @@ export default function EditPatient() {
                           </div>
                         </div>
                         <div className="col-sm-6">
-                          <div className="field-set gender-select">
-                            <label className="gen-label">
-                              Gender<span className="text-danger">*</span>
+                          <div className="field-set">
+                            <label>
+                              Patient Referral Name{" "}
+                              <span className="text-danger">*</span>
                             </label>
-                            <div className="form-check-inline">
-                              <label className="form-check-label">
-                                <Field
-                                  type="radio"
-                                  name="gender"
-                                  value="Male"
-                                  className="form-check-input"
-                                />{" "}
-                                Male
-                              </label>
-                            </div>
-                            <div className="form-check-inline">
-                              <label className="form-check-label">
-                                <Field
-                                  type="radio"
-                                  name="gender"
-                                  value="Female"
-                                  className="form-check-input"
-                                />{" "}
-                                Female
-                              </label>
-                            </div>
-                            <div className="form-check-inline">
-                              <label className="form-check-label">
-                                <Field
-                                  type="radio"
-                                  name="gender"
-                                  value="Others"
-                                  className="form-check-input"
-                                />
-                                Others
-                              </label>
-                            </div>
+                            <Field
+                              className="form-control"
+                              type="text"
+                              name="Referral_Name"
+                            />
                             <ErrorMessage
-                              name="gender"
+                              name="Referral_Name"
                               component="div"
                               className="text-danger"
                             />
                           </div>
-                          <label className="gen-label fw-normal">
-                            Patient Id<span className="text-danger">*</span>
-                          </label>
-                          <div className="col-sm-6 p-0 ">
-                            <Field
-                              className="form-control "
-                              type="text"
-                              name="patientNumber"
-                            />
-                            <ErrorMessage
-                              name="patientNumber"
-                              component="div"
-                              className="text-danger"
-                            />
+                        </div>
+                        <div className="row">
+                          <div className="col-sm-6">
+                            <div className="field-set gender-select">
+                              <label className="gen-label">
+                                Gender<span className="text-danger">*</span>
+                              </label>
+                              <div className="form-check-inline">
+                                <label className="form-check-label">
+                                  <Field
+                                    type="radio"
+                                    name="gender"
+                                    value="Male"
+                                    className="form-check-input"
+                                  />{" "}
+                                  Male
+                                </label>
+                              </div>
+                              <div className="form-check-inline">
+                                <label className="form-check-label">
+                                  <Field
+                                    type="radio"
+                                    name="gender"
+                                    value="Female"
+                                    className="form-check-input"
+                                  />{" "}
+                                  Female
+                                </label>
+                              </div>
+                              <div className="form-check-inline">
+                                <label className="form-check-label">
+                                  <Field
+                                    type="radio"
+                                    name="gender"
+                                    value="Others"
+                                    className="form-check-input"
+                                  />
+                                  Others
+                                </label>
+                              </div>
+                              <ErrorMessage
+                                name="gender"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
+                          </div>
+                          <div className="col-sm-6">
+                            <label className="gen-label fw-normal">
+                              Patient Id<span className="text-danger">*</span>
+                            </label>
+                            <div className="col-sm-6 p-0 ">
+                              <Field
+                                className="form-control "
+                                type="text"
+                                name="patientNumber"
+                              />
+                              <ErrorMessage
+                                name="patientNumber"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
                           </div>
                         </div>
 
@@ -359,6 +385,44 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Patient Relation{" "}
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="text"
+                              name="patient_relation"
+                            />
+                            <ErrorMessage
+                              name="patient_relation"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                                 <div className="col-sm-6">
+                          <div className="field-set">
+                            <label>
+                              Patient Number{" "}
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="text"
+                              name="patient_relation_no"
+                            />
+                            <ErrorMessage
+                              name="patient_relation_no"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-sm-6">
+                          <div className="field-set">
+                            <label>
+                              Patient Address{" "}
                               <span className="text-danger">*</span>
                             </label>
                             <Field
