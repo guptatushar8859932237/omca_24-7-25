@@ -49,6 +49,7 @@ import Newpermission from "./pages/Permission/Newpermission";
 import EditService from "./pages/Services Section/EditService";
 import Totaluser from "./pages/Hospitals/Totaluser";
 import PAymentpdf from "./pages/Patient/PAymentpdf";
+import Pagefilterdata from "./pages/Pagefilterdata";
 function App() {
   //   const [count, setCount] = useState(0);
 
@@ -169,6 +170,11 @@ function App() {
                 index
                 path="/Admin/edit-hospitals"
                 element={<EditHospitals />}
+              />
+              <Route
+                index
+                path="/Admin/filterdtata"
+                element={<Pagefilterdata />}
               />
               <Route
                 index

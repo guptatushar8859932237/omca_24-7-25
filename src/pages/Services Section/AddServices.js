@@ -21,34 +21,14 @@ export default function AddStaAddServicesff() {
 
         description: Yup.string()
             .required('Description is required'),
-        price: Yup.string()
-            .required('Price  is required'),
+    price: Yup.number()
+  .typeError("Price must be a number")
+  .positive("Price must be greater than 0")
+  .required("Price is required"),
         duration: Yup.string().required("Duration is required"),
 
 
     });
-    // const handelSubmit = async (e) => {
-    //   e.preventDefault();
-
-
-    //   try {
-    //     // Use unwrap to handle success or error directly
-    //     const result = await dispatch(AddAllStaffuser(formData)).unwrap();
-
-    //     Swal.fire({
-    //       title: "Staff added successfully!",
-    //       text: "You clicked the button!",
-    //       icon: "success",
-    //     });
-    //     navigate("/Admin/Staff");
-    //   } catch (err) {
-    //     Swal.fire({
-    //       title: "Error!",
-    //       text: err?.message || "An error occurred",
-    //       icon: "error",
-    //     });
-    //   }
-    // };
     return (
         <>
             <div className="page-wrapper">
@@ -116,7 +96,11 @@ export default function AddStaAddServicesff() {
                                         <div className="col-sm-6">
                                             <div className="field-set">
                                                 <label>Price <span className="text-danger">*</span></label>
-                                                <Field className="form-control" type="text" name="price" />
+                                                <Field className="form-control"  onKeyPress={(e) => {
+    if (!/^[0-9]$/.test(e.key)) {
+      e.preventDefault(); // blocks everything except digits
+    }
+  }} type="text" name="price" />
                                                 <ErrorMessage name="price" component="div" style={{ color: "red" }} />
                                             </div>
                                         </div>

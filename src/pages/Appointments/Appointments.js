@@ -193,7 +193,6 @@ const handleSampleFile = () => {
     });
 };
 
-
 const downloadPdf  = async () => {
       const maxRows = appointments.length || 1;
        Swal.fire({

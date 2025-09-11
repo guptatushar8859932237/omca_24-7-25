@@ -208,6 +208,7 @@ export default function Patient() {
     } else {
       const filterResult = searchApiData.filter((item) => {
         const enquiryId = item.patientId?.toLowerCase() || "";
+        const patientNumber = item.patientNumber?.toLowerCase() || "";
         const emailMatches = item.email.toLowerCase();
         const name = item.patient_name?.toLowerCase() || "";
         const contact = item?.emergency_contact
@@ -219,6 +220,7 @@ export default function Patient() {
         const searchValue = event.target.value.toLowerCase();
         return (
           enquiryId.includes(searchValue) ||
+          patientNumber.includes(searchValue) ||
           country.includes(searchValue) ||
           patientdesiese.includes(searchValue) ||
           contact.includes(searchValue) ||

@@ -65,6 +65,7 @@ export default function EditPatient() {
                   <i
                     className="fi fi-sr-angle-double-small-left"
                     style={{ cursor: "pointer" }}
+                   onClick={() => window.history.back()}
                   ></i>
                 </span>
                 Edit Patients

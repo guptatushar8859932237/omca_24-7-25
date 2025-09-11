@@ -247,8 +247,10 @@ row.patient_relation ?
                   </div>
                 </div> :""
                 }
-                 
-                <div className="row">
+                 {
+                  row.discussionNotes?.length === 0 ?(""):(
+                    <>
+                      <div className="row">
                   <div className="col-md-12">
                     <div className="treat-hd">
                       <h6>Discussion Notes</h6>
@@ -289,6 +291,10 @@ row.patient_relation ?
                     </div>
                   </div>
                 </div>
+                    </>
+                  )
+                 }
+              
               </form>
             </div>
           </div>

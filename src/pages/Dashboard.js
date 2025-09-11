@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import dashboard from "../img/dashboard-doc.png";
@@ -7,7 +7,7 @@ import { image } from "../Basurl/Baseurl";
 import { GetUserData } from "../reducer/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function Dashboard() {
   const [arraycount, setArraycount] = useState([]);
   const navigate = useNavigate()
@@ -43,6 +43,10 @@ export default function Dashboard() {
   useEffect(() => {
     GetDashboard();
   }, []);
+  const handleclicknavi =(coursename)=>{
+    console.log(coursename)
+    navigate('/Admin/filterdtata')
+  }
   return (
     <>
       <Navbar />
@@ -147,24 +151,6 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            {/* <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-              <div className="dash-widget">
-                <div className="dash-widget-bg"><i class="fa-solid fa-x-ray"></i></div>
-                <div className="dash-widget-info">
-                  <h3>618</h3>
-                  <span className="widget-title">Total X-Ray Patients</span>
-                </div>
-              </div>
-            </div> */}
-            {/* <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-              <div className="dash-widget">
-                <div className="dash-widget-bg"><i class="fa-solid fa-cash-register"></i></div>
-                <div className="dash-widget-info">
-                  <h3>618</h3>
-                  <span className="widget-title">due payments</span>
-                </div>
-              </div>
-            </div> */}
             <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Services")}>
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
@@ -187,7 +173,7 @@ export default function Dashboard() {
             {arraycount &&
               arraycount.length > 0 &&
               arraycount.map((item, index) => (
-                <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" key={index} style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/patients")}>
+                <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" key={index} style={{ cursor: "pointer" }} onClick={() =>handleclicknavi(item.course_name)}>
                   <div className="dash-widget">
                     <div className="">
                       <span className="widget-title">{item.course_name}</span>
