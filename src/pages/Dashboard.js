@@ -18,7 +18,6 @@ export default function Dashboard() {
     console.log(error, getuser);
   }, [dispatch]);
   const [count, setCount] = useState("");
-
   const GetDashboard = () => {
     axios
       .get(`${baseurl}Dashboard_count`, {

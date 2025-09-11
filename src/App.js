@@ -51,13 +51,6 @@ import Totaluser from "./pages/Hospitals/Totaluser";
 import PAymentpdf from "./pages/Patient/PAymentpdf";
 import Pagefilterdata from "./pages/Pagefilterdata";
 function App() {
-  //   const [count, setCount] = useState(0);
-
-  // setCount(count + 1);
-  // setCount(count + 1);
-
-  // console.log(count);
-
   console.log("22/04/25");
   return (
     <>

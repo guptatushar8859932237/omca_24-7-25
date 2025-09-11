@@ -72,21 +72,28 @@
 
 
 
-const num = 5;
+// const num = 5;
 
-for (let i =1; i<=num;i++){
-    row=""
-    for (let j=1;j<=num-i;j++){
-        row+=" "
-    }
-    for(let k=0;k<2*i-1;k++){
-        row+="*"
-    }
-    console.log(row)
-}
+// for (let i =1; i<=num;i++){
+//     row=""
+//     for (let j=1;j<=num-i;j++){
+//         row+=" "
+//     }
+//     for(let k=0;k<2*i-1;k++){
+//         row+="*"
+//     }
+//     console.log(row)
+// }
 
 
+// Hoisting is JavaScript’s default behavior of moving declarations to the top of their scope (before code execution).
 
+// It means variables and functions can be used before they are declared (with some rules).
+
+// 1. Function Hoisting
+
+// Functions declared with function declaration are hoisted completely.
+// That means you can call them even before they are defined.
 
 
 

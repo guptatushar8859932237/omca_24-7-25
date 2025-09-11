@@ -113,7 +113,6 @@ export default function Inquiry() {
         EnquiryStatus({ id, status: Number(value) })
       ).unwrap();
       Swal.fire("Success!", "Status updated successfully!", "success");
-      // Wait for backend update before fetching new data
       setTimeout(async () => {
         await dispatch(GetAllEnquiry()).unwrap();
       }, 500);
@@ -122,67 +121,56 @@ export default function Inquiry() {
     }
   };
   const handleSampleFile = async () => {
-  try {
-    const response = await axios.get(
-      `${baseurl}export_enquiries`,
-      {
+    try {
+      const response = await axios.get(`${baseurl}export_enquiries`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        responseType: "blob", // keep inside same object
-      }
-    );
+        responseType: "blob",
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Sample Enquiry.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      Swal.fire({
+        icon: "success",
+        title: "Download Complete",
+        text: "Sample_Enquiry.xlsx has been downloaded successfully!",
+        timer: 3000,
+        showConfirmButton: false,
+      });
 
-    // Create a downloadable link
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "Sample Enquiry.xlsx");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      return response.data;
+    } catch (err) {
+      console.error(
+        "Error downloading the sample file:",
+        err.response?.data?.message || err.message
+      );
 
-    // Show popup after download
-    Swal.fire({
-      icon: "success",
-      title: "Download Complete",
-      text: "Sample_Enquiry.xlsx has been downloaded successfully!",
-      timer: 3000,
-      showConfirmButton: false
-    });
+      Swal.fire({
+        icon: "error",
+        title: "Download Failed",
+        text: err.response?.data?.message || "Something went wrong!",
+      });
 
-    return response.data; 
-  } catch (err) {
-    console.error(
-      "Error downloading the sample file:",
-      err.response?.data?.message || err.message
-    );
-
-    Swal.fire({
-      icon: "error",
-      title: "Download Failed",
-      text: err.response?.data?.message || "Something went wrong!",
-    });
-
-    throw err;
-  }
-};
-  // console.log(selectedImage)
+      throw err;
+    }
+  };
   const handleImportFile = async (e) => {
     e.preventDefault();
     if (!selectedImage) {
       toast.error("Please select a file before uploading.");
-      // Swal.fire("Error!", "Please select a file before uploading.", "error");
       return;
     }
     const formData = new FormData();
     formData.append("file", selectedImage);
-    // Debug FormData
     for (let pair of formData.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
     }
     try {
-      // Dispatch your action or make the API call
       const result = await dispatch(ImportEnquirys(formData)).unwrap();
       setOpen3(false);
       dispatch(GetAllEnquiry());
@@ -204,7 +192,6 @@ export default function Inquiry() {
         const name = item.name?.toLowerCase() || "";
         const age = item.age?.toString().toLowerCase() || "";
         const comtact = item.emergency_contact?.toString().toLowerCase() || "";
-        // const country = item.country?.toLowerCase() || "";
         const disease_name = item.disease_name?.toLowerCase() || "";
         const searchValue = event.target.value.toLowerCase();
         return (
