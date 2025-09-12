@@ -80,8 +80,6 @@ const CountriesSlice = createSlice({
       })
 
   }
-
-
 })
 export default CountriesSlice.reducer
 export const { addCountries } = CountriesSlice.actions
