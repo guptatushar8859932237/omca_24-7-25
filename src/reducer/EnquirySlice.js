@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseurl } from "../Basurl/Baseurl";
-
 export const GetAllEnquiry = createAsyncThunk(
   "Enquiry/GetAllEnquiry",
   async () => {
@@ -18,11 +17,9 @@ export const GetAllEnquiry = createAsyncThunk(
         "Error fetching staff users:",
         error.response?.data || error.message
       );
-      // throw error; // Rethrow to propagate the error in createAsyncThunk
     }
   }
 );
-
 export const DeleteEnquiry = createAsyncThunk(
   "patient/DeleteEnquiry",
   async (e, { rejectWithValue }) => {
@@ -46,7 +43,6 @@ export const DeleteEnquiry = createAsyncThunk(
     }
   }
 );
-
 // export const AddEnquirys = createAsyncThunk(
 //   "Enquiry/AddEnquiry",
 //   async (object, { rejectWithValue }) => {
@@ -109,7 +105,6 @@ export const AddEnquirys = createAsyncThunk(
     }
   }
 );
-
 // export const EditEnquiryType = createAsyncThunk(
 //   "Enquiry/EditEnquiryType",
 //   async (enquiryId, { rejectWithValue }) => {
@@ -138,14 +133,12 @@ export const AddEnquirys = createAsyncThunk(
 //   async (data, { rejectWithValue }) => {
 //     try {
 //       const formData = new FormData();
-
 //       // Append all fields to formData
 //       for (const key in data) {
 //         if (data[key] !== undefined && data[key] !== null) {
 //           formData.append(key, data[key]);
 //         }
 //       }
-
 //       const response = await axios.put(
 //         `${baseurl}update_enq/${data.id}`,
 //         formData,
@@ -156,7 +149,6 @@ export const AddEnquirys = createAsyncThunk(
 //           },
 //         }
 //       );
-
 //       return response.data;
 //     } catch (err) {
 //       console.error("Error editing enquiry:", err.response?.data?.message || err.message);
@@ -194,11 +186,9 @@ export const EnquiryStatus = createAsyncThunk(
   async (object, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-
       if (!token) {
         throw new Error("Authorization token is missing");
       }
-
       const response = await axios.post(
         `${baseurl}update_Enquiry_status/${object.id}`,
         { status: object.status }, // Ensure you're passing the correct payload
@@ -209,7 +199,6 @@ export const EnquiryStatus = createAsyncThunk(
           },
         }
       );
-
       return response.data; // Success response
     } catch (err) {
       console.error(
@@ -222,25 +211,21 @@ export const EnquiryStatus = createAsyncThunk(
     }
   }
 );
-
 export const EnquirySample = createAsyncThunk(
   "Enquiry/EnquirySample",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${baseurl}generate_sampleFile`, {
-        responseType: "blob", // Important for downloading files
+        responseType: "blob", 
       });
-
-      // Create a downloadable link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "Sample_Enquiry.xlsx"); // File name
+      link.setAttribute("download", "Sample_Enquiry.xlsx"); 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      return response.data; // Success response
+      return response.data; 
     } catch (err) {
       console.error(
         "Error downloading the sample file:",
@@ -267,7 +252,7 @@ export const ImportEnquirys = createAsyncThunk(
           },
         }
       );
-      return response.data; // Success response
+      return response.data; 
     } catch (error) {
       console.error("Error adding staff user:", error.response?.data?.message);
       return rejectWithValue(
@@ -287,9 +272,6 @@ const EnquirySlice = createSlice({
     addEnquiry: (state, action) => {
       state.EnquirySlice.push(action.payload);
     },
-    //   editstaff: (state, action) => {
-
-    //   }
   },
   extraReducers: (builder) => {
     builder
@@ -313,18 +295,12 @@ const EnquirySlice = createSlice({
         state.loading = false;
         console.log(action.payload);
         const deleteEnquiryId = action.payload;
-        // Filter out the deleted hospital
         console.log(state.patient, deleteEnquiryId);
-        // state.patient = state.enquir.filter(
-        //   (user) => user.patientId !== deleteEnquiryId
-        // );
       })
       .addCase(DeleteEnquiry.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-
-      // Edit a staff user
       .addCase(EditEnquiryType.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -332,8 +308,6 @@ const EnquirySlice = createSlice({
       .addCase(EditEnquiryType.fulfilled, (state, action) => {
         state.loading = false;
         const updatedUser = action.payload;
-
-        // Update the staff list with the edited user
         state.Enquiry = state.Enquiry.map((user) =>
           user.enquiryId === updatedUser.enquiryId ? updatedUser : user
         );
@@ -342,7 +316,6 @@ const EnquirySlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      //Status Enquiry update
       .addCase(EnquiryStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -350,8 +323,6 @@ const EnquirySlice = createSlice({
       .addCase(EnquiryStatus.fulfilled, (state, action) => {
         state.loading = false;
         const updatedUser = action.payload;
-
-        // Update the staff list with the edited user
         state.Enquiry = state.Enquiry.map((user) =>
           user.enquiryId === updatedUser.enquiryId ? updatedUser : user
         );
@@ -360,8 +331,6 @@ const EnquirySlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
-      //sampal file
       .addCase(EnquirySample.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -373,7 +342,6 @@ const EnquirySlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      //import file
       .addCase(ImportEnquirys.pending, (state) => {
         state.loading = true;
         state.error = null;

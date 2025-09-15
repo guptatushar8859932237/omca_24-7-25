@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
 import { NavLink, useNavigate } from "react-router-dom";
-
 import { AddEnquirys } from "../../reducer/EnquirySlice";
 import { GetAllCountries2 } from "../../reducer/Countries";
 import FormControl from "@mui/material/FormControl";
@@ -87,7 +86,6 @@ export default function AddEnquiry() {
                   for (const key in values) {
                     formData.append(key, values[key]);
                   }
-
                   try {
                     const result = await dispatch(
                       AddEnquirys(formData)
@@ -106,7 +104,6 @@ export default function AddEnquiry() {
               >
                 {({ isSubmitting, setFieldValue }) => (
                   <Form>
-                    {/* --- Patient Details --- */}
                     <div className="row">
                       <div className="col-sm-6">
                         <div className="field-set">
