@@ -19,9 +19,6 @@ export default function AddCountries() {
     countryCurrency: Yup.string().required("Country Currency is Required"),
   });
 
-
-
-  
   // const getallCountry = ()=>{
   //   try {
   //     const response = axios.get(`http://192.168.1.51:5201/api/getCountries`,{

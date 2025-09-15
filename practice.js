@@ -94,9 +94,18 @@
 
 // Functions declared with function declaration are hoisted completely.
 // That means you can call them even before they are defined.
+const nom=5
 
-
-
+for (i=1;i<=nom;i++){
+    row =""
+    for (let j=1;j<=nom-i;j++){
+        row+=" "
+    }
+    for(let k=1;k<=i;k++){
+        row+="*"
+    }
+    console.log(row)
+}
 
 
 

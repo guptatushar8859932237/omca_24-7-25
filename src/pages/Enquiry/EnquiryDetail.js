@@ -180,6 +180,17 @@ export default function EnquiryDetail() {
                       </div>
                     </div>
                   </div>
+                  <div className="col-md-6">
+                    <div className="field-set">
+                      <label>Patient Profile<span className="text-danger">*</span></label>
+                      <div className="imgid-main">
+                        <img
+                          src={`${image}${row.patient_Profile}`}
+                          alt="No Document"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div className="treat-hd">
                {

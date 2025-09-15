@@ -17,16 +17,14 @@ import {
 } from "@mui/material";
 import Swal from "sweetalert2";
 import { usePDF } from "react-to-pdf";
-import ClearIcon from "@mui/icons-material/Clear"; // ✅ cross icon
-
+import ClearIcon from "@mui/icons-material/Clear";
 export default function Earning() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [pdfRowLimit, setPdfRowLimit] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // ✅ search state
+  const [searchTerm, setSearchTerm] = useState("");
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
-
   const fetchJobTitles = () => {
     axios
       .get(`${baseurl}totalEarnings`, {
@@ -38,6 +36,7 @@ export default function Earning() {
       .then((response) => {
         if (response.data.success) {
           setRows(response.data.earnings);
+          console.log(response.data.earnings);
         } else {
           console.error("Failed to fetch job titles:", response.data.message);
         }
@@ -46,11 +45,9 @@ export default function Earning() {
         console.error("Error fetching job titles:", error);
       });
   };
-
   useEffect(() => {
     fetchJobTitles();
   }, []);
-
   const downloadPdf = async () => {
     const maxRows = rows.length || 1;
     Swal.fire({
@@ -84,7 +81,6 @@ export default function Earning() {
       }
     });
   };
-
   const filteredRows = rows.filter(
     (row) =>
       row.patientId
@@ -108,18 +104,15 @@ export default function Earning() {
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
   );
-
   return (
     <>
       <div className="page-wrapper">
         <div className="content">
-          {/* ✅ Title + Search aligned with d-flex justify-content-between */}
           <div className="row mb-3">
             <div className="col-md-12 d-flex justify-content-between align-items-center">
               <h4 className="page-title">Payments</h4>
             </div>
           </div>
-
           <div className="main_content">
             <div className="d-flex justify-content-between me-2 mb-2">
               <div>
@@ -133,7 +126,7 @@ export default function Earning() {
                     value={searchTerm}
                     onChange={(e) => {
                       setSearchTerm(e.target.value);
-                      setPage(0); // reset page on search
+                      setPage(0);
                     }}
                     InputLabelProps={{ shrink: true }}
                     InputProps={{

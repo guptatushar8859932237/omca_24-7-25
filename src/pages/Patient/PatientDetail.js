@@ -1816,7 +1816,7 @@ function PatientDetail() {
                   <div className="all-hd">
                     <h6>Payment Details</h6>
                   </div>
-                  <PictureAsPdf  style={{cursor:"pointer"}} onClick={()=>{navigate("/Admin/Patient-Pdfdetails",{state:{data:location.state.patientId}})}}/>
+               
                 </div>
                 <div className="row">
                   <div className="col-md-12">
@@ -1871,6 +1871,7 @@ function PatientDetail() {
                                             <div>
                                               Paid Amount - {info.paid_amount}
                                             </div>
+                                               <PictureAsPdf  style={{cursor:"pointer"}} onClick={()=>{navigate("/Admin/Patient-Pdfdetails",{state:{data:location.state.patientId}})}}/>
                                           </div>
                                         </div>
                                       </li>

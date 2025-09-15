@@ -102,6 +102,7 @@ export default function EditEnquiry() {
                   patient_relation_address: editenquiry?.patient_relation_address || "",
                   relation_id: null,
                   patient_id_proof: null,
+                  patient_Profile: null,
                 }}
                 validationSchema={basicSchema}
                 onSubmit={async (values, { setSubmitting }) => {
@@ -110,6 +111,7 @@ export default function EditEnquiry() {
                   for (const key in values) {
                     if (key === "relation_id" && values.relation_id) {
                       formData.append("relation_id", values.relation_id);
+                      formData.append("patient_Profile", values.patient_Profile);
                       formData.append(
                         "patient_id_proof",
                         values.patient_id_proof
@@ -421,6 +423,38 @@ export default function EditEnquiry() {
                             <img
                               style={{ width: "25px", height: "25px" }}
                               src={`${image}${editenquiry.patient_id_proof}`}
+                              alt=".."
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="patient_id_proof"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Patient Profile
+                            <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            className="form-control"
+                            type="file"
+                            name="patient_Profile"
+                            accept="image/*,application/pdf"
+                            onChange={(e) =>
+                              setFieldValue(
+                                "patient_Profile",
+                                e.currentTarget.files[0]
+                              )
+                            }
+                          />
+                          <div className="w-25 h-25 my-2">
+                            <img
+                              style={{ width: "25px", height: "25px" }}
+                              src={`${image}${editenquiry.patient_Profile}`}
                               alt=".."
                             />
                           </div>
