@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
@@ -6,11 +6,19 @@ import * as Yup from "yup";
 import { AddHospitalData } from '../../reducer/HospitalSlice'
 import { useNavigate } from "react-router-dom";
 import hospital from '../../img/hospital 3.jpg'
+import { GetAllCountries2 } from "../../reducer/Countries";
+import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
 export default function AddHospitals() {
   const navigate = useNavigate();
   const dispatch = useDispatch()
   const [selectedImage, setSelectedImage] = useState(null);
   const { hospital, loading, error } = useSelector((state => state.staff))
+  const {Countries} = useSelector((state)=>state.Countries)
+
+useEffect(()=>{
+dispatch(GetAllCountries2())
+},[])
+
   const basicSchema = Yup.object().shape({
     hospitalName: Yup.string()
       .required('Name is required')
@@ -18,6 +26,8 @@ export default function AddHospitals() {
       .max(50, 'Name cannot exceed 50 characters'),
     location: Yup.string()
       .required("Location is Required"),
+    country: Yup.string()
+      .required("country is Required"),
     hospitalCode: Yup.string()
       // .matches(passwordRules, { message: "Please create a stronger password" })
       .required("Hospital code is  Required"),
@@ -51,6 +61,7 @@ export default function AddHospitals() {
                 location: "",
                 hospitalCode: "",
                 contact: "",
+                country: "",
                 hospitalImage: null,
               }}
               validationSchema={basicSchema}
@@ -97,6 +108,61 @@ export default function AddHospitals() {
                         <ErrorMessage name="contact" component="div" style={{ color: "red" }} />
                       </div>
                     </div>
+                     <div className="col-sm-6">
+                                         <div className="field-set">
+                                                                  <label>
+                                                                    Country<span className="text-danger">*</span>
+                                                                  </label>
+                                                                  <Field name="country">
+                                                                    {({ field, form }) => (
+                                                                      <>
+                                                                        <FormControl fullWidth size="small">
+                                                                          <Select
+                                                                            value={field.value}
+                                                                            onChange={(e) =>
+                                                                              form.setFieldValue(
+                                                                                "country",
+                                                                                e.target.value
+                                                                              )
+                                                                            }
+                                                                            input={
+                                                                              <OutlinedInput placeholder="Select Country" />
+                                                                            }
+                                                                            displayEmpty
+                                                                            sx={{ height: 40 }}
+                                                                            className="select-country form-control"
+                                                                            MenuProps={{
+                                                                              PaperProps: {
+                                                                                style: { maxHeight: 200 },
+                                                                              },
+                                                                            }}
+                                                                          >
+                                                                            <MenuItem value="">
+                                                                              <em>Select Country</em>
+                                                                            </MenuItem>
+                                                                            {Countries && Countries.length > 0 ? (
+                                                                              Countries.map((con, idx) => (
+                                                                                <MenuItem key={idx} value={con.name}>
+                                                                                  {con.name}
+                                                                                </MenuItem>
+                                                                              ))
+                                                                            ) : (
+                                                                              <MenuItem disabled>
+                                                                                No countries available
+                                                                              </MenuItem>
+                                                                            )}
+                                                                          </Select>
+                                                                        </FormControl>
+                                                                        <ErrorMessage
+                                                                          name="country"
+                                                                          component="div"
+                                                                          style={{ color: "red" }}
+                                                                        />
+                                                                      </>
+                                                                    )}
+                                                                  </Field>
+                                                                </div>
+                                      </div>
                     <div className="col-sm-6">
                       <div className="field-set">
                         <label>Hospital Image<span className="text-danger">*</span></label>

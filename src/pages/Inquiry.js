@@ -8,7 +8,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
@@ -17,10 +16,8 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
 import { EnquiryStatus } from "../../src/reducer/EnquirySlice";
 import MenuItem from "@mui/material/MenuItem";
-import { EnquirySample } from "../../src/reducer/EnquirySlice";
 import { ImportEnquirys } from "../../src/reducer/EnquirySlice";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -32,14 +29,18 @@ import Button from "@mui/material/Button";
 import NotesIcon from "@mui/icons-material/Notes";
 import FormHelperText from "@mui/material/FormHelperText";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+// import AssignmentAddIcon from '@mui/icons-material/AssignmentAdd';
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import axios from "axios";
 import { baseurl } from "../Basurl/Baseurl";
-import { Pagination, Stack } from "@mui/material";
+import { Autocomplete, OutlinedInput, Pagination, Stack } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import { usePDF } from "react-to-pdf";
-
+import { GetAllHositalData } from "../reducer/HospitalSlice";
+import { Field } from "formik";
 export default function Inquiry() {
   const { toPDF, targetRef } = usePDF({ filename: "inquiry.pdf" });
+  const role = localStorage.getItem("Role");
   const navigate = useNavigate();
   const [note, setNote] = useState("");
   const [date, setDate] = useState();
@@ -47,14 +48,21 @@ export default function Inquiry() {
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
   const [open3, setOpen3] = React.useState(false);
+  const [open9, setOpen9] = React.useState(false);
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
+  const [report, setReport] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
   const dispatch = useDispatch();
   const { Enquiry, loading, error } = useSelector((state) => state.Enquiry);
+  const { hospital } = useSelector((state) => state.hospital);
+  useEffect(() => {
+    dispatch(GetAllHositalData());
+    console.log(error, hospital);
+  }, [dispatch]);
   const [seekerStatus, setSeekerStatus] = React.useState({});
   const [blogErr, setBlogErr] = useState(false);
   const [pdfRowLimit, setPdfRowLimit] = useState(false);
@@ -65,6 +73,12 @@ export default function Inquiry() {
   };
   const handleClose2 = () => {
     setOpen2(false);
+  };
+  const handleClose2wew = () => {
+    setOpen9(false);
+  };
+  const handleClickOpen2modla = () => {
+    setOpen9(true);
   };
   const handleClickOpen2 = (e, enq) => {
     setOpen2(true);
@@ -103,7 +117,6 @@ export default function Inquiry() {
   };
   const handleChange = async (event, id) => {
     const { value } = event.target;
-    // Update local state first
     setSeekerStatus((prev) => ({
       ...prev,
       [id]: value,
@@ -158,6 +171,14 @@ export default function Inquiry() {
 
       throw err;
     }
+  };
+
+  //  const submitInputdata = (e) => {
+  //   const { name, value } = e.target;
+  //   setReport({ ...report, [name]: value });
+  // };
+  const handleHospitalChange = (event, newValue) => {
+    setReport((prev) => ({ ...prev, hospital: newValue }));
   };
   const handleImportFile = async (e) => {
     e.preventDefault();
@@ -214,7 +235,6 @@ export default function Inquiry() {
     setRows(searchApiData);
   };
   const [age, setAge] = React.useState("");
-
   const handleChange3 = (event) => {
     setAge(event.target.value);
   };
@@ -254,7 +274,6 @@ export default function Inquiry() {
         Swal.fire("Error", `${error?.response?.data?.message}`, "error");
       });
   };
-
   const handledelete = (e, patientId) => {
     console.log(e);
     const swalWithBootstrapButtons = Swal.mixin({
@@ -284,7 +303,6 @@ export default function Inquiry() {
               Swal.fire("Deleted!", "Patient has been deleted.", "success");
               setRows(newData.payload); // Update rows with the latest data
             })
-
             .catch((err) => {
               Swal.fire("Error!", err?.message || "An error occurred", "error");
             });
@@ -296,7 +314,10 @@ export default function Inquiry() {
         }
       });
   };
-
+  const handlechange = ()=>{
+    const {name,email}=e.target
+    
+  }
   const donloadpdf = async () => {
     const maxRows = rows.length || 1;
     Swal.fire({
@@ -322,9 +343,7 @@ export default function Inquiry() {
           );
           return;
         }
-
         setPdfRowLimit(userInput);
-
         setTimeout(() => {
           toPDF();
           setPdfRowLimit(null); // reset to normal view
@@ -393,18 +412,23 @@ export default function Inquiry() {
                         </span>
                         Export File
                       </button>
-                      <button onClick={donloadpdf} className="add-button">
-                        <span>
-                          <i className="fa fa-file-pdf-o"></i>
-                        </span>
-                        pdf
-                      </button>
+                      {role === "Admin" ? (
+                        <button onClick={donloadpdf} className="add-button">
+                          <span>
+                            <i className="fa fa-file-pdf-o"></i>
+                          </span>
+                          pdf
+                        </button>
+                      ) : (
+                        ""
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
           <div className="main_content">
             <div className="row">
               <div className="col-md-12">
@@ -523,6 +547,13 @@ export default function Inquiry() {
                                   className="fa-solid fa-pen-to-square"
                                   onClick={(e) => EditButton(e, info.enquiryId)}
                                 ></i>
+                                <AssignmentIcon
+                                  className="eye-icon"
+                                  onClick={() => {
+                                    handleClickOpen2modla();
+                                  }}
+                                />
+
                                 {localStorage.getItem("Role") === "Admin" && (
                                   <i
                                     className="fa-solid fa-trash"
@@ -571,7 +602,6 @@ export default function Inquiry() {
           </div>
         </div>
       </div>
-      {/* Import-file-modal */}
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}
@@ -631,7 +661,6 @@ export default function Inquiry() {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-      {/* Delete-modal */}
       <div
         id="delete_appointment"
         className="modal fade delete-modal"
@@ -655,7 +684,75 @@ export default function Inquiry() {
           </div>
         </div>
       </div>
-      {/* Notes-modal */}
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={open9}
+          onClose={handleClose2wew}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Hospitals</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose2wew}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form">
+                  <div className="col-sm-12">
+                    <div className="field-set">
+                      <label>
+                        Select Hospital<span className="text-danger">*</span>
+                      </label>
+                      <Autocomplete
+                        multiple
+                        options={
+                          hospital && hospital.length > 0
+                            ? hospital.map((h) => h.hospitalName)
+                            : []
+                        }
+                        value={report.hospital || []}
+                        onChange={handleHospitalChange}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder="Search & Select Hospital"
+                            variant="outlined"
+                            size="small"
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={handleNotesdata}
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <ToastContainer />
+      </React.Fragment>
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}

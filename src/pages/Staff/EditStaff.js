@@ -228,6 +228,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { image, baseurl } from "../../Basurl/Baseurl";
 import { GetAllStaffUser } from "../../reducer/StaffSlice";
+import { GetAllCountries2 } from "../../reducer/Countries";
+import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
 
 export default function EditStaff() {
   const navigate = useNavigate();
@@ -236,9 +238,14 @@ export default function EditStaff() {
   const { staff } = useSelector((state) => state.staff);
   const [editStaff, setEditStaff] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+const { Countries } = useSelector((state) => state.Countries);
   useEffect(() => {
     dispatch(GetAllStaffUser());
   }, [dispatch]);
+
+   useEffect(() => {
+      dispatch(GetAllCountries2());
+    }, [dispatch]);
   useEffect(() => {
     if (location.state?.staffID && staff.length > 0) {
       const selected = staff.find((item) => item._id === location.state.staffID);
@@ -257,6 +264,7 @@ export default function EditStaff() {
       .oneOf(["Male", "Female", "Others"])
       .required("Gender is required"),
     profileImage: Yup.mixed().required("Profile image is required"),
+    country: Yup.string().required("Country is required"),
   });
   if (!editStaff) return <div>Loading...</div>;
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -267,6 +275,7 @@ export default function EditStaff() {
       formData.append("phone_no", values.phone_no);
       formData.append("role", values.role);
       formData.append("gender", values.gender);
+      formData.append("country", values.country);
       if (values.profileImage instanceof File) {
         formData.append("profileImage", values.profileImage);
       }
@@ -291,7 +300,7 @@ export default function EditStaff() {
         <div className="row">
           <div className="col-md-12">
             <h4 className="page-title">
-              <span><i className="fi fi-sr-angle-double-small-left"></i></span>Edit Staff
+              <span><i className="fi fi-sr-angle-double-small-left" style={{cursor:"pointer"}} onClick={()=>{window.history.back()}}></i></span>Edit Staff
             </h4>
           </div>
         </div>
@@ -304,6 +313,7 @@ export default function EditStaff() {
               gender: editStaff.gender || "",
               phone_no: editStaff.phone_no || "",
               name: editStaff.name || "",
+              country: editStaff.country || "",
               profileImage: editStaff.profileImage || null,
             }}
             validationSchema={validationSchema}
@@ -345,6 +355,61 @@ export default function EditStaff() {
                       </Field>
                       <ErrorMessage name="role" component="div" style={{ color: "red" }} />
                     </div>
+                  </div>
+                  <div className="col-sm-6">
+                     <div className="field-set">
+                                              <label>
+                                                Country<span className="text-danger">*</span>
+                                              </label>
+                                              <Field name="country">
+                                                {({ field, form }) => (
+                                                  <>
+                                                    <FormControl fullWidth size="small">
+                                                      <Select
+                                                        value={field.value}
+                                                        onChange={(e) =>
+                                                          form.setFieldValue(
+                                                            "country",
+                                                            e.target.value
+                                                          )
+                                                        }
+                                                        input={
+                                                          <OutlinedInput placeholder="Select Country" />
+                                                        }
+                                                        displayEmpty
+                                                        sx={{ height: 40 }}
+                                                        className="select-country form-control"
+                                                        MenuProps={{
+                                                          PaperProps: {
+                                                            style: { maxHeight: 200 },
+                                                          },
+                                                        }}
+                                                      >
+                                                        <MenuItem value="">
+                                                          <em>Select Country</em>
+                                                        </MenuItem>
+                                                        {Countries && Countries.length > 0 ? (
+                                                          Countries.map((con, idx) => (
+                                                            <MenuItem key={idx} value={con.name}>
+                                                              {con.name}
+                                                            </MenuItem>
+                                                          ))
+                                                        ) : (
+                                                          <MenuItem disabled>
+                                                            No countries available
+                                                          </MenuItem>
+                                                        )}
+                                                      </Select>
+                                                    </FormControl>
+                                                    <ErrorMessage
+                                                      name="country"
+                                                      component="div"
+                                                      style={{ color: "red" }}
+                                                    />
+                                                  </>
+                                                )}
+                                              </Field>
+                                            </div>
                   </div>
                   <div className="col-sm-6">
                     <div className="field-set gender-select">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { AddAllStaffuser } from "../../reducer/StaffSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,10 +11,14 @@ import {
   InputLabel,
   FormControl,
   Checkbox,
-  ListItemText
+  ListItemText,
+  OutlinedInput
 } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
+import { GetAllCountries2 } from "../../reducer/Countries";
 export default function AddStaff() {
+const { Countries } = useSelector((state)=>state.Countries)
+
     const statusOptions = ["Foundation","Private","Travelled","Confirmed","Pending","On Hold","Cancel", "Passed Away", "Local Case", "Follow Up"];
   const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(null);
@@ -26,6 +30,8 @@ export default function AddStaff() {
       .required("Name is required")
       .min(2, "Name must be at least 2 characters")
       .max(50, "Name cannot exceed 50 characters"),
+      country:Yup.string()
+      .required("Country is Required"),
     role: Yup.string()
       .required("Role is required")
       .min(2, "Role must be at least 2 characters")
@@ -55,6 +61,10 @@ export default function AddStaff() {
           : true
       ),
   });
+
+  useEffect(()=>{
+    dispatch(GetAllCountries2)
+  })
   return (
     <>
       <div className="page-wrapper">
@@ -86,6 +96,7 @@ export default function AddStaff() {
                 gender: "",
                 phone_no: "",
                 name: "",
+                country: "",
                 profileImage: null,
                   roleStatuses: []
               }}
@@ -200,6 +211,61 @@ export default function AddStaff() {
                         />
                       </div>
                     </div>
+                       <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Country<span className="text-danger">*</span>
+                          </label>
+                          <Field name="country">
+                            {({ field, form }) => (
+                              <>
+                                <FormControl fullWidth size="small">
+                                  <Select
+                                    value={field.value}
+                                    onChange={(e) =>
+                                      form.setFieldValue(
+                                        "country",
+                                        e.target.value
+                                      )
+                                    }
+                                    input={
+                                      <OutlinedInput placeholder="Select Country" />
+                                    }
+                                    displayEmpty
+                                    sx={{ height: 40 }}
+                                    className="select-country form-control"
+                                    MenuProps={{
+                                      PaperProps: {
+                                        style: { maxHeight: 200 },
+                                      },
+                                    }}
+                                  >
+                                    <MenuItem value="">
+                                      <em>Select Country</em>
+                                    </MenuItem>
+                                    {Countries && Countries.length > 0 ? (
+                                      Countries.map((con, idx) => (
+                                        <MenuItem key={idx} value={con.name}>
+                                          {con.name}
+                                        </MenuItem>
+                                      ))
+                                    ) : (
+                                      <MenuItem disabled>
+                                        No countries available
+                                      </MenuItem>
+                                    )}
+                                  </Select>
+                                </FormControl>
+                                <ErrorMessage
+                                  name="country"
+                                  component="div"
+                                  style={{ color: "red" }}
+                                />
+                              </>
+                            )}
+                          </Field>
+                        </div>
+                      </div>
                     <div className="col-sm-6">
                       <div className="field-set gender-select">
                         <label className="gen-label">

@@ -19,6 +19,7 @@ import { Pagination, Stack } from "@mui/material";
 import axios from "axios";
 import { usePDF } from 'react-to-pdf';
 export default function Staff() {
+  const role= localStorage.getItem("Role")
      const { toPDF, targetRef } = usePDF({filename: 'page.pdf'});
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
@@ -261,7 +262,9 @@ export default function Staff() {
                       </span>
                       Export File
                     </button>
-                    <button
+                    {
+                      role === "Admin"?
+<button
                      onClick={ handlegetpdfdata}
                   
                       className="add-button ms-2"
@@ -270,7 +273,9 @@ export default function Staff() {
                         <i className="fa fa-file-pdf-o"></i>
                       </span>
                   Pdf
-                    </button>
+                    </button>:""
+                    }
+                    
                   </div>
                 </div>
               </div>

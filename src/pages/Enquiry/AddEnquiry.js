@@ -16,7 +16,7 @@ export default function AddEnquiry() {
   const [showAttendant, setShowAttendant] = useState(false);
   const { loading } = useSelector((state) => state.Enquiry);
   const { Countries } = useSelector((state) => state.Countries);
-  console.log();
+  
   useEffect(() => {
     dispatch(GetAllCountries2());
   }, [dispatch]);

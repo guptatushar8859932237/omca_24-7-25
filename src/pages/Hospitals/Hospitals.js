@@ -22,6 +22,7 @@ import { usePDF } from "react-to-pdf";
 import axios from "axios";
 export default function Hospitals() {
   const navigate = useNavigate();
+  const role= localStorage.getItem("Role")
   const { toPDF, targetRef } = usePDF({ filename: "hospitals.pdf" });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -245,12 +246,15 @@ export default function Hospitals() {
                     <Link to="/Admin/add-hospitals" className="add-button">
                       <i className="fa fa-plus"></i> New Hospital
                     </Link>
+                    {
+                      role==="Admin"?
+                    
                     <Link
                       onClick={handlePDFGenerateWithLimit}
                       className="add-button ms-2"
                     >
                       <i className="fa fa-file-pdf-o"></i> Pdf
-                    </Link>
+                    </Link>:""}
                   </div>
                 </div>
               </div>

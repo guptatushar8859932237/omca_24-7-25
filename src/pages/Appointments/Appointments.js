@@ -21,6 +21,7 @@ import { MenuItem, Pagination, Stack } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 export default function Appointments() {
+  const role = localStorage.getItem("Role")
   const [appointments, setAppointments] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
   const [page, setPage] = useState(0);
@@ -271,12 +272,14 @@ const downloadPdf  = async () => {
                         </span>
                         Export File
                       </button>
+                      {
+                        role === "Admin" ?
                    <button onClick={downloadPdf} className="add-button mx-2">
                         <span>
                       <i className="fa fa-file-pdf-o"></i>
                         </span>
                         Pdf
-                      </button>
+                      </button>:""}
                 </div>
               </div>
             </div>

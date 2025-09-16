@@ -31,6 +31,7 @@ import {
 import { toast } from "react-toastify";
 import { usePDF } from "react-to-pdf";
 export default function Patient() {
+    const role =localStorage.getItem("Role")
   const navigate = useNavigate();
   const [showActions, setShowActions] = useState(true);
   const [page, setPage] = useState(0);
@@ -421,12 +422,14 @@ export default function Patient() {
                     </span>
                     Export File
                   </button>
+                   {
+                      role ==="Admin" ?
                   <button onClick={downloadPdf} className="add-button ms-2">
                     <span>
                       <i className="fa fa-file-pdf-o"></i>
                     </span>
                     PDF
-                  </button>
+                  </button> :"" }
                 </div>
               </div>
             </div>

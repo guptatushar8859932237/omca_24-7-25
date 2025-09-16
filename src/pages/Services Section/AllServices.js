@@ -26,6 +26,7 @@ import { usePDF } from "react-to-pdf";
 export default function AllServices() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const role = localStorage.getItem("Role")
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
   const [page, setPage] = useState(0);
   const [showActions, setShowActions] = useState(true);
@@ -206,11 +207,13 @@ export default function AllServices() {
                     <i className="fa fa-plus"></i> New Service
                   </Link>
                 </div>
+                {
+                  role==="Admin"?
                 <div>
                   <Link onClick={handlegetpdfdata} className="add-button ms-2">
                     <i className="fa fa-file-pdf-o"></i> Pdf
                   </Link>
-                </div>
+                </div>:""}
               </div>
             </div>
           </div>
