@@ -295,13 +295,13 @@ export default function Inquiry() {
       .then((result) => {
         if (result.isConfirmed) {
           dispatch(DeleteEnquiry({ id: e }))
-            .unwrap() // If using Redux Toolkit, unwrap to handle success/failure easily
+            .unwrap() 
             .then(() => {
               return dispatch(GetAllEnquiry());
             })
             .then((newData) => {
               Swal.fire("Deleted!", "Patient has been deleted.", "success");
-              setRows(newData.payload); // Update rows with the latest data
+              setRows(newData.payload); 
             })
             .catch((err) => {
               Swal.fire("Error!", err?.message || "An error occurred", "error");
@@ -313,10 +313,6 @@ export default function Inquiry() {
           });
         }
       });
-  };
-  const handlechange = ()=>{
-    const {name,email}=e.target
-    
   }
   const donloadpdf = async () => {
     const maxRows = rows.length || 1;
