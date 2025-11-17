@@ -15,8 +15,8 @@ export default function AddEnquiry() {
   const navigate = useNavigate();
   const [showAttendant, setShowAttendant] = useState(false);
   const { loading } = useSelector((state) => state.Enquiry);
+  const [countryn,setCountryn]=useState({})
   const { Countries } = useSelector((state) => state.Countries);
-  
   useEffect(() => {
     dispatch(GetAllCountries2());
   }, [dispatch]);
@@ -32,9 +32,10 @@ export default function AddEnquiry() {
     emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
       .required("Phone number is required"),
-    patient_emergency_contact_no: Yup.string()
-      .matches(/^[0-9]{10,11}$/, "Emergency Contact must be 10-11 digits")
-      .required("Emergency contact is required"),
+    patient_emergency_contact_no: Yup.string().matches(
+      /^[0-9]{10,11}$/,
+      "Emergency Contact must be 10-11 digits"
+    ),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"])
       .required("Gender is required"),
@@ -79,28 +80,65 @@ export default function AddEnquiry() {
                   patient_relation_id: null,
                   patient_id_proof: null,
                   patient_Profile: null,
+                  dial_code: "",
                 }}
                 validationSchema={basicSchema}
+                // onSubmit={async (values, { setSubmitting }) => {
+                //   const formData = new FormData();
+                //   for (const key in values) {
+                //     formData.append(key, values[key]);
+                //   }
+                //   try {
+                //     const result = await dispatch(
+                //       AddEnquirys(formData)
+                //     ).unwrap();
+                //     Swal.fire(result.message, "", "success");
+                //     navigate("/Admin/Inquiry");
+                //   } catch (err) {
+                //     Swal.fire(
+                //       "Error!",
+                //       err?.message || "Something went wrong",
+                //       "error"
+                //     );
+                //   }
+                //   setSubmitting(false);
+                // }}
                 onSubmit={async (values, { setSubmitting }) => {
-                  const formData = new FormData();
-                  for (const key in values) {
-                    formData.append(key, values[key]);
-                  }
-                  try {
-                    const result = await dispatch(
-                      AddEnquirys(formData)
-                    ).unwrap();
-                    Swal.fire(result.message, "", "success");
-                    navigate("/Admin/Inquiry");
-                  } catch (err) {
-                    Swal.fire(
-                      "Error!",
-                      err?.message || "Something went wrong",
-                      "error"
-                    );
-                  }
-                  setSubmitting(false);
-                }}
+  const formData = new FormData();
+
+  // Append all normal fields
+  for (const key in values) {
+    if (
+      key !== "patient_id_proof" &&
+      key !== "patient_Profile"
+    ) {
+      formData.append(key, values[key]);
+    }
+  }
+
+  // ---------- MULTIPLE FILES FIX ----------
+  if (values.patient_id_proof && values.patient_id_proof.length > 0) {
+    values.patient_id_proof.forEach((file) => {
+      formData.append("patient_id_proof", file);
+    });
+  }
+
+  // ---------- SINGLE FILE ----------
+  if (values.patient_Profile) {
+    formData.append("patient_Profile", values.patient_Profile);
+  }
+
+  try {
+    const result = await dispatch(AddEnquirys(formData)).unwrap();
+    Swal.fire(result.message, "", "success");
+    navigate("/Admin/Inquiry");
+  } catch (err) {
+    Swal.fire("Error!", err?.message || "Something went wrong", "error");
+  }
+
+  setSubmitting(false);
+}}
+
               >
                 {({ isSubmitting, setFieldValue }) => (
                   <Form>
@@ -187,7 +225,7 @@ export default function AddEnquiry() {
                         <div className="field-set">
                           <label>
                             Emergency Contact No
-                            <span className="text-danger">*</span>
+                            <span className="text-danger"></span>
                           </label>
                           <Field
                             className="form-control"
@@ -218,18 +256,22 @@ export default function AddEnquiry() {
                           <label>
                             Country<span className="text-danger">*</span>
                           </label>
-                          <Field name="country">
+                          {/* <Field name="country">
                             {({ field, form }) => (
                               <>
                                 <FormControl fullWidth size="small">
                                   <Select
                                     value={field.value}
-                                    onChange={(e) =>
+                                    onChange={(e) => {
+                                      console.log(
+                                        "Selected country:",
+                                        e.target.value
+                                      );
                                       form.setFieldValue(
                                         "country",
                                         e.target.value
-                                      )
-                                    }
+                                      );
+                                    }}
                                     input={
                                       <OutlinedInput placeholder="Select Country" />
                                     }
@@ -246,11 +288,19 @@ export default function AddEnquiry() {
                                       <em>Select Country</em>
                                     </MenuItem>
                                     {Countries && Countries.length > 0 ? (
-                                      Countries.map((con, idx) => (
-                                        <MenuItem key={idx} value={con.name}>
-                                          {con.name}
-                                        </MenuItem>
-                                      ))
+                                      Countries.map((con, idx) => {
+                                        console.log(con);
+                                        return (
+                                          <>
+                                            <MenuItem
+                                              key={idx}
+                                              value={con.name}
+                                            >
+                                              {con.name}
+                                            </MenuItem>
+                                          </>
+                                        );
+                                      })
                                     ) : (
                                       <MenuItem disabled>
                                         No countries available
@@ -265,10 +315,94 @@ export default function AddEnquiry() {
                                 />
                               </>
                             )}
-                          </Field>
+                          </Field> */}
+                       {/* <Field name="country">
+  {({ field, form }) => (
+    <>
+      <FormControl fullWidth size="small">
+        <Select
+          value={countryn}   
+          onChange={(e) => {
+            const selected = e.target.value;
+            setCountryn(selected);
+            form.setFieldValue("country", selected.name);
+            form.setFieldValue("dial_code", selected.dial_code);
+          }}
+          input={<OutlinedInput placeholder="Select Country" />}
+          displayEmpty
+          sx={{ height: 40 }}
+        >
+          <MenuItem value="">
+            <em>Select Country</em>
+          </MenuItem>
+          {Countries?.length > 0 ? (
+            Countries.map((con, idx) => (
+              <MenuItem
+                key={idx}
+                value={{ name: con.name, dial_code: con.dial_code }}
+              >
+                {con.name}
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem disabled>No countries available</MenuItem>
+          )}
+        </Select>
+      </FormControl>
+      <ErrorMessage name="country" component="div" style={{ color: "red" }} />
+    </>
+  )}
+</Field> */}
+        <Field name="country">
+  {({ field, form }) => (
+    <>
+      <FormControl fullWidth size="small">
+        <Select
+          value={field.value}
+          onChange={(e) => {
+            const selectedName = e.target.value;
+
+            const selectedCountry = Countries.find(
+              (c) => c.name === selectedName
+            );
+
+            form.setFieldValue("country", selectedName);
+            form.setFieldValue("dial_code", selectedCountry?.dial_code || "");
+
+            console.log("Selected:", selectedCountry);
+          }}
+          input={<OutlinedInput placeholder="Select Country" />}
+          displayEmpty
+          sx={{ height: 40 }}
+        >
+          <MenuItem value="">
+            <em>Select Country</em>
+          </MenuItem>
+
+          {Countries?.length > 0 ? (
+            Countries.map((con, idx) => (
+              <MenuItem key={idx} value={con.name}>
+                {con.name}
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem disabled>No countries available</MenuItem>
+          )}
+        </Select>
+      </FormControl>
+
+      <ErrorMessage
+        name="country"
+        component="div"
+        style={{ color: "red" }}
+      />
+    </>
+  )}
+</Field>
+
                         </div>
                       </div>
-                       <div className="col-sm-6">
+                      <div className="col-sm-6">
                         <div className="field-set">
                           <label>
                             Town<span className="text-danger">*</span>
@@ -327,6 +461,16 @@ export default function AddEnquiry() {
                         </div>
                       </div>
                       <div className="col-sm-6">
+  <div className="field-set">
+    <label>Dial Code</label>
+    <Field
+      className="form-control"
+      name="dial_code"
+      disabled
+    />
+  </div>
+</div>
+                      <div className="col-sm-6">
                         <div className="field-set">
                           <label>
                             Patient I’d Proof{" "}
@@ -336,13 +480,42 @@ export default function AddEnquiry() {
                             className="form-control"
                             type="file"
                             name="patient_id_proof"
-                            onChange={(e) =>
-                              setFieldValue(
-                                "patient_id_proof",
-                                e.currentTarget.files[0]
-                              )
-                            }
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.currentTarget.files);
+                              const validFiles = [];
+
+                              for (const file of files) {
+                                if (!file.type.startsWith("image/")) {
+                                  Swal.fire(
+                                    "Only image files are allowed!",
+                                    "",
+                                    "warning"
+                                  );
+                                  e.target.value = "";
+                                  return;
+                                }
+
+                                if (file.size > 2 * 1024 * 1024) {
+                                  Swal.fire(
+                                    "Each image must be less than 2 MB!",
+                                    "",
+                                    "warning"
+                                  );
+                                  e.target.value = "";
+                                  return;
+                                }
+
+                                validFiles.push(file);
+                              }
+
+                              if (validFiles.length > 0) {
+                                setFieldValue("patient_id_proof", validFiles);
+                              }
+                            }}
                           />
+
                           <ErrorMessage
                             name="patient_id_proof"
                             component="div"
@@ -352,40 +525,56 @@ export default function AddEnquiry() {
                       </div>
                       <div className="col-sm-6">
                         <div className="field-set">
-  <label>
-    Patient Profile <span className="text-danger"> </span>
-  </label>
-  <input
-    className="form-control"
-    type="file"
-    name="patient_Profile"
-    accept="image/*"  // <-- Only allows images
-    onChange={(e) => {
-      const file = e.currentTarget.files[0];
-      if (file) {
-        // Optional: further validation for file type
-        if (!file.type.startsWith("image/")) {
-          alert("Only image files are allowed!");
-          return;
-        }
-        setFieldValue("patient_Profile", file);
-      }
-    }}
-  />
-  <ErrorMessage
-    name="patient_Profile"
-    component="div"
-    className="text-danger"
-  />
-</div>
-
-                      </div>
-                       <div className="col-sm-6">
-                        <div className="field-set">
                           <label>
-                            Referral Name
+                            Patient Profile{" "}
+                            <span className="text-danger"> </span>
                           </label>
-                          <Field className="form-control" name="Referral_Name" />
+                          <input
+                            className="form-control"
+                            type="file"
+                            multiple
+                            name="patient_Profile"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.currentTarget.files[0];
+                              if (file) {
+                                if (!file.type.startsWith("image/")) {
+                                  Swal.fire(
+                                    "Only image files are allowed!",
+                                    "",
+                                    "warning"
+                                  );
+                                  e.target.value = "";
+                                  return;
+                                }
+                                if (file.size > 2 * 1024 * 1024) {
+                                  Swal.fire(
+                                    "Image must be less than 2 MB!",
+                                    "",
+                                    "warning"
+                                  );
+                                  e.target.value = "";
+                                  return;
+                                }
+
+                                setFieldValue("patient_Profile", file);
+                              }
+                            }}
+                          />
+                          <ErrorMessage
+                            name="patient_Profile"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>Referral Name</label>
+                          <Field
+                            className="form-control"
+                            name="Referral_Name"
+                          />
                           <ErrorMessage
                             name="Referral_Name"
                             component="div"
@@ -469,13 +658,35 @@ export default function AddEnquiry() {
                                 className="form-control"
                                 type="file"
                                 name="patient_relation_id"
-                                onChange={(e) =>
-                                  setFieldValue(
-                                    "patient_relation_id",
-                                    e.currentTarget.files[0]
-                                  )
-                                }
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.currentTarget.files[0];
+                                  if (file) {
+                                    if (!file.type.startsWith("image/")) {
+                                      Swal.fire(
+                                        "Only image files are allowed!",
+                                        "",
+                                        "warning"
+                                      );
+                                      e.target.value = "";
+                                      return;
+                                    }
+
+                                    if (file.size > 2 * 1024 * 1024) {
+                                      Swal.fire(
+                                        "Image must be less than 2 MB!",
+                                        "",
+                                        "warning"
+                                      );
+                                      e.target.value = "";
+                                      return;
+                                    }
+
+                                    setFieldValue("patient_relation_id", file);
+                                  }
+                                }}
                               />
+
                               <ErrorMessage
                                 name="patient_relation_id"
                                 component="div"
@@ -489,10 +700,7 @@ export default function AddEnquiry() {
                                 Attendant Address
                                 <span className="text-danger">*</span>
                               </label>
-                              <Field
-                                className="form-control"
-                                name="address"
-                              />
+                              <Field className="form-control" name="address" />
                               <ErrorMessage
                                 name="address"
                                 component="div"
@@ -500,24 +708,24 @@ export default function AddEnquiry() {
                               />
                             </div>
                           </div>
-                       <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            {" "}
-                            Attendant Contact 
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="patient_relation_no"
-                          />
-                          <ErrorMessage
-                            name="patient_relation_no"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                                {" "}
+                                Attendant Contact
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation_no"
+                              />
+                              <ErrorMessage
+                                name="patient_relation_no"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </>
                     )}

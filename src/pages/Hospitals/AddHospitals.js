@@ -1,46 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
-import { AddHospitalData } from '../../reducer/HospitalSlice'
+import { AddHospitalData } from "../../reducer/HospitalSlice";
 import { useNavigate } from "react-router-dom";
-import hospital from '../../img/hospital 3.jpg'
+import hospital from "../../img/hospital 3.jpg";
 import { GetAllCountries2 } from "../../reducer/Countries";
 import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
 export default function AddHospitals() {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(null);
-  const { hospital, loading, error } = useSelector((state => state.staff))
-  const {Countries} = useSelector((state)=>state.Countries)
-
-useEffect(()=>{
-dispatch(GetAllCountries2())
-},[])
-
+  const { hospital, loading, error } = useSelector((state) => state.staff);
+  const { Countries } = useSelector((state) => state.Countries);
+  useEffect(() => {
+    dispatch(GetAllCountries2());
+  }, []);
   const basicSchema = Yup.object().shape({
     hospitalName: Yup.string()
-      .required('Name is required')
-      .min(2, 'Name must be at least 2 characters')
-      .max(50, 'Name cannot exceed 50 characters'),
-    location: Yup.string()
-      .required("Location is Required"),
-    country: Yup.string()
-      .required("country is Required"),
+      .required("Name is required")
+      .min(2, "Name must be at least 2 characters")
+      .max(50, "Name cannot exceed 50 characters"),
+    location: Yup.string().required("Location is Required"),
+    country: Yup.string().required("country is Required"),
     hospitalCode: Yup.string()
-      // .matches(passwordRules, { message: "Please create a stronger password" })
       .required("Hospital code is  Required"),
     contact: Yup.string()
-      .matches(/^[0-9]{10,11}$/, 'Phone number must be 10-11 digits')
-      .required('Phone number is required'),
+      .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
+      .required("Phone number is required"),
     hospitalImage: Yup.mixed()
-      .required('Image is required')
-      .test('fileSize', 'File size is too large (Max: 2MB)', (value) =>
+      .required("Image is required")
+      .test("fileSize", "File size is too large (Max: 2MB)", (value) =>
         value ? value.size <= 2 * 1024 * 1024 : true
       )
-      .test('fileType', 'Unsupported file format', (value) =>
-        value ? ['image/jpeg', 'image/png', 'application/pdf'].includes(value.type) : true
+      .test("fileType", "Unsupported file format", (value) =>
+        value
+          ? ["image/jpeg", "image/png", "application/pdf"].includes(value.type)
+          : true
       ),
   });
   return (
@@ -49,9 +46,18 @@ dispatch(GetAllCountries2())
         <div className="content">
           <div className="row">
             <div className="col-md-12">
-              <h4 className="page-title"><span><i class="fi fi-sr-angle-double-small-left" onClick={()=>{
-                                    window.history.back()
-                                }} style={{cursor:"pointer"}}></i></span>New Hospital</h4>
+              <h4 className="page-title">
+                <span>
+                  <i
+                    class="fi fi-sr-angle-double-small-left"
+                    onClick={() => {
+                      window.history.back();
+                    }}
+                    style={{ cursor: "pointer" }}
+                  ></i>
+                </span>
+                New Hospital
+              </h4>
             </div>
           </div>
           <div className="main_content">
@@ -67,12 +73,18 @@ dispatch(GetAllCountries2())
               validationSchema={basicSchema}
               onSubmit={async (values, { setSubmitting }) => {
                 try {
-                  const result = await dispatch(AddHospitalData(values)).unwrap();
+                  const result = await dispatch(
+                    AddHospitalData(values)
+                  ).unwrap();
                   Swal.fire("Hospital added successfully!", "", "success");
                   navigate("/Admin/Hospitals");
                 } catch (err) {
-                  console.log(err)
-                  Swal.fire("Error!", err?.message || "An error occurred", "error");
+                  console.log(err);
+                  Swal.fire(
+                    "Error!",
+                    err?.message || "An error occurred",
+                    "error"
+                  );
                 }
                 setSubmitting(false);
               }}
@@ -82,105 +94,146 @@ dispatch(GetAllCountries2())
                   <div className="row">
                     <div className="col-sm-6">
                       <div className="field-set">
-                        <label>Hospital Name<span className="text-danger">*</span></label>
-                        <Field className="form-control" type="text" name="hospitalName" />
-                        <ErrorMessage name="hospitalName" component="div" style={{ color: "red" }} />
+                        <label>
+                          Hospital Name<span className="text-danger">*</span>
+                        </label>
+                        <Field
+                          className="form-control"
+                          type="text"
+                          name="hospitalName"
+                        />
+                        <ErrorMessage
+                          name="hospitalName"
+                          component="div"
+                          style={{ color: "red" }}
+                        />
                       </div>
                     </div>
                     <div className="col-sm-6">
                       <div className="field-set">
-                        <label>Location<span className="text-danger">*</span></label>
-                        <Field className="form-control" type="text" name="location" />
-                        <ErrorMessage name="location" component="div" style={{ color: "red" }} />
+                        <label>
+                          Location<span className="text-danger">*</span>
+                        </label>
+                        <Field
+                          className="form-control"
+                          type="text"
+                          name="location"
+                        />
+                        <ErrorMessage
+                          name="location"
+                          component="div"
+                          style={{ color: "red" }}
+                        />
                       </div>
                     </div>
                     <div className="col-sm-6">
                       <div className="field-set">
-                        <label>Hospital Code<span className="text-danger">*</span></label>
-                        <Field className="form-control" type="text" name="hospitalCode" />
-                        <ErrorMessage name="hospitalCode" component="div" style={{ color: "red" }} />
+                        <label>
+                          Hospital Code<span className="text-danger">*</span>
+                        </label>
+                        <Field
+                          className="form-control"
+                          type="text"
+                          name="hospitalCode"
+                        />
+                        <ErrorMessage
+                          name="hospitalCode"
+                          component="div"
+                          style={{ color: "red" }}
+                        />
                       </div>
                     </div>
                     <div className="col-sm-6">
                       <div className="field-set">
-                        <label>Contact<span className="text-danger">*</span> </label>
-                        <Field className="form-control" type="text" name="contact" />
-                        <ErrorMessage name="contact" component="div" style={{ color: "red" }} />
+                        <label>
+                          Contact<span className="text-danger">*</span>{" "}
+                        </label>
+                        <Field
+                          className="form-control"
+                          type="text"
+                          name="contact"
+                        />
+                        <ErrorMessage
+                          name="contact"
+                          component="div"
+                          style={{ color: "red" }}
+                        />
                       </div>
                     </div>
-                     <div className="col-sm-6">
-                                         <div className="field-set">
-                                                                  <label>
-                                                                    Country<span className="text-danger">*</span>
-                                                                  </label>
-                                                                  <Field name="country">
-                                                                    {({ field, form }) => (
-                                                                      <>
-                                                                        <FormControl fullWidth size="small">
-                                                                          <Select
-                                                                            value={field.value}
-                                                                            onChange={(e) =>
-                                                                              form.setFieldValue(
-                                                                                "country",
-                                                                                e.target.value
-                                                                              )
-                                                                            }
-                                                                            input={
-                                                                              <OutlinedInput placeholder="Select Country" />
-                                                                            }
-                                                                            displayEmpty
-                                                                            sx={{ height: 40 }}
-                                                                            className="select-country form-control"
-                                                                            MenuProps={{
-                                                                              PaperProps: {
-                                                                                style: { maxHeight: 200 },
-                                                                              },
-                                                                            }}
-                                                                          >
-                                                                            <MenuItem value="">
-                                                                              <em>Select Country</em>
-                                                                            </MenuItem>
-                                                                            {Countries && Countries.length > 0 ? (
-                                                                              Countries.map((con, idx) => (
-                                                                                <MenuItem key={idx} value={con.name}>
-                                                                                  {con.name}
-                                                                                </MenuItem>
-                                                                              ))
-                                                                            ) : (
-                                                                              <MenuItem disabled>
-                                                                                No countries available
-                                                                              </MenuItem>
-                                                                            )}
-                                                                          </Select>
-                                                                        </FormControl>
-                                                                        <ErrorMessage
-                                                                          name="country"
-                                                                          component="div"
-                                                                          style={{ color: "red" }}
-                                                                        />
-                                                                      </>
-                                                                    )}
-                                                                  </Field>
-                                                                </div>
-                                      </div>
                     <div className="col-sm-6">
                       <div className="field-set">
-                        <label>Hospital Image<span className="text-danger">*</span></label>
+                        <label>
+                          Country<span className="text-danger">*</span>
+                        </label>
+                        <Field name="country">
+                          {({ field, form }) => (
+                            <>
+                              <FormControl fullWidth size="small">
+                                <Select
+                                  value={field.value}
+                                  onChange={(e) =>
+                                    form.setFieldValue(
+                                      "country",
+                                      e.target.value
+                                    )
+                                  }
+                                  input={
+                                    <OutlinedInput placeholder="Select Country" />
+                                  }
+                                  displayEmpty
+                                  sx={{ height: 40 }}
+                                  className="select-country form-control"
+                                  MenuProps={{
+                                    PaperProps: {
+                                      style: { maxHeight: 200 },
+                                    },
+                                  }}
+                                >
+                                  <MenuItem value="">
+                                    <em>Select Country</em>
+                                  </MenuItem>
+                                  {Countries && Countries.length > 0 ? (
+                                    Countries.map((con, idx) => (
+                                      <MenuItem key={idx} value={con.name}>
+                                        {con.name}
+                                      </MenuItem>
+                                    ))
+                                  ) : (
+                                    <MenuItem disabled>
+                                      No countries available
+                                    </MenuItem>
+                                  )}
+                                </Select>
+                              </FormControl>
+                              <ErrorMessage
+                                name="country"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </>
+                          )}
+                        </Field>
+                      </div>
+                    </div>
+                    <div className="col-sm-6">
+                      <div className="field-set">
+                        <label>
+                          Hospital Image<span className="text-danger">*</span>
+                        </label>
                         <div className="profile-upload">
                           <div className="upload-img">
                             {selectedImage ? (
                               <img
                                 alt="preview"
                                 src={URL.createObjectURL(selectedImage)}
-                              // style={{ width: "100px", height: "100px", objectFit: "cover" }}
                               />
                             ) : (
                               <img
                                 alt="default avatar"
                                 src="https://thumbs.dreamstime.com/b/hospital-ambulances-took-injured-to-70641786.jpg?w=992"
-                                // style={{ width: "100px", height: "100px", objectFit: "cover" }}
                                 onError={(e) => {
-                                  e.target.src = "https://via.placeholder.com/150";
+                                  e.target.src =
+                                    "https://via.placeholder.com/150";
                                 }}
                               />
                             )}
@@ -190,11 +243,18 @@ dispatch(GetAllCountries2())
                               type="file"
                               className="form-control"
                               onChange={(event) => {
-                                setFieldValue("hospitalImage", event.target.files[0]);
+                                setFieldValue(
+                                  "hospitalImage",
+                                  event.target.files[0]
+                                );
                                 setSelectedImage(event.target.files[0]);
                               }}
                             />
-                            <ErrorMessage name="hospitalImage" component="div" style={{ color: "red" }} />
+                            <ErrorMessage
+                              name="hospitalImage"
+                              component="div"
+                              style={{ color: "red" }}
+                            />
                           </div>
                         </div>
                       </div>
@@ -210,5 +270,5 @@ dispatch(GetAllCountries2())
         </div>
       </div>
     </>
-  )
+  );
 }

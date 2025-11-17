@@ -33,7 +33,7 @@ export default function EditEnquiry() {
       const selectedUser = Enquiry.find(
         (item) => item.enquiryId === location.state.enquiryId
       );
-      console.log(selectedUser)
+      console.log(selectedUser);
       setEnquiry(selectedUser || {});
     }
   }, [location.state?.enquiryId, Enquiry]);
@@ -96,29 +96,92 @@ export default function EditEnquiry() {
                   patient_emergency_contact_no:
                     editenquiry?.patient_emergency_contact_no || "",
                   patient_relation: editenquiry?.patient_relation || "",
-                  Referral_Name: editenquiry?.Referral_Name || "",   
+                  Referral_Name: editenquiry?.Referral_Name || "",
+                  dial_code: editenquiry?.dial_code || "",
                   address: editenquiry?.address || "",
                   patient_relation_no: editenquiry?.patient_relation_no || "",
-                  patient_relation_address: editenquiry?.patient_relation_address || "",
+                  patient_relation_address:
+                    editenquiry?.patient_relation_address || "",
                   relation_id: null,
-                  patient_id_proof: null,
+                  patient_id_proof: [],
                   patient_Profile: null,
                 }}
                 validationSchema={basicSchema}
+                // onSubmit={async (values, { setSubmitting }) => {
+                //   const formData = new FormData();
+
+                //   for (const key in values) {
+                //     if (key === "relation_id" && values.relation_id) {
+                //       formData.append("relation_id", values.relation_id);
+                //       formData.append(
+                //         "patient_Profile",
+                //         values.patient_Profile
+                //       );
+                //       formData.append(
+                //         "patient_id_proof",
+                //         values.patient_id_proof
+                //       );
+                //     } else {
+                //       formData.append(key, values[key]);
+                //     }
+                //   }
+
+                //   try {
+                //     await dispatch(
+                //       EditEnquiryType({
+                //         id: editenquiry.enquiryId,
+                //         formData,
+                //       })
+                //     ).unwrap();
+                //     Swal.fire("Enquiry updated successfully!", "", "success");
+                //     navigate("/Admin/Inquiry");
+                //   } catch (err) {
+                //     Swal.fire(
+                //       "Error!",
+                //       err?.message || "An error occurred",
+                //       "error"
+                //     );
+                //   }
+                //   setSubmitting(false);
+                // }}
                 onSubmit={async (values, { setSubmitting }) => {
                   const formData = new FormData();
 
+                  // Append normal fields (EXCEPT FILES)
                   for (const key in values) {
-                    if (key === "relation_id" && values.relation_id) {
-                      formData.append("relation_id", values.relation_id);
-                      formData.append("patient_Profile", values.patient_Profile);
-                      formData.append(
-                        "patient_id_proof",
-                        values.patient_id_proof
-                      );
-                    } else {
+                    if (
+                      key !== "patient_id_proof" &&
+                      key !== "patient_Profile" &&
+                      key !== "relation_id"
+                    ) {
                       formData.append(key, values[key]);
                     }
+                  }
+
+                  // ------------------------------
+                  // ✅ MULTIPLE FILES (VERY IMPORTANT)
+                  // ------------------------------
+                  if (
+                    values.patient_id_proof &&
+                    values.patient_id_proof.length > 0
+                  ) {
+                    values.patient_id_proof.forEach((file) => {
+                      formData.append("patient_id_proof", file);
+                    });
+                  }
+
+                  // ------------------------------
+                  // ✅ SINGLE FILE – Patient Profile
+                  // ------------------------------
+                  if (values.patient_Profile) {
+                    formData.append("patient_Profile", values.patient_Profile);
+                  }
+
+                  // ------------------------------
+                  // ✅ SINGLE FILE – Relation ID
+                  // ------------------------------
+                  if (values.relation_id) {
+                    formData.append("relation_id", values.relation_id);
                   }
 
                   try {
@@ -128,6 +191,7 @@ export default function EditEnquiry() {
                         formData,
                       })
                     ).unwrap();
+
                     Swal.fire("Enquiry updated successfully!", "", "success");
                     navigate("/Admin/Inquiry");
                   } catch (err) {
@@ -137,6 +201,7 @@ export default function EditEnquiry() {
                       "error"
                     );
                   }
+
                   setSubmitting(false);
                 }}
               >
@@ -260,42 +325,6 @@ export default function EditEnquiry() {
                             Country<span className="text-danger">*</span>
                           </label>
                           {/* <Field name="country">
-                            {({ field, form }) => (
-                              <>
-                                <FormControl fullWidth size="small">
-                                  <Select
-                                    value={field.value}
-                                    onChange={(e) =>
-                                      form.setFieldValue("country", e.target.value)
-                                    }
-                                    input={<OutlinedInput placeholder="Select Country" />}
-                                    className="select-country form-control"
-                                    displayEmpty
-                                    sx={{ height: 40 }}
-                                    MenuProps={{
-                                      PaperProps: {
-                                        style: {
-                                          maxHeight: 200, // Limit dropdown height
-                                        },
-                                      },
-                                    }}
-                                  >
-                                    <MenuItem value="">
-                                      <em>Select Country</em>
-                                    </MenuItem>
-                                    {Countries.map((country, i) => (
-                                      <MenuItem key={i} value={country.name}>
-                                        {country.name}
-                                      </MenuItem>
-                                    ))}
-                                  </Select>
-                                </FormControl>
-                                <ErrorMessage name="country" component="div" style={{ color: "red" }} />
-                              </>
-                            )}
-                          </Field> */}
-
-                          <Field name="country">
                             {({ field, form: { setFieldValue }, meta }) => (
                               <FormControl
                                 fullWidth
@@ -337,7 +366,68 @@ export default function EditEnquiry() {
                                 />
                               </FormControl>
                             )}
+                          </Field> */}
+
+                          <Field name="country">
+                            {({ field, form: { setFieldValue }, meta }) => (
+                              <FormControl
+                                fullWidth
+                                size="small"
+                                error={!!meta.touched && !!meta.error}
+                              >
+                                <InputLabel>Select Country</InputLabel>
+
+                                <Select
+                                  value={field.value}
+                                  onChange={(e) => {
+                                    const selected = Countries.find(
+                                      (c) => c.name === e.target.value
+                                    );
+
+                                    setFieldValue("country", e.target.value);
+                                    setFieldValue(
+                                      "dial_code",
+                                      selected?.dial_code || ""
+                                    );
+                                  }}
+                                  input={
+                                    <OutlinedInput label="Select Country" />
+                                  }
+                                  displayEmpty
+                                  sx={{ height: 40 }}
+                                >
+                                  <MenuItem value="">
+                                    <em>Select Country</em>
+                                  </MenuItem>
+
+                                  {Countries.map((country, i) => (
+                                    <MenuItem key={i} value={country.name}>
+                                      {country.name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+
+                                <ErrorMessage
+                                  name="country"
+                                  component="div"
+                                  style={{ color: "red" }}
+                                />
+                              </FormControl>
+                            )}
                           </Field>
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Dial Code<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" name="dial_code" />
+                          <ErrorMessage
+                            name="dial_code"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
                         </div>
                       </div>
                       <div className="col-sm-6">
@@ -345,10 +435,7 @@ export default function EditEnquiry() {
                           <label>
                             Town<span className="text-danger">*</span>
                           </label>
-                          <Field
-                            className="form-control"
-                            name="town"
-                          />
+                          <Field className="form-control" name="town" />
                           <ErrorMessage
                             name="town"
                             component="div"
@@ -412,12 +499,11 @@ export default function EditEnquiry() {
                             type="file"
                             name="patient_id_proof"
                             accept="image/*,application/pdf"
-                            onChange={(e) =>
-                              setFieldValue(
-                                "patient_id_proof",
-                                e.currentTarget.files[0]
-                              )
-                            }
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.currentTarget.files);
+                              setFieldValue("patient_id_proof", files);
+                            }}
                           />
                           <div className="w-25 h-25 my-2">
                             <img
@@ -465,7 +551,7 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                         <div className="col-sm-6">
+                      <div className="col-sm-6">
                         <div className="field-set">
                           <label>
                             Referral Name<span className="text-danger">*</span>
@@ -482,7 +568,7 @@ export default function EditEnquiry() {
                         </div>
                       </div>
                     </div>
-                   
+
                     <div className="treat-hd">
                       <h6>Attendant Details</h6>
                       <span className="line"></span>

@@ -120,42 +120,6 @@ const {Countries} = useSelector((state)=>state.Countries)
                                               <label>
                                                 Country<span className="text-danger">*</span>
                                               </label>
-                                              {/* <Field name="country">
-                                                {({ field, form }) => (
-                                                  <>
-                                                    <FormControl fullWidth size="small">
-                                                      <Select
-                                                        value={field.value}
-                                                        onChange={(e) =>
-                                                          form.setFieldValue("country", e.target.value)
-                                                        }
-                                                        input={<OutlinedInput placeholder="Select Country" />}
-                                                        className="select-country form-control"
-                                                        displayEmpty
-                                                        sx={{ height: 40 }}
-                                                        MenuProps={{
-                                                          PaperProps: {
-                                                            style: {
-                                                              maxHeight: 200, // Limit dropdown height
-                                                            },
-                                                          },
-                                                        }}
-                                                      >
-                                                        <MenuItem value="">
-                                                          <em>Select Country</em>
-                                                        </MenuItem>
-                                                        {Countries.map((country, i) => (
-                                                          <MenuItem key={i} value={country.name}>
-                                                            {country.name}
-                                                          </MenuItem>
-                                                        ))}
-                                                      </Select>
-                                                    </FormControl>
-                                                    <ErrorMessage name="country" component="div" style={{ color: "red" }} />
-                                                  </>
-                                                )}
-                                              </Field> */}
-                    
                                               <Field name="country">
                                                 {({ field, form: { setFieldValue }, meta }) => (
                                                   <FormControl
@@ -231,8 +195,6 @@ const {Countries} = useSelector((state)=>state.Countries)
                               }}
                             />
                           </div>
-
-
                           <ErrorMessage name="hospitalImage" component="div" style={{ color: "red" }} />
                         </div>
                       </div>
@@ -245,7 +207,6 @@ const {Countries} = useSelector((state)=>state.Countries)
                 </Form>
               )}
             </Formik>
-
           </div>
         </div>
       </div>
