@@ -11,6 +11,7 @@ import permissionsSlice from "../reducer/PermissionsSlice";
 import userreducer from "../reducer/userSlice";
 import Countriesreducer from "../reducer/Countries";
 import chnagepermisson from "../reducer/NewpermissonsSlice";
+import ActivityReducer from "../reducer/ActivitySlice"
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -25,5 +26,7 @@ export const store = configureStore({
     getuser: userreducer,
     Countries: Countriesreducer,
     NewPermissions: chnagepermisson,
+    Activity: ActivityReducer,
+
   },
 });

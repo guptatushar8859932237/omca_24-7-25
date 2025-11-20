@@ -50,6 +50,8 @@ import EditService from "./pages/Services Section/EditService";
 import Totaluser from "./pages/Hospitals/Totaluser";
 import PAymentpdf from "./pages/Patient/PAymentpdf";
 import Pagefilterdata from "./pages/Pagefilterdata";
+import ActivityTracker from "./pages/ActivityTracker";
+import ActivityUser from "./pages/ActivityUser";
 function App() {
   console.log("22/04/25");
   return (
@@ -106,6 +108,8 @@ function App() {
               />
               <Route index path="/Admin/settings" element={<Settings />} />
               <Route index path="/Admin/profile" element={<Profile />} />
+              <Route index path="/Admin/Activity-user" element={<ActivityUser />} />
+              <Route index path="/Admin/Activity-tracker" element={<ActivityTracker />} />
               <Route
                 index
                 path="/Admin/edit-profile"

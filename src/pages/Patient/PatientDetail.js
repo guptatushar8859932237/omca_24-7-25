@@ -1167,6 +1167,21 @@ function PatientDetail() {
                                           </div>
                                         </div>
                                       </div>
+                                      <div className="row">
+                                        <div className="col-sm-3">
+                                          <div className="para-main-div">
+                                            <h6>Date-Time:</h6>
+                                          </div>
+                                        </div>
+                                        <div className="col-sm-5">
+                                          <div className="para-main-div">
+                                            <p>
+                                              {info.treatment_course_fee}{" "}
+                                              {info.duration}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
                                     </li>
                                   </ul>
                                   <div className="service-list">
@@ -2706,7 +2721,7 @@ function PatientDetail() {
                     <label>
                       Payment Date<span className="text-danger">*</span>
                     </label>
-                    <input
+                    {/* <input
                       type="date"
                       id="birthday"
                       name="payment_Date"
@@ -2715,7 +2730,17 @@ function PatientDetail() {
                       onChange={AddpaymentOnchnage}
                       value={data.payment_Date}
                       min={new Date().toISOString().split("T")[0]}
-                    />
+                    /> */}
+                    <input
+  type="date"
+  id="birthday"
+  name="payment_Date"
+  placeholder="Appointment Date"
+  className="form-control"
+  onChange={AddpaymentOnchnage}
+  value={data.payment_Date}
+  max={new Date().toISOString().split("T")[0]}  // Prevent future date
+/>
                   </div>
                   <DialogActions className="submit-main">
                     <Button

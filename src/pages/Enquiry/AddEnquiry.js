@@ -15,7 +15,7 @@ export default function AddEnquiry() {
   const navigate = useNavigate();
   const [showAttendant, setShowAttendant] = useState(false);
   const { loading } = useSelector((state) => state.Enquiry);
-  const [countryn,setCountryn]=useState({})
+  const [countryn, setCountryn] = useState({});
   const { Countries } = useSelector((state) => state.Countries);
   useEffect(() => {
     dispatch(GetAllCountries2());
@@ -104,41 +104,49 @@ export default function AddEnquiry() {
                 //   setSubmitting(false);
                 // }}
                 onSubmit={async (values, { setSubmitting }) => {
-  const formData = new FormData();
+                  const formData = new FormData();
 
-  // Append all normal fields
-  for (const key in values) {
-    if (
-      key !== "patient_id_proof" &&
-      key !== "patient_Profile"
-    ) {
-      formData.append(key, values[key]);
-    }
-  }
+                  // Append all normal fields
+                  for (const key in values) {
+                    if (
+                      key !== "patient_id_proof" &&
+                      key !== "patient_Profile"
+                    ) {
+                      formData.append(key, values[key]);
+                    }
+                  }
 
-  // ---------- MULTIPLE FILES FIX ----------
-  if (values.patient_id_proof && values.patient_id_proof.length > 0) {
-    values.patient_id_proof.forEach((file) => {
-      formData.append("patient_id_proof", file);
-    });
-  }
+                  // ---------- MULTIPLE FILES FIX ----------
+                  if (
+                    values.patient_id_proof &&
+                    values.patient_id_proof.length > 0
+                  ) {
+                    values.patient_id_proof.forEach((file) => {
+                      formData.append("patient_id_proof", file);
+                    });
+                  }
 
-  // ---------- SINGLE FILE ----------
-  if (values.patient_Profile) {
-    formData.append("patient_Profile", values.patient_Profile);
-  }
+                  // ---------- SINGLE FILE ----------
+                  if (values.patient_Profile) {
+                    formData.append("patient_Profile", values.patient_Profile);
+                  }
 
-  try {
-    const result = await dispatch(AddEnquirys(formData)).unwrap();
-    Swal.fire(result.message, "", "success");
-    navigate("/Admin/Inquiry");
-  } catch (err) {
-    Swal.fire("Error!", err?.message || "Something went wrong", "error");
-  }
+                  try {
+                    const result = await dispatch(
+                      AddEnquirys(formData)
+                    ).unwrap();
+                    Swal.fire(result.message, "", "success");
+                    navigate("/Admin/Inquiry");
+                  } catch (err) {
+                    Swal.fire(
+                      "Error!",
+                      err?.message || "Something went wrong",
+                      "error"
+                    );
+                  }
 
-  setSubmitting(false);
-}}
-
+                  setSubmitting(false);
+                }}
               >
                 {({ isSubmitting, setFieldValue }) => (
                   <Form>
@@ -203,54 +211,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            {" "}
-                            Phone No / WhatsApp
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="emergency_contact_no"
-                          />
-                          <ErrorMessage
-                            name="emergency_contact_no"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Emergency Contact No
-                            <span className="text-danger"></span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="patient_emergency_contact_no"
-                          />
-                          <ErrorMessage
-                            name="patient_emergency_contact_no"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Disease Name<span className="text-danger">*</span>
-                          </label>
-                          <Field className="form-control" name="disease_name" />
-                          <ErrorMessage
-                            name="disease_name"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
+
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
@@ -316,7 +277,7 @@ export default function AddEnquiry() {
                               </>
                             )}
                           </Field> */}
-                       {/* <Field name="country">
+                          {/* <Field name="country">
   {({ field, form }) => (
     <>
       <FormControl fullWidth size="small">
@@ -353,55 +314,123 @@ export default function AddEnquiry() {
     </>
   )}
 </Field> */}
-        <Field name="country">
-  {({ field, form }) => (
-    <>
-      <FormControl fullWidth size="small">
-        <Select
-          value={field.value}
-          onChange={(e) => {
-            const selectedName = e.target.value;
+                          <Field name="country">
+                            {({ field, form }) => (
+                              <>
+                                <FormControl fullWidth size="small">
+                                  <Select
+                                    value={field.value}
+                                    onChange={(e) => {
+                                      const selectedName = e.target.value;
 
-            const selectedCountry = Countries.find(
-              (c) => c.name === selectedName
-            );
+                                      const selectedCountry = Countries.find(
+                                        (c) => c.name === selectedName
+                                      );
 
-            form.setFieldValue("country", selectedName);
-            form.setFieldValue("dial_code", selectedCountry?.dial_code || "");
+                                      form.setFieldValue(
+                                        "country",
+                                        selectedName
+                                      );
+                                      form.setFieldValue(
+                                        "dial_code",
+                                        selectedCountry?.dial_code || ""
+                                      );
 
-            console.log("Selected:", selectedCountry);
-          }}
-          input={<OutlinedInput placeholder="Select Country" />}
-          displayEmpty
-          sx={{ height: 40 }}
-        >
-          <MenuItem value="">
-            <em>Select Country</em>
-          </MenuItem>
+                                      console.log("Selected:", selectedCountry);
+                                    }}
+                                    input={
+                                      <OutlinedInput placeholder="Select Country" />
+                                    }
+                                    displayEmpty
+                                    sx={{ height: 40 }}
+                                  >
+                                    <MenuItem value="">
+                                      <em>Select Country</em>
+                                    </MenuItem>
 
-          {Countries?.length > 0 ? (
-            Countries.map((con, idx) => (
-              <MenuItem key={idx} value={con.name}>
-                {con.name}
-              </MenuItem>
-            ))
-          ) : (
-            <MenuItem disabled>No countries available</MenuItem>
-          )}
-        </Select>
-      </FormControl>
+                                    {Countries?.length > 0 ? (
+                                      Countries.map((con, idx) => (
+                                        <MenuItem key={idx} value={con.name}>
+                                          {con.name}
+                                        </MenuItem>
+                                      ))
+                                    ) : (
+                                      <MenuItem disabled>
+                                        No countries available
+                                      </MenuItem>
+                                    )}
+                                  </Select>
+                                </FormControl>
 
-      <ErrorMessage
-        name="country"
-        component="div"
-        style={{ color: "red" }}
-      />
-    </>
-  )}
-</Field>
-
+                                <ErrorMessage
+                                  name="country"
+                                  component="div"
+                                  style={{ color: "red" }}
+                                />
+                              </>
+                            )}
+                          </Field>
                         </div>
                       </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Disease Name<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" name="disease_name" />
+                          <ErrorMessage
+                            name="disease_name"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>Dial Code</label>
+                          <Field
+                            className="form-control"
+                            name="dial_code"
+                            disabled
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            {" "}
+                            Phone No / WhatsApp
+                            <span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="emergency_contact_no"
+                          />
+                          <ErrorMessage
+                            name="emergency_contact_no"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Emergency Contact No
+                            <span className="text-danger"></span>
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="patient_emergency_contact_no"
+                          />
+                          <ErrorMessage
+                            name="patient_emergency_contact_no"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
@@ -460,16 +489,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
-  <div className="field-set">
-    <label>Dial Code</label>
-    <Field
-      className="form-control"
-      name="dial_code"
-      disabled
-    />
-  </div>
-</div>
+
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>

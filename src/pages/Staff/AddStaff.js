@@ -12,14 +12,24 @@ import {
   FormControl,
   Checkbox,
   ListItemText,
-  OutlinedInput
+  OutlinedInput,
 } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import { GetAllCountries2 } from "../../reducer/Countries";
 export default function AddStaff() {
-const { Countries } = useSelector((state)=>state.Countries)
-
-    const statusOptions = ["Foundation","Private","Travelled","Confirmed","Pending","On Hold","Cancel", "Passed Away", "Local Case", "Follow Up"];
+  const { Countries } = useSelector((state) => state.Countries);
+  const statusOptions = [
+    "Foundation",
+    "Private",
+    "Travelled",
+    "Confirmed",
+    "Pending",
+    "On Hold",
+    "Cancel",
+    "Passed Away",
+    "Local Case",
+    "Follow Up",
+  ];
   const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(null);
   const { staff, loading, error } = useSelector((state) => state.staff);
@@ -30,8 +40,7 @@ const { Countries } = useSelector((state)=>state.Countries)
       .required("Name is required")
       .min(2, "Name must be at least 2 characters")
       .max(50, "Name cannot exceed 50 characters"),
-      country:Yup.string()
-      .required("Country is Required"),
+    country: Yup.string().required("Country is Required"),
     role: Yup.string()
       .required("Role is required")
       .min(2, "Role must be at least 2 characters")
@@ -44,9 +53,9 @@ const { Countries } = useSelector((state)=>state.Countries)
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
       .required("Phone number is required"),
     gender: Yup.string()
-      .oneOf(["Male", "Female", "Others"], "Invalid gender selection") // Predefined valid values
-      .required("Gender is required"), // Make it mandatory
-          roleStatuses: Yup.array()
+      .oneOf(["Male", "Female", "Others"], "Invalid gender selection") 
+      .required("Gender is required"), 
+    roleStatuses: Yup.array()
       .min(1, "Please select at least one status")
       .required("Status is required"),
     profileImage: Yup.mixed()
@@ -54,17 +63,15 @@ const { Countries } = useSelector((state)=>state.Countries)
       .test("fileSize", "File size is too large (Max: 2MB)", (value) =>
         value ? value.size <= 2 * 1024 * 1024 : true
       )
-      
       .test("fileType", "Unsupported file format", (value) =>
         value
           ? ["image/jpeg", "image/png", "application/pdf"].includes(value.type)
           : true
       ),
   });
-
-  useEffect(()=>{
-    dispatch(GetAllCountries2)
-  })
+  useEffect(() => {
+    dispatch(GetAllCountries2);
+  },[dispatch]);
   return (
     <>
       <div className="page-wrapper">
@@ -96,14 +103,14 @@ const { Countries } = useSelector((state)=>state.Countries)
                 gender: "",
                 phone_no: "",
                 name: "",
+                dial_code: "",
                 country: "",
                 profileImage: null,
-                  roleStatuses: []
+                roleStatuses: [],
               }}
               validationSchema={basicSchema}
-               onSubmit={async (values, { setSubmitting }) => {
-
-                console.log(values)
+              onSubmit={async (values, { setSubmitting }) => {
+                console.log(values);
                 try {
                   const result = await dispatch(
                     AddAllStaffuser(values)
@@ -201,6 +208,7 @@ const { Countries } = useSelector((state)=>state.Countries)
                           <option value="">Select Role</option>
                           <option value="Manager">Manager</option>
                           <option value="Receptionist">Receptionist</option>
+                          <option value="Doctor">Doctor</option>
                           <option value="Finance">Finance</option>
                           <option value="Coordinator">Coordinator</option>
                         </Field>
@@ -211,61 +219,84 @@ const { Countries } = useSelector((state)=>state.Countries)
                         />
                       </div>
                     </div>
-                       <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Country<span className="text-danger">*</span>
-                          </label>
-                          <Field name="country">
-                            {({ field, form }) => (
-                              <>
-                                <FormControl fullWidth size="small">
-                                  <Select
-                                    value={field.value}
-                                    onChange={(e) =>
-                                      form.setFieldValue(
-                                        "country",
-                                        e.target.value
-                                      )
-                                    }
-                                    input={
-                                      <OutlinedInput placeholder="Select Country" />
-                                    }
-                                    displayEmpty
-                                    sx={{ height: 40 }}
-                                    className="select-country form-control"
-                                    MenuProps={{
-                                      PaperProps: {
-                                        style: { maxHeight: 200 },
-                                      },
-                                    }}
-                                  >
-                                    <MenuItem value="">
-                                      <em>Select Country</em>
-                                    </MenuItem>
-                                    {Countries && Countries.length > 0 ? (
-                                      Countries.map((con, idx) => (
-                                        <MenuItem key={idx} value={con.name}>
-                                          {con.name}
-                                        </MenuItem>
-                                      ))
-                                    ) : (
-                                      <MenuItem disabled>
-                                        No countries available
+                    <div className="col-sm-6">
+                      <div className="field-set">
+                        <label>
+                          Country<span className="text-danger">*</span>
+                        </label>
+                        <Field name="country">
+                          {({ field, form }) => (
+                            <>
+                              <FormControl fullWidth size="small">
+                                <Select
+                                  value={field.value}
+                                  onChange={(e) => {
+                                    const selectedCountry = Countries.find(
+                                      (c) => c.name === e.target.value
+                                    );
+
+                                    // Set country name
+                                    form.setFieldValue(
+                                      "country",
+                                      e.target.value
+                                    );
+
+                                    // ⭐ Auto-set dial code
+                                    form.setFieldValue(
+                                      "dial_code",
+                                      selectedCountry?.dial_code || ""
+                                    );
+                                  }}
+                                  input={
+                                    <OutlinedInput placeholder="Select Country" />
+                                  }
+                                  displayEmpty
+                                  sx={{ height: 40 }}
+                                  className="select-country form-control"
+                                  MenuProps={{
+                                    PaperProps: { style: { maxHeight: 200 } },
+                                  }}
+                                >
+                                  <MenuItem value="">
+                                    <em>Select Country</em>
+                                  </MenuItem>
+
+                                  {Countries && Countries.length > 0 ? (
+                                    Countries.map((con, idx) => (
+                                      <MenuItem key={idx} value={con.name}>
+                                        {con.name}
                                       </MenuItem>
-                                    )}
-                                  </Select>
-                                </FormControl>
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
-                                />
-                              </>
-                            )}
-                          </Field>
-                        </div>
+                                    ))
+                                  ) : (
+                                    <MenuItem disabled>
+                                      No countries available
+                                    </MenuItem>
+                                  )}
+                                </Select>
+                              </FormControl>
+
+                              <ErrorMessage
+                                name="country"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </>
+                          )}
+                        </Field>
                       </div>
+                    </div>
+                    <div className="col-sm-6">
+                      <div className="field-set">
+                        <label>
+                          Dial Code<span className="text-danger">*</span>
+                        </label>
+                        <Field
+                          className="form-control"
+                          type="text"
+                          name="dial_code"
+                        />
+                      </div>
+                    </div>
                     <div className="col-sm-6">
                       <div className="field-set gender-select">
                         <label className="gen-label">
@@ -352,40 +383,43 @@ const { Countries } = useSelector((state)=>state.Countries)
                         />
                       </div>
                     </div>
-                     <div className="col-sm-6">
-                        <label>
-                          Give Permission<span className="text-danger">*</span>
-                        </label>
-                    <div className="field-set">
-                      <FormControl fullWidth>
-                        <InputLabel>Status</InputLabel>
-                        <Select
-                          multiple
-                          value={values.roleStatuses}
+                    <div className="col-sm-6">
+                      <label>
+                        Give Permission<span className="text-danger">*</span>
+                      </label>
+                      <div className="field-set">
+                        <FormControl fullWidth>
+                          <InputLabel>Status</InputLabel>
+                          <Select
+                            multiple
+                            value={values.roleStatuses}
+                            name="roleStatuses"
+                            onChange={(event) =>
+                              setFieldValue("roleStatuses", event.target.value)
+                            }
+                            className="form-control"
+                            renderValue={(selected) => selected.join(", ")}
+                          >
+                            {statusOptions.map((roleStatuses) => (
+                              <MenuItem key={roleStatuses} value={roleStatuses}>
+                                <Checkbox
+                                  checked={
+                                    values.roleStatuses.indexOf(roleStatuses) >
+                                    -1
+                                  }
+                                />
+                                <ListItemText primary={roleStatuses} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <ErrorMessage
                           name="roleStatuses"
-                          onChange={(event) =>
-                            setFieldValue("roleStatuses", event.target.value)
-                          }
-                          className="form-control"
-                          renderValue={(selected) => selected.join(", ")}
-                        >
-                          {statusOptions.map((roleStatuses) => (
-                            <MenuItem key={roleStatuses} value={roleStatuses}>
-                              <Checkbox
-                                checked={values.roleStatuses.indexOf(roleStatuses) > -1}
-                              />
-                              <ListItemText primary={roleStatuses} />
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <ErrorMessage
-                        name="roleStatuses"
-                        component="div"
-                        style={{ color: "red" }}
-                      />
+                          component="div"
+                          style={{ color: "red" }}
+                        />
+                      </div>
                     </div>
-                  </div>
                   </div>
                   <div className="">
                     <button

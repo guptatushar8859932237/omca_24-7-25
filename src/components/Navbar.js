@@ -58,6 +58,7 @@ export default function Navbar() {
           <div className="dropdown-menu">
             <Link className="dropdown-item" to="/Admin/profile">My Profile</Link>
             <Link className="dropdown-item" to="/Admin/chnage-password">Change Password</Link>
+            <Link className="dropdown-item" to="/Admin/Activity-tracker">Activity Tracker</Link>
             {/* <Link className="dropdown-item" to="/Admin/settings">Settings</Link> */}
             <button className="dropdown-item" onClick={handleLogout}>Logout</button>
           </div>

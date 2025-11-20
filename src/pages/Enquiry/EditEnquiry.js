@@ -157,10 +157,6 @@ export default function EditEnquiry() {
                       formData.append(key, values[key]);
                     }
                   }
-
-                  // ------------------------------
-                  // ✅ MULTIPLE FILES (VERY IMPORTANT)
-                  // ------------------------------
                   if (
                     values.patient_id_proof &&
                     values.patient_id_proof.length > 0
@@ -169,21 +165,12 @@ export default function EditEnquiry() {
                       formData.append("patient_id_proof", file);
                     });
                   }
-
-                  // ------------------------------
-                  // ✅ SINGLE FILE – Patient Profile
-                  // ------------------------------
                   if (values.patient_Profile) {
                     formData.append("patient_Profile", values.patient_Profile);
                   }
-
-                  // ------------------------------
-                  // ✅ SINGLE FILE – Relation ID
-                  // ------------------------------
                   if (values.relation_id) {
                     formData.append("relation_id", values.relation_id);
                   }
-
                   try {
                     await dispatch(
                       EditEnquiryType({

@@ -21,7 +21,10 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
+import DialogContent from "@mui/material/DialogContent";
+import Box from "@mui/material/Box";
 import {
+  Dialog,
   FormControl,
   MenuItem,
   Pagination,
@@ -31,11 +34,15 @@ import {
 import { toast } from "react-toastify";
 import { usePDF } from "react-to-pdf";
 export default function Patient() {
-    const role =localStorage.getItem("Role")
+  const role = localStorage.getItem("Role");
   const navigate = useNavigate();
   const [showActions, setShowActions] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [onVaue,setOnVaue]=useState('')
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState("sm");
+  const [openfilter, setOpenFilter] = React.useState(false);
   const [rows, setRows] = useState([]);
   const dispatch = useDispatch();
   const { patient, loading, error } = useSelector((state) => state.patient);
@@ -374,11 +381,109 @@ export default function Patient() {
       console.log(error);
     }
   };
+  const Filterdata = () => {
+    console.log("filter data");
+    setOpenFilter(true);
+  };
+  const closeFitler = () => {
+    console.log("filter data");
+    setOpenFilter(false);
+  };
+ 
+
+  const filterdataapi =async()=>{
+    console.log(onVaue)
+    try {
+         const response = await axios.get(`${baseurl}get_patients_by_status?p_status=${onVaue}`)
+      console.log(response.data.data)
+       setRows(response.data.data);
+      setSearchApiData(response.data.data);
+      closeFitler()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
+
   return (
     <>
       <div className="page-wrapper">
         <div className="content">
           <div className="row">
+            <React.Fragment>
+              <Dialog
+                fullWidth={fullWidth}
+                maxWidth={maxWidth}
+                open={openfilter}
+                onClose={closeFitler}
+              >
+                <div className="main-card-header">
+                  <div className="note-hd">
+                    <h6>Filter</h6>
+                  </div>
+                  <div className="cross-icon" onClick={closeFitler}>
+                    <i class="fa-solid fa-xmark"></i>
+                  </div>
+                </div>
+                <DialogContent className="main-box">
+                  <Box
+                    noValidate
+                    component="form"
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "fit-content",
+                    }}
+                    className="contact-form"
+                  >
+                    <Box>
+                      <TableCell>
+                        <FormControl
+                          sx={{ m: 1, minWidth: 500 }}
+                          size="large"
+                          className="cont-main"
+                        >
+                          <Select
+                            placeholder="Filter data"
+                            displayEmpty
+                            onChange={(e)=>{setOnVaue(e.target.value)}}
+                            inputProps={{
+                              "aria-label": "Without label",
+                            }}
+                            className="status-direct"
+                          >
+                            <em>select Data</em>
+                            <MenuItem value="Foundation">Foundation</MenuItem>
+                            <MenuItem value="Private">Private</MenuItem>
+                            <MenuItem value="Travelled"> Travelled</MenuItem>
+                            <MenuItem value="Confirmed">Confirmed</MenuItem>
+                            <MenuItem value="Pending">Pending</MenuItem>
+                            <MenuItem value="On Hold">On Hold</MenuItem>
+                            <MenuItem value="Cancel">Cancel</MenuItem>
+                            <MenuItem value="Local Case">Local Case</MenuItem>
+                            <MenuItem value="Follow Up">Follow Up</MenuItem>
+                            <MenuItem value="Passed Away">Passed Away</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <div className="d-flex justify-content-center">
+                        <button
+  className="add-button ms-2"
+  onClick={(e) => {
+    e.preventDefault();   // ⛔ stop page reload
+    filterdataapi();
+  }}
+>
+  Filter Data
+</button>
+                      </div>
+                    </Box>
+                  </Box>
+                </DialogContent>
+              </Dialog>
+            </React.Fragment>
             <div className="col-md-12">
               <div className="country-top">
                 <div className="">
@@ -422,14 +527,22 @@ export default function Patient() {
                     </span>
                     Export File
                   </button>
-                   {
-                      role ==="Admin" ?
-                  <button onClick={downloadPdf} className="add-button ms-2">
+                  <button onClick={Filterdata} className="add-button ms-2">
                     <span>
-                      <i className="fa fa-file-pdf-o"></i>
+                      <i className="fa fa-filter"></i>
                     </span>
-                    PDF
-                  </button> :"" }
+                    Filter
+                  </button>
+                  {role === "Admin" ? (
+                    <button onClick={downloadPdf} className="add-button ms-2">
+                      <span>
+                        <i className="fa fa-file-pdf-o"></i>
+                      </span>
+                      PDF
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>
