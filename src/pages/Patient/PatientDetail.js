@@ -1170,15 +1170,34 @@ function PatientDetail() {
                                       <div className="row">
                                         <div className="col-sm-3">
                                           <div className="para-main-div">
-                                            <h6>Date-Time:</h6>
+                                            <h6>Date:</h6>
                                           </div>
                                         </div>
                                         <div className="col-sm-5">
                                           <div className="para-main-div">
                                             <p>
-                                              {info.treatment_course_fee}{" "}
+                                              {new Date(info?.treatment_created_at).toLocaleDateString('en-GB')}{" "}
                                               {info.duration}
                                             </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="row">
+                                        <div className="col-sm-3">
+                                          <div className="para-main-div">
+                                            <h6>Time:</h6>
+                                          </div>
+                                        </div>
+                                        <div className="col-sm-5">
+                                          <div className="para-main-div">
+                                           <p>
+  {new Date(info?.treatment_created_at).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  })}{" "}
+  {info.duration}
+</p>
                                           </div>
                                         </div>
                                       </div>
