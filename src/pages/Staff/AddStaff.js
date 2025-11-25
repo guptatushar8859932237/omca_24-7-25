@@ -234,14 +234,10 @@ export default function AddStaff() {
                                     const selectedCountry = Countries.find(
                                       (c) => c.name === e.target.value
                                     );
-
-                                    // Set country name
                                     form.setFieldValue(
                                       "country",
                                       e.target.value
                                     );
-
-                                    // ⭐ Auto-set dial code
                                     form.setFieldValue(
                                       "dial_code",
                                       selectedCountry?.dial_code || ""
@@ -260,7 +256,6 @@ export default function AddStaff() {
                                   <MenuItem value="">
                                     <em>Select Country</em>
                                   </MenuItem>
-
                                   {Countries && Countries.length > 0 ? (
                                     Countries.map((con, idx) => (
                                       <MenuItem key={idx} value={con.name}>
@@ -274,7 +269,6 @@ export default function AddStaff() {
                                   )}
                                 </Select>
                               </FormControl>
-
                               <ErrorMessage
                                 name="country"
                                 component="div"

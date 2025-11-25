@@ -956,7 +956,12 @@ function PatientDetail() {
                     <div class="part-txt">
                       <h6>{ispatient?.patient_name}</h6>
                       {/* <p>{ispatient?.country}</p> */}
-                      <p>Patient ID : {ispatient?.patientNumber?ispatient?.patientNumber:ispatient?.patientId}</p>
+                      <p>
+                        Patient ID :{" "}
+                        {ispatient?.patientNumber
+                          ? ispatient?.patientNumber
+                          : ispatient?.patientId}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1176,7 +1181,11 @@ function PatientDetail() {
                                         <div className="col-sm-5">
                                           <div className="para-main-div">
                                             <p>
-                                              {new Date(info?.treatment_created_at).toLocaleDateString('en-GB')}{" "}
+                                              {new Date(
+                                                info?.treatment_created_at
+                                              ).toLocaleDateString(
+                                                "en-GB"
+                                              )}{" "}
                                               {info.duration}
                                             </p>
                                           </div>
@@ -1190,14 +1199,16 @@ function PatientDetail() {
                                         </div>
                                         <div className="col-sm-5">
                                           <div className="para-main-div">
-                                           <p>
-  {new Date(info?.treatment_created_at).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  })}{" "}
-  {info.duration}
-</p>
+                                            <p>
+                                              {new Date(
+                                                info?.treatment_created_at
+                                              ).toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                                second: "2-digit",
+                                              })}{" "}
+                                              {info.duration}
+                                            </p>
                                           </div>
                                         </div>
                                       </div>
@@ -1324,7 +1335,7 @@ function PatientDetail() {
                                   <div className="service-list">
                                     <h6>Appointment</h6>
                                   </div>
-                                    <ul className="mb-2">
+                                  <ul className="mb-2">
                                     {info.appointments_details?.map((item) => {
                                       console.log(item);
                                       return (
@@ -1342,6 +1353,7 @@ function PatientDetail() {
                                                 </div>
                                               </div>
                                             </div>
+                                            {item.mode !== "online" && (
                                             <div className="row">
                                               <div className="col-sm-4">
                                                 <div className="para-main-div">
@@ -1354,6 +1366,8 @@ function PatientDetail() {
                                                 </div>
                                               </div>
                                             </div>
+                                            )}
+                                             {item.mode !== "online" && (
                                             <div className="row">
                                               <div className="col-sm-4">
                                                 <div className="para-main-div">
@@ -1366,6 +1380,8 @@ function PatientDetail() {
                                                 </div>
                                               </div>
                                             </div>
+                                             )}
+                                                {item.mode !== "online" && (
                                             <div className="row">
                                               <div className="col-sm-4">
                                                 <div className="para-main-div">
@@ -1377,13 +1393,15 @@ function PatientDetail() {
                                                   <p>{item.driver_contact}</p>
                                                 </div>
                                               </div>
-                                            </div>
+                                            </div>)}
                                             <div className="row">
+                                             {item.mode !== "online" && (
                                               <div className="col-sm-4">
                                                 <div className="para-main-div">
                                                   <h6>Pickup Time:</h6>
                                                 </div>
                                               </div>
+                                              )}
                                               <div className="col-sm-4">
                                                 <div className="para-main-div">
                                                   <p>{item.pickup_time}</p>
@@ -1850,7 +1868,6 @@ function PatientDetail() {
                   <div className="all-hd">
                     <h6>Payment Details</h6>
                   </div>
-               
                 </div>
                 <div className="row">
                   <div className="col-md-12">
@@ -1905,7 +1922,20 @@ function PatientDetail() {
                                             <div>
                                               Paid Amount - {info.paid_amount}
                                             </div>
-                                               <PictureAsPdf  style={{cursor:"pointer"}} onClick={()=>{navigate("/Admin/Patient-Pdfdetails",{state:{data:location.state.patientId}})}}/>
+                                            <PictureAsPdf
+                                              style={{ cursor: "pointer" }}
+                                              onClick={() => {
+                                                navigate(
+                                                  "/Admin/Patient-Pdfdetails",
+                                                  {
+                                                    state: {
+                                                      data: location.state
+                                                        .patientId,
+                                                    },
+                                                  }
+                                                );
+                                              }}
+                                            />
                                           </div>
                                         </div>
                                       </li>
@@ -2334,7 +2364,7 @@ function PatientDetail() {
                       disablePortal
                       options={
                         ishospitalArray?.map((job) => job.hospital_Name) || []
-                      } 
+                      }
                       onChange={(e, value) => {
                         const selectedCourse = ishospitalArray?.find(
                           (job) => job.hospital_Name === value
@@ -2529,7 +2559,6 @@ function PatientDetail() {
             >
               <Box>
                 <form id="contact-form" className="contact-form">
-                  
                   <div className="field-set">
                     <label>
                       Passport<span className="text-danger">*</span>
@@ -2555,7 +2584,7 @@ function PatientDetail() {
                       />
                     </div>
                   </div>
-                 
+
                   <div className="field-set">
                     <label>
                       Attende Passport<span className="text-danger">*</span>
@@ -2751,15 +2780,15 @@ function PatientDetail() {
                       min={new Date().toISOString().split("T")[0]}
                     /> */}
                     <input
-  type="date"
-  id="birthday"
-  name="payment_Date"
-  placeholder="Appointment Date"
-  className="form-control"
-  onChange={AddpaymentOnchnage}
-  value={data.payment_Date}
-  max={new Date().toISOString().split("T")[0]}  // Prevent future date
-/>
+                      type="date"
+                      id="birthday"
+                      name="payment_Date"
+                      placeholder="Appointment Date"
+                      className="form-control"
+                      onChange={AddpaymentOnchnage}
+                      value={data.payment_Date}
+                      max={new Date().toISOString().split("T")[0]} // Prevent future date
+                    />
                   </div>
                   <DialogActions className="submit-main">
                     <Button
@@ -4914,7 +4943,7 @@ export default PatientDetail;
 //                             <>
 //  <div className="card-box">
 //                             <div className=" ">
-                            
+
 //                               <button
 //                                 className="btn btn btn-primary btn-rounded float-right"
 //                                 onClick={(e) =>
@@ -4941,7 +4970,6 @@ export default PatientDetail;
 //                                         Payment Method-{info.paymentMethod}
 //                                       </a>
 //                                       <div>Paid amount-{info.paid_amount}</div>
-
 
 //                                       {/* {info.status} */}
 //                     {/* <span className="time">payment_Date-{info.payment_Date}</span> */}

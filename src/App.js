@@ -52,6 +52,9 @@ import PAymentpdf from "./pages/Patient/PAymentpdf";
 import Pagefilterdata from "./pages/Pagefilterdata";
 import ActivityTracker from "./pages/ActivityTracker";
 import ActivityUser from "./pages/ActivityUser";
+import Currency from "./pages/Currency/Currency";
+import Addcurrency from "./pages/Currency/Addcurrency";
+import EditCurrency from "./pages/Currency/EditCurrency";
 function App() {
   console.log("22/04/25");
   return (
@@ -147,6 +150,21 @@ function App() {
                 index
                 path="/Admin/add-countries"
                 element={<AddCountries />}
+              />
+              <Route
+                index
+                path="/Admin/currency"
+                element={<Currency />}
+              />
+              <Route
+                index
+                path="/Admin/Addcurrency"
+                element={<Addcurrency />}
+              />
+              <Route
+                index
+                path="/Admin/edit-Currency"
+                element={<EditCurrency />}
               />
               <Route
                 index

@@ -38,7 +38,7 @@ export default function Patient() {
   const navigate = useNavigate();
   const [showActions, setShowActions] = useState(true);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [onVaue,setOnVaue]=useState('')
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");

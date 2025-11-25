@@ -12,6 +12,7 @@ import userreducer from "../reducer/userSlice";
 import Countriesreducer from "../reducer/Countries";
 import chnagepermisson from "../reducer/NewpermissonsSlice";
 import ActivityReducer from "../reducer/ActivitySlice"
+import GetAllcurrency  from "../reducer/CurrencySlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -27,6 +28,7 @@ export const store = configureStore({
     Countries: Countriesreducer,
     NewPermissions: chnagepermisson,
     Activity: ActivityReducer,
+    Currency: GetAllcurrency,
 
   },
 });

@@ -13,14 +13,12 @@ export default function Sidebar() {
     { path: "/Manage_Patients", actualPath: "/Admin/patients", icon: "fa-wheelchair", label: "Manage Patients" },
     { path: "/Manage_Appointments", actualPath: "/Admin/Appointments", icon: "fa-calendar", label: "Manage Appointments" },
     { path: "/Manage_Services", actualPath: "/Admin/Services", icon: "fa-server", label: "Manage Services" },
-   
-    
     { path: "/Manage_Treatments", actualPath: "/Admin/Treatments", icon: "fa-stethoscope", label: "Manage Treatments" },
     { path: "/Manage_Hospitals", actualPath: "/Admin/Hospitals", icon: "fa-hospital-o", label: "Manage Hospitals" },
     { path: "/Manage_Countries", actualPath: "/Admin/Countries", icon: "fa-globe", label: "Manage Countries" },
-    { path: "/Manage_Staffs", actualPath: "/Admin/Staff", icon: "fa-user-md", label: "Manage Staff" },
-    // { path: "/Manage_Dashboard_Permission", actualPath: "/Admin/Permission", icon: "fa-lock", label: "Manage Permission" },
+    { path: "/Manage_Staffs", actualPath: "/Admin/Staff", icon: "fa-user-md", label: "Manage Staff" }, 
     { path: "/Manage_Permissions", actualPath: "/Admin/New-Permission", icon: "fa-lock", label: "Manage Permission" },
+    { path: "/Manage_Currency", actualPath: "/Admin/currency", icon: "fa-user-md", label: "Manage Currency" }, 
     { path: "/History", actualPath: "/Admin/History", icon: "fa-history", label: "History" },
     { path: "/Reports", actualPath: "/Admin/Reports", icon: "fa-file-text-o", label: "Reports" },
     { path: "/Earnings", actualPath: "/Admin/Earnings", icon: "fa-line-chart", label: "Payments" },

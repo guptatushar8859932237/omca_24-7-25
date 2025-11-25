@@ -57,7 +57,9 @@ const navigate =useNavigate()
               <div className="col-md-12">
                 <div className="table-responsive">
                   <TableContainer component={Paper}>
-                    <Table stickyHeader aria-label="activity table">
+                    <Table   stickyHeader
+                      aria-label="sticky table"
+                      className="table-no-card">
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr. No</TableCell>
