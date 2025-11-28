@@ -10,47 +10,38 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { usePDF } from 'react-to-pdf';
+import { usePDF } from "react-to-pdf";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import InputAdornment from "@mui/material/InputAdornment";
-import { MenuItem, Pagination, Stack } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  MenuItem,
+  Box,
+  Pagination,
+  Stack,
+} from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 export default function Appointments() {
-  const role = localStorage.getItem("Role")
+  const role = localStorage.getItem("Role");
   const [appointments, setAppointments] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
   const [page, setPage] = useState(0);
+  const [openModalApp11, setOpenModalApp11] = useState(false);
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState("sm");
   const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [pdfRowLimit, setPdfRowLimit] = useState(null);
+  const [pdfRowLimit, setPdfRowLimit] = useState(null);
+   const [statuddropdown, setStatuddropdown] = useState("offline");
   const [filterValue, setFilterValue] = useState("");
- const { toPDF, targetRef } = usePDF({filename: 'page.pdf'});
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-  const EditButton = (e, id) => {
-    // navigate("/Admin/edit-patient", {
-    //   state: {
-    //     patientId: id,
-    //   },
-    // })
-  };
-  const PatientDetail = (e, id) => {
-    // navigate("/Admin/Patient-Detail", {
-    //   state: {
-    //     patientId: id,
-    //   },
-    // })
-  };
-
+  const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
   const handleChange = async (e, i) => {
     try {
       const token = localStorage.getItem("token");
@@ -58,7 +49,6 @@ export default function Appointments() {
       if (!token) {
         throw new Error("Authorization token is missing");
       }
-
       const response = await axios.post(
         `${baseurl}update_appointment_status/${i}`,
         { status: parseInt(e.target.value) },
@@ -69,11 +59,8 @@ export default function Appointments() {
           },
         }
       );
-
-      // If response is OK, show success
       if (response.status === 200 || response.status === 201) {
         Swal.fire("Success!", "Status updated successfully!", "success");
-
         try {
           await getAppointments(); // make sure it's awaited if it’s async
         } catch (refreshError) {
@@ -125,7 +112,6 @@ export default function Appointments() {
     } else {
       const filterResult = searchApiData.filter((item) => {
         const enquiryId = item.patientId?.toLowerCase() || "";
-        // const emailMatches = item.job_Desciption.toLowerCase();
         const country = item.patientName?.toLowerCase() || "";
         const Hospital_name = item.Hospital_name?.toLowerCase() || "";
         const appointement_status =
@@ -133,7 +119,6 @@ export default function Appointments() {
         const appointmentId = item.appointmentId?.toLowerCase() || "";
         const disease_name = item.disease_name?.toLowerCase() || "";
         const searchValue = event.target.value.toLowerCase();
-        // Check if the full name, last name, or email includes the search value
         return (
           enquiryId.includes(searchValue) ||
           Hospital_name.includes(searchValue) ||
@@ -151,84 +136,56 @@ export default function Appointments() {
     setFilterValue("");
     setAppointments(searchApiData);
   };
-  // const handleSampleFile =async () => {
-  //       try {
-  //     const response = await axios.get(`${baseurl}export_appointments`, {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }, {
-  //       responseType: "blob", 
-  //     });
-  //     console.log(response.data)
-  //     const url = window.URL.createObjectURL(new Blob([response.data]));
-  //     const link = document.createElement("a");
-  //     link.href = url;
-  //     link.setAttribute("download", "Sample_Enquiry.xlsx"); // File name
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link);
-  //     return response.data;
-  //   } catch (err) {
-  //     console.error(
-  //       "Error downloading the sample file:",
-  //       err.response?.data?.message || err.message
-  //     );
-  //     throw err;
-  //   }
-  //   };
-const handleSampleFile = () => {
-  fetch(`${baseurl}export_appointments`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    }
-  })
-    .then(res => res.blob())
-    .then(blob => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = ""; // Let browser use filename from API
-      a.click();
-      window.URL.revokeObjectURL(url);
+  const handleSampleFile = () => {
+    fetch(`${baseurl}export_appointments`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = ""; // Let browser use filename from API
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+  };
+  const downloadPdf = async () => {
+    const maxRows = appointments.length || 1;
+    Swal.fire({
+      title: "Enter number of rows for PDF",
+      input: "number",
+      inputLabel: `Choose between 1 and ${maxRows}`,
+      inputAttributes: {
+        min: "1",
+        max: maxRows.toString(),
+        step: "1",
+      },
+      inputValue: rowsPerPage,
+      showCancelButton: true,
+      confirmButtonText: "Generate PDF",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const userInput = parseInt(result.value, 10);
+        if (isNaN(userInput) || userInput < 1 || userInput > maxRows) {
+          Swal.fire(
+            "Invalid entry",
+            `Please enter a number between 1 and ${maxRows}`,
+            "error"
+          );
+          return;
+        }
+        setPdfRowLimit(userInput);
+        setTimeout(() => {
+          toPDF();
+          setPdfRowLimit(null); // reset to normal view
+        }, 300);
+      }
     });
-};
+  };
 
-const downloadPdf  = async () => {
-      const maxRows = appointments.length || 1;
-       Swal.fire({
-            title: "Enter number of rows for PDF",
-            input: "number",
-            inputLabel: `Choose between 1 and ${maxRows}`,
-            inputAttributes: {
-              min: "1",
-              max: maxRows.toString(),
-              step: "1",
-            },
-            inputValue: rowsPerPage,
-            showCancelButton: true,
-            confirmButtonText: "Generate PDF",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              const userInput = parseInt(result.value, 10);
-              if (isNaN(userInput) || userInput < 1 || userInput > maxRows) {
-                Swal.fire(
-                  "Invalid entry",
-                  `Please enter a number between 1 and ${maxRows}`,
-                  "error"
-                );
-                return;
-              }
-      
-              setPdfRowLimit(userInput);
-      
-              setTimeout(() => {
-                toPDF();
-                setPdfRowLimit(null); // reset to normal view
-              }, 300);
-            }
-          });
-    };
   return (
     <>
       <div className="page-wrapper">
@@ -266,20 +223,25 @@ const downloadPdf  = async () => {
                       }}
                     />
                   </div>
-                   <button onClick={handleSampleFile} className="add-button mx-2">
-                        <span>
-                          <i className="fa fa-file"></i>
-                        </span>
-                        Export File
-                      </button>
-                      {
-                        role === "Admin" ?
-                   <button onClick={downloadPdf} className="add-button mx-2">
-                        <span>
-                      <i className="fa fa-file-pdf-o"></i>
-                        </span>
-                        Pdf
-                      </button>:""}
+                  <button
+                    onClick={handleSampleFile}
+                    className="add-button mx-1"
+                  >
+                    <span>
+                      <i className="fa fa-file"></i>
+                    </span>
+                    Export File
+                  </button>
+                  {role === "Admin" ? (
+                    <button onClick={downloadPdf} className="add-button mx-1">
+                      <span>
+                        <i className="fa fa-file-pdf-o"></i>
+                      </span>
+                      Pdf
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>
@@ -318,91 +280,85 @@ const downloadPdf  = async () => {
                             </TableCell>
                           </TableRow>
                         ) : (
-                          (pdfRowLimit?
-                         appointments.slice(0, pdfRowLimit)
-                          : appointments.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
-                        ).map((info, i) => (
-                              <TableRow
-                                role="checkbox"
-                                tabIndex={-1}
-                                key={info.code}
-                              >
-                                <TableCell>
-                            {pdfRowLimit ? i + 1 : page * rowsPerPage + i + 1}
-                                </TableCell>
-                                <TableCell>{info.patientId}</TableCell>
-                                <TableCell>{info.patientName}</TableCell>
-                                <TableCell>{info.disease_name}</TableCell>
-                                <TableCell>{info.appointmentId}</TableCell>
-                                <TableCell>
-                                  {new Date(
-                                    info.appointment_Date
-                                  ).toLocaleDateString("en-GB")}
-                                </TableCell>
-                                <TableCell>{info.Hospital_name}</TableCell>
-                                <TableCell>
-                                  <FormControl
-                                    sx={{ m: 1, minWidth: 120 }}
-                                    size="small"
-                                    className="cont-main"
+                          (pdfRowLimit
+                            ? appointments.slice(0, pdfRowLimit)
+                            : appointments.slice(
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage
+                              )
+                          ).map((info, i) => (
+                            <TableRow
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={info.code}
+                            >
+                              <TableCell>
+                                {pdfRowLimit
+                                  ? i + 1
+                                  : page * rowsPerPage + i + 1}
+                              </TableCell>
+                              <TableCell>{info.patientId}</TableCell>
+                              <TableCell>{info.patientName}</TableCell>
+                              <TableCell>{info.disease_name}</TableCell>
+                              <TableCell>{info.appointmentId}</TableCell>
+                              <TableCell>
+                                {new Date(
+                                  info.appointment_Date
+                                ).toLocaleDateString("en-GB")}
+                              </TableCell>
+                              <TableCell>{info.Hospital_name}</TableCell>
+                              <TableCell>
+                                <FormControl
+                                  sx={{ m: 1, minWidth: 120 }}
+                                  size="small"
+                                  className="cont-main"
+                                >
+                                  <Select
+                                    value={
+                                      info.appointement_status === "Follow-Up"
+                                        ? 2
+                                        : info.appointement_status ===
+                                          "Complete"
+                                        ? 3
+                                        : info.appointement_status ===
+                                          "Cancelled"
+                                        ? 4
+                                        : "Schedule"
+                                    }
+                                    onChange={(e) =>
+                                      handleChange(e, info.appointmentId)
+                                    }
+                                    displayEmpty
+                                    inputProps={{
+                                      "aria-label": "Without label",
+                                    }}
+                                    className="status-direct"
                                   >
-                                    <Select
-                                      value={
-                                        info.appointement_status === "Follow-Up"
-                                          ? 2
-                                          : info.appointement_status ===
-                                            "Complete"
-                                          ? 3
-                                          : info.appointement_status ===
-                                            "Cancelled"
-                                          ? 4
-                                          : "Schedule"
-                                      }
-                                      onChange={(e) =>
-                                        handleChange(e, info.appointmentId)
-                                      }
-                                      displayEmpty
-                                      inputProps={{
-                                        "aria-label": "Without label",
-                                      }}
-                                      className="status-direct"
-                                    >
-                                      <MenuItem value="Schedule" disabled>
-                                        Schedule
-                                      </MenuItem>
-                                      <MenuItem value="2">Follow-Up</MenuItem>
-                                      <MenuItem value="3"> Completed</MenuItem>
-                                      <MenuItem value="4">Cancelled</MenuItem>
-                                    </Select>
-                                  </FormControl>
-                                </TableCell>
-                              </TableRow>
-                            ))
+                                    <MenuItem value="Schedule" disabled>
+                                      Schedule
+                                    </MenuItem>
+                                    <MenuItem value="2">Follow-Up</MenuItem>
+                                    <MenuItem value="3"> Completed</MenuItem>
+                                    <MenuItem value="4">Cancelled</MenuItem>
+                                  </Select>
+                                </FormControl>
+                              </TableCell>
+                            </TableRow>
+                          ))
                         )}
                       </TableBody>
                     </Table>
-                     {!pdfRowLimit && (
-                    <Stack spacing={2} alignItems="end" marginTop={2}>
-                      <Pagination
-                        count={Math.ceil(appointments.length / rowsPerPage)}
-                        page={page + 1}
-                        onChange={(event, value) => setPage(value - 1)}
-                        shape="rounded"
-                        className="page-item"
-                      />
-                    </Stack>)}
-                    {/* <TablePagination
-                      component="div"
-                      count={appointments.length}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      rowsPerPage={rowsPerPage}
-                      rowsPerPageOptions={[]}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                    /> */}
+                    {!pdfRowLimit && (
+                      <Stack spacing={2} alignItems="end" marginTop={2}>
+                        <Pagination
+                          count={Math.ceil(appointments.length / rowsPerPage)}
+                          page={page + 1}
+                          onChange={(event, value) => setPage(value - 1)}
+                          shape="rounded"
+                          className="page-item"
+                        />
+                      </Stack>
+                    )}
                   </TableContainer>
                 </div>
               </div>

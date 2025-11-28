@@ -100,6 +100,10 @@ export default function Earning() {
         ?.toString()
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
+      row.country
+        ?.toString()
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       row.Disease_agreement?.toString()
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
@@ -171,6 +175,7 @@ export default function Earning() {
                           <TableCell>Sr.No.</TableCell>
                           <TableCell>Patient ID</TableCell>
                           <TableCell>Patient Name</TableCell>
+                          <TableCell>Country</TableCell>
                           <TableCell>Total Amount</TableCell>
                           <TableCell>Remaining Balance</TableCell>
                           <TableCell>Amount Paid</TableCell>
@@ -195,6 +200,7 @@ export default function Earning() {
                             </TableCell>
                             <TableCell>{info.patientId}</TableCell>
                             <TableCell>{info.patient_name}</TableCell>
+                            <TableCell>{info?.country}</TableCell>
                             <TableCell>{info.total_Amount}</TableCell>
                             <TableCell>{info.remaining_balance}</TableCell>
                             <TableCell>{info.amount_paid}</TableCell>

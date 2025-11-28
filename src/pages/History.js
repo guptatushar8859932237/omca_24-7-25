@@ -123,6 +123,7 @@ export default function History() {
                           <TableCell>Email</TableCell>
                           <TableCell>Disease Name</TableCell>
                           <TableCell>Country</TableCell>
+                          <TableCell>Created At</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -149,6 +150,7 @@ export default function History() {
                                 <TableCell>{info.email}</TableCell>
                                 <TableCell>{info.disease_name}</TableCell>
                                 <TableCell>{info.country}</TableCell>
+                                <TableCell>{new Date(info.createdAt).toLocaleDateString("en-GB")}</TableCell>
                                 {/* <TableCell>{info.patient_disease.map((item) => (
                                         item.disease_name
       

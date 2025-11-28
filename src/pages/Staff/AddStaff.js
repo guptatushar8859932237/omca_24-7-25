@@ -381,7 +381,7 @@ export default function AddStaff() {
                       <label>
                         Give Permission<span className="text-danger">*</span>
                       </label>
-                      <div className="field-set">
+                      {/* <div className="field-set">
                         <FormControl fullWidth>
                           <InputLabel>Status</InputLabel>
                           <Select
@@ -412,7 +412,55 @@ export default function AddStaff() {
                           component="div"
                           style={{ color: "red" }}
                         />
-                      </div>
+                      </div> */}
+                      <FormControl fullWidth>
+  <InputLabel>Status</InputLabel>
+  <Select
+    multiple
+    value={values.roleStatuses}
+    name="roleStatuses"
+    onChange={(event) => {
+      const value = event.target.value;
+
+      // Handle Select All logic
+      if (value.includes("All")) {
+        if (values.roleStatuses.length === statusOptions.length) {
+          // Deselect All
+          setFieldValue("roleStatuses", []);
+        } else {
+          // Select All
+          setFieldValue("roleStatuses", statusOptions);
+        }
+      } else {
+        setFieldValue("roleStatuses", value);
+      }
+    }}
+    className="form-control"
+    renderValue={(selected) => selected.join(", ")}
+  >
+    <MenuItem value="All">
+      <Checkbox
+        checked={values.roleStatuses.length === statusOptions.length}
+        indeterminate={
+          values.roleStatuses.length > 0 &&
+          values.roleStatuses.length < statusOptions.length
+        }
+      />
+      <ListItemText primary="Select All" />
+    </MenuItem>
+
+    {/* Normal Status Items */}
+    {statusOptions.map((roleStatuses) => (
+      <MenuItem key={roleStatuses} value={roleStatuses}>
+        <Checkbox
+          checked={values.roleStatuses.indexOf(roleStatuses) > -1}
+        />
+        <ListItemText primary={roleStatuses} />
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
                     </div>
                   </div>
                   <div className="">

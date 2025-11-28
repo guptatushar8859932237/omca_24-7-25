@@ -219,6 +219,7 @@ export default function Patient() {
         const patientNumber = item.patientNumber?.toLowerCase() || "";
         const emailMatches = item.email.toLowerCase();
         const name = item.patient_name?.toLowerCase() || "";
+        const p_status = item.p_status?.toLowerCase() || "";
         const contact = item?.emergency_contact
           ? item.emergency_contact.toString().toLowerCase()
           : "";
@@ -231,6 +232,7 @@ export default function Patient() {
           patientNumber.includes(searchValue) ||
           country.includes(searchValue) ||
           patientdesiese.includes(searchValue) ||
+          p_status.includes(searchValue) ||
           contact.includes(searchValue) ||
           name.includes(searchValue) ||
           emailMatches.includes(searchValue)
@@ -403,9 +405,6 @@ export default function Patient() {
       console.log(error)
     }
   }
-
-
-
 
   return (
     <>

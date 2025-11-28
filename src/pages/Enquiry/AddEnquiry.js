@@ -32,6 +32,8 @@ export default function AddEnquiry() {
     emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
       .required("Phone number is required"),
+    passport_num: Yup.string()
+      .required("Passport is required"),
     patient_emergency_contact_no: Yup.string().matches(
       /^[0-9]{10,11}$/,
       "Emergency Contact must be 10-11 digits"
@@ -75,6 +77,7 @@ export default function AddEnquiry() {
                   patient_relation_name: "",
                   patient_relation: "",
                   town: "",
+                  passport_num:"",
                   patient_relation_no: "",
                   address: "",
                   patient_relation_id: null,
@@ -154,9 +157,27 @@ export default function AddEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Name<span className="text-danger">*</span>
+                            Passport<span className="text-danger">*</span>
                           </label>
                           <Field className="form-control" name="name" />
+                          <ErrorMessage
+                            name="passport_num"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                    
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Name<span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="name"
+                            type="name"
+                          />
                           <ErrorMessage
                             name="name"
                             component="div"

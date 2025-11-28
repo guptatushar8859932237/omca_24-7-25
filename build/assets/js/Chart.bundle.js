@@ -15568,7 +15568,7 @@ module.exports = helpers.extend({
  * @interface IEvent
  * @prop {String} type - The event type name, possible values are:
  * 'contextmenu', 'mouseenter', 'mousedown', 'mousemove', 'mouseup', 'mouseout',
- * 'click', 'dblclick', 'keydown', 'keypress', 'keyup' and 'resize'
+ * 'click', 'dblclick', 'keydown', 'keypress', 'ke6' and 'resize'
  * @prop {*} native - The original native event (null for emulated events, e.g. 'resize')
  * @prop {Number} x - The mouse x position, relative to the canvas (null for incompatible events)
  * @prop {Number} y - The mouse y position, relative to the canvas (null for incompatible events)
