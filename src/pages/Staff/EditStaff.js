@@ -4,13 +4,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
-
-import  {Checkbox,ListItemText} from "@mui/material"
+import { Checkbox, ListItemText } from "@mui/material";
 import axios from "axios";
 import { image, baseurl } from "../../Basurl/Baseurl";
 import { GetAllStaffUser } from "../../reducer/StaffSlice";
 import { GetAllCountries2 } from "../../reducer/Countries";
-import { FormControl, InputLabel, MenuItem, OutlinedInput, Select } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+} from "@mui/material";
 export default function EditStaff() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,8 +24,7 @@ export default function EditStaff() {
   const { Countries } = useSelector((state) => state.Countries);
   const [editStaff, setEditStaff] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-
-   const statusOptions = [
+  const statusOptions = [
     "Foundation",
     "Private",
     "Travelled",
@@ -38,8 +42,10 @@ export default function EditStaff() {
   }, [dispatch]);
   useEffect(() => {
     if (location.state?.staffID && staff.length > 0) {
-      const selected = staff.find((item) => item._id === location.state.staffID);
-      console.log(selected)
+      const selected = staff.find(
+        (item) => item._id === location.state.staffID
+      );
+      console.log(selected);
       setEditStaff(selected);
     }
   }, [location.state?.staffID, staff]);
@@ -47,12 +53,17 @@ export default function EditStaff() {
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     role: Yup.string()
-      .oneOf(["Admin", "Manager", "Staff", "Finance", "Coordinator", "Receptionist"], "Invalid role")
+      .oneOf(
+        ["Admin", "Manager", "Staff", "Finance", "Coordinator", "Receptionist"],
+        "Invalid role"
+      )
       .required("Role is required"),
     phone_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Invalid phone number")
       .required(),
-    gender: Yup.string().oneOf(["Male", "Female", "Others"]).required("Gender is required"),
+    gender: Yup.string()
+      .oneOf(["Male", "Female", "Others"])
+      .required("Gender is required"),
     profileImage: Yup.mixed().required("Profile image is required"),
     country: Yup.string().required("Country is required"),
     dial_code: Yup.string().required("Dial code is required"),
@@ -80,7 +91,11 @@ export default function EditStaff() {
       Swal.fire("Success!", "Staff updated successfully", "success");
       navigate("/Admin/staff");
     } catch (error) {
-      Swal.fire("Error", error?.response?.data?.message || "Something went wrong", "error");
+      Swal.fire(
+        "Error",
+        error?.response?.data?.message || "Something went wrong",
+        "error"
+      );
     } finally {
       setSubmitting(false);
     }
@@ -120,21 +135,37 @@ export default function EditStaff() {
                     <div className="field-set">
                       <label>Name *</label>
                       <Field className="form-control" name="name" />
-                      <ErrorMessage name="name" component="div" className="text-danger" />
+                      <ErrorMessage
+                        name="name"
+                        component="div"
+                        className="text-danger"
+                      />
                     </div>
                   </div>
                   <div className="col-sm-6">
                     <div className="field-set">
                       <label>Email *</label>
-                      <Field className="form-control" type="email" name="email" />
-                      <ErrorMessage name="email" component="div" className="text-danger" />
+                      <Field
+                        className="form-control"
+                        type="email"
+                        name="email"
+                      />
+                      <ErrorMessage
+                        name="email"
+                        component="div"
+                        className="text-danger"
+                      />
                     </div>
                   </div>
                   <div className="col-sm-6">
                     <div className="field-set">
                       <label>Phone No *</label>
                       <Field className="form-control" name="phone_no" />
-                      <ErrorMessage name="phone_no" component="div" className="text-danger" />
+                      <ErrorMessage
+                        name="phone_no"
+                        component="div"
+                        className="text-danger"
+                      />
                     </div>
                   </div>
                   <div className="col-sm-6">
@@ -148,7 +179,11 @@ export default function EditStaff() {
                         <option value="Finance">Finance</option>
                         <option value="Coordinator">Coordinator</option>
                       </Field>
-                      <ErrorMessage name="role" component="div" className="text-danger" />
+                      <ErrorMessage
+                        name="role"
+                        component="div"
+                        className="text-danger"
+                      />
                     </div>
                   </div>
                   <div className="col-sm-6">
@@ -164,13 +199,23 @@ export default function EditStaff() {
                                   const selectedCountry = Countries.find(
                                     (item) => item.name === e.target.value
                                   );
-                                  form.setFieldValue("country", selectedCountry.name);
-                                  form.setFieldValue("dial_code", selectedCountry.dial_code);
+                                  form.setFieldValue(
+                                    "country",
+                                    selectedCountry.name
+                                  );
+                                  form.setFieldValue(
+                                    "dial_code",
+                                    selectedCountry.dial_code
+                                  );
                                 }}
-                                input={<OutlinedInput placeholder="Select Country" />}
+                                input={
+                                  <OutlinedInput placeholder="Select Country" />
+                                }
                                 displayEmpty
                                 sx={{ height: 40 }}
-                                MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
+                                MenuProps={{
+                                  PaperProps: { style: { maxHeight: 200 } },
+                                }}
                               >
                                 <MenuItem value="">
                                   <em>Select Country</em>
@@ -182,7 +227,11 @@ export default function EditStaff() {
                                 ))}
                               </Select>
                             </FormControl>
-                            <ErrorMessage name="country" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="country"
+                              component="div"
+                              className="text-danger"
+                            />
                           </>
                         )}
                       </Field>
@@ -191,23 +240,38 @@ export default function EditStaff() {
                   <div className="col-sm-6">
                     <div className="field-set">
                       <label>Dial Code *</label>
-                      <Field className="form-control" name="dial_code" disabled />
-                      <ErrorMessage name="dial_code" component="div" className="text-danger" />
+                      <Field
+                        className="form-control"
+                        name="dial_code"
+                        disabled
+                      />
+                      <ErrorMessage
+                        name="dial_code"
+                        component="div"
+                        className="text-danger"
+                      />
                     </div>
                   </div>
                   <div className="col-sm-6">
                     <div className="field-set gender-select">
-                      <label>Gender *</label><br />
+                      <label>Gender *</label>
+                      <br />
                       <div className="form-check-inline">
                         <Field type="radio" name="gender" value="Male" /> Male
                       </div>
                       <div className="form-check-inline">
-                        <Field type="radio" name="gender" value="Female" /> Female
+                        <Field type="radio" name="gender" value="Female" />{" "}
+                        Female
                       </div>
                       <div className="form-check-inline">
-                        <Field type="radio" name="gender" value="Others" /> Others
+                        <Field type="radio" name="gender" value="Others" />{" "}
+                        Others
                       </div>
-                      <ErrorMessage name="gender" component="div" className="text-danger" />
+                      <ErrorMessage
+                        name="gender"
+                        component="div"
+                        className="text-danger"
+                      />
                     </div>
                   </div>
                   <div className="col-sm-6">
@@ -216,9 +280,15 @@ export default function EditStaff() {
                       <div className="profile-upload">
                         <div className="upload-img">
                           {selectedImage ? (
-                            <img src={URL.createObjectURL(selectedImage)} alt="preview" />
+                            <img
+                              src={URL.createObjectURL(selectedImage)}
+                              alt="preview"
+                            />
                           ) : editStaff?.profileImage ? (
-                            <img src={`${image}${editStaff.profileImage}`} alt="current" />
+                            <img
+                              src={`${image}${editStaff.profileImage}`}
+                              alt="current"
+                            />
                           ) : (
                             <img src="assets/img/user.jpg" alt="default" />
                           )}
@@ -234,96 +304,73 @@ export default function EditStaff() {
                           />
                         </div>
                       </div>
-                      <ErrorMessage name="profileImage" component="div" className="text-danger" />
+                      <ErrorMessage
+                        name="profileImage"
+                        component="div"
+                        className="text-danger"
+                      />
                     </div>
                   </div>
-                     <div className="col-sm-6">
-                                        <label>
-                                          Give Permission<span className="text-danger">*</span>
-                                        </label>
-                                        {/* <div className="field-set">
-                                          <FormControl fullWidth>
-                                            <InputLabel>Status</InputLabel>
-                                            <Select
-                                              multiple
-                                              value={values.roleStatuses}
-                                              name="roleStatuses"
-                                              onChange={(event) =>
-                                                setFieldValue("roleStatuses", event.target.value)
-                                              }
-                                              className="form-control"
-                                              renderValue={(selected) => selected.join(", ")}
-                                            >
-                                              {statusOptions.map((roleStatuses) => (
-                                                <MenuItem key={roleStatuses} value={roleStatuses}>
-                                                  <Checkbox
-                                                    checked={
-                                                      values.roleStatuses.indexOf(roleStatuses) >
-                                                      -1
-                                                    }
-                                                  />
-                                                  <ListItemText primary={roleStatuses} />
-                                                </MenuItem>
-                                              ))}
-                                            </Select>
-                                          </FormControl>
-                                          <ErrorMessage
-                                            name="roleStatuses"
-                                            component="div"
-                                            style={{ color: "red" }}
-                                          />
-                                        </div> */}
-                                        <FormControl fullWidth>
-                    <InputLabel>Status</InputLabel>
-                    <Select
-                      multiple
-                      value={values.roleStatuses}
-                      name="roleStatuses"
-                      onChange={(event) => {
-                        const value = event.target.value;
-                  
-                        // Handle Select All logic
-                        if (value.includes("All")) {
-                          if (values.roleStatuses.length === statusOptions.length) {
-                            // Deselect All
-                            setFieldValue("roleStatuses", []);
+                  <div className="col-sm-6">
+                    <label>
+                      Give Permission<span className="text-danger">*</span>
+                    </label>
+                    <FormControl fullWidth>
+                      <InputLabel>Status</InputLabel>
+                      <Select
+                        multiple
+                        value={values.roleStatuses}
+                        name="roleStatuses"
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          if (value.includes("All")) {
+                            if (
+                              values.roleStatuses.length ===
+                              statusOptions.length
+                            ) {
+                              setFieldValue("roleStatuses", []);
+                            } else {
+                              setFieldValue("roleStatuses", statusOptions);
+                            }
                           } else {
-                            // Select All
-                            setFieldValue("roleStatuses", statusOptions);
+                            setFieldValue("roleStatuses", value);
                           }
-                        } else {
-                          setFieldValue("roleStatuses", value);
-                        }
-                      }}
-                      className="form-control"
-                      renderValue={(selected) => selected.join(", ")}
-                    >
-                      <MenuItem value="All">
-                        <Checkbox
-                          checked={values.roleStatuses.length === statusOptions.length}
-                          indeterminate={
-                            values.roleStatuses.length > 0 &&
-                            values.roleStatuses.length < statusOptions.length
-                          }
-                        />
-                        <ListItemText primary="Select All" />
-                      </MenuItem>
-                  
-                      {/* Normal Status Items */}
-                      {statusOptions.map((roleStatuses) => (
-                        <MenuItem key={roleStatuses} value={roleStatuses}>
+                        }}
+                        className="form-control"
+                        renderValue={(selected) => selected.join(", ")}
+                      >
+                        <MenuItem value="All">
                           <Checkbox
-                            checked={values.roleStatuses.indexOf(roleStatuses) > -1}
+                            checked={
+                              values.roleStatuses.length ===
+                              statusOptions.length
+                            }
+                            indeterminate={
+                              values.roleStatuses.length > 0 &&
+                              values.roleStatuses.length < statusOptions.length
+                            }
                           />
-                          <ListItemText primary={roleStatuses} />
+                          <ListItemText primary="Select All" />
                         </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  
-                                      </div>
+                        {statusOptions.map((roleStatuses) => (
+                          <MenuItem key={roleStatuses} value={roleStatuses}>
+                            <Checkbox
+                              checked={
+                                values.roleStatuses.indexOf(roleStatuses) > -1
+                              }
+                            />
+                            <ListItemText primary={roleStatuses} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
                 </div>
-                <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                <button
+                  type="submit"
+                  className="submit-btn"
+                  disabled={isSubmitting}
+                >
                   {isSubmitting ? "Updating..." : "Submit"}
                 </button>
               </Form>

@@ -70,6 +70,17 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
+                  <div class="col-md-6">
+                    <div className="field-set">
+                      <label>Passport Number<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.passport_num}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
                   <div className="col-md-6">
                     <div className="field-set">
                       <label>Patient Name<span className="text-danger">*</span></label>

@@ -18,7 +18,7 @@ export default function Sidebar() {
     { path: "/Manage_Countries", actualPath: "/Admin/Countries", icon: "fa-globe", label: "Manage Countries" },
     { path: "/Manage_Staffs", actualPath: "/Admin/Staff", icon: "fa-user-md", label: "Manage Staff" }, 
     { path: "/Manage_Permissions", actualPath: "/Admin/New-Permission", icon: "fa-lock", label: "Manage Permission" },
-    { path: "/Manage_Currency", actualPath: "/Admin/currency", icon: "fa-user-md", label: "Manage Currency" }, 
+    // { path: "/Manage_Currency", actualPath: "/Admin/currency", icon: "fa-user-md", label: "Manage Currency" }, 
     { path: "/History", actualPath: "/Admin/History", icon: "fa-history", label: "History" },
     { path: "/Reports", actualPath: "/Admin/Reports", icon: "fa-file-text-o", label: "Reports" },
     { path: "/Earnings", actualPath: "/Admin/Earnings", icon: "fa-line-chart", label: "Payments" },

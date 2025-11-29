@@ -159,7 +159,7 @@ export default function AddEnquiry() {
                           <label>
                             Passport<span className="text-danger">*</span>
                           </label>
-                          <Field className="form-control" name="name" />
+                          <Field className="form-control" name="passport_num" />
                           <ErrorMessage
                             name="passport_num"
                             component="div"
@@ -167,7 +167,6 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                    
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>

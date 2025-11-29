@@ -178,6 +178,7 @@ export default function Countries() {
                           <TableCell>Country Name</TableCell>
                           <TableCell>Country Code</TableCell>
                           <TableCell>Dial Code</TableCell>
+                          <TableCell>Currency Code</TableCell>
                           <TableCell>Status</TableCell>
                           <TableCell>Action</TableCell>
                         </TableRow>
@@ -201,6 +202,7 @@ export default function Countries() {
                                 <TableCell>{info.name}</TableCell>
                                 <TableCell>{info.code}</TableCell>
                                 <TableCell>{info.dial_code}</TableCell>
+                                <TableCell>{info.currency_code}</TableCell>
                                 <TableCell>
                                   <label className="active-switch">
                                     <input

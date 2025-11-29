@@ -49,6 +49,8 @@ export default function EditEnquiry() {
     emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
       .required("Phone number is required"),
+    passport_num: Yup.string()
+      .required("Passport number is required"),
     patient_emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Emergency Contact No must be 10-11 digits")
       .required("Emergency Contact No is required"),
@@ -99,6 +101,7 @@ export default function EditEnquiry() {
                   Referral_Name: editenquiry?.Referral_Name || "",
                   dial_code: editenquiry?.dial_code || "",
                   address: editenquiry?.address || "",
+                  passport_num: editenquiry?.passport_num || "",
                   patient_relation_no: editenquiry?.patient_relation_no || "",
                   patient_relation_address:
                     editenquiry?.patient_relation_address || "",
@@ -195,6 +198,23 @@ export default function EditEnquiry() {
                 {({ isSubmitting, setFieldValue }) => (
                   <Form encType="multipart/form-data">
                     <div className="row">
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Passport Number<span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="passport_num"
+                            type="text"
+                          />
+                          <ErrorMessage
+                            name="passport_num"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
@@ -354,7 +374,6 @@ export default function EditEnquiry() {
                               </FormControl>
                             )}
                           </Field> */}
-
                           <Field name="country">
                             {({ field, form: { setFieldValue }, meta }) => (
                               <FormControl

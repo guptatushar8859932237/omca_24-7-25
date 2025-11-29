@@ -4,31 +4,26 @@ import { GetAllNewPermission } from "../../reducer/NewpermissonsSlice";
 import { NewUpdatePermission } from "../../reducer/NewpermissonsSlice";
 import Swal from "sweetalert2";
 import "./Permission.css";
-
 export default function PermissionPage() {
   const dispatch = useDispatch();
   const { NewPermissions, loading, error } = useSelector((state) => state.NewPermissions);
   const [permissionsData, setPermissionsData] = useState([]);
-
   useEffect(() => {
     dispatch(GetAllNewPermission());
   }, [dispatch]);
-
   useEffect(() => {
     console.log("Fetched NewPermissions:", NewPermissions);
     if (Array.isArray(NewPermissions)) {
       setPermissionsData(NewPermissions);
     } else {
       console.warn("NewPermissions is not an array:", NewPermissions);
-      setPermissionsData([]); // Default to an empty array
+      setPermissionsData([]); 
     }
   }, [NewPermissions]);
-
-
   const handleCheckboxChange = (roleId, endpoint, isChecked) => {
     const updatedPermissions = permissionsData.map((role) => {
       if (role.Id === roleId) {
-        return {
+        return { 
           ...role,
           permissions: {
             ...role.permissions,
@@ -40,7 +35,6 @@ export default function PermissionPage() {
     });
     setPermissionsData(updatedPermissions);
   };
-
   const handleSubmit = async () => {
     const formattedPermissions = permissionsData.flatMap((role) =>
       Object.entries(role.permissions).map(([endpoint, allow]) => ({
@@ -49,7 +43,6 @@ export default function PermissionPage() {
         allow,
       }))
     );
-
     let timerInterval;
     Swal.fire({
       title: "Processing...",
@@ -67,7 +60,6 @@ export default function PermissionPage() {
         clearInterval(timerInterval);
       },
     });
-
     try {
       await dispatch(NewUpdatePermission({ permissions: formattedPermissions })).unwrap();
       clearInterval(timerInterval);
@@ -78,10 +70,8 @@ export default function PermissionPage() {
       Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
   };
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
-
   return (
     <div className="page-wrapper">
       <div className="content">

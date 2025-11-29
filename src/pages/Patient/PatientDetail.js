@@ -2737,15 +2737,6 @@ function PatientDetail() {
                     <label>
                       Payment Method<span className="text-danger">*</span>
                     </label>
-                    {/* <input
-                      type="text"
-                      placeholder="payment Method"
-                      className="form-control"
-                      name="paymentMethod"
-                      required=""
-                      onChange={AddpaymentOnchnage}
-                      value={data.paymentMethod}
-                    /> */}
                     <select
                       placeholder="payment Method"
                       className="form-control"
@@ -2755,25 +2746,14 @@ function PatientDetail() {
                       value={data.paymentMethod}>
                       <option>Select</option>
                       <option value="Cash">Cash</option>
-                      <option  value="Online">Online</option>
-                      <option  value="Upi">Upi</option>
-                      <option  value="Credit Card">Credit Card</option>
+                      <option  value="Upi">Online via UPI</option>
+                      <option  value="Credit Card">Debit Card / Credit Card</option>
                     </select>
                   </div>
                   <div className="field-set">
                     <label>
                       Payment Date<span className="text-danger">*</span>
                     </label>
-                    {/* <input
-                      type="date"
-                      id="birthday"
-                      name="payment_Date"
-                      placeholder="Appointment Date"
-                      className="form-control"
-                      onChange={AddpaymentOnchnage}
-                      value={data.payment_Date}
-                      min={new Date().toISOString().split("T")[0]}
-                    /> */}
                     <input
                       type="date"
                       id="birthday"
@@ -2872,7 +2852,6 @@ function PatientDetail() {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-      {/* Notes modal*/}
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}
