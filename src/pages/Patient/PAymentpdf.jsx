@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { usePDF } from "react-to-pdf";
 import { baseurl } from "../../Basurl/Baseurl";
+import images from "../../img/logo-dark.png";
 export default function PAymentpdf() {
   const [payments, setPayments] = useState({});
   const [objdata, setObjdata] = useState({});
@@ -22,8 +23,8 @@ export default function PAymentpdf() {
       );
       if (response.data.success === true) {
         console.log(response.data.data);
-        setObjdata(response.data.data);
-        setPayments(response.data.data);
+        setObjdata(response.data.data.payment_detail);
+        setPayments(response.data.data.payment_detail);
       } else {
         console.log("something went worng");
       }
@@ -34,14 +35,22 @@ export default function PAymentpdf() {
   useEffect(() => {
     getAccordion();
   }, []);
-
+const handleclick=()=>{
+  window.history.back();
+}
   return (
     <div className="page-wrapper">
       <div className="content">
-        <div className="d-flex justify-content-end me-5 mb-3">
+        <div className="d-flex justify-content-between me-5 mb-3">
+          <div>
+            <h4 className="page-title"><i className="fa fa-arrow-left" style={{cursor:"pointer"}} onClick={()=>{handleclick()}}></i></h4>
+          </div>
+          <div>
+
           <button className="add-button1">
             <DownloadDoneSharp style={{ cursor: "pointer" }} onClick={toPDF} />
           </button>
+          </div>
         </div>
         <section
           ref={targetRef}
@@ -101,7 +110,7 @@ export default function PAymentpdf() {
                                 <tr>
                                   <td>
                                     <img
-                                      src="/img/omca-logo.png"
+                                      src={`${images}`}
                                       style={{ maxWidth: "100%", height: 120 }}
                                     />
                                   </td>
