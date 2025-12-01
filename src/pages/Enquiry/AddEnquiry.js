@@ -10,6 +10,8 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import { Autocomplete, TextField } from "@mui/material";
+
 export default function AddEnquiry() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -77,7 +79,7 @@ export default function AddEnquiry() {
                   patient_relation_name: "",
                   patient_relation: "",
                   town: "",
-                  passport_num:"",
+                  passport_num: "",
                   patient_relation_no: "",
                   address: "",
                   patient_relation_id: null,
@@ -338,7 +340,7 @@ export default function AddEnquiry() {
                             {({ field, form }) => (
                               <>
                                 <FormControl fullWidth size="small">
-                                  <Select
+                                  {/* <Select
                                     value={field.value}
                                     onChange={(e) => {
                                       const selectedName = e.target.value;
@@ -379,7 +381,25 @@ export default function AddEnquiry() {
                                         No countries available
                                       </MenuItem>
                                     )}
-                                  </Select>
+                                  </Select> */}
+                                  <Autocomplete
+                                    options={Countries || []} // your countries array
+                                    getOptionLabel={(option) => option.name} // display the country name
+                                    onChange={(event, newValue) => {
+                                      form.setFieldValue("country", newValue?.name || "");
+                                      form.setFieldValue("dial_code", newValue?.dial_code || "");
+                                      console.log("Selected:", newValue);
+                                    }}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        placeholder="Select Country"
+                                        variant="outlined"
+                                        size="small"
+                                      />
+                                    )}
+                                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                                  />
                                 </FormControl>
 
                                 <ErrorMessage
@@ -437,7 +457,7 @@ export default function AddEnquiry() {
                         <div className="field-set">
                           <label>
                             Emergency Contact No
-                            <span className="text-danger"></span>
+                           
                           </label>
                           <Field
                             className="form-control"

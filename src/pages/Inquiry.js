@@ -400,7 +400,7 @@ export default function Inquiry() {
                         <span>
                           <i className="fa fa-file-excel-o mx-1"></i>
                         </span>{" "}
-                        Import Excel File
+                        Import File
                       </button>
                       <button onClick={handleSampleFile} className="add-button">
                         <span>
