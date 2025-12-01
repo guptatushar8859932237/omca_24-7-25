@@ -30,9 +30,9 @@ export default function Navbar() {
         console.log(error);
       });
     console.log("Logout clicked");
-    dispatch(logout()); // Dispatch the logout action
+    dispatch(logout()); 
     localStorage.clear();
-    navigate("/"); // Redirect to the login page
+    navigate("/"); 
   };
   return (
     <div className="header">

@@ -1,11 +1,11 @@
 import { DownloadDoneSharp } from "@mui/icons-material";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { usePDF } from "react-to-pdf";
 import { baseurl } from "../../Basurl/Baseurl";
 export default function PAymentpdf() {
-  const [payments, setPayments] = useState([]);
+  const [payments, setPayments] = useState({});
   const [objdata, setObjdata] = useState({});
   const location = useLocation();
   const targetRef = useRef();
@@ -13,12 +13,17 @@ export default function PAymentpdf() {
   const getAccordion = async () => {
     try {
       const response = await axios.get(
-        `${baseurl}getAllPaymentsByPatientId/${location.state.data}`
+        `${baseurl}get_patient_by_paymentId/${location.state.data}`,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
       );
       if (response.data.success === true) {
-        console.log(response.data.data.payments);
-        setObjdata(response.data.data.patient);
-        setPayments(response.data.data.payments);
+        console.log(response.data.data);
+        setObjdata(response.data.data);
+        setPayments(response.data.data);
       } else {
         console.log("something went worng");
       }
@@ -29,6 +34,7 @@ export default function PAymentpdf() {
   useEffect(() => {
     getAccordion();
   }, []);
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -258,18 +264,13 @@ export default function PAymentpdf() {
                               border: "1px solid #fff",
                             }}
                           >
-                            DESCRIPTION
+                          Amount
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {payments &&
-                          payments &&
-                          payments.map((item, index) => {
-                            console.log(item);
-                            return (
-                              <>
-                                <tr key={index}>
+                        
+                                <tr >
                                   <td
                                     style={{
                                       backgroundColor: "#f2f2f2",
@@ -277,32 +278,31 @@ export default function PAymentpdf() {
                                       border: "1px solid #fff",
                                     }}
                                   >
-                                    {item?.paid_amount}
-                                  </td>
-                                  <td
-                                    style={{
-                                      backgroundColor: "#f2f2f2",
-                                      padding: 10,
-                                      border: "1px solid #fff",
-                                    }}
-                                  >
-                                    {item.paymentMethod}
-                                  </td>
-                                  <td
-                                    style={{
-                                      backgroundColor: "#f2f2f2",
-                                      padding: 10,
-                                      border: "1px solid #fff",
-                                    }}
-                                  >
-                                    {new Date(
-                                      item.payment_Date
+                                     {new Date(
+                                      payments.payment_Date
                                     ).toLocaleDateString("en-GB")}
+                                  
+                                  </td>
+                                  <td
+                                    style={{
+                                      backgroundColor: "#f2f2f2",
+                                      padding: 10,
+                                      border: "1px solid #fff",
+                                    }}
+                                  >
+                                    {payments.paymentMethod}
+                                  </td>
+                                  <td
+                                    style={{
+                                      backgroundColor: "#f2f2f2",
+                                      padding: 10,
+                                      border: "1px solid #fff",
+                                    }}
+                                  >
+                                     {payments?.paid_amount}
                                   </td>
                                 </tr>
-                              </>
-                            );
-                          })}
+                           
                       </tbody>
                     </table>
                     <table style={{ width: "100%", marginBottom: 30 }}>

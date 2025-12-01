@@ -254,22 +254,6 @@ export default function Countries() {
                         className="page-item"
                       />
                     </Stack>
-                    {/* <TablePagination
-                      component="div"
-                      count={rows.length}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      rowsPerPage={10}
-                      rowsPerPageOptions={[]}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                      labelRowsPerPage=""
-                      sx={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        paddingRight: 2,
-                        marginBottom: 5,
-                      }}
-                    /> */}
                   </TableContainer>
                 </div>
               </div>
