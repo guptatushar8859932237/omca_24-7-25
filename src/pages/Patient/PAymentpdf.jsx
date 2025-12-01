@@ -672,13 +672,12 @@ export default function PAymentpdf() {
                         <tr>
                           <td style={{ fontSize: 14, fontWeight: 500 }}>
                             For convenience, you may process your payment
-                            through internet banking.
+                            through internet banking on our following accounts.
                           </td>
                           <td style={{ fontWeight: 500, fontSize: 14 }}>
                             Balance Due
                           </td>
                         </tr>
-
                         <tr>
                           <td style={{ fontSize: 14, fontWeight: 500 }}>
                             Account Number:
