@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseurl, image } from "../../Basurl/Baseurl";
-
+import avtar from "../../img/avtarImg.jpg"
 export default function EnquiryDetail() {
   const location = useLocation();
   const [row, setRows] = useState("");
@@ -138,7 +138,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-6">
                     <div className="field-set">
-                      <label>Emergency Contact Number<span className="text-danger">*</span></label>
+                      <label>Emergency Contact Number</label>
                       <input
                         class="form-control"
                         type="text"
@@ -171,7 +171,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-6">
                     <div className="field-set">
-                      <label>Referral Name<span className="text-danger">*</span></label>
+                      <label>Referral Name</label>
                       <input
                         class="form-control"
                         type="text"
@@ -182,12 +182,21 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-6">
                     <div className="field-set">
-                      <label>Patient ID<span className="text-danger">*</span></label>
+                      <label>Patient ID proof<span className="text-danger">*</span></label>
                       <div className="imgid-main">
-                        <img
+                        {/* <img
                           src={`${image}${row.patient_id_proof}`}
                           alt="No Document"
+                        /> */}
+                        <img
+                          src={row.patient_id_proof ? `${image}${row.patient_id_proof}` : `${avtar}`}
+                          alt="No Document"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `${avtar}`;
+                          }}
                         />
+
                       </div>
                     </div>
                   </div>
@@ -195,128 +204,136 @@ export default function EnquiryDetail() {
                     <div className="field-set">
                       <label>Patient Profile<span className="text-danger">*</span></label>
                       <div className="imgid-main">
-                        <img
+                        {/* <img
                           src={`${image}${row.patient_Profile}`}
                           alt="No Document"
+                        /> */}
+                        <img
+                          src={row.patient_Profile ? `${image}${row.patient_Profile}` : `${avtar}`}
+                          alt="No Document"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `${avtar}`
+                          }}
                         />
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="treat-hd">
-               {
-row.patient_relation ?
-                 <h6>Attendant Details</h6>
-:""               } 
+                  {
+                    row.patient_relation ?
+                      <h6>Attendant Details</h6>
+                      : ""}
                   <span className="line"></span>
                 </div>
                 {
                   row.patient_relation ?
-                   <div className="row">
-                  <div className="col-md-6">
-                    <div className="field-set">
-                      <label>Attendant Relation<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.patient_relation}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="field-set">
-                      <label>Attendant Relation Name<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.patient_relation_name}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="field-set">
-                      <label>Attendant Address<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.address}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="field-set">
-                      <label>Attendant Relation Number<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.patient_relation_no}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="field-set">
-                      <label>Attendant Id<span className="text-danger">*</span></label>
-                      <div className="imgid-main">
-                        <img
-                          src={`${image}${row.patient_relation_id}`}
-                          alt="No Document" />
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="field-set">
+                          <label>Attendant Relation<span className="text-danger">*</span></label>
+                          <input
+                            class="form-control"
+                            type="text"
+                            value={row.patient_relation}
+                            readonly=""
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div> :""
+                      <div className="col-md-6">
+                        <div className="field-set">
+                          <label>Attendant Relation Name<span className="text-danger">*</span></label>
+                          <input
+                            class="form-control"
+                            type="text"
+                            value={row.patient_relation_name}
+                            readonly=""
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="field-set">
+                          <label>Attendant Address<span className="text-danger">*</span></label>
+                          <input
+                            class="form-control"
+                            type="text"
+                            value={row.address}
+                            readonly=""
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="field-set">
+                          <label>Attendant Relation Number<span className="text-danger">*</span></label>
+                          <input
+                            class="form-control"
+                            type="text"
+                            value={row.patient_relation_no}
+                            readonly=""
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="field-set">
+                          <label>Attendant Id<span className="text-danger">*</span></label>
+                          <div className="imgid-main">
+                            <img
+                              src={`${image}${row.patient_relation_id}`}
+                              alt="No Document" />
+                          </div>
+                        </div>
+                      </div>
+                    </div> : ""
                 }
-                 {
-                  row.discussionNotes?.length === 0 ?(""):(
+                {
+                  row.discussionNotes?.length === 0 ? ("") : (
                     <>
                       <div className="row">
-                  <div className="col-md-12">
-                    <div className="treat-hd">
-                      <h6>Discussion Notes</h6>
-                      <span className="line"></span>
-                    </div>
-                    <div className="tab-pane" id="bottom-tab3">
-                      {row.discussionNotes?.length === 0 ? (
-                        "No notes for patient"
-                      ) : (
-                        <>
-                          {row.discussionNotes?.map((info, index) => (
-                            <div className="card-box">
-                              <div className="note-view">
-                                <h3 className="card-title">Note-{index + 1}</h3>
-                              </div>
-                              <div className="experience-box">
-                                <ul className="experience-list">
-                                  <li>
-                                    <div className="experience-user">
-                                      <div className="before-circle"></div>
+                        <div className="col-md-12">
+                          <div className="treat-hd">
+                            <h6>Discussion Notes</h6>
+                            <span className="line"></span>
+                          </div>
+                          <div className="tab-pane" id="bottom-tab3">
+                            {row.discussionNotes?.length === 0 ? (
+                              "No notes for patient"
+                            ) : (
+                              <>
+                                {row.discussionNotes?.map((info, index) => (
+                                  <div className="card-box">
+                                    <div className="note-view">
+                                      <h3 className="card-title">Note-{index + 1}</h3>
                                     </div>
-                                    <div className="experience-content">
-                                      <div className="timeline-content">
-                                        <a href="#/" className="name">
-                                          {info.note}
-                                        </a>
-                                        <div>date-{new Date(info.date).toLocaleDateString("en-GB")}</div>
-                                        {/* <span className="time">treatment due payment-{info.treatment_due_payment}</span> */}
-                                      </div>
+                                    <div className="experience-box">
+                                      <ul className="experience-list">
+                                        <li>
+                                          <div className="experience-user">
+                                            <div className="before-circle"></div>
+                                          </div>
+                                          <div className="experience-content">
+                                            <div className="timeline-content">
+                                              <a href="#/" className="name">
+                                                {info.note}
+                                              </a>
+                                              <div>date-{new Date(info.date).toLocaleDateString("en-GB")}</div>
+                                              {/* <span className="time">treatment due payment-{info.treatment_due_payment}</span> */}
+                                            </div>
+                                          </div>
+                                        </li>
+                                      </ul>
                                     </div>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          ))}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                                  </div>
+                                ))}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </>
                   )
-                 }
-              
+                }
+
               </form>
             </div>
           </div>

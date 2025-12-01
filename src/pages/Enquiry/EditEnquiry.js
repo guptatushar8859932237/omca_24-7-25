@@ -14,7 +14,8 @@ import {
   FormControl,
 } from "@mui/material";
 import { image } from "../../Basurl/Baseurl";
-
+import { Autocomplete, TextField } from "@mui/material";
+import avtar from "../../img/avtarImg.jpg"
 export default function EditEnquiry() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -51,9 +52,9 @@ export default function EditEnquiry() {
       .required("Phone number is required"),
     passport_num: Yup.string()
       .required("Passport number is required"),
-    patient_emergency_contact_no: Yup.string()
-      .matches(/^[0-9]{10,11}$/, "Emergency Contact No must be 10-11 digits")
-      .required("Emergency Contact No is required"),
+    // patient_emergency_contact_no: Yup.string()
+    //   .matches(/^[0-9]{10,11}$/, "Emergency Contact No must be 10-11 digits")
+    //   .required("Emergency Contact No is required"),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
       .required("Gender is required"),
@@ -287,7 +288,7 @@ export default function EditEnquiry() {
                         <div className="field-set">
                           <label>
                             Emergency Contact No
-                            <span className="text-danger">*</span>
+                            
                           </label>
                           <Field
                             className="form-control"
@@ -381,9 +382,9 @@ export default function EditEnquiry() {
                                 size="small"
                                 error={!!meta.touched && !!meta.error}
                               >
-                                <InputLabel>Select Country</InputLabel>
 
-                                <Select
+
+                                {/* <Select
                                   value={field.value}
                                   onChange={(e) => {
                                     const selected = Countries.find(
@@ -411,8 +412,25 @@ export default function EditEnquiry() {
                                       {country.name}
                                     </MenuItem>
                                   ))}
-                                </Select>
-
+                                </Select> */}
+                                <Autocomplete
+                                  options={Countries || []}                  // Array of countries
+                                  getOptionLabel={(option) => option.name}   // Display country name
+                                  value={Countries.find(c => c.name === field.value) || null} // Current value
+                                  onChange={(event, newValue) => {
+                                    setFieldValue("country", newValue?.name || "");
+                                    setFieldValue("dial_code", newValue?.dial_code || "");
+                                  }}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      placeholder="Select Country"
+                                      variant="outlined"
+                                      size="small"
+                                    />
+                                  )}
+                                  isOptionEqualToValue={(option, value) => option.name === value.name}
+                                />
                                 <ErrorMessage
                                   name="country"
                                   component="div"
@@ -511,11 +529,15 @@ export default function EditEnquiry() {
                               setFieldValue("patient_id_proof", files);
                             }}
                           />
-                          <div className="w-25 h-25 my-2">
+                          <div className="imgid-main mt-1">
                             <img
-                              style={{ width: "25px", height: "25px" }}
-                              src={`${image}${editenquiry.patient_id_proof}`}
+
+                              src={editenquiry.patient_id_proof ? `${image}${editenquiry.patient_id_proof}` : `${avtar}`}
                               alt=".."
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = `${avtar}`;
+                              }}
                             />
                           </div>
                           <ErrorMessage
@@ -543,11 +565,14 @@ export default function EditEnquiry() {
                               )
                             }
                           />
-                          <div className="w-25 h-25 my-2">
+                          <div className="imgid-main mt-1">
                             <img
-                              style={{ width: "25px", height: "25px" }}
-                              src={`${image}${editenquiry.patient_Profile}`}
+                              src={editenquiry.patient_Profile ? `${image}${editenquiry.patient_Profile}` : `${avtar}`}
                               alt=".."
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = `${avtar}`;
+                              }}
                             />
                           </div>
                           <ErrorMessage
@@ -560,7 +585,7 @@ export default function EditEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Referral Name<span className="text-danger">*</span>
+                            Referral Name
                           </label>
                           <Field
                             className="form-control"
