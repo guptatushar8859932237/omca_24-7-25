@@ -288,7 +288,7 @@ const handleclick=()=>{
                                     }}
                                   >
                                      {new Date(
-                                      payments.payment_Date
+                                      payments?.payment_Date
                                     ).toLocaleDateString("en-GB")}
                                   
                                   </td>
@@ -299,7 +299,7 @@ const handleclick=()=>{
                                       border: "1px solid #fff",
                                     }}
                                   >
-                                    {payments.paymentMethod}
+                                    {payments?.paymentMethod}
                                   </td>
                                   <td
                                     style={{
