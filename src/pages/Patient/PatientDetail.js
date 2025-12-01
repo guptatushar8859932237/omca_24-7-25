@@ -1387,7 +1387,6 @@ function PatientDetail() {
                                                 </div>
                                               </div>
                                             </div>
-
                                             <div className="row">
                                               <div className="col-sm-4">
                                                 <div className="para-main-div">
@@ -1464,165 +1463,6 @@ function PatientDetail() {
                                       );
                                     })}
                                   </ul>
-                                  {/* <ul className="mb-2">
-                                    {info.appointments_details?.map((item) => {
-                                      console.log(item);
-                                      return (
-                                        <>
-                                          <li>
-                                            <div className="row">
-                                              <div className="col-sm-3">
-                                                <div className="para-main-div">
-                                                  <h6>ID:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-5">
-                                                <div className="para-main-div">
-                                                  <p>{item.appointmentId}</p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div className="row">
-                                              <div className="col-sm-3">
-                                                <div className="para-main-div">
-                                                  <h6>Date:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-5">
-                                                <div className="para-main-div1">
-                                                  <p>{item.appointment_Date}</p>
-                                                  {item.status ===
-                                                  "Complete" ? (
-                                                    <p>{item.status}</p>
-                                                  ) : (
-                                                    <FormControl
-                                                      sx={{
-                                                        m: 1,
-                                                        minWidth: 120,
-                                                      }}
-                                                      size="small"
-                                                      className="app-status"
-                                                    >
-                                                      <Select
-                                                        value={
-                                                          item.status ===
-                                                          "pending"
-                                                            ? "1"
-                                                            : item.status ===
-                                                              "Follow-Up"
-                                                            ? "2"
-                                                            : item.status ===
-                                                              "Complete"
-                                                            ? "3"
-                                                            : item.status ===
-                                                              "Cancelled"
-                                                            ? "4"
-                                                            : "1"
-                                                        }
-                                                        onChange={(e) =>
-                                                          handleChangeDetails(
-                                                            e,
-                                                            item.appointmentId
-                                                          )
-                                                        }
-                                                        displayEmpty
-                                                        inputProps={{
-                                                          "aria-label":
-                                                            "Without label",
-                                                        }}
-                                                        className="status-direct1"
-                                                      >
-                                                        <MenuItem
-                                                          value="1"
-                                                          disabled
-                                                        >
-                                                          Schedule
-                                                        </MenuItem>
-                                                        <MenuItem value="2">
-                                                          Follow-Up
-                                                        </MenuItem>
-                                                        <MenuItem value="3">
-                                                          Complete
-                                                        </MenuItem>
-                                                        <MenuItem value="4">
-                                                          Cancelled
-                                                        </MenuItem>
-                                                      </Select>
-                                                    </FormControl>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </li>
-                                        </>
-                                      );
-                                    })}
-                                  </ul> */}
-                                  {/* {info?.appointments_details?.length > 0 &&
-                                    info.appointments_details.map(
-                                      (appointment, index) => (
-                                        <ul key={index}>
-                                          <li>
-                                            <div className="row">
-                                              <div className="col-sm-3">
-                                                <div className="para-main-div">
-                                                  <h6>Vehicle Number:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-5">
-                                                <div className="para-main-div">
-                                                  <p>
-                                                    {appointment.vehicle_no}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div className="row">
-                                              <div className="col-sm-3">
-                                                <div className="para-main-div">
-                                                  <h6>Driver Name:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-5">
-                                                <div className="para-main-div">
-                                                  <p>
-                                                    {appointment.driver_name}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div className="row">
-                                              <div className="col-sm-3">
-                                                <div className="para-main-div">
-                                                  <h6>Driver Contact:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-5">
-                                                <div className="para-main-div">
-                                                  <p>
-                                                    {appointment.driver_contact}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div className="row">
-                                              <div className="col-sm-3">
-                                                <div className="para-main-div">
-                                                  <h6>Pickup Time:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-5">
-                                                <div className="para-main-div">
-                                                  <p>
-                                                    {appointment.pickup_time}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </li>
-                                        </ul>
-                                      )
-                                    )} */}
                                 </div>
                               </div>
                               <hr></hr>
@@ -1881,8 +1721,11 @@ function PatientDetail() {
                                 <hr></hr>
                                 <div className="experience-box">
                                   <ul className="experience-list">
-                                    {payments.map((info, idx) => (
-                                      <li key={idx}>
+                                    {payments.map((info, idx) => {
+                                      console.log(info)
+                                      return(
+                                        <>
+                                          <li key={idx}>
                                         <div className="experience-user">
                                           <div className="before-circle"></div>
                                         </div>
@@ -1908,8 +1751,7 @@ function PatientDetail() {
                                                   "/Admin/Patient-Pdfdetails",
                                                   {
                                                     state: {
-                                                      data: location.state
-                                                        .patientId,
+                                                      data: info?.payment_id,
                                                     },
                                                   }
                                                 );
@@ -1918,7 +1760,9 @@ function PatientDetail() {
                                           </div>
                                         </div>
                                       </li>
-                                    ))}
+                                        </>
+                                            )})}
+                                   
                                   </ul>
                                 </div>
                               </div>

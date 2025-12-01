@@ -18,7 +18,7 @@ export default function EnquiryDetail() {
       })
       .then((response) => {
         if (response.data.success) {
-          console.log(response);
+          console.log(response.data.detail);
           setRows(response.data.detail);
           // setJobTitles(response.data.details.map(job => job.jobTitle));
           // setLocation(countries);

@@ -1,12 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
 export default function Sidebar() {
-  // Retrieve and parse permissions from localStorage
   const permissions = localStorage.getItem("permissionArray") ;
   console.log(permissions)
-
-  // Map stored permissions to actual sidebar routes
   const menuItems = [
     { path: "/Dashboard", icon: "fa-dashboard", label: "Dashboard" },
     { path: "/Enquiries", actualPath: "/Admin/Inquiry", icon: "fa-comments-o", label: "Enquiries" },
@@ -21,9 +17,8 @@ export default function Sidebar() {
     // { path: "/Manage_Currency", actualPath: "/Admin/currency", icon: "fa-user-md", label: "Manage Currency" }, 
     { path: "/History", actualPath: "/Admin/History", icon: "fa-history", label: "History" },
     { path: "/Reports", actualPath: "/Admin/Reports", icon: "fa-file-text-o", label: "Reports" },
-    { path: "/Earnings", actualPath: "/Admin/Earnings", icon: "fa-line-chart", label: "Payments" },
+    { path: "/Payments", actualPath: "/Admin/Earnings", icon: "fa-line-chart", label: "Payments" },
   ];
-
   return (
     <div className="sidebar" id="sidebar">
       <div className="sidebar-inner slimscroll">
