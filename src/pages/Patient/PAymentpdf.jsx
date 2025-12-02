@@ -404,14 +404,11 @@ import { baseurl } from "../../Basurl/Baseurl";
 import images from "../../img/logo-dark.png";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-
 export default function PAymentpdf() {
   const [payments, setPayments] = useState({});
   const [objdata, setObjdata] = useState({});
   const location = useLocation();
   const targetRef = useRef();
-
-  // ➤ Fetch Payment Details
   const getAccordion = async () => {
     try {
       const response = await axios.get(
@@ -423,7 +420,6 @@ export default function PAymentpdf() {
           },
         }
       );
-
       if (response.data.success) {
         setObjdata(response.data.data.payment_detail);
         setPayments(response.data.data.payment_detail);
@@ -434,36 +430,27 @@ export default function PAymentpdf() {
       console.log(error.response?.data || error);
     }
   };
-
   useEffect(() => {
     getAccordion();
   }, []);
-
   const handleclick = () => {
     window.history.back();
   };
-
-  // ➤ WORKING PDF DOWNLOAD FUNCTION
   const handleDownload = async () => {
     const element = targetRef.current;
-
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
       allowTaint: true,
     });
-
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
-
     const imgWidth = 210;
     const pageHeight = 295;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
     pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
     pdf.save("payment_invoice.pdf");
   };
-
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -477,7 +464,6 @@ export default function PAymentpdf() {
               ></i>
             </h4>
           </div>
-
           <button className="add-button1">
             <DownloadDoneSharp
               style={{ cursor: "pointer" }}
@@ -485,8 +471,6 @@ export default function PAymentpdf() {
             />
           </button>
         </div>
-
-        {/* PDF TARGET SECTION */}
         <section
           ref={targetRef}
           style={{
@@ -501,7 +485,6 @@ export default function PAymentpdf() {
               <tbody>
                 <tr>
                   <td>
-                    {/* TOP HEADER */}
                     <table style={{ width: "100%", marginBottom: 30 }}>
                       <tbody>
                         <tr>
@@ -543,7 +526,6 @@ export default function PAymentpdf() {
                               </tbody>
                             </table>
                           </td>
-
                           <td style={{ width: "50%", textAlign: "right" }}>
                             <img
                               src={images}
@@ -554,8 +536,6 @@ export default function PAymentpdf() {
                         </tr>
                       </tbody>
                     </table>
-
-                    {/* INVOICE DETAILS */}
                     <table style={{ width: "100%", marginBottom: 30 }}>
                       <tbody>
                         <tr>
@@ -570,7 +550,6 @@ export default function PAymentpdf() {
                               Invoice To: {objdata?.patient_name}
                             </p>
                           </td>
-
                           <td style={{ width: "50%", textAlign: "right" }}>
                             <div style={{ display: "inline-block" }}>
                               <p
@@ -582,7 +561,6 @@ export default function PAymentpdf() {
                               >
                                 Billing Details:
                               </p>
-
                               <table>
                                 <tbody>
                                   <tr>
@@ -612,8 +590,6 @@ export default function PAymentpdf() {
                         </tr>
                       </tbody>
                     </table>
-
-                    {/* PAYMENT TABLE */}
                     <table
                       style={{ width: "100%", borderBottom: "1px dashed #ccc" }}
                     >
@@ -648,7 +624,6 @@ export default function PAymentpdf() {
                           </th>
                         </tr>
                       </thead>
-
                       <tbody>
                         <tr>
                           <td style={{ background: "#f2f2f2", padding: 10 }}>
@@ -665,8 +640,6 @@ export default function PAymentpdf() {
                         </tr>
                       </tbody>
                     </table>
-
-                    {/* EXTRA INFO */}
                     <table style={{ width: "100%", marginTop: 30 }}>
                       <tbody>
                         <tr>

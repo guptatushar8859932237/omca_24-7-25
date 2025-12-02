@@ -506,6 +506,9 @@ export default function AddPatientTreatment() {
   // };
 
   console.log(personName);
+  const handleback =()=>{
+    window.history.back()
+  }
   return (
     <>
       <div className="page-wrapper">
@@ -513,7 +516,7 @@ export default function AddPatientTreatment() {
           <div className="row">
             <div className="col-md-12">
               <h4 className="page-title">
-                <span>
+                <span style={{cursor:"pointer"}} onClick={()=>{handleback()}}>
                   <i class="fi fi-sr-angle-double-small-left"></i>
                 </span>
                 Add Treatment
