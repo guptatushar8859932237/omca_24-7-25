@@ -26,6 +26,7 @@ import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { AddNewTretmentPayment } from "../../reducer/PatientTreatmentSlice";
 import { toast, ToastContainer } from "react-toastify";
+import avtar from "../../img/avtarImg.jpg"
 import {
   Paper,
   Table,
@@ -1333,53 +1334,53 @@ function PatientDetail() {
                                               </div>
                                             </div>
                                             {item.mode !== "online" && (
-                                            <div className="row">
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <h6>Vehicle Number:</h6>
+                                              <div className="row">
+                                                <div className="col-sm-4">
+                                                  <div className="para-main-div">
+                                                    <h6>Vehicle Number:</h6>
+                                                  </div>
+                                                </div>
+                                                <div className="col-sm-4">
+                                                  <div className="para-main-div">
+                                                    <p>{item.vehicle_no}</p>
+                                                  </div>
                                                 </div>
                                               </div>
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <p>{item.vehicle_no}</p>
-                                                </div>
-                                              </div>
-                                            </div>
                                             )}
-                                             {item.mode !== "online" && (
+                                            {item.mode !== "online" && (
+                                              <div className="row">
+                                                <div className="col-sm-4">
+                                                  <div className="para-main-div">
+                                                    <h6>Driver Name:</h6>
+                                                  </div>
+                                                </div>
+                                                <div className="col-sm-4">
+                                                  <div className="para-main-div">
+                                                    <p>{item.driver_name}</p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            )}
+                                            {item.mode !== "online" && (
+                                              <div className="row">
+                                                <div className="col-sm-4">
+                                                  <div className="para-main-div">
+                                                    <h6>Driver Contact:</h6>
+                                                  </div>
+                                                </div>
+                                                <div className="col-sm-4">
+                                                  <div className="para-main-div">
+                                                    <p>{item.driver_contact}</p>
+                                                  </div>
+                                                </div>
+                                              </div>)}
                                             <div className="row">
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <h6>Driver Name:</h6>
+                                              {item.mode !== "online" && (
+                                                <div className="col-sm-4">
+                                                  <div className="para-main-div">
+                                                    <h6>Pickup Time:</h6>
+                                                  </div>
                                                 </div>
-                                              </div>
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <p>{item.driver_name}</p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                             )}
-                                                {item.mode !== "online" && (
-                                            <div className="row">
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <h6>Driver Contact:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <p>{item.driver_contact}</p>
-                                                </div>
-                                              </div>
-                                            </div>)}
-                                            <div className="row">
-                                             {item.mode !== "online" && (
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <h6>Pickup Time:</h6>
-                                                </div>
-                                              </div>
                                               )}
                                               <div className="col-sm-4">
                                                 <div className="para-main-div">
@@ -1397,7 +1398,7 @@ function PatientDetail() {
                                                 <div className="para-main-div1">
                                                   <p>{item.appointment_Date}</p>
                                                   {item.status ===
-                                                  "Complete" ? (
+                                                    "Complete" ? (
                                                     <p>{item.status}</p>
                                                   ) : (
                                                     <FormControl
@@ -1411,18 +1412,18 @@ function PatientDetail() {
                                                       <Select
                                                         value={
                                                           item.status ===
-                                                          "pending"
+                                                            "pending"
                                                             ? "1"
                                                             : item.status ===
                                                               "Follow-Up"
-                                                            ? "2"
-                                                            : item.status ===
-                                                              "Complete"
-                                                            ? "3"
-                                                            : item.status ===
-                                                              "Cancelled"
-                                                            ? "4"
-                                                            : "1"
+                                                              ? "2"
+                                                              : item.status ===
+                                                                "Complete"
+                                                                ? "3"
+                                                                : item.status ===
+                                                                  "Cancelled"
+                                                                  ? "4"
+                                                                  : "1"
                                                         }
                                                         onChange={(e) =>
                                                           handleChangeDetails(
@@ -1508,105 +1509,131 @@ function PatientDetail() {
                     {kys?.length === 0
                       ? "No passport details found"
                       : kys?.map((info, index) => (
-                          <>
-                            <div key={index} className="card-box">
-                              <div className="pass-detail">
-                                <div className="img-patient">
-                                  <h6>Patient Image</h6>
-                                  <img
+                        <>
+                          <div key={index} className="card-box">
+                            <div className="pass-detail">
+                              <div className="img-patient">
+                                <h6>Patient Image</h6>
+                                {/* <img
                                     src={`${image}${info.photo}`}
                                     alt="no image"
                                     className="rounded-circle shadow"
                                     width="100"
                                     height="100"
-                                  />
-                                </div>
-                                <div className="id-proof">
-                                  <h6>Id Proof</h6>
-                                  {info.id_proof ? (
-                                    <a
-                                      href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="btn btn-outline-primary btn-sm"
-                                    >
-                                      View PDF
-                                    </a>
-                                  ) : (
-                                    <span className="text-muted">
-                                      Not Uploaded
-                                    </span>
-                                  )}
-                                  <div className="">
-                                    <h6>Passport</h6>
-                                    {info.passport ? (
-                                      <a
-                                        href={`https://sisccltd.com/omca_crm/${info.passport}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="view-pass"
-                                      >
-                                        View Passport
-                                      </a>
-                                    ) : (
-                                      <span className="text-muted">
-                                        Not Uploaded
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div key={index} className="card-box">
-                              <div className="pass-detail">
-                                <div className="img-patient">
-                                  <h6>Attende Image</h6>
+                                  /> */}
+                                {info.photo ? (
                                   <img
-                                    src={`${image}${info.Attende_photo}`}
-                                    alt="no image"
+                                    src={`${image}${info.photo}`}
+                                    alt="profile image"
                                     className="rounded-circle shadow"
                                     width="100"
                                     height="100"
                                   />
-                                </div>
-                                <div className="id-proof">
-                                  <h6>Attende id Proof </h6>
-                                  {info.Attende_id_proof ? (
+                                ) : (
+                                  <img
+                                    src={avtar} // e.g., defaultAvatar from your import
+                                    alt="avatar"
+                                    className="rounded-circle shadow"
+                                    width="100"
+                                    height="100"
+                                  />
+                                )}
+                              </div>
+                              <div className="id-proof">
+                                <h6>Id Proof</h6>
+                                {info.id_proof ? (
+                                  <a
+                                    href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-outline-primary btn-sm"
+                                  >
+                                    View PDF
+                                  </a>
+                                ) : (
+                                  <span className="text-muted">
+                                    Not Uploaded
+                                  </span>
+                                )}
+                                <div className="">
+                                  <h6>Passport</h6>
+                                  {info.passport ? (
                                     <a
-                                      href={`https://sisccltd.com/omca_crm/${info.Attende_id_proof}`}
+                                      href={`https://sisccltd.com/omca_crm/${info.passport}`}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="btn btn-outline-primary btn-sm"
+                                      className="view-pass"
                                     >
-                                      View PDF
+                                      View Passport
                                     </a>
                                   ) : (
                                     <span className="text-muted">
                                       Not Uploaded
                                     </span>
                                   )}
-                                  <div className="">
-                                    <h6>Attende Passport</h6>
-                                    {info.Attende_passport ? (
-                                      <a
-                                        href={`https://sisccltd.com/omca_crm/${info.Attende_passport}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="view-pass"
-                                      >
-                                        View Passport
-                                      </a>
-                                    ) : (
-                                      <span className="text-muted">
-                                        Not Uploaded
-                                      </span>
-                                    )}
-                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </>
-                        ))}
+                          </div>
+                          <div key={index} className="card-box">
+                            <div className="pass-detail">
+                              <div className="img-patient">
+                                <h6>Attende Image</h6>
+                                {info.Attende_photo ? (<img
+                                  src={`${image}${info.Attende_photo}`}
+                                  alt="no image"
+                                  className="rounded-circle shadow"
+                                  width="100"
+                                  height="100"
+                                />) :
+                                  (<img
+                                    src={avtar}
+                                    alt="no image"
+                                    className="rounded-circle shadow"
+                                    width="100"
+                                    height="100"
+                                  />)
+                                }
+
+                              </div>
+                              <div className="id-proof">
+                                <h6>Attende id Proof </h6>
+                                {info.Attende_id_proof ? (
+                                  <a
+                                    href={`https://sisccltd.com/omca_crm/${info.Attende_id_proof}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-outline-primary btn-sm"
+                                  >
+                                    View PDF
+                                  </a>
+                                ) : (
+                                  <span className="text-muted">
+                                    Not Uploaded
+                                  </span>
+                                )}
+                                <div className="">
+                                  <h6>Attende Passport</h6>
+                                  {info.Attende_passport ? (
+                                    <a
+                                      href={`https://sisccltd.com/omca_crm/${info.Attende_passport}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="view-pass"
+                                    >
+                                      View Passport
+                                    </a>
+                                  ) : (
+                                    <span className="text-muted">
+                                      Not Uploaded
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -1723,46 +1750,47 @@ function PatientDetail() {
                                   <ul className="experience-list">
                                     {payments.map((info, idx) => {
                                       console.log(info)
-                                      return(
+                                      return (
                                         <>
                                           <li key={idx}>
-                                        <div className="experience-user">
-                                          <div className="before-circle"></div>
-                                        </div>
-                                        <div className="experience-content">
-                                          <div className="timeline-content">
-                                            <div>
-                                              Payment Date -{" "}
-                                              {moment(info.payment_Date).format(
-                                                "L"
-                                              )}
+                                            <div className="experience-user">
+                                              <div className="before-circle"></div>
                                             </div>
-                                            <div>
-                                              Payment Method -{" "}
-                                              {info.paymentMethod}
+                                            <div className="experience-content">
+                                              <div className="timeline-content">
+                                                <div>
+                                                  Payment Date -{" "}
+                                                  {moment(info.payment_Date).format(
+                                                    "L"
+                                                  )}
+                                                </div>
+                                                <div>
+                                                  Payment Method -{" "}
+                                                  {info.paymentMethod}
+                                                </div>
+                                                <div>
+                                                  Paid Amount - {info.paid_amount}
+                                                </div>
+                                                <PictureAsPdf
+                                                  style={{ cursor: "pointer" }}
+                                                  onClick={() => {
+                                                    navigate(
+                                                      "/Admin/Patient-Pdfdetails",
+                                                      {
+                                                        state: {
+                                                          data: info?.payment_id,
+                                                        },
+                                                      }
+                                                    );
+                                                  }}
+                                                />
+                                              </div>
                                             </div>
-                                            <div>
-                                              Paid Amount - {info.paid_amount}
-                                            </div>
-                                            <PictureAsPdf
-                                              style={{ cursor: "pointer" }}
-                                              onClick={() => {
-                                                navigate(
-                                                  "/Admin/Patient-Pdfdetails",
-                                                  {
-                                                    state: {
-                                                      data: info?.payment_id,
-                                                    },
-                                                  }
-                                                );
-                                              }}
-                                            />
-                                          </div>
-                                        </div>
-                                      </li>
+                                          </li>
                                         </>
-                                            )})}
-                                   
+                                      )
+                                    })}
+
                                   </ul>
                                 </div>
                               </div>
@@ -1828,8 +1856,8 @@ function PatientDetail() {
                                     <TableCell>Tratment ID</TableCell>
                                     <TableCell>Course Name </TableCell>
                                     <TableCell>Report Title </TableCell>
-                                      {localStorage.getItem("Role") === "Admin" ? (
-                                    <TableCell>Reports</TableCell>):("")}
+                                    {localStorage.getItem("Role") === "Admin" ? (
+                                      <TableCell>Reports</TableCell>) : ("")}
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -1850,12 +1878,12 @@ function PatientDetail() {
                                             </TableCell>
                                             <TableCell>
                                               {localStorage.getItem("Role") === "Admin" ? (
-                                              <a
-                                                href={`${image}${item.treatmentReport}`}
-                                              >
-                                                Download Report
-                                              </a>
-                                              ):("")}
+                                                <a
+                                                  href={`${image}${item.treatmentReport}`}
+                                                >
+                                                  Download Report
+                                                </a>
+                                              ) : ("")}
                                             </TableCell>
                                           </TableRow>
                                         </>
@@ -2010,6 +2038,7 @@ function PatientDetail() {
           maxWidth={maxWidth}
           open={open}
           onClose={handleClose}
+          
         >
           <div className="main-card-header">
             <div className="note-hd">
@@ -2019,7 +2048,7 @@ function PatientDetail() {
               <i class="fa-solid fa-xmark"></i>
             </div>
           </div>
-          <DialogContent className="main-box">
+          <DialogContent className="main-box" >
             <Box
               noValidate
               component="form"
@@ -2027,7 +2056,10 @@ function PatientDetail() {
                 display: "flex",
                 flexDirection: "column",
                 width: "fit-content",
+             minHeight: '350px',
+             
               }}
+
               className="contact-form"
             >
               <Box>
@@ -2056,7 +2088,7 @@ function PatientDetail() {
                         setHospitalId(courseId);
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Hospital" />
+                        <TextField {...params} placeholder="Hospital" />
                       )}
                       size="small"
                       style={{
@@ -2590,8 +2622,8 @@ function PatientDetail() {
                       value={data.paymentMethod}>
                       <option>Select</option>
                       <option value="Cash">Cash</option>
-                      <option  value="Upi">Online via UPI</option>
-                      <option  value="Credit Card">Debit Card / Credit Card</option>
+                      <option value="Upi">Online via UPI</option>
+                      <option value="Credit Card">Debit Card / Credit Card</option>
                     </select>
                   </div>
                   <div className="field-set">
