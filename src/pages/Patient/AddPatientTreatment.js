@@ -483,28 +483,6 @@ export default function AddPatientTreatment() {
     amount_paid: Yup.string().required("Amount Paid is required"),
   });
 
-  // const handelSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     // Use unwrap to handle success or error directly
-  //     const result = await dispatch(AddAllStaffuser(formData)).unwrap();
-
-  //     Swal.fire({
-  //       title: "Staff added successfully!",
-  //       text: "You clicked the button!",
-  //       icon: "success",
-  //     });
-  //     navigate("/Admin/Staff");
-  //   } catch (err) {
-  //     Swal.fire({
-  //       title: "Error!",
-  //       text: err?.message || "An error occurred",
-  //       icon: "error",
-  //     });
-  //   }
-  // };
-
   console.log(personName);
   const handleback =()=>{
     window.history.back()
@@ -659,17 +637,16 @@ export default function AddPatientTreatment() {
                           multiple
                           options={Service.map(
                             (service) => service.serviceName
-                          )} // Display service names in dropdown
+                          )} 
                           onChange={(event, value) => {
-                            // Map selected names to IDs
                             const selectedIds = value.map(
                               (name) =>
                                 Service.find(
                                   (service) => service.serviceName === name
                                 )?.serviceId
                             );
-                            setPersonName(value); // Update the displayed names
-                            setFieldValue("services", selectedIds); // Set the selected IDs
+                            setPersonName(value); 
+                            setFieldValue("services", selectedIds); 
                           }}
                           renderInput={(params) => (
                             <TextField {...params} label="Select Services" />

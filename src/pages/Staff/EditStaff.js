@@ -157,36 +157,7 @@ export default function EditStaff() {
                       />
                     </div>
                   </div>
-                  <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>Phone No *</label>
-                      <Field className="form-control" name="phone_no" />
-                      <ErrorMessage
-                        name="phone_no"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>Role *</label>
-                      <Field as="select" name="role" className="form-control">
-                        <option value="">Select Role</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Receptionist">Receptionist</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Coordinator">Coordinator</option>
-                      </Field>
-                      <ErrorMessage
-                        name="role"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
+                      <div className="col-sm-6">
                     <div className="field-set">
                       <label>Country *</label>
                       <Field name="country">
@@ -252,6 +223,36 @@ export default function EditStaff() {
                       />
                     </div>
                   </div>
+                  <div className="col-sm-6">
+                    <div className="field-set">
+                      <label>Phone No *</label>
+                      <Field className="form-control" name="phone_no" />
+                      <ErrorMessage
+                        name="phone_no"
+                        component="div"
+                        className="text-danger"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-sm-6">
+                    <div className="field-set">
+                      <label>Role *</label>
+                      <Field as="select" name="role" className="form-control">
+                        <option value="">Select Role</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Receptionist">Receptionist</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Coordinator">Coordinator</option>
+                      </Field>
+                      <ErrorMessage
+                        name="role"
+                        component="div"
+                        className="text-danger"
+                      />
+                    </div>
+                  </div>
+              
                   <div className="col-sm-6">
                     <div className="field-set gender-select">
                       <label>Gender *</label>
@@ -320,6 +321,7 @@ export default function EditStaff() {
                       <Select
                         multiple
                         value={values.roleStatuses}
+                        label="Status"
                         name="roleStatuses"
                         onChange={(event) => {
                           const value = event.target.value;
@@ -368,7 +370,7 @@ export default function EditStaff() {
                 </div>
                 <button
                   type="submit"
-                  className="submit-btn"
+                  className="submit-btn my-2"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Updating..." : "Submit"}

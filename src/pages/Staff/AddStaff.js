@@ -182,44 +182,7 @@ export default function AddStaff() {
                         />
                       </div>
                     </div>
-                    <div className="col-sm-6">
-                      <div className="field-set">
-                        <label>
-                          Phone No <span className="text-danger">*</span>
-                        </label>
-                        <Field
-                          className="form-control"
-                          type="text"
-                          name="phone_no"
-                        />
-                        <ErrorMessage
-                          name="phone_no"
-                          component="div"
-                          style={{ color: "red" }}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="field-set">
-                        <label>
-                          Role<span className="text-danger">*</span>
-                        </label>
-                        <Field as="select" className="form-control" name="role">
-                          <option value="">Select Role</option>
-                          <option value="Manager">Manager</option>
-                          <option value="Receptionist">Receptionist</option>
-                          <option value="Doctor">Doctor</option>
-                          <option value="Finance">Finance</option>
-                          <option value="Coordinator">Coordinator</option>
-                        </Field>
-                        <ErrorMessage
-                          name="role"
-                          component="div"
-                          className="text-danger"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
+                      <div className="col-sm-6">
                       <div className="field-set">
                         <label>
                           Country<span className="text-danger">*</span>
@@ -279,7 +242,7 @@ export default function AddStaff() {
                         </Field>
                       </div>
                     </div>
-                    <div className="col-sm-6">
+                      <div className="col-sm-6">
                       <div className="field-set">
                         <label>
                           Dial Code<span className="text-danger">*</span>
@@ -291,6 +254,45 @@ export default function AddStaff() {
                         />
                       </div>
                     </div>
+                    <div className="col-sm-6">
+                      <div className="field-set">
+                        <label>
+                          Phone No <span className="text-danger">*</span>
+                        </label>
+                        <Field
+                          className="form-control"
+                          type="text"
+                          name="phone_no"
+                        />
+                        <ErrorMessage
+                          name="phone_no"
+                          component="div"
+                          style={{ color: "red" }}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-sm-6">
+                      <div className="field-set">
+                        <label>
+                          Role<span className="text-danger">*</span>
+                        </label>
+                        <Field as="select" className="form-control" name="role">
+                          <option value="">Select Role</option>
+                          <option value="Manager">Manager</option>
+                          <option value="Receptionist">Receptionist</option>
+                          <option value="Doctor">Doctor</option>
+                          <option value="Finance">Finance</option>
+                          <option value="Coordinator">Coordinator</option>
+                        </Field>
+                        <ErrorMessage
+                          name="role"
+                          component="div"
+                          className="text-danger"
+                        />
+                      </div>
+                    </div>
+                  
+                  
                     <div className="col-sm-6">
                       <div className="field-set gender-select">
                         <label className="gen-label">
@@ -418,6 +420,7 @@ export default function AddStaff() {
   <Select
     multiple
     value={values.roleStatuses}
+    label="status"
     name="roleStatuses"
     onChange={(event) => {
       const value = event.target.value;
@@ -465,7 +468,7 @@ export default function AddStaff() {
                   </div>
                   <div className="">
                     <button
-                      className="submit-btn"
+                      className="submit-btn my-2"
                       type="submit"
                       disabled={isSubmitting || loading}
                     >
