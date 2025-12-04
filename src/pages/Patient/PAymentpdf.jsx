@@ -403,6 +403,7 @@ import { useLocation } from "react-router-dom";
 import { baseurl } from "../../Basurl/Baseurl";
 import images from "../../img/logo-dark.png";
 import jsPDF from "jspdf";
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import html2canvas from "html2canvas";
 export default function PAymentpdf() {
   const [payments, setPayments] = useState({});
@@ -464,19 +465,21 @@ export default function PAymentpdf() {
               ></i>
             </h4>
           </div>
-          <button className="add-button1">
-            <DownloadDoneSharp
+       <div>
+           <button className="add-button"  onClick={handleDownload}>
+            
+           <FileDownloadIcon
               style={{ cursor: "pointer" }}
-              onClick={handleDownload}
-            />
+               
+            />Download
           </button>
+       </div>
         </div>
         <section
           ref={targetRef}
           style={{
             width: 900,
             margin: "auto",
-            border: "2px solid #9c9c9cff",
             background: "#fff",
           }}
         >
