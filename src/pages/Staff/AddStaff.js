@@ -53,8 +53,8 @@ export default function AddStaff() {
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
       .required("Phone number is required"),
     gender: Yup.string()
-      .oneOf(["Male", "Female", "Others"], "Invalid gender selection") 
-      .required("Gender is required"), 
+      .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
+      .required("Gender is required"),
     roleStatuses: Yup.array()
       .min(1, "Please select at least one status")
       .required("Status is required"),
@@ -71,7 +71,7 @@ export default function AddStaff() {
   });
   useEffect(() => {
     dispatch(GetAllCountries2);
-  },[dispatch]);
+  }, [dispatch]);
   return (
     <>
       <div className="page-wrapper">
@@ -182,7 +182,7 @@ export default function AddStaff() {
                         />
                       </div>
                     </div>
-                      <div className="col-sm-6">
+                    <div className="col-sm-6">
                       <div className="field-set">
                         <label>
                           Country<span className="text-danger">*</span>
@@ -242,7 +242,7 @@ export default function AddStaff() {
                         </Field>
                       </div>
                     </div>
-                      <div className="col-sm-6">
+                    <div className="col-sm-6">
                       <div className="field-set">
                         <label>
                           Dial Code<span className="text-danger">*</span>
@@ -291,8 +291,8 @@ export default function AddStaff() {
                         />
                       </div>
                     </div>
-                  
-                  
+
+
                     <div className="col-sm-6">
                       <div className="field-set gender-select">
                         <label className="gen-label">
@@ -349,7 +349,7 @@ export default function AddStaff() {
                               <img
                                 alt="preview"
                                 src={URL.createObjectURL(selectedImage)}
-                                // style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                              // style={{ width: "100px", height: "100px", objectFit: "cover" }}
                               />
                             ) : (
                               <img
@@ -379,7 +379,7 @@ export default function AddStaff() {
                         />
                       </div>
                     </div>
-                    <div className="col-sm-6">
+                    <div className="col-sm-6 dropdownCustom">
                       <label>
                         Give Permission<span className="text-danger">*</span>
                       </label>
@@ -416,53 +416,70 @@ export default function AddStaff() {
                         />
                       </div> */}
                       <FormControl fullWidth>
-  <InputLabel>Status</InputLabel>
-  <Select
-    multiple
-    value={values.roleStatuses}
-    label="status"
-    name="roleStatuses"
-    onChange={(event) => {
-      const value = event.target.value;
 
-      // Handle Select All logic
-      if (value.includes("All")) {
-        if (values.roleStatuses.length === statusOptions.length) {
-          // Deselect All
-          setFieldValue("roleStatuses", []);
-        } else {
-          // Select All
-          setFieldValue("roleStatuses", statusOptions);
-        }
-      } else {
-        setFieldValue("roleStatuses", value);
-      }
-    }}
-    className="form-control"
-    renderValue={(selected) => selected.join(", ")}
-  >
-    <MenuItem value="All">
-      <Checkbox
-        checked={values.roleStatuses.length === statusOptions.length}
-        indeterminate={
-          values.roleStatuses.length > 0 &&
-          values.roleStatuses.length < statusOptions.length
-        }
-      />
-      <ListItemText primary="Select All" />
-    </MenuItem>
+                        <Select
+                          multiple
+                          value={values.roleStatuses}
 
-    {/* Normal Status Items */}
-    {statusOptions.map((roleStatuses) => (
-      <MenuItem key={roleStatuses} value={roleStatuses}>
-        <Checkbox
-          checked={values.roleStatuses.indexOf(roleStatuses) > -1}
-        />
-        <ListItemText primary={roleStatuses} />
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
+                          name="roleStatuses"
+                          onChange={(event) => {
+                            const value = event.target.value;
+
+                            // Handle Select All logic
+                            if (value.includes("All")) {
+                              if (values.roleStatuses.length === statusOptions.length) {
+                                // Deselect All
+                                setFieldValue("roleStatuses", []);
+                              } else {
+                                // Select All
+                                setFieldValue("roleStatuses", statusOptions);
+                              }
+                            } else {
+                              setFieldValue("roleStatuses", value);
+                            }
+                          }}
+                          className="form-control"
+                          renderValue={(selected) => selected.join(", ")}
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 337,
+                                height: 337,
+                              },
+                            },
+                            anchorOrigin: {
+                              vertical: "bottom",
+                              horizontal: "left",
+                            },
+                            transformOrigin: {
+                              vertical: "top",
+                              horizontal: "left",
+                            },
+                            getContentAnchorEl: null,
+                          }}
+                        >
+                          <MenuItem value="All">
+                            <Checkbox
+                              checked={values.roleStatuses.length === statusOptions.length}
+                              indeterminate={
+                                values.roleStatuses.length > 0 &&
+                                values.roleStatuses.length < statusOptions.length
+                              }
+                            />
+                            <ListItemText primary="Select All" />
+                          </MenuItem>
+
+                          {/* Normal Status Items */}
+                          {statusOptions.map((roleStatuses) => (
+                            <MenuItem key={roleStatuses} value={roleStatuses}>
+                              <Checkbox
+                                checked={values.roleStatuses.indexOf(roleStatuses) > -1}
+                              />
+                              <ListItemText primary={roleStatuses} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
 
                     </div>
                   </div>

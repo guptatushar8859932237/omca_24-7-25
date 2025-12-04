@@ -6858,3 +6858,9 @@ input:checked + .slider:before {
   max-height: unset !important;
   overflow: visible !important;
 }
+.dropdownCustom input{
+  padding: 0px !important;
+}
+.dropdownCustom .MuiPaper-root {
+    max-height: 337px !important;
+}

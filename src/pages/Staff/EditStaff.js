@@ -9,6 +9,8 @@ import axios from "axios";
 import { image, baseurl } from "../../Basurl/Baseurl";
 import { GetAllStaffUser } from "../../reducer/StaffSlice";
 import { GetAllCountries2 } from "../../reducer/Countries";
+import { Autocomplete, TextField } from "@mui/material";
+
 import {
   FormControl,
   InputLabel,
@@ -157,7 +159,7 @@ export default function EditStaff() {
                       />
                     </div>
                   </div>
-                      <div className="col-sm-6">
+                  <div className="col-sm-6">
                     <div className="field-set">
                       <label>Country *</label>
                       <Field name="country">
@@ -252,7 +254,7 @@ export default function EditStaff() {
                       />
                     </div>
                   </div>
-              
+
                   <div className="col-sm-6">
                     <div className="field-set gender-select">
                       <label>Gender *</label>
@@ -317,11 +319,11 @@ export default function EditStaff() {
                       Give Permission<span className="text-danger">*</span>
                     </label>
                     <FormControl fullWidth>
-                      <InputLabel>Status</InputLabel>
+
                       <Select
                         multiple
                         value={values.roleStatuses}
-                        label="Status"
+
                         name="roleStatuses"
                         onChange={(event) => {
                           const value = event.target.value;
@@ -340,6 +342,12 @@ export default function EditStaff() {
                         }}
                         className="form-control"
                         renderValue={(selected) => selected.join(", ")}
+                        MenuProps={{
+                          PaperProps: {
+                            style: { maxHeight: 337 }
+                          },
+                          disableAutoFocusItem: true
+                        }}
                       >
                         <MenuItem value="All">
                           <Checkbox
@@ -366,6 +374,7 @@ export default function EditStaff() {
                         ))}
                       </Select>
                     </FormControl>
+
                   </div>
                 </div>
                 <button
