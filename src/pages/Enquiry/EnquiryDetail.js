@@ -105,6 +105,17 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-6">
                     <div className="field-set">
+                      <label>Address<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.address}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="field-set">
                       <label>Contact Number<span className="text-danger">*</span></label>
                       <input
                         class="form-control"
@@ -258,7 +269,7 @@ export default function EnquiryDetail() {
                           <input
                             class="form-control"
                             type="text"
-                            value={row.address}
+                            value={row.patient_relation_address}
                             readonly=""
                           />
                         </div>

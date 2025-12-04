@@ -90,6 +90,7 @@ export default function EditEnquiry() {
                   town: editenquiry?.town || "",
                   email: editenquiry?.email || "",
                   gender: editenquiry?.gender || "",
+                  dial_code: editenquiry?.phoneCode || "",
                   emergency_contact_no: editenquiry?.emergency_contact || "",
                   patient_relation_name:
                     editenquiry?.patient_relation_name || "",
@@ -100,7 +101,7 @@ export default function EditEnquiry() {
                     editenquiry?.patient_emergency_contact_no || "",
                   patient_relation: editenquiry?.patient_relation || "",
                   Referral_Name: editenquiry?.Referral_Name || "",
-                  dial_code: editenquiry?.dial_code || "",
+                  // dial_code: editenquiry?.dial_code || "",
                   address: editenquiry?.address || "",
                   passport_num: editenquiry?.passport_num || "",
                   patient_relation_no: editenquiry?.patient_relation_no || "",
@@ -314,6 +315,7 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
+                      
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
@@ -446,9 +448,9 @@ export default function EditEnquiry() {
                           <label>
                             Dial Code<span className="text-danger">*</span>
                           </label>
-                          <Field className="form-control" name="dial_code" />
+                          <Field className="form-control" name="phoneCode" />
                           <ErrorMessage
-                            name="dial_code"
+                            name="phoneCode"
                             component="div"
                             style={{ color: "red" }}
                           />
