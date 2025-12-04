@@ -81,7 +81,7 @@ export default function AddEnquiry() {
                   town: "",
                   passport_num: "",
                   patient_relation_no: "",
-                  address: "",
+                  patient_relation_address: "",
                   patient_relation_id: null,
                   patient_id_proof: null,
                   patient_Profile: null,
@@ -760,9 +760,9 @@ export default function AddEnquiry() {
                                 Attendant Address
                                 <span className="text-danger">*</span>
                               </label>
-                              <Field className="form-control" name="address" />
+                              <Field className="form-control" name="patient_relation_address" />
                               <ErrorMessage
-                                name="address"
+                                name="patient_relation_address"
                                 component="div"
                                 className="text-danger"
                               />

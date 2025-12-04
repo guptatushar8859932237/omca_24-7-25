@@ -145,6 +145,7 @@ function PatientDetail() {
   }, [PatientTreatments]);
   console.log(chkservice);
   const handleClose = () => {
+    sethospitalharge("")
     setOpen(false);
   };
   const handleClickOpen = (e, tretmentId) => {
@@ -781,7 +782,8 @@ function PatientDetail() {
         },
       })
       .then((response) => {
-        setUndadedservice(response.data.availableServices, "treatment data");
+        console.log("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",response.data.availableServices);
+        setUndadedservice(response.data.availableServices);
       })
       .catch((error) => {
         console.error("Error fetching unadded services:", error);
@@ -1081,7 +1083,7 @@ function PatientDetail() {
                                           In Progress
                                         </MenuItem>
                                         <MenuItem value="Complete">
-                                          Complete
+                                          Completed
                                         </MenuItem>
                                         <MenuItem value="Cancelled">
                                           Cancelled
@@ -1399,7 +1401,7 @@ function PatientDetail() {
                                                   <p>{item.appointment_Date}</p>
                                                   {item.status ===
                                                     "Complete" ? (
-                                                    <p>{item.status}</p>
+                                                    <p className="ms-2">{item.status==="Complete"?"Completed":item.status}</p>
                                                   ) : (
                                                     <FormControl
                                                       sx={{
@@ -1418,7 +1420,7 @@ function PatientDetail() {
                                                               "Follow-Up"
                                                               ? "2"
                                                               : item.status ===
-                                                                "Complete"
+                                                                "Completed"
                                                                 ? "3"
                                                                 : item.status ===
                                                                   "Cancelled"
@@ -1448,7 +1450,7 @@ function PatientDetail() {
                                                           Follow-Up
                                                         </MenuItem>
                                                         <MenuItem value="3">
-                                                          Complete
+                                                          Completed
                                                         </MenuItem>
                                                         <MenuItem value="4">
                                                           Cancelled
