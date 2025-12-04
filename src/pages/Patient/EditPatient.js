@@ -65,7 +65,7 @@ export default function EditPatient() {
                   <i
                     className="fi fi-sr-angle-double-small-left"
                     style={{ cursor: "pointer" }}
-                   onClick={() => window.history.back()}
+                    onClick={() => window.history.back()}
                   ></i>
                 </span>
                 Edit Patients
@@ -251,7 +251,7 @@ export default function EditPatient() {
                                       MenuProps={{
                                         PaperProps: {
                                           style: {
-                                            maxHeight: 200, // Limit dropdown height
+                                            maxHeight: 260, // Limit dropdown height
                                           },
                                         },
                                       }}
@@ -294,69 +294,69 @@ export default function EditPatient() {
                             />
                           </div>
                         </div>
-                           <div className="col-sm-6">
-                            <div className="field-set gender-select">
-                              <label className="gen-label">
-                                Gender<span className="text-danger">*</span>
-                              </label>
-                              <div className="form-check-inline">
-                                <label className="form-check-label">
-                                  <Field
-                                    type="radio"
-                                    name="gender"
-                                    value="Male"
-                                    className="form-check-input"
-                                  />{" "}
-                                  Male
-                                </label>
-                              </div>
-                              <div className="form-check-inline">
-                                <label className="form-check-label">
-                                  <Field
-                                    type="radio"
-                                    name="gender"
-                                    value="Female"
-                                    className="form-check-input"
-                                  />{" "}
-                                  Female
-                                </label>
-                              </div>
-                              <div className="form-check-inline">
-                                <label className="form-check-label">
-                                  <Field
-                                    type="radio"
-                                    name="gender"
-                                    value="Others"
-                                    className="form-check-input"
-                                  />
-                                  Others
-                                </label>
-                              </div>
-                              <ErrorMessage
-                                name="gender"
-                                component="div"
-                                className="text-danger"
-                              />
-                            </div>
-                          </div>
-                          <div className="col-sm-6">
-                            <label className="gen-label fw-normal">
-                              Patient Id<span className="text-danger">*</span>
+                        <div className="col-sm-6">
+                          <div className="field-set gender-select">
+                            <label className="gen-label">
+                              Gender<span className="text-danger">*</span>
                             </label>
-                             
-                              <Field
-                                className="form-control "
-                                type="text"
-                                name="patientNumber"
-                              />
-                              <ErrorMessage
-                                name="patientNumber"
-                                component="div"
-                                className="text-danger"
-                              />
-                            
+                            <div className="form-check-inline">
+                              <label className="form-check-label">
+                                <Field
+                                  type="radio"
+                                  name="gender"
+                                  value="Male"
+                                  className="form-check-input"
+                                />{" "}
+                                Male
+                              </label>
+                            </div>
+                            <div className="form-check-inline">
+                              <label className="form-check-label">
+                                <Field
+                                  type="radio"
+                                  name="gender"
+                                  value="Female"
+                                  className="form-check-input"
+                                />{" "}
+                                Female
+                              </label>
+                            </div>
+                            <div className="form-check-inline">
+                              <label className="form-check-label">
+                                <Field
+                                  type="radio"
+                                  name="gender"
+                                  value="Others"
+                                  className="form-check-input"
+                                />
+                                Others
+                              </label>
+                            </div>
+                            <ErrorMessage
+                              name="gender"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
-                        
+                        </div>
+                        <div className="col-sm-6">
+                          <label className="gen-label fw-normal">
+                            Patient Id<span className="text-danger">*</span>
+                          </label>
+
+                          <Field
+                            className="form-control "
+                            type="text"
+                            name="patientNumber"
+                          />
+                          <ErrorMessage
+                            name="patientNumber"
+                            component="div"
+                            className="text-danger"
+                          />
+
+                        </div>
+
 
                         <div className="treat-hd">
                           <h6>Attendant Details</h6>
@@ -401,7 +401,7 @@ export default function EditPatient() {
                         </div>
                       </div>
                       <div className="row">
-                                 <div className="col-sm-6">
+                        <div className="col-sm-6">
                           <div className="field-set">
                             <label>
                               Patient Number{" "}
