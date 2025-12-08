@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
-import { baseurl } from "../Basurl/Baseurl"
+import { AdminBaseUrl, baseurl } from "../Basurl/Baseurl"
 
 
 export const GetAllTreatment = createAsyncThunk('Treatment/GetAllTreatment', async () => {

@@ -6,13 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
-import {
-  InputLabel,
-  MenuItem,
-  Select,
-  OutlinedInput,
-  FormControl,
-} from "@mui/material";
+import {FormControl} from "@mui/material";
 import { image } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg"
@@ -23,12 +17,10 @@ export default function EditEnquiry() {
   const { Enquiry, loading } = useSelector((state) => state.Enquiry);
   const { Countries } = useSelector((state) => state.Countries);
   const [editenquiry, setEnquiry] = useState("");
-
   useEffect(() => {
     dispatch(GetAllCountries2());
     dispatch(GetAllEnquiry());
   }, [dispatch]);
-
   useEffect(() => {
     if (location.state?.enquiryId && Enquiry.length > 0) {
       const selectedUser = Enquiry.find(
@@ -38,7 +30,6 @@ export default function EditEnquiry() {
       setEnquiry(selectedUser || {});
     }
   }, [location.state?.enquiryId, Enquiry]);
-
   const basicSchema = Yup.object().shape({
     name: Yup.string().required("Name is required").min(2).max(50),
     email: Yup.string()
@@ -52,16 +43,12 @@ export default function EditEnquiry() {
       .required("Phone number is required"),
     passport_num: Yup.string()
       .required("Passport number is required"),
-    // patient_emergency_contact_no: Yup.string()
-    //   .matches(/^[0-9]{10,11}$/, "Emergency Contact No must be 10-11 digits")
-    //   .required("Emergency Contact No is required"),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
       .required("Gender is required"),
     disease_name: Yup.string().required("Disease Name is required"),
     country: Yup.string().required("Country is required"),
   });
-
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -101,7 +88,6 @@ export default function EditEnquiry() {
                     editenquiry?.patient_emergency_contact_no || "",
                   patient_relation: editenquiry?.patient_relation || "",
                   Referral_Name: editenquiry?.Referral_Name || "",
-                  // dial_code: editenquiry?.dial_code || "",
                   address: editenquiry?.address || "",
                   passport_num: editenquiry?.passport_num || "",
                   patient_relation_no: editenquiry?.patient_relation_no || "",
@@ -112,47 +98,8 @@ export default function EditEnquiry() {
                   patient_Profile: null,
                 }}
                 validationSchema={basicSchema}
-                // onSubmit={async (values, { setSubmitting }) => {
-                //   const formData = new FormData();
-
-                //   for (const key in values) {
-                //     if (key === "relation_id" && values.relation_id) {
-                //       formData.append("relation_id", values.relation_id);
-                //       formData.append(
-                //         "patient_Profile",
-                //         values.patient_Profile
-                //       );
-                //       formData.append(
-                //         "patient_id_proof",
-                //         values.patient_id_proof
-                //       );
-                //     } else {
-                //       formData.append(key, values[key]);
-                //     }
-                //   }
-
-                //   try {
-                //     await dispatch(
-                //       EditEnquiryType({
-                //         id: editenquiry.enquiryId,
-                //         formData,
-                //       })
-                //     ).unwrap();
-                //     Swal.fire("Enquiry updated successfully!", "", "success");
-                //     navigate("/Admin/Inquiry");
-                //   } catch (err) {
-                //     Swal.fire(
-                //       "Error!",
-                //       err?.message || "An error occurred",
-                //       "error"
-                //     );
-                //   }
-                //   setSubmitting(false);
-                // }}
                 onSubmit={async (values, { setSubmitting }) => {
                   const formData = new FormData();
-
-                  // Append normal fields (EXCEPT FILES)
                   for (const key in values) {
                     if (
                       key !== "patient_id_proof" &&
@@ -193,7 +140,6 @@ export default function EditEnquiry() {
                       "error"
                     );
                   }
-
                   setSubmitting(false);
                 }}
               >
@@ -315,7 +261,6 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>

@@ -1,13 +1,28 @@
+for (let i = 1; i <= 5; i++) {
+  let a = "";
 
-    const arr = [5,4,9,10,1,26,44,33,22,11] 
+  for (let j = 1; j <= 5-i; j++) {
+    a += " ";
+  }
+  for (let k=1;k<=i;k++){
+    a+="*"
+  }
+  console.log(a);
+}
+let n = 5;
 
-    console.log(arr[9])
+for (let i = 1; i <= n; i++) {
+  let row = "";
 
+  // spaces
+  for (let s = 1; s <= n - i; s++) {
+    row += " ";
+  }
 
+  // stars
+  for (let j = 1; j <= 2 * i - 1; j++) {
+    row += "*";
+  }
 
-
-
-
-
-
-
+  console.log(row);
+}

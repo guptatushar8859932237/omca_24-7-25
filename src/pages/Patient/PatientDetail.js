@@ -15,7 +15,7 @@ import TextField from "@mui/material/TextField";
 import Swal from "sweetalert2";
 import Autocomplete from "@mui/material/Autocomplete";
 import { AppointmentForPatient } from "../../reducer/PatientTreatmentSlice";
-import { baseurl, image } from "../../Basurl/Baseurl";
+import { AdminBaseUrl, baseu11, baseurl, image } from "../../Basurl/Baseurl";
 import { AddKysDetail } from "../../reducer/PatientTreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
 import FormControl from "@mui/material/FormControl";
@@ -256,6 +256,25 @@ function PatientDetail() {
       console.log(error);
     }
   };
+  useEffect(()=>{
+    gettreatment11()
+  },[])
+
+const gettreatment11 =async()=>{
+  try {
+    const response = await axios.post(`${baseurl}treatment_list`)
+ console.log("ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",response.data.data)
+    // if(response.success===200){
+  //   console.log(response)
+  // }
+  // else{
+  //   console.log("something went wrong")
+  // }
+  } catch (error) {
+    console.log("getting error")
+  }
+  
+}
   useEffect(() => {
     gettreatment();
   }, [ispatient?.patientId]);
