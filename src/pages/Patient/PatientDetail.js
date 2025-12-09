@@ -15,7 +15,7 @@ import TextField from "@mui/material/TextField";
 import Swal from "sweetalert2";
 import Autocomplete from "@mui/material/Autocomplete";
 import { AppointmentForPatient } from "../../reducer/PatientTreatmentSlice";
-import { AdminBaseUrl, baseu11, baseurl, image } from "../../Basurl/Baseurl";
+import { AdminBaseUrl, base, baseu11, baseurl, image } from "../../Basurl/Baseurl";
 import { AddKysDetail } from "../../reducer/PatientTreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
 import FormControl from "@mui/material/FormControl";
@@ -497,14 +497,10 @@ const gettreatment11 =async()=>{
   const [filesData, setFilesData] = useState({});
   const getdataApi = async () => {
     try {
-      const rresponse = await axios.get(`${baseurl}getActiveHospitals`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (rresponse.data.success === true) {
-        setDataHospital(rresponse.data.Hospital_Details);
+      const rresponse = await axios.post(`${AdminBaseUrl}hospital_list`);
+      console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",rresponse.data.data);
+      if (rresponse.data.success === "true") {
+        setDataHospital(rresponse.data.data);
       }
     } catch (error) {
       console.log(error);
@@ -1125,8 +1121,8 @@ const gettreatment11 =async()=>{
                                     onClick={(e) =>
                                       handleClickOpen1(
                                         e,
-                                        info.treatment_id,
-                                        info.Hospital_details
+                                        info?.treatment_id,
+                                        info?.Hospital_details
                                       )
                                     }
                                     className="add-button1"
@@ -1219,7 +1215,7 @@ const gettreatment11 =async()=>{
                                     <h6>Hospital</h6>
                                   </div>
                                   <ul className="mb-2">
-                                    {info.Hospital_details.map((item) => {
+                                    {info?.Hospital_details.map((item) => {
                                       console.log(item);
                                       return (
                                         <>
@@ -2097,15 +2093,13 @@ const gettreatment11 =async()=>{
                     <Autocomplete
                       disablePortal
                       options={
-                        dataHospital?.map((job) => job.hospitalName) || []
+                        dataHospital?.map((job) => job.name) || []
                       } // Fallback to empty array
                       onChange={(e, value) => {
                         const selectedCourse = dataHospital?.find(
-                          (job) => job.hospitalName === value
+                          (job) => job.name === value
                         );
                         const courseId = selectedCourse
-                          ? selectedCourse.hospitalId
-                          : null;
                         setHospitalId(courseId);
                       }}
                       renderInput={(params) => (

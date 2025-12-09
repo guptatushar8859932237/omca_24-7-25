@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
-import { baseurl } from "../Basurl/Baseurl"
+import { AdminBaseUrl, baseurl } from "../Basurl/Baseurl"
 
 
 export const GetAllHositalData = createAsyncThunk('hospital/GetAllHositalData', async () => {
     try {
-        const response = await axios.get(`${baseurl}getAll_hospital`, {
+        const response = await axios.post(`${AdminBaseUrl}hospital_list`, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",

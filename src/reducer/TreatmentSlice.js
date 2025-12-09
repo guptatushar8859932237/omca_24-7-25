@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
-import { AdminBaseUrl, baseurl } from "../Basurl/Baseurl"
-
-
+import {  baseurl } from "../Basurl/Baseurl"
 export const GetAllTreatment = createAsyncThunk('Treatment/GetAllTreatment', async () => {
     try {
         const response = await axios.get(`${baseurl}get_all_treatment_courses`, {
@@ -18,7 +16,6 @@ export const GetAllTreatment = createAsyncThunk('Treatment/GetAllTreatment', asy
         throw error; // Rethrow to propagate the error in createAsyncThunk
     }
 });
-
 // export const AddTeatment = createAsyncThunk(
 //     "Treatment/AddTeatment",
 //     async (object, { rejectWithValue }) => {
@@ -57,7 +54,6 @@ export const AddTeatment = createAsyncThunk(
     }
   }
 );
-
 // export const EditTreatmentssection = createAsyncThunk(
 //     "Treatment/EditTreatmentssection",
 //     async (courseId, { rejectWithValue }) => {
@@ -66,7 +62,6 @@ export const AddTeatment = createAsyncThunk(
 //                 headers: {
 //                     "Authorization": `Bearer ${localStorage.getItem("token")}`,
 //                     "Content-Type": "application/json",
-
 //                 },
 //             });
 //             return response.data; // Success response
@@ -78,7 +73,6 @@ export const AddTeatment = createAsyncThunk(
 //         }
 //     }
 // );
-
 export const EditTreatmentssection = createAsyncThunk(
   "Treatment/EditTreatmentssection",
   async ({ id, data }, { rejectWithValue }) => {
@@ -98,8 +92,6 @@ export const EditTreatmentssection = createAsyncThunk(
     }
   }
 );
-
-
 export const DeleteTreatment = createAsyncThunk('Treatment/DeleteTreatment',
     async (treatment_course_id, { rejectWithValue }) => {
         try {
@@ -107,10 +99,9 @@ export const DeleteTreatment = createAsyncThunk('Treatment/DeleteTreatment',
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem("token")}`,
                     "Content-Type": "application/json",
-
                 },
             });
-            return treatment_course_id; // Success response
+            return treatment_course_id;
         } catch (error) {
             console.error("Error deleting hospital:", error);
             return rejectWithValue(
@@ -130,7 +121,6 @@ const TreatmentSlice = createSlice({
         addTreatment: (state, action) => {
             state.TreatmentSlice.push(action.payload)
         },
-
     },
     extraReducers: (builder) => {
         builder
@@ -146,7 +136,6 @@ const TreatmentSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            // Edit a tretment user
             .addCase(EditTreatmentssection.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -154,8 +143,6 @@ const TreatmentSlice = createSlice({
             .addCase(EditTreatmentssection.fulfilled, (state, action) => {
                 state.loading = false;
                 const updatedUser = action.payload;
-
-                // Update the staff list with the edited user
                 state.Treatment = state.Treatment.map((user) =>
                     user.course_id === updatedUser.id ? updatedUser : user
                 );
@@ -164,7 +151,6 @@ const TreatmentSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            // Delet a Hospital data
             .addCase(DeleteTreatment.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -172,7 +158,6 @@ const TreatmentSlice = createSlice({
             .addCase(DeleteTreatment.fulfilled, (state, action) => {
                 state.loading = false;
                 const deletedHospitalId = action.payload;
-                // Filter out the deleted hospital
                 state.Treatment = state.Treatment.filter(
                     (user) => user.course_id !== deletedHospitalId
                 );
@@ -181,7 +166,6 @@ const TreatmentSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-
     }
 })
 export default TreatmentSlice.reducer
