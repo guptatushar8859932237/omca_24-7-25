@@ -15,7 +15,8 @@ import TextField from "@mui/material/TextField";
 import Swal from "sweetalert2";
 import Autocomplete from "@mui/material/Autocomplete";
 import { AppointmentForPatient } from "../../reducer/PatientTreatmentSlice";
-import { AdminBaseUrl, base, baseu11, baseurl, image } from "../../Basurl/Baseurl";
+import { AdminBaseUrl, base, baseu11, baseurl,image  } from "../../Basurl/Baseurl";
+import { imageUrl } from "../../Basurl/Baseurl";
 import { AddKysDetail } from "../../reducer/PatientTreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
 import FormControl from "@mui/material/FormControl";
@@ -938,7 +939,7 @@ const gettreatment11 =async()=>{
                     <form>
                       <div class="image-wrap">
                         <div class="part-img">
-                          <img src={profile} className="pro-img" />
+                          <img src={`${imageUrl}${ispatient?.patient_Profile}`} className="pro-img" />
                         </div>
                         {/* <button class="image-change" type="button"> */}
                         {/* <i class="fa fa-camera" aria-hidden="true"></i> */}
@@ -2243,8 +2244,7 @@ const gettreatment11 =async()=>{
                           (job) => job.hospital_Name === value
                         );
                         const courseId = selectedCourse
-                          ? selectedCourse.hospital_id
-                          : null;
+                          
                         setAppHospital(courseId);
                       }}
                       renderInput={(params) => <TextField {...params} />}
