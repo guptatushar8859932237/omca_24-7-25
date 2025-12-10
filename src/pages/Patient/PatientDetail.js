@@ -299,45 +299,118 @@ const gettreatment11 =async()=>{
     }
   };
   const handlesubmit = async (e) => {
-    e.preventDefault();
-    if (isSubmitting) return; // prevent multiple clicks
+  e.preventDefault();
+  if (isSubmitting) return;
 
-    setIsSubmitting(true);
-    setBlogErr({
-      hospital_charge: false,
-    });
+  setIsSubmitting(true);
 
-    if (!hospitalcharge) {
-      setBlogErr((prevState) => ({ ...prevState, hospitalcharge: true }));
-    }
-    if (!hospitalcharge) {
-      return;
-    }
-    const result = await dispatch(
-      AddHospitalForPatient({
-        id: location.state.patientId,
-        hospitalId: hospitalId,
-        treatmentId: treatmentId,
-        hospital_charge: hospitalcharge,
-      })
-    ).unwrap();
-    try {
-      setOpen(false);
-      Swal.fire("Patient assigned to Hospital successfully!", "", "success");
+  // Reset errors
+  setBlogErr({ hospitalcharge: false });
 
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      setTreatmentId("");
-      setNote("");
-      setDate("");
-      setHospitalId("");
-      setBlogErr(false);
-    } catch (err) {
-      setOpen(false);
-      Swal.fire("Error!", err?.message || "An error occurred", "error");
-    } finally {
-      setIsSubmitting(false); // Re-enable button
-    }
-  };
+  // Frontend validation
+  if (!hospitalcharge) {
+    setBlogErr((prev) => ({ ...prev, hospitalcharge: true }));
+    setIsSubmitting(false);
+    return;
+  }
+
+  // -------- API CALL START --------
+  const result = await dispatch(
+    AddHospitalForPatient({
+      id: location.state.patientId,
+      hospitalId: hospitalId,
+      treatmentId: treatmentId,
+      hospital_charge: hospitalcharge,
+    })
+  );
+
+  // ❌ If API failed (400 or any error)
+ if (AddHospitalForPatient.rejected.match(result)) {
+  const allErrors = result.payload; // array of backend errors
+
+  // First close popup
+  setOpen(false);
+
+  // Show Swal and reopen popup after OK
+  Swal.fire({
+    title: "Error Occurred",
+    html: allErrors.join("<br>"),
+    icon: "error",
+  }).then(() => {
+    // Reopen the popup after user clicks OK
+    setOpen(true);
+  });
+
+  setIsSubmitting(false);
+  return;
+}
+  // -------- API CALL SUCCESS --------
+  try {
+    setOpen(false);
+    Swal.fire(
+      "Patient assigned to Hospital successfully!",
+      "",
+      "success"
+    );
+    dispatch(GetPatientTreatments({ id: location.state.patientId }));
+    setTreatmentId("");
+    setNote("");
+    setDate("");
+    setHospitalId("");
+    setBlogErr(false);
+
+  } catch (err) {
+    Swal.fire("Error!", err?.message || "An error occurred", "error");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+  // const handlesubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (isSubmitting) return; // prevent multiple clicks
+
+  //   setIsSubmitting(true);
+  //   setBlogErr({
+  //     hospital_charge: false,
+  //   });
+
+  //   if (!hospitalcharge) {
+  //     setBlogErr((prevState) => ({ ...prevState, hospitalcharge: true }));
+  //   }
+  //   if (!hospitalcharge) {
+  //     return;
+  //   }
+  //   const result = await dispatch(
+  //     AddHospitalForPatient({
+  //       id: location.state.patientId,
+  //       hospitalId: hospitalId,
+  //       treatmentId: treatmentId,
+  //       hospital_charge: hospitalcharge,
+  //     })
+  //      if (AddHospitalForPatient.rejected.match(result)) {
+  //   const allErrors = result.payload;  // array of all messages
+  //   allErrors.forEach((e) => toast.error(e));
+  //   return;
+  // }
+  //   ).unwrap();
+  //   try {
+  //     setOpen(false);
+  //     Swal.fire("Patient assigned to Hospital successfully!", "", "success");
+
+  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //     setTreatmentId("");
+  //     setNote("");
+  //     setDate("");
+  //     setHospitalId("");
+  //     setBlogErr(false);
+  //   } catch (err) {
+  //     setOpen(false);
+  //     Swal.fire("Error!", err?.message || "An error occurred", "error");
+  //   } finally {
+  //     setIsSubmitting(false); // Re-enable button
+  //   }
+  // };
   const handlesubmitAppoint = async (e) => {
     e.preventDefault();
 
@@ -501,6 +574,7 @@ const gettreatment11 =async()=>{
       const rresponse = await axios.post(`${AdminBaseUrl}hospital_list`);
       console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",rresponse.data.data);
       if (rresponse.data.success === "true") {
+      
         setDataHospital(rresponse.data.data);
       }
     } catch (error) {
@@ -726,7 +800,7 @@ const gettreatment11 =async()=>{
     } catch (err) {
       console.error(err.response || err.message);
       if (err.response && err.response.data && err.response.data.message) {
-        toast.error(err.response.data.message);
+        Swal.fire("Error",err.response.data.message,"error");
       } else {
         toast.error("Something went wrong. Please try again!");
       }
@@ -939,7 +1013,7 @@ const gettreatment11 =async()=>{
                     <form>
                       <div class="image-wrap">
                         <div class="part-img">
-                          <img src={`${imageUrl}${ispatient?.patient_Profile}`} className="pro-img" />
+                          <img src={`${image}${ispatient?.patient_Profile}`} className="pro-img" />
                         </div>
                         {/* <button class="image-change" type="button"> */}
                         {/* <i class="fa fa-camera" aria-hidden="true"></i> */}
@@ -2187,7 +2261,7 @@ const gettreatment11 =async()=>{
                 flexDirection: "column",
                 width: "fit-content",
               }}
-              className="contact-form"
+              className="contact-form scrollModal"
             >
               <Box>
                 <form

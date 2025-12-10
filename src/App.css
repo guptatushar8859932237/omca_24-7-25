@@ -6864,3 +6864,8 @@ input:checked + .slider:before {
 .dropdownCustom .MuiPaper-root {
     max-height: 337px !important;
 }
+.scrollModal {
+  height: 70vh;
+  overflow: auto;
+  padding-right: 10px;
+}

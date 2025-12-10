@@ -54,15 +54,56 @@ export const AddHospitalForPatient = createAsyncThunk(
           },
         }
       );
-      return response.data; // Success response
+
+      return response.data;
     } catch (error) {
-      console.error("Error adding staff user:", error.response?.data?.message);
-      return rejectWithValue(
-        error.response?.data || { message: "An unknown error occurred" }
-      );
+      const backend = error.response?.data;
+
+      // CASE 1: backend.errors is an object { field: ["error1","error2"] }
+      if (backend?.errors && typeof backend.errors === "object") {
+        const flatErrors = Object.values(backend.errors).flat();
+        return rejectWithValue(flatErrors);
+      }
+
+      // CASE 2: backend.errors is an array: ["err1","err2"]
+      if (Array.isArray(backend?.errors)) {
+        return rejectWithValue(backend.errors);
+      }
+
+      // CASE 3: single message
+      if (backend?.message) {
+        return rejectWithValue([backend.message]);
+      }
+
+      // CASE 4: fallback
+      return rejectWithValue(["An unknown error occurred"]);
     }
   }
 );
+
+// export const AddHospitalForPatient = createAsyncThunk(
+//   "PatientTreatments/AddHospitalForPatient",
+//   async (object, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.post(
+//         `${baseurl}assign_patient_to_hospital/${object.id}`,
+//         object,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       );
+//       return response.data; // Success response
+//     } catch (error) {
+//       console.error("Error adding staff user:", error.response?.data?.message);
+//       return rejectWithValue(
+//         error.response?.data || { message: "An unknown error occurred" }
+//       );
+//     }
+//   }
+// );
 export const AppointmentForPatient = createAsyncThunk(
   "PatientTreatments/AppointmentForPatient",
   async (object, { rejectWithValue }) => {

@@ -247,7 +247,7 @@ export default function Inquiry() {
     if (!note) {
       setBlogErr((prevState) => ({ ...prevState, note: true }));
     }
-    if (!date) {
+    if (!date) {  
       setBlogErr((prevState) => ({ ...prevState, date: true }));
     }
     if (!note || !date) {
@@ -717,7 +717,7 @@ export default function Inquiry() {
                         multiple
                         options={
                           hospital && hospital.length > 0
-                            ? hospital.map((h) => h.hospitalName)
+                            ? hospital.map((h) => h.name)
                             : []
                         }
                         value={report.hospital || []}

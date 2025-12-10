@@ -5,13 +5,8 @@ import { AdminBaseUrl, baseurl } from "../Basurl/Baseurl"
 
 export const GetAllHositalData = createAsyncThunk('hospital/GetAllHositalData', async () => {
     try {
-        const response = await axios.post(`${AdminBaseUrl}hospital_list`, {
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        });
-        return response.data.Hospital_Details;
+        const response = await axios.post(`${AdminBaseUrl}hospital_list`);
+        return response.data.data;
     } catch (error) {
         console.error("Error fetching staff users:", error.response?.data || error.message);
         throw error; // Rethrow to propagate the error in createAsyncThunk
