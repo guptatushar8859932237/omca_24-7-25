@@ -55,6 +55,7 @@ import ActivityUser from "./pages/ActivityUser";
 import Currency from "./pages/Currency/Currency";
 import Addcurrency from "./pages/Currency/Addcurrency";
 import EditCurrency from "./pages/Currency/EditCurrency";
+import GerGeneralEnquiry from "./pages/Genera Enquiry/GerGeneralEnquiry";
 function App() {
   console.log("22/04/25");
   return (
@@ -201,6 +202,12 @@ function App() {
                 path="/Admin/Patient-Pdfdetails"
                 element={<PAymentpdf />}
               />
+              <Route index path="/Admin/General_Enquiries"
+               element={<GerGeneralEnquiry />} />
+
+
+
+
               <Route index path="/Admin/add-Enquiry" element={<AddEnquiry />} />
               <Route
                 index

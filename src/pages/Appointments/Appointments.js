@@ -7,6 +7,7 @@ import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import Swal from "sweetalert2";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -16,21 +17,23 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
+import { toast, ToastContainer } from "react-toastify";
 import InputAdornment from "@mui/material/InputAdornment";
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
   MenuItem,
   Box,
   Pagination,
   Stack,
+  Tabs,
+  Tab,
 } from "@mui/material";
-import { toast, ToastContainer } from "react-toastify";
-import Swal from "sweetalert2";
+function TabPanel({ children, value, index }) {
+  return value === index && <Box sx={{ p: 2 }}>{children}</Box>;
+}
+
 export default function Appointments() {
   const role = localStorage.getItem("Role");
+    const [tabValue, setTabValue] = useState(0);
   const [appointments, setAppointments] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
   const [page, setPage] = useState(0);
@@ -186,10 +189,35 @@ export default function Appointments() {
     });
   };
 
+   const handleTabChange = (_, newVal) => {
+    setTabValue(newVal);
+  };
   return (
     <>
       <div className="page-wrapper">
-        <div className="content">
+         <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2,marginTop:"10px" }}>
+        <Tabs value={tabValue} onChange={handleTabChange}>
+       <Tab 
+  label="Appointments By CRM" 
+  sx={{
+    fontSize: "12px",
+    fontWeight: "bold",
+    fontFamily: "Rubik",
+    color: "##666"
+  }} 
+/>
+
+          <Tab   label="Appointments By APP" 
+  sx={{
+    fontSize: "12px",
+    fontWeight: "bold",
+    fontFamily: "Rubik",
+    color: "#666"
+  }} />
+        </Tabs>
+      </Box>
+         <TabPanel value={tabValue} index={0}>
+       <div className="content">
           <div className="row">
             <div className="col-md-12">
               <div className="country-top">
@@ -388,6 +416,13 @@ export default function Appointments() {
             </div>
           </div>
         </div>
+      </TabPanel>
+
+      {/* ---------- TAB 2 : ANOTHER PAGE ---------- */}
+      <TabPanel value={tabValue} index={1}>
+        <h3>Add your other page code here...</h3>
+      </TabPanel>
+       
         <ToastContainer />
       </div>
     </>

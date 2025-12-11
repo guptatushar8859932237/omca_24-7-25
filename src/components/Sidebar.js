@@ -6,6 +6,7 @@ export default function Sidebar() {
   const menuItems = [
     { path: "/Dashboard", icon: "fa-dashboard", label: "Dashboard" },
     { path: "/Enquiries", actualPath: "/Admin/Inquiry", icon: "fa-comments-o", label: "Enquiries" },
+    { path: "/General_Enquiries", actualPath: "/Admin/General_Enquiries", icon: "fa-comments-o", label: "General Enquiries" },
     { path: "/Manage_Patients", actualPath: "/Admin/patients", icon: "fa-wheelchair", label: "Manage Patients" },
     { path: "/Manage_Appointments", actualPath: "/Admin/Appointments", icon: "fa-calendar", label: "Manage Appointments" },
     { path: "/Manage_Services", actualPath: "/Admin/Services", icon: "fa-server", label: "Manage Services" },
@@ -24,15 +25,40 @@ export default function Sidebar() {
       <div className="sidebar-inner slimscroll">
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
-            {menuItems.map((item) =>
+            {/* {menuItems.map((item) =>
               permissions.includes(item.path) ? ( // Check if permission exists
                 <li key={item.path}>
                   <NavLink to={item.actualPath || item.path} className={({ isActive }) => (isActive ? "active" : "")}>
                     <i className={`fa ${item.icon}`}></i> <span>{item.label}</span> 
                   </NavLink>
                 </li>
-              ) : null
-            )}
+              ) :  <NavLink to={menuItems} className={({ isActive }) => (isActive ? "active" : "")}>
+                    <i className={`fa ${item.icon}`}></i> <span>{item.label}</span> 
+                  </NavLink>
+            )} */}
+            {menuItems.map((item) => {
+
+  const isStaticPermission = item.path === "/General_Enquiries";  
+  const hasPermission = permissions.includes(item.path);
+
+  // If General Enquiries → always show
+  if (isStaticPermission || hasPermission) {
+    return (
+      <li key={item.path}>
+        <NavLink
+          to={item.actualPath || item.path}
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          <i className={`fa ${item.icon}`} />
+          <span>{item.label}</span>
+        </NavLink>
+      </li>
+    );
+  }
+
+  // If NOT allowed → hide (or show disabled)
+  return null;
+})}
           </ul>
         </div>
       </div>
