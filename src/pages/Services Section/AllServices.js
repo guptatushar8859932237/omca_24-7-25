@@ -184,7 +184,7 @@ export default function AllServices() {
                   <TextField
                     className="field-count"
                     sx={{ width: "100%" }}
-                    label="Search By Service Id and Name"
+                    label="Search"
                     size="small"
                     value={filterValue}
                     onChange={handleFilter}

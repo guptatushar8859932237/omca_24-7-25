@@ -242,7 +242,7 @@ export default function Staff() {
                     <TextField
                       className="field-count"
                       sx={{ width: "100%" }}
-                      label="Search By Staff Name"
+                      label="Search"
                       id="outlined-size-small"
                       size="small"
                       InputLabelProps={{ shrink: true }}

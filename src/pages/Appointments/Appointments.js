@@ -229,7 +229,7 @@ export default function Appointments() {
                     <TextField
                       sx={{ width: "100%" }}
                       className="field-count"
-                      label="Search By Patient ID and Hospital"
+                      label="Search"
                       id="outlined-size-small"
                       size="small"
                       value={filterValue}

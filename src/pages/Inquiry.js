@@ -362,7 +362,7 @@ export default function Inquiry() {
                     <TextField
                       sx={{ width: "100%" }}
                       className="field-count"
-                      label="Search By Enquiry Id Or Country"
+                      label="Search"
                       id="outlined-required"
                       size="small"
                       value={filterValue}

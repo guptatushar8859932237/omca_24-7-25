@@ -138,7 +138,7 @@ export default function Countries() {
                   <TextField
                     className="field-count"
                     sx={{ width: "100%" }}
-                    label="Search by countries"
+                    label="Search "
                     size="small"
                     value={filterValue}
                     onChange={handleFilter}

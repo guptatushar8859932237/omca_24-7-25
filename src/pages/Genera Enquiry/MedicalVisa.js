@@ -82,7 +82,7 @@ export default function MedicalVisa() {
             <div>
  <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
         <TextField
-          label="Search by applying for"
+          label="Search "
           size="small"
           value={filterValue}
           onChange={handleFilter}

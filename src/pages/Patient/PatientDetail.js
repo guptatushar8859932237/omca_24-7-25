@@ -996,6 +996,25 @@ const gettreatment11 =async()=>{
     }
   };
 
+  const handledelete = async (info,item)=>{
+    console.log(info)
+    console.log(item)
+  try {
+    const response = await axios.delete(`${baseurl}deleteTreatmentHospital/${info.treatment_id}/${item.hospital_id}`)
+    console.log(response)
+    if(response.data.success===true){
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  Swal.fire("Success","Hospital Delete Successfully","Success")
+    }
+    else{
+      console.log(error)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+  
+  }
+
   return (
     <>
       <div className="page-wrapper">
@@ -1302,8 +1321,11 @@ const gettreatment11 =async()=>{
                                                 </div>
                                               </div>
                                               <div className="col-sm-5">
-                                                <div className="para-main-div">
-                                                  <p>{item.hospital_Name}</p>
+                                                <div className="para-main-div d-flex">
+                                                  <p>{item.hospital_Name} </p>{item.hospital_Name? <i
+                                    className="fa-solid fa-trash"
+                                    onClick={() => handledelete(info,item)}
+                                  ></i>:""}
                                                 </div>
                                               </div>
                                             </div>

@@ -493,7 +493,7 @@ export default function Patient() {
                     <div className="mr-3">
                       <TextField
                         sx={{ width: "100%" }}
-                        label="Search By Patient Id and Name"
+                        label="Search"
                         id="outlined-size-small"
                         size="small"
                         className="field-count"
