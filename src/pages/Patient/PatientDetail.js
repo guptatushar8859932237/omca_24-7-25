@@ -996,24 +996,60 @@ const gettreatment11 =async()=>{
     }
   };
 
-  const handledelete = async (info,item)=>{
-    console.log(info)
-    console.log(item)
+const handledelete = async (info, item) => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "This hospital will be permanently deleted!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  });
+
+  if (!result.isConfirmed) return;
+
   try {
-    const response = await axios.delete(`${baseurl}deleteTreatmentHospital/${info.treatment_id}/${item.hospital_id}`)
-    console.log(response)
-    if(response.data.success===true){
+    const response = await axios.delete(
+      `${baseurl}deleteTreatmentHospital/${info.treatment_id}/${item.hospital_id}`
+    );
+
+    if (response.data.success === true) {
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  Swal.fire("Success","Hospital Delete Successfully","Success")
-    }
-    else{
-      console.log(error)
+
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Hospital deleted successfully",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } else {
+      Swal.fire("Error", "Something went wrong", "error");
     }
   } catch (error) {
-    console.log(error)
+    console.error(error);
+    Swal.fire("Error", "Server error occurred", "error");
   }
+};
+  // const handledelete = async (info,item)=>{
+  //   console.log(info)
+  //   console.log(item)
+  // try {
+  //   const response = await axios.delete(`${baseurl}deleteTreatmentHospital/${info.treatment_id}/${item.hospital_id}`)
+  //   console.log(response)
+  //   if(response.data.success===true){
+  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  // Swal.fire("Success","Hospital Delete Successfully","Success")
+  //   }
+  //   else{
+  //     console.log(error)
+  //   }
+  // } catch (error) {
+  //   console.log(error)
+  // }
   
-  }
+  // }
 
   return (
     <>
@@ -1358,11 +1394,7 @@ const gettreatment11 =async()=>{
                                             key={item._id || item.serviceName}
                                           >
                                             <div className="row" key={index}>
-                                              <div className="col-sm-3">
-                                                <div className="para-main-div">
-                                                  <h6>Name:</h6>
-                                                </div>
-                                              </div>
+                                             
                                               <div className="col-sm-5">
                                                 <div className="para-main-div">
                                                   <p>{item.serviceName} </p>
