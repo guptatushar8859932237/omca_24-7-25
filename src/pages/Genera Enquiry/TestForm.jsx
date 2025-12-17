@@ -244,14 +244,12 @@ const maxWidth = "lg"; // xs | sm | md | lg | xl
                                               {Object.entries(selectedRecord)
                                                 .filter(([key]) =>
                                                   [
-                                                    "first_name",
+                                                    "name",
                                                     "email",
                                                     "phone",
-                                                    "services",
-                                                    "from",
-                                                    "to",
-                                                    "select_date",
-                                                    "travellers_count",
+                                                    "date",
+                                                    "time",
+                                                    "address",
                                                   ].includes(key)
                                                 )
                                                 .map(([key, value]) => (
