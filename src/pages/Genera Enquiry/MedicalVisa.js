@@ -8,7 +8,9 @@ import {
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
   Modal, Box
 } from "@mui/material";
-
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
 import ClearIcon from "@mui/icons-material/Clear";
 
 export default function MedicalVisa() {
@@ -42,18 +44,18 @@ export default function MedicalVisa() {
     setPage(0);
   };
 
- const filteredData = medicalVisaData.filter((item) => {
-  const search = filterValue.toLowerCase();
+  const filteredData = medicalVisaData.filter((item) => {
+    const search = filterValue.toLowerCase();
 
-  return (
-    item.applying_for?.toLowerCase().includes(search) ||
-    item.first_name?.toLowerCase().includes(search) ||
-    item.last_name?.toLowerCase().includes(search) ||
-    item.nationality?.toLowerCase().includes(search) ||
-    item.phone_number?.toLowerCase().includes(search) ||
-    item.passport_number?.toLowerCase().includes(search)
-  );
-});
+    return (
+      item.applying_for?.toLowerCase().includes(search) ||
+      item.first_name?.toLowerCase().includes(search) ||
+      item.last_name?.toLowerCase().includes(search) ||
+      item.nationality?.toLowerCase().includes(search) ||
+      item.phone_number?.toLowerCase().includes(search) ||
+      item.passport_number?.toLowerCase().includes(search)
+    );
+  });
 
 
   const paginatedData = filteredData.slice(
@@ -66,6 +68,8 @@ export default function MedicalVisa() {
     setSelectedRecord(record);
     setOpen(true);
   };
+const fullWidth = true;
+const maxWidth = "lg"; // xs | sm | md | lg | xl
 
   const handleClose = () => setOpen(false);
 
@@ -73,48 +77,48 @@ export default function MedicalVisa() {
     <div>
 
       {loading && <p>Loading...</p>}
-      {error &&  <p style={{ color: "red" }}>{error}</p>}
-        <div className="d-flex justify-content-between">
-            <div>
-      <h2>Medical Visa Request</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="d-flex justify-content-between">
+        <div>
+          <h2>Medical Visa Request</h2>
 
-            </div >
-            <div>
- <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
-        <TextField
-          label="Search "
-          size="small"
-          value={filterValue}
-          onChange={handleFilter}
-          InputLabelProps={{ shrink: true }}
-          placeholder="Search..."
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {filterValue && (
-                  <IconButton onClick={handleClearFilter}>
-                    <ClearIcon />
-                  </IconButton>
-                )}
-              </InputAdornment>
-            ),
-          }}
-          sx={{ width: "100%" }}
-        />
-      </div>
-            </div>
+        </div >
+        <div>
+          <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
+            <TextField
+              label="Search "
+              size="small"
+              value={filterValue}
+              onChange={handleFilter}
+              InputLabelProps={{ shrink: true }}
+              placeholder="Search..."
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {filterValue && (
+                      <IconButton onClick={handleClearFilter}>
+                        <ClearIcon />
+                      </IconButton>
+                    )}
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ width: "100%" }}
+            />
+          </div>
         </div>
+      </div>
       {/* Search */}
-     
+
 
       {/* Table */}
-      <TableContainer   component={Paper}
-                          style={{ overflowX: "auto" }}>
-        <Table   
-                              stickyHeader
-                              aria-label="sticky table"
-                              className="table-no-card"
-                            >
+      <TableContainer component={Paper}
+        style={{ overflowX: "auto" }}>
+        <Table
+          stickyHeader
+          aria-label="sticky table"
+          className="table-no-card"
+        >
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
@@ -139,10 +143,10 @@ export default function MedicalVisa() {
                   <TableCell>{item.phone_number}</TableCell>
                   <TableCell>{item.applying_for}</TableCell>
                   <TableCell>
-                      <VisibilityIcon
-                                                              className="eye-icon"
-                                                              onClick={() => handleView(item)}
-                                                            />
+                    <VisibilityIcon
+                      className="eye-icon"
+                      onClick={() => handleView(item)}
+                    />
                     {/* <button
                       onClick={() => handleView(item)}
                       style={{
@@ -181,43 +185,42 @@ export default function MedicalVisa() {
       </TableContainer>
 
       {/* Popup Modal */}
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            width: 500,
-            bgcolor: "white",
-            p: 3,
-            borderRadius: "8px",
-            margin: "80px auto",
-            maxHeight: "80vh",
-            overflowY: "auto",
-          }}
-        >
-          <h3>Full Details</h3>
 
-          {selectedRecord &&
-            Object.entries(selectedRecord).map(([key, value]) => (
-              <p key={key}>
-                <strong>{key}:</strong> {String(value)}
-              </p>
-            ))}
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={open} onClose={handleClose}
+      >
+        <div className="main-card-header">
+          <div className="top-fixed-hd">
+            <div className="note-hd">
+              < h6>Medical Visa Request</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+        </div>
+        <DialogContent className="main-box view-table-detail">
+          <Box>
+            {selectedRecord && (
+              <div className="table-responsive dataset">
+                <table className="table table-bordered mb-0">
+                  <tbody>
+                    {Object.entries(selectedRecord).map(([key, value]) => (
+                      <tr key={key}>
+                        <th>{key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}</th>
+                        <td>{String(value)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Box>
+        </DialogContent>
+      </Dialog>
 
-          <button
-            onClick={handleClose}
-            style={{
-              marginTop: "15px",
-              padding: "6px 15px",
-              background: "black",
-              color: "white",
-              borderRadius: "4px",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Close
-          </button>
-        </Box>
-      </Modal>
     </div>
   );
 }

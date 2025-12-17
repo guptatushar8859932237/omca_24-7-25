@@ -6858,14 +6858,58 @@ input:checked + .slider:before {
   max-height: unset !important;
   overflow: visible !important;
 }
-.dropdownCustom input{
+.dropdownCustom input {
   padding: 0px !important;
 }
 .dropdownCustom .MuiPaper-root {
-    max-height: 337px !important;
+  max-height: 337px !important;
 }
 .scrollModal {
   height: 70vh;
   overflow: auto;
   padding-right: 10px;
+}
+/* ===============================surbhi(17-12-25)============================= */
+.view-table-detail tr th {
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+}
+.view-table-detail tr td {
+  color: #666;
+  font-size: 14px;
+  font-weight: 400;
+}
+.dataset > .table-bordered {
+  border: 1px solid #e0e0e0;
+}
+.top-fixed-hd {
+  padding: 10px;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.view-table-detail {
+  overflow-y: auto;
+  height: 75vh;
+  padding-right: 10px;
+}
+/* ===== Scrollbar Custom Style ===== */
+.view-table-detail::-webkit-scrollbar {
+  width: 8px;
+  height: 20px;
+}
+
+/* Scrollbar Track */
+.view-table-detail::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+/* Scrollbar Thumb */
+.view-table-detail::-webkit-scrollbar-thumb {
+  background: var(--bs-blue-color);
+  border-radius: 8px;
 }
