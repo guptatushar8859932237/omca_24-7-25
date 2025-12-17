@@ -202,23 +202,65 @@ const maxWidth = "lg"; // xs | sm | md | lg | xl
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-          <Box>
-            {selectedRecord && (
-              <div className="table-responsive dataset">
-                <table className="table table-bordered mb-0">
-                  <tbody>
-                    {Object.entries(selectedRecord).map(([key, value]) => (
-                      <tr key={key}>
-                        <th>{key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}</th>
-                        <td>{String(value)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Box>
-        </DialogContent>
+  <Box>
+    {selectedRecord && (
+      <div className="table-responsive dataset">
+        <table className="table table-bordered mb-0">
+          <tbody>
+            {Object.entries(selectedRecord)
+              .filter(([key]) =>
+                [
+                  "from",
+                  "applying_for",
+                  "email",
+                  "whatsApp_number",
+                  "phone_number",
+                  "return_date",
+                  "arrival_date",
+                  "airport_arrival",
+                  "first_name",
+                  "middle_name",
+                  "last_name",
+                  "dob",
+                  "nationality",
+                  "country_of_birth",
+                  "country_residence",
+                  "passport_number",
+                  "present_address",
+                  "permanent_address",
+                  "father_name",
+                  "father_nationality",
+                  "father_place_of_birth",
+                  "father_country_of_birth",
+                  "mother_name",
+                  "mother_nationality",
+                  "mother_place_of_birth",
+                  "mother_country_birth",
+                  "reference_name",
+                  "reference_permanent_address",
+                  "reference_phone_number",
+                  "reference_name_country",
+                  "reference_permanent_address_2",
+                  "reference_phone_number_2",
+                ].includes(key)
+              )
+              .map(([key, value]) => (
+                <tr key={key}>
+                  <th>
+                    {key
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (char) => char.toUpperCase())}
+                  </th>
+                  <td>{String(value)}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </Box>
+</DialogContent>
+
       </Dialog>
 
     </div>

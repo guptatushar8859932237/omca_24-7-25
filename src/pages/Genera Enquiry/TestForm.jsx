@@ -42,7 +42,9 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
-  Modal, Box
+  Modal, Box,
+  Dialog,
+  DialogContent
 } from "@mui/material";
 
 import ClearIcon from "@mui/icons-material/Clear";
@@ -103,7 +105,8 @@ export default function TestForm() {
     setSelectedRecord(record);
     setOpen(true);
   };
-
+ const fullWidth = true;
+const maxWidth = "lg"; // xs | sm | md | lg | xl
   const handleClose = () => setOpen(false);
 
   return (
@@ -217,43 +220,58 @@ export default function TestForm() {
       </TableContainer>
 
       {/* Popup Modal */}
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            width: 500,
-            bgcolor: "white",
-            p: 3,
-            borderRadius: "8px",
-            margin: "80px auto",
-            maxHeight: "80vh",
-            overflowY: "auto",
-          }}
-        >
-          <h3>Full Details</h3>
-
-          {selectedRecord &&
-            Object.entries(selectedRecord).map(([key, value]) => (
-              <p key={key}>
-                <strong>{key}:</strong> {String(value)}
-              </p>
-            ))}
-
-          <button
-            onClick={handleClose}
-            style={{
-              marginTop: "15px",
-              padding: "6px 15px",
-              background: "black",
-              color: "white",
-              borderRadius: "4px",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Close
-          </button>
-        </Box>
-      </Modal>
+         <Dialog
+                                          fullWidth={fullWidth}
+                                          maxWidth={maxWidth}
+                                          open={open} onClose={handleClose}
+                                        >
+                                          <div className="main-card-header">
+                                            <div className="top-fixed-hd">
+                                              <div className="note-hd">
+                                                < h6>Test Form Request</h6>
+                                              </div>
+                                              <div className="cross-icon" onClick={handleClose}>
+                                                <i className="fa-solid fa-xmark"></i>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <DialogContent className="main-box view-table-detail">
+                                    <Box>
+                                      {selectedRecord && (
+                                        <div className="table-responsive dataset">
+                                          <table className="table table-bordered mb-0">
+                                            <tbody>
+                                              {Object.entries(selectedRecord)
+                                                .filter(([key]) =>
+                                                  [
+                                                    "first_name",
+                                                    "email",
+                                                    "phone",
+                                                    "services",
+                                                    "from",
+                                                    "to",
+                                                    "select_date",
+                                                    "travellers_count",
+                                                  ].includes(key)
+                                                )
+                                                .map(([key, value]) => (
+                                                  <tr key={key}>
+                                                    <th>
+                                                      {key
+                                                        .replace(/_/g, " ")
+                                                        .replace(/\b\w/g, (char) => char.toUpperCase())}
+                                                    </th>
+                                                    <td>{String(value)}</td>
+                                                  </tr>
+                                                ))}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      )}
+                                    </Box>
+                                  </DialogContent>
+                                  
+                                        </Dialog>
     </div>
   );
 }
