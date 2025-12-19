@@ -29,7 +29,7 @@ export default function GerGeneralEnquiry() {
     <MedicalVisa />,
     <Story />,
     <ForexService />,
-     <FlightSrvices />,
+    <FlightSrvices />,
     <PickUpanddrops />,
     <NursinfCare />,
     <Labstests />,
@@ -51,7 +51,7 @@ export default function GerGeneralEnquiry() {
               style={{
                 padding: "10px 18px",
                 border: "1px solid #ccc",
-                background: activeTab === index ? "#1e88e5" : "#fff",
+                background: activeTab === index ? "#0ba6df" : "#fff",
                 color: activeTab === index ? "#fff" : "#333",
                 marginRight: 5,
                 marginTop: 5,

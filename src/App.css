@@ -6893,7 +6893,7 @@ input:checked + .slider:before {
 }
 .view-table-detail {
   overflow-y: auto;
-  height: 75vh;
+  max-height: 75vh;
   padding-right: 10px;
 }
 /* ===== Scrollbar Custom Style ===== */
@@ -6912,4 +6912,11 @@ input:checked + .slider:before {
 .view-table-detail::-webkit-scrollbar-thumb {
   background: var(--bs-blue-color);
   border-radius: 8px;
+}
+
+.view-table-detail .card{
+  /* background-color: #fafafa; */
+  border: 1px solid #e0e0e0;
+  margin-bottom: 0px;
+ /* box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px; */
 }
