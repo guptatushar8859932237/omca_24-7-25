@@ -68,11 +68,17 @@ export default function MedicalVisa() {
     setSelectedRecord(record);
     setOpen(true);
   };
-const fullWidth = true;
-const maxWidth = "lg"; // xs | sm | md | lg | xl
+  const fullWidth = true;
+  const maxWidth = "md"; // xs | sm | md | lg | xl
 
   const handleClose = () => setOpen(false);
-
+  /* ========= Reusable Info Item ========= */
+  const InfoItem = ({ label, value }) => (
+    <div className="">
+      <h6>{label}</h6>
+      <p>{value || "-"}</p>
+    </div>
+  );
   return (
     <div>
 
@@ -202,64 +208,238 @@ const maxWidth = "lg"; // xs | sm | md | lg | xl
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-  <Box>
-    {selectedRecord && (
-      <div className="table-responsive dataset">
-        <table className="table table-bordered mb-0">
-          <tbody>
-            {Object.entries(selectedRecord)
-              .filter(([key]) =>
-                [
-                  "from",
-                  "applying_for",
-                  "email",
-                  "whatsApp_number",
-                  "phone_number",
-                  "return_date",
-                  "arrival_date",
-                  "airport_arrival",
-                  "first_name",
-                  "middle_name",
-                  "last_name",
-                  "dob",
-                  "nationality",
-                  "country_of_birth",
-                  "country_residence",
-                  "passport_number",
-                  "present_address",
-                  "permanent_address",
-                  "father_name",
-                  "father_nationality",
-                  "father_place_of_birth",
-                  "father_country_of_birth",
-                  "mother_name",
-                  "mother_nationality",
-                  "mother_place_of_birth",
-                  "mother_country_birth",
-                  "reference_name",
-                  "reference_permanent_address",
-                  "reference_phone_number",
-                  "reference_name_country",
-                  "reference_permanent_address_2",
-                  "reference_phone_number_2",
-                ].includes(key)
-              )
-              .map(([key, value]) => (
-                <tr key={key}>
-                  <th>
-                    {key
-                      .replace(/_/g, " ")
-                      .replace(/\b\w/g, (char) => char.toUpperCase())}
-                  </th>
-                  <td>{String(value)}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-    )}
-  </Box>
-</DialogContent>
+
+          {/* {selectedRecord && (
+            <div className="table-responsive dataset">
+              <table className="table table-bordered mb-0">
+                <tbody>
+                  {Object.entries(selectedRecord)
+                    .filter(([key]) =>
+                      [
+                        "from",
+                        "applying_for",
+                        "email",
+                        "whatsApp_number",
+                        "phone_number",
+                        "return_date",
+                        "arrival_date",
+                        "airport_arrival",
+                        "first_name",
+                        "middle_name",
+                        "last_name",
+                        "dob",
+                        "nationality",
+                        "country_of_birth",
+                        "country_residence",
+                        "passport_number",
+                        "present_address",
+                        "permanent_address",
+                        "father_name",
+                        "father_nationality",
+                        "father_place_of_birth",
+                        "father_country_of_birth",
+                        "mother_name",
+                        "mother_nationality",
+                        "mother_place_of_birth",
+                        "mother_country_birth",
+                        "reference_name",
+                        "reference_permanent_address",
+                        "reference_phone_number",
+                        "reference_name_country",
+                        "reference_permanent_address_2",
+                        "reference_phone_number_2",
+                      ].includes(key)
+                    )
+                    .map(([key, value]) => (
+                      <tr key={key}>
+                        <th>
+                          {key
+                            .replace(/_/g, " ")
+                            .replace(/\b\w/g, (char) => char.toUpperCase())}
+                        </th>
+                        <td>{String(value)}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          )} */}
+          {selectedRecord && (
+            <Box>
+              <div className="row">
+                {/* personal */}
+                <div className="col-md-12 mb-3">
+                  <div className="all-hd mb-3">
+                    <h6>Personal Information</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="First Name" value={selectedRecord.first_name} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Middle Name" value={selectedRecord.middle_name} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Last Name" value={selectedRecord.last_name} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Email" value={selectedRecord.email} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Dob" value={selectedRecord.dob} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Whatsapp Number" value={selectedRecord.whatsApp_number} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Phone Number" value={selectedRecord.phone_number} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* address */}
+                <div className="col-md-12 mb-3">
+                  <div className="all-hd mb-3">
+                    <h6>Nationality & Address Details</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Nationality" value={selectedRecord.nationality} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Country of Birth" value={selectedRecord.country_of_birth} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Country Residence" value={selectedRecord.country_residence} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Present Address" value={selectedRecord.present_address} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Permanent Address" value={selectedRecord.permanent_address} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* travel */}
+                <div className="col-md-12 mb-3">
+                  <div className="all-hd mb-3">
+                    <h6>Travel Information</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="From" value={selectedRecord.from} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Applying For" value={selectedRecord.applying_for} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Return Date" value={selectedRecord.return_date} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Arrival Date" value={selectedRecord.arrival_date} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Airport Arrival" value={selectedRecord.airport_arrival} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Passport Number" value={selectedRecord.passport_number} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* FATHER */}
+                <div className="col-md-6 mb-3">
+                  <div className="all-hd mb-3">
+                    <h6>Father's Details</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-6">
+                          <InfoItem label="Name" value={selectedRecord.father_name} />
+                        </div>
+                        <div className="col-md-6">
+                          <InfoItem label="Nationality" value={selectedRecord.father_nationality} />
+                        </div>
+                        <div className="col-md-6">
+                          <InfoItem label="Place of birth" value={selectedRecord.father_place_of_birth} />
+                        </div>
+                        <div className="col-md-6">
+                          <InfoItem label="Country of birth" value={selectedRecord.father_country_of_birth} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* MOTHER */}
+                <div className="col-md-6 mb-3">
+                  <div className="all-hd mb-3">
+                    <h6>Mother's Details</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-6">
+                          <InfoItem label="Name" value={selectedRecord.mother_name} />
+                        </div>
+                        <div className="col-md-6">
+                          <InfoItem label="Nationality" value={selectedRecord.mother_nationality} />
+                        </div>
+                        <div className="col-md-6">
+                          <InfoItem label="Place of birth" value={selectedRecord.mother_place_of_birth} />
+                        </div>
+                        <div className="col-md-6">
+                          <InfoItem label="Country of birth" value={selectedRecord.mother_country_birth} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* REFERENCE */}
+                <div className="col-md-12 mb-3">
+                  <div className="all-hd mb-3">
+                    <h6>Reference Details</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Name" value={selectedRecord.reference_name} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Permanent Address" value={selectedRecord.reference_permanent_address} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Phone Number" value={selectedRecord.reference_phone_number} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Country Name" value={selectedRecord.reference_name_country} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Permanent Address-2" value={selectedRecord.reference_permanent_address_2} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Phone Number-2" value={selectedRecord.reference_phone_number_2} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Box>
+          )}
+
+        </DialogContent>
 
       </Dialog>
 

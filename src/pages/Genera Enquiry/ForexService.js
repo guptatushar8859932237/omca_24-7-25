@@ -53,18 +53,18 @@ export default function ForexService() {
     setPage(0);
   };
 
- const filteredData = medicalVisaData.filter((item) => {
-  const search = filterValue.toLowerCase();
+  const filteredData = medicalVisaData.filter((item) => {
+    const search = filterValue.toLowerCase();
 
-  return (
-    item.first_name?.toLowerCase().includes(search) ||
-    item.email?.toLowerCase().includes(search) ||
-    item.city?.toLowerCase().includes(search) ||
-    item.phone?.toLowerCase().includes(search) ||
-    item.services?.toLowerCase().includes(search) ||
-    item.select_date?.toLowerCase().includes(search)
-  );
-});
+    return (
+      item.first_name?.toLowerCase().includes(search) ||
+      item.email?.toLowerCase().includes(search) ||
+      item.city?.toLowerCase().includes(search) ||
+      item.phone?.toLowerCase().includes(search) ||
+      item.services?.toLowerCase().includes(search) ||
+      item.select_date?.toLowerCase().includes(search)
+    );
+  });
 
 
   const paginatedData = filteredData.slice(
@@ -77,56 +77,62 @@ export default function ForexService() {
     setSelectedRecord(record);
     setOpen(true);
   };
-const fullWidth = true;
-const maxWidth = "lg"; // xs | sm | md | lg | xl
+  const fullWidth = true;
+  const maxWidth = "md"; // xs | sm | md | lg | xl
   const handleClose = () => setOpen(false);
-
+  /* ========= Reusable Info Item ========= */
+  const InfoItem = ({ label, value }) => (
+    <div className="">
+      <h6>{label}</h6>
+      <p>{value || "-"}</p>
+    </div>
+  );
   return (
     <div>
 
       {loading && <p>Loading...</p>}
-      {error &&  <p style={{ color: "red" }}>{error}</p>}
-        <div className="d-flex justify-content-between">
-            <div>
-      <h2>Forex Service</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="d-flex justify-content-between">
+        <div>
+          <h2>Forex Service</h2>
 
-            </div >
-            <div>
- <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
-        <TextField
-          label="Search"
-          size="small"
-          value={filterValue}
-          onChange={handleFilter}
-          InputLabelProps={{ shrink: true }}
-          placeholder="Search..."
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {filterValue && (
-                  <IconButton onClick={handleClearFilter}>
-                    <ClearIcon />
-                  </IconButton>
-                )}
-              </InputAdornment>
-            ),
-          }}
-          sx={{ width: "100%" }}
-        />
-      </div>
-            </div>
+        </div >
+        <div>
+          <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
+            <TextField
+              label="Search"
+              size="small"
+              value={filterValue}
+              onChange={handleFilter}
+              InputLabelProps={{ shrink: true }}
+              placeholder="Search..."
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {filterValue && (
+                      <IconButton onClick={handleClearFilter}>
+                        <ClearIcon />
+                      </IconButton>
+                    )}
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ width: "100%" }}
+            />
+          </div>
         </div>
+      </div>
       {/* Search */}
-     
+
 
       {/* Table */}
-      <TableContainer   component={Paper}
-                          style={{ overflowX: "auto" }}>
-        <Table   
-                              stickyHeader
-                              aria-label="sticky table"
-                              className="table-no-card"
-                            >
+      <TableContainer component={Paper}
+        style={{ overflowX: "auto" }}>
+        <Table
+          stickyHeader
+          aria-label="sticky table"
+          className="table-no-card"
+        >
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
@@ -151,10 +157,10 @@ const maxWidth = "lg"; // xs | sm | md | lg | xl
                   <TableCell>{item.select_date}</TableCell>
                   <TableCell>{item.travellers_count}</TableCell>
                   <TableCell>
-                      <VisibilityIcon
-                                                              className="eye-icon"
-                                                              onClick={() => handleView(item)}
-                                                            />
+                    <VisibilityIcon
+                      className="eye-icon"
+                      onClick={() => handleView(item)}
+                    />
                     {/* <button
                       onClick={() => handleView(item)}
                       style={{
@@ -193,55 +199,85 @@ const maxWidth = "lg"; // xs | sm | md | lg | xl
       </TableContainer>
 
       {/* Popup Modal */}
-       <Dialog
-               fullWidth={fullWidth}
-               maxWidth={maxWidth}
-               open={open} onClose={handleClose}
-             >
-               <div className="main-card-header">
-                 <div className="top-fixed-hd">
-                   <div className="note-hd">
-                     < h6>Forex Service Request</h6>
-                   </div>
-                   <div className="cross-icon" onClick={handleClose}>
-                     <i className="fa-solid fa-xmark"></i>
-                   </div>
-                 </div>
-               </div>
-               <DialogContent className="main-box view-table-detail">
-         <Box>
-           {selectedRecord && (
-             <div className="table-responsive dataset">
-               <table className="table table-bordered mb-0">
-                 <tbody>
-                   {Object.entries(selectedRecord)
-                     .filter(([key]) =>
-                       [
-                         "first_name",
-                         "email",
-                         "email",
-                         "phone",
-                         "services",
-                       ].includes(key)
-                     )
-                     .map(([key, value]) => (
-                       <tr key={key}>
-                         <th>
-                           {key
-                             .replace(/_/g, " ")
-                             .replace(/\b\w/g, (char) => char.toUpperCase())}
-                         </th>
-                         <td>{String(value)}</td>
-                       </tr>
-                     ))}
-                 </tbody>
-               </table>
-             </div>
-           )}
-         </Box>
-       </DialogContent>
-       
-             </Dialog>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={open} onClose={handleClose}
+      >
+        <div className="main-card-header">
+          <div className="top-fixed-hd">
+            <div className="note-hd">
+              < h6>Forex Service Request</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+        </div>
+        <DialogContent className="main-box view-table-detail">
+          {/* <Box>
+            {selectedRecord && (
+              <div className="table-responsive dataset">
+                <table className="table table-bordered mb-0">
+                  <tbody>
+                    {Object.entries(selectedRecord)
+                      .filter(([key]) =>
+                        [
+                          "first_name",
+                          "email",
+                          "email",
+                          "phone",
+                          "services",
+                        ].includes(key)
+                      )
+                      .map(([key, value]) => (
+                        <tr key={key}>
+                          <th>
+                            {key
+                              .replace(/_/g, " ")
+                              .replace(/\b\w/g, (char) => char.toUpperCase())}
+                          </th>
+                          <td>{String(value)}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Box> */}
+          {selectedRecord && (
+            <Box>
+              <div className="row">
+                {/* personal */}
+                <div className="col-md-12 mb-3">
+                  {/* <div className="all-hd mb-3">
+                      <h6>Personal Information</h6>
+                    </div> */}
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="First Name" value={selectedRecord.first_name} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Email" value={selectedRecord.email} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Phone Number" value={selectedRecord.phone} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Services" value={selectedRecord.services} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Box>
+          )}
+        </DialogContent>
+
+      </Dialog>
     </div>
   );
 }
