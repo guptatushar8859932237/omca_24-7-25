@@ -1,13 +1,3 @@
-// import React from 'react'
-
-// export default function Story() {
-//   return (
-//     <div>
-//       Story
-//     </div>
-//   )
-// }
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
@@ -19,50 +9,38 @@ import {
   Dialog,
   DialogContent
 } from "@mui/material";
-
 import ClearIcon from "@mui/icons-material/Clear";
-
 export default function ForexService() {
   const dispatch = useDispatch();
-
   const { testForms: formData, loading, error } = useSelector(
     (state) => state.testForms
   );
-
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
-
-  // Popup states
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
-
   const medicalVisaData = formData?.data?.forex || [];
-
   const handleFilter = (e) => {
     setFilterValue(e.target.value);
     setPage(0);
   };
-
   const handleClearFilter = () => {
     setFilterValue("");
     setPage(0);
   };
-
   const filteredData = medicalVisaData.filter((item) => {
     const search = filterValue.toLowerCase();
-
     return (
       item.first_name?.toLowerCase().includes(search) ||
       item.email?.toLowerCase().includes(search) ||
       item.city?.toLowerCase().includes(search) ||
       item.phone?.toLowerCase().includes(search) ||
-      item.services?.toLowerCase().includes(search) ||
-      item.select_date?.toLowerCase().includes(search)
+      item.services?.replaceAll("_"," ").toLowerCase().includes(search) ||
+     new Date(item.select_date).toLocaleDateString("en-GB")?.toLowerCase().includes(search)
     );
   });
 
@@ -152,28 +130,16 @@ export default function ForexService() {
                   <TableCell>{page * rowsPerPage + i + 1}</TableCell>
                   <TableCell>{item.first_name}</TableCell>
                   <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.services}</TableCell>
+                  <TableCell>{item.services?.replaceAll("_"," ")}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{item.select_date}</TableCell>
+                  <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")=="01/01/1970"?"":new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell>
                   <TableCell>{item.travellers_count}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
+                      style={{cursor:"pointer"}}
                       onClick={() => handleView(item)}
                     />
-                    {/* <button
-                      onClick={() => handleView(item)}
-                      style={{
-                        padding: "5px 12px",
-                        cursor: "pointer",
-                        background: "#1976d2",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      View
-                    </button> */}
                   </TableCell>
                 </TableRow>
               ))
@@ -186,8 +152,6 @@ export default function ForexService() {
             )}
           </TableBody>
         </Table>
-
-        {/* Pagination */}
         <Stack spacing={2} alignItems="end" marginTop={2} padding={2}>
           <Pagination
             count={Math.ceil(filteredData.length / rowsPerPage)}
@@ -257,7 +221,7 @@ export default function ForexService() {
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="First Name" value={selectedRecord.first_name} />
+                          <InfoItem label=" Name" value={selectedRecord.first_name} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="Email" value={selectedRecord.email} />
@@ -266,7 +230,7 @@ export default function ForexService() {
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Services" value={selectedRecord.services} />
+                          <InfoItem label="Services" value={selectedRecord.services?.replaceAll("_"," ")} />
                         </div>
                       </div>
                     </div>

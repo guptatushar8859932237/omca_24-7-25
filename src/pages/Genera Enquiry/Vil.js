@@ -161,6 +161,7 @@ export default function Vil() {
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
+                      style={{cursor:"pointer"}}
                       onClick={() => handleView(item)}
                     />
                     {/* <button

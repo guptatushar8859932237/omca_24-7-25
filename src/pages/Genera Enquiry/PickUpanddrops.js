@@ -166,12 +166,13 @@ export default function PickUpanddrops() {
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item.perfired_time}</TableCell>
-                  <TableCell>{item.travel_date}</TableCell>
+                  <TableCell>{new Date(item.travel_date).toLocaleDateString('en-GB')}</TableCell>
                   <TableCell>{item.pickup_location}</TableCell>
                   <TableCell>{item.drop_location}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
+                      style={{cursor:"pointer"}}
                       onClick={() => handleView(item)}
                     />
                     {/* <button
@@ -287,7 +288,7 @@ export default function PickUpanddrops() {
                           <InfoItem label="Time" value={selectedRecord.perfired_time} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Date" value={selectedRecord.travel_date} />
+                          <InfoItem label="Date" value={new Date(selectedRecord.travel_date).toLocaleDateString('en-GB')} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="Drop Location" value={selectedRecord.drop_location} />

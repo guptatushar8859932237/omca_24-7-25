@@ -70,10 +70,10 @@ export default function FlightSrvices() {
       item.email?.toLowerCase().includes(search) ||
       item.city?.toLowerCase().includes(search) ||
       item.phone?.toLowerCase().includes(search) ||
-      item.services?.toLowerCase().includes(search) ||
+      item.services?.replaceAll("_"," ")?.toLowerCase().includes(search) ||
       item.to?.toLowerCase().includes(search) ||
       item.from?.toLowerCase().includes(search) ||
-      item.select_date?.toLowerCase().includes(search)
+     new Date(item.select_date).toLocaleDateString("en-GB")?.toLowerCase().includes(search)
     );
   });
 
@@ -165,16 +165,17 @@ export default function FlightSrvices() {
                   <TableCell>{page * rowsPerPage + i + 1}</TableCell>
                   <TableCell>{item.first_name}</TableCell>
                   <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.services}</TableCell>
+                  <TableCell>{item.services?.replaceAll("_"," ")}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item.from}</TableCell>
                   <TableCell>{item.to}</TableCell>
-                  <TableCell>{item.select_date}</TableCell>
+                  <TableCell>{new Date(item.select_date).toLocaleDateString('en-GB')}</TableCell>
                   <TableCell>{item.travellers_count}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
                       onClick={() => handleView(item)}
+                      style={{cursor:"pointer"}}
                     />
                     {/* <button
                       onClick={() => handleView(item)}
@@ -283,7 +284,7 @@ export default function FlightSrvices() {
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Services" value={selectedRecord.services} />
+                          <InfoItem label="Services" value={selectedRecord.services?.replaceAll("_"," ")} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="From" value={selectedRecord.from} />
@@ -292,7 +293,7 @@ export default function FlightSrvices() {
                           <InfoItem label="To" value={selectedRecord.to} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Date Number" value={selectedRecord.select_date} />
+                          <InfoItem label="Date" value={new Date(selectedRecord.select_date).toLocaleDateString("en-GB")} />
                         </div>
                       </div>
                     </div>

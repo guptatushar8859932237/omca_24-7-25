@@ -173,7 +173,7 @@ export default function AirAmbulance() {
                   <TableCell>{item.first_name}</TableCell>
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{item.services}</TableCell>
+                  <TableCell>{item.services?.replaceAll("_"," ")}</TableCell>
                   <TableCell>{item.from}</TableCell>
                   <TableCell>{item.to}</TableCell>
                   <TableCell>{item.travellers_count}</TableCell>
@@ -181,6 +181,7 @@ export default function AirAmbulance() {
                     <VisibilityIcon
                       className="eye-icon"
                       onClick={() => handleView(item)}
+                      style={{cursor:"pointer"}}
                     />
                     {/* <button
                       onClick={() => handleView(item)}
@@ -289,7 +290,7 @@ export default function AirAmbulance() {
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Services" value={selectedRecord.services} />
+                          <InfoItem label="Services" value={selectedRecord.services.replaceAll("_"," ")} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="From" value={selectedRecord.from} />
@@ -298,7 +299,7 @@ export default function AirAmbulance() {
                           <InfoItem label="To" value={selectedRecord.to} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Date" value={selectedRecord.select_date} />
+                          <InfoItem label="Date" value={new Date(selectedRecord.select_date).toLocaleDateString("en-GB")} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="Traveller Number" value={selectedRecord.travellers_count} />

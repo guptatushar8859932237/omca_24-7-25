@@ -147,10 +147,11 @@ export default function MedicalVisa() {
                   <TableCell>{item.nationality}</TableCell>
                   <TableCell>{item.passport_number}</TableCell>
                   <TableCell>{item.phone_number}</TableCell>
-                  <TableCell>{item.applying_for}</TableCell>
+                <TableCell>{item.applying_for?.replaceAll("_", " ")}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
+                      style={{cursor:"pointer"}}
                       onClick={() => handleView(item)}
                     />
                     {/* <button
@@ -288,7 +289,7 @@ export default function MedicalVisa() {
                           <InfoItem label="Email" value={selectedRecord.email} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Dob" value={selectedRecord.dob} />
+                          <InfoItem label="Dob" value={new Date(selectedRecord.dob).toLocaleDateString("en-GB")} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="Whatsapp Number" value={selectedRecord.whatsApp_number} />
@@ -342,10 +343,10 @@ export default function MedicalVisa() {
                           <InfoItem label="Applying For" value={selectedRecord.applying_for} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Return Date" value={selectedRecord.return_date} />
+                          <InfoItem label="Return Date" value={new Date(selectedRecord.return_date).toLocaleDateString("en-GB")} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Arrival Date" value={selectedRecord.arrival_date} />
+                          <InfoItem label="Arrival Date" value={new Date(selectedRecord.arrival_date).toLocaleDateString("en-GB")} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="Airport Arrival" value={selectedRecord.airport_arrival} />

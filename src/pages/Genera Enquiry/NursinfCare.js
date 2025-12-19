@@ -174,6 +174,7 @@ export default function NursinfCare() {
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
+                      style={{cursor:"pointer"}}
                       onClick={() => handleView(item)}
                     />
                     {/* <button

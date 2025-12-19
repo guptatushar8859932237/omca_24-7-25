@@ -180,11 +180,12 @@ export default function TestForm() {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{item.date}</TableCell>
+                  <TableCell>{new Date(item.date).toLocaleDateString('en-GB')}</TableCell>
                   <TableCell>{item.time}</TableCell>
                   <TableCell>{item.address}</TableCell>
                   <TableCell>
                     <VisibilityIcon
+                    style={{cursor:"pointer"}}
                       className="eye-icon"
                       onClick={() => handleView(item)}
                     />
@@ -294,7 +295,7 @@ export default function TestForm() {
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Date" value={selectedRecord.date} />
+                          <InfoItem label="Date" value={new Date(selectedRecord.date).toLocaleDateString('en-GB')} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="Time" value={selectedRecord.time} />
@@ -310,7 +311,6 @@ export default function TestForm() {
             </Box>
           )}
         </DialogContent>
-
       </Dialog>
     </div>
   );

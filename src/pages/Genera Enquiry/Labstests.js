@@ -145,27 +145,15 @@ export default function Labstests() {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{item.date}</TableCell>
+                  <TableCell>{new Date(item.date).toLocaleDateString('en-GB')}</TableCell>
                   <TableCell>{item.time}</TableCell>
                   <TableCell>{item.address}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
+                      style={{cursor:"pointer"}}
                       onClick={() => handleView(item)}
                     />
-                    {/* <button
-                      onClick={() => handleView(item)}
-                      style={{
-                        padding: "5px 12px",
-                        cursor: "pointer",
-                        background: "#1976d2",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      View
-                    </button> */}
                   </TableCell>
                 </TableRow>
               ))
@@ -259,7 +247,7 @@ export default function Labstests() {
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Date" value={selectedRecord.date} />
+                          <InfoItem label="Date" value={new Date(selectedRecord.date).toLocaleDateString('en-GB')} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="Time" value={selectedRecord.time} />

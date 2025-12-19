@@ -60,11 +60,8 @@ export default function Stay() {
     return (
       item.name?.toLowerCase().includes(search) ||
       item.email?.toLowerCase().includes(search) ||
-      item.city?.toLowerCase().includes(search) ||
-      item.number_of_people?.toLowerCase().includes(search) ||
       item.phone?.toLowerCase().includes(search) ||
-      item.terms_condtion?.toLowerCase().includes(search) ||
-      item.select_date?.toLowerCase().includes(search)
+     new Date(item.select_date).toLocaleDateString("en-GB")?.toLowerCase().includes(search)
     );
   });
 
@@ -141,7 +138,7 @@ export default function Stay() {
               <TableCell>Email</TableCell>
               <TableCell>Total People</TableCell>
               <TableCell>Phone</TableCell>
-              <TableCell>Select Date</TableCell>
+              <TableCell>Date</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -154,10 +151,11 @@ export default function Stay() {
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.number_of_people}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{item.select_date}</TableCell>
+                  <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
+                      style={{cursor:"pointer"}}
                       onClick={() => handleView(item)}
                     />
                     {/* <button
@@ -266,7 +264,7 @@ export default function Stay() {
                             <InfoItem label="Phone Number" value={selectedRecord.phone} />
                           </div>
                           <div className="col-md-4">
-                            <InfoItem label="Dob" value={selectedRecord.select_date} />
+                            <InfoItem label="Date" value={new Date(selectedRecord.select_date).toLocaleDateString("en-GB")} />
                           </div>
                           <div className="col-md-4">
                             <InfoItem label="City" value={selectedRecord.city} />

@@ -163,12 +163,13 @@ export default function Hotel() {
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item.city}</TableCell>
-                  <TableCell>{item.select_date}</TableCell>
+                  <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell>
                   <TableCell>{item.number_of_people}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
                       onClick={() => handleView(item)}
+                      style={{cursor:"pointer"}}
                     />
                     {/* <button
                       onClick={() => handleView(item)}
@@ -276,7 +277,7 @@ export default function Hotel() {
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Dob" value={selectedRecord.select_date} />
+                          <InfoItem label="Dob" value={new Date(selectedRecord.select_date).toLocaleDateString('en-GB')} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="City" value={selectedRecord.city} />
