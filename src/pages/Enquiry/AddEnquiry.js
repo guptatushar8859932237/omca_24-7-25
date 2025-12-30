@@ -7,17 +7,14 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { AddEnquirys } from "../../reducer/EnquirySlice";
 import { GetAllCountries2 } from "../../reducer/Countries";
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import { Autocomplete, TextField } from "@mui/material";
-
+import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 export default function AddEnquiry() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showAttendant, setShowAttendant] = useState(false);
+  const { Treatment, error } = useSelector((state) => state.Treatment);
   const { loading } = useSelector((state) => state.Enquiry);
-  const [countryn, setCountryn] = useState({});
   const { Countries } = useSelector((state) => state.Countries);
   useEffect(() => {
     dispatch(GetAllCountries2());
@@ -34,8 +31,7 @@ export default function AddEnquiry() {
     emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
       .required("Phone number is required"),
-    passport_num: Yup.string()
-      .required("Passport is required"),
+    passport_num: Yup.string().required("Passport is required"),
     patient_emergency_contact_no: Yup.string().matches(
       /^[0-9]{10,11}$/,
       "Emergency Contact must be 10-11 digits"
@@ -44,6 +40,9 @@ export default function AddEnquiry() {
       .oneOf(["Male", "Female", "Others"])
       .required("Gender is required"),
   });
+  useEffect(() => {
+    dispatch(GetAllTreatment());
+  }, [dispatch]);
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -88,30 +87,8 @@ export default function AddEnquiry() {
                   dial_code: "",
                 }}
                 validationSchema={basicSchema}
-                // onSubmit={async (values, { setSubmitting }) => {
-                //   const formData = new FormData();
-                //   for (const key in values) {
-                //     formData.append(key, values[key]);
-                //   }
-                //   try {
-                //     const result = await dispatch(
-                //       AddEnquirys(formData)
-                //     ).unwrap();
-                //     Swal.fire(result.message, "", "success");
-                //     navigate("/Admin/Inquiry");
-                //   } catch (err) {
-                //     Swal.fire(
-                //       "Error!",
-                //       err?.message || "Something went wrong",
-                //       "error"
-                //     );
-                //   }
-                //   setSubmitting(false);
-                // }}
                 onSubmit={async (values, { setSubmitting }) => {
                   const formData = new FormData();
-
-                  // Append all normal fields
                   for (const key in values) {
                     if (
                       key !== "patient_id_proof" &&
@@ -120,8 +97,6 @@ export default function AddEnquiry() {
                       formData.append(key, values[key]);
                     }
                   }
-
-                  // ---------- MULTIPLE FILES FIX ----------
                   if (
                     values.patient_id_proof &&
                     values.patient_id_proof.length > 0
@@ -130,12 +105,10 @@ export default function AddEnquiry() {
                       formData.append("patient_id_proof", file);
                     });
                   }
-
-                  // ---------- SINGLE FILE ----------
                   if (values.patient_Profile) {
                     formData.append("patient_Profile", values.patient_Profile);
                   }
-
+                  console.log(formData);
                   try {
                     const result = await dispatch(
                       AddEnquirys(formData)
@@ -143,13 +116,8 @@ export default function AddEnquiry() {
                     Swal.fire(result.message, "", "success");
                     navigate("/Admin/Inquiry");
                   } catch (err) {
-                    Swal.fire(
-                      "Error!",
-                      err?.message || "Something went wrong",
-                      "error"
-                    );
+                    Swal.fire(err?.message || "Something went wrong", "error");
                   }
-
                   setSubmitting(false);
                 }}
               >
@@ -233,161 +201,27 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
                             Country<span className="text-danger">*</span>
                           </label>
-                          {/* <Field name="country">
-                            {({ field, form }) => (
-                              <>
-                                <FormControl fullWidth size="small">
-                                  <Select
-                                    value={field.value}
-                                    onChange={(e) => {
-                                      console.log(
-                                        "Selected country:",
-                                        e.target.value
-                                      );
-                                      form.setFieldValue(
-                                        "country",
-                                        e.target.value
-                                      );
-                                    }}
-                                    input={
-                                      <OutlinedInput placeholder="Select Country" />
-                                    }
-                                    displayEmpty
-                                    sx={{ height: 40 }}
-                                    className="select-country form-control"
-                                    MenuProps={{
-                                      PaperProps: {
-                                        style: { maxHeight: 200 },
-                                      },
-                                    }}
-                                  >
-                                    <MenuItem value="">
-                                      <em>Select Country</em>
-                                    </MenuItem>
-                                    {Countries && Countries.length > 0 ? (
-                                      Countries.map((con, idx) => {
-                                        console.log(con);
-                                        return (
-                                          <>
-                                            <MenuItem
-                                              key={idx}
-                                              value={con.name}
-                                            >
-                                              {con.name}
-                                            </MenuItem>
-                                          </>
-                                        );
-                                      })
-                                    ) : (
-                                      <MenuItem disabled>
-                                        No countries available
-                                      </MenuItem>
-                                    )}
-                                  </Select>
-                                </FormControl>
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
-                                />
-                              </>
-                            )}
-                          </Field> */}
-                          {/* <Field name="country">
-  {({ field, form }) => (
-    <>
-      <FormControl fullWidth size="small">
-        <Select
-          value={countryn}   
-          onChange={(e) => {
-            const selected = e.target.value;
-            setCountryn(selected);
-            form.setFieldValue("country", selected.name);
-            form.setFieldValue("dial_code", selected.dial_code);
-          }}
-          input={<OutlinedInput placeholder="Select Country" />}
-          displayEmpty
-          sx={{ height: 40 }}
-        >
-          <MenuItem value="">
-            <em>Select Country</em>
-          </MenuItem>
-          {Countries?.length > 0 ? (
-            Countries.map((con, idx) => (
-              <MenuItem
-                key={idx}
-                value={{ name: con.name, dial_code: con.dial_code }}
-              >
-                {con.name}
-              </MenuItem>
-            ))
-          ) : (
-            <MenuItem disabled>No countries available</MenuItem>
-          )}
-        </Select>
-      </FormControl>
-      <ErrorMessage name="country" component="div" style={{ color: "red" }} />
-    </>
-  )}
-</Field> */}
                           <Field name="country">
                             {({ field, form }) => (
                               <>
                                 <FormControl fullWidth size="small">
-                                  {/* <Select
-                                    value={field.value}
-                                    onChange={(e) => {
-                                      const selectedName = e.target.value;
-
-                                      const selectedCountry = Countries.find(
-                                        (c) => c.name === selectedName
-                                      );
-
-                                      form.setFieldValue(
-                                        "country",
-                                        selectedName
-                                      );
-                                      form.setFieldValue(
-                                        "dial_code",
-                                        selectedCountry?.dial_code || ""
-                                      );
-
-                                      console.log("Selected:", selectedCountry);
-                                    }}
-                                    input={
-                                      <OutlinedInput placeholder="Select Country" />
-                                    }
-                                    displayEmpty
-                                    sx={{ height: 40 }}
-                                  >
-                                    <MenuItem value="">
-                                      <em>Select Country</em>
-                                    </MenuItem>
-
-                                    {Countries?.length > 0 ? (
-                                      Countries.map((con, idx) => (
-                                        <MenuItem key={idx} value={con.name}>
-                                          {con.name}
-                                        </MenuItem>
-                                      ))
-                                    ) : (
-                                      <MenuItem disabled>
-                                        No countries available
-                                      </MenuItem>
-                                    )}
-                                  </Select> */}
                                   <Autocomplete
                                     options={Countries || []} // your countries array
                                     getOptionLabel={(option) => option.name} // display the country name
                                     onChange={(event, newValue) => {
-                                      form.setFieldValue("country", newValue?.name || "");
-                                      form.setFieldValue("dial_code", newValue?.dial_code || "");
+                                      form.setFieldValue(
+                                        "country",
+                                        newValue?.name || ""
+                                      );
+                                      form.setFieldValue(
+                                        "dial_code",
+                                        newValue?.dial_code || ""
+                                      );
                                       console.log("Selected:", newValue);
                                     }}
                                     renderInput={(params) => (
@@ -398,10 +232,11 @@ export default function AddEnquiry() {
                                         size="small"
                                       />
                                     )}
-                                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                                    isOptionEqualToValue={(option, value) =>
+                                      option.name === value.name
+                                    }
                                   />
                                 </FormControl>
-
                                 <ErrorMessage
                                   name="country"
                                   component="div"
@@ -415,14 +250,58 @@ export default function AddEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Disease Name<span className="text-danger">*</span>
+                            Treatment Name{" "}
+                            <span className="text-danger">*</span>
                           </label>
-                          <Field className="form-control" name="disease_name" />
-                          <ErrorMessage
-                            name="disease_name"
-                            component="div"
-                            className="text-danger"
-                          />
+                          <Field name="disease_name">
+                            {({ form, meta }) => (
+                              <>
+                                <Autocomplete
+                                  options={Treatment || []}
+                                  getOptionLabel={(option) =>
+                                    option.course_name || ""
+                                  }
+                                  value={
+                                    Treatment?.find(
+                                      (item) =>
+                                        item.course_name ===
+                                        form.values.disease_name
+                                    ) || null
+                                  }
+                                  onChange={(e, newValue) => {
+                                    form.setFieldValue(
+                                      "disease_name",
+                                      newValue ? newValue.course_name : ""
+                                    );
+                                    form.setFieldValue(
+                                      "treatment_course_id",
+                                      newValue ? newValue.course_id : null
+                                    );
+                                  }}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      size="small"
+                                      placeholder="Select Disease"
+                                      error={
+                                        meta.touched && Boolean(meta.error)
+                                      }
+                                    />
+                                  )}
+                                  sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                      padding: "0px",
+                                    },
+                                  }}
+                                />
+                                {meta.touched && meta.error && (
+                                  <div className="text-danger">
+                                    {meta.error}
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </Field>
                         </div>
                       </div>
                       <div className="col-sm-6">
@@ -455,10 +334,7 @@ export default function AddEnquiry() {
                       </div>
                       <div className="col-sm-6">
                         <div className="field-set">
-                          <label>
-                            Emergency Contact No
-                           
-                          </label>
+                          <label>Emergency Contact No</label>
                           <Field
                             className="form-control"
                             name="patient_emergency_contact_no"
@@ -470,7 +346,6 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
@@ -529,7 +404,6 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
@@ -545,7 +419,6 @@ export default function AddEnquiry() {
                             onChange={(e) => {
                               const files = Array.from(e.currentTarget.files);
                               const validFiles = [];
-
                               for (const file of files) {
                                 if (!file.type.startsWith("image/")) {
                                   Swal.fire(
@@ -556,7 +429,6 @@ export default function AddEnquiry() {
                                   e.target.value = "";
                                   return;
                                 }
-
                                 if (file.size > 2 * 1024 * 1024) {
                                   Swal.fire(
                                     "Each image must be less than 2 MB!",
@@ -566,16 +438,13 @@ export default function AddEnquiry() {
                                   e.target.value = "";
                                   return;
                                 }
-
                                 validFiles.push(file);
                               }
-
                               if (validFiles.length > 0) {
                                 setFieldValue("patient_id_proof", validFiles);
                               }
                             }}
                           />
-
                           <ErrorMessage
                             name="patient_id_proof"
                             component="div"
@@ -616,7 +485,6 @@ export default function AddEnquiry() {
                                   e.target.value = "";
                                   return;
                                 }
-
                                 setFieldValue("patient_Profile", file);
                               }
                             }}
@@ -672,7 +540,6 @@ export default function AddEnquiry() {
                     </div>
                     {showAttendant && (
                       <>
-                        {/* --- Attendant Details --- */}
                         <div className="row">
                           <div className="col-sm-6">
                             <div className="field-set">
@@ -731,7 +598,6 @@ export default function AddEnquiry() {
                                       e.target.value = "";
                                       return;
                                     }
-
                                     if (file.size > 2 * 1024 * 1024) {
                                       Swal.fire(
                                         "Image must be less than 2 MB!",
@@ -741,12 +607,10 @@ export default function AddEnquiry() {
                                       e.target.value = "";
                                       return;
                                     }
-
                                     setFieldValue("patient_relation_id", file);
                                   }
                                 }}
                               />
-
                               <ErrorMessage
                                 name="patient_relation_id"
                                 component="div"
@@ -760,7 +624,10 @@ export default function AddEnquiry() {
                                 Attendant Address
                                 <span className="text-danger">*</span>
                               </label>
-                              <Field className="form-control" name="patient_relation_address" />
+                              <Field
+                                className="form-control"
+                                name="patient_relation_address"
+                              />
                               <ErrorMessage
                                 name="patient_relation_address"
                                 component="div"
@@ -789,7 +656,6 @@ export default function AddEnquiry() {
                         </div>
                       </>
                     )}
-                    {/* Submit Button */}
                     <div className="">
                       <button
                         className="submit-btn"

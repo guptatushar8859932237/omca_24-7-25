@@ -150,10 +150,10 @@ export default function PickUpanddrops() {
               <TableCell> Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
-              <TableCell>Time</TableCell>
-              <TableCell>Traveller  Date</TableCell>
               <TableCell>Pickup Location</TableCell>
               <TableCell>Drop Location</TableCell>
+              <TableCell>Travel  Date</TableCell>
+              <TableCell>Time</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -165,10 +165,10 @@ export default function PickUpanddrops() {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{item.perfired_time}</TableCell>
-                  <TableCell>{new Date(item.travel_date).toLocaleDateString('en-GB')}</TableCell>
                   <TableCell>{item.pickup_location}</TableCell>
                   <TableCell>{item.drop_location}</TableCell>
+                  <TableCell>{new Date(item.travel_date).toLocaleDateString('en-GB')}</TableCell>
+                  <TableCell>{item.perfired_time}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"

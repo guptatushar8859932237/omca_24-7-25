@@ -149,12 +149,10 @@ export default function FlightSrvices() {
               <TableCell>Sr No.</TableCell>
               <TableCell> Name</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Services</TableCell>
               <TableCell>Phone</TableCell>
-              <TableCell> Flight From</TableCell>
-              <TableCell>Flight To</TableCell>
-              <TableCell>Select Date</TableCell>
-              <TableCell>Traveller  Count</TableCell>
+              <TableCell>Pick Up Location</TableCell>
+              <TableCell>Drop Location</TableCell>
+              <TableCell>Date</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -165,12 +163,10 @@ export default function FlightSrvices() {
                   <TableCell>{page * rowsPerPage + i + 1}</TableCell>
                   <TableCell>{item.first_name}</TableCell>
                   <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.services?.replaceAll("_"," ")}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item.from}</TableCell>
                   <TableCell>{item.to}</TableCell>
                   <TableCell>{new Date(item.select_date).toLocaleDateString('en-GB')}</TableCell>
-                  <TableCell>{item.travellers_count}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
@@ -275,7 +271,7 @@ export default function FlightSrvices() {
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="First Name" value={selectedRecord.first_name} />
+                          <InfoItem label="Name" value={selectedRecord.first_name} />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="Email" value={selectedRecord.email} />
@@ -293,7 +289,10 @@ export default function FlightSrvices() {
                           <InfoItem label="To" value={selectedRecord.to} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Date" value={new Date(selectedRecord.select_date).toLocaleDateString("en-GB")} />
+                          <InfoItem label="Travel Date" value={new Date(selectedRecord.select_date).toLocaleDateString("en-GB")} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Flight Type" value={(selectedRecord.flight_type)} />
                         </div>
                       </div>
                     </div>

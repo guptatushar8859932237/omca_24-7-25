@@ -156,7 +156,7 @@ export default function NursinfCare() {
               <TableCell> Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
-              <TableCell>Service</TableCell>
+              <TableCell>Services</TableCell>
               <TableCell>City</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>

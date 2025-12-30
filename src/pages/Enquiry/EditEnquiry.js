@@ -15,6 +15,7 @@ export default function EditEnquiry() {
   const location = useLocation();
   const navigate = useNavigate();
   const { Enquiry, loading } = useSelector((state) => state.Enquiry);
+   const { Treatment, error } = useSelector((state) => state.Treatment);
   const { Countries } = useSelector((state) => state.Countries);
   const [editenquiry, setEnquiry] = useState("");
   useEffect(() => {
@@ -266,12 +267,31 @@ export default function EditEnquiry() {
                           <label>
                             Disease Name<span className="text-danger">*</span>
                           </label>
-                          <Field className="form-control" name="disease_name" />
-                          <ErrorMessage
-                            name="disease_name"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
+                          <Autocomplete
+                                                 disablePortal
+                                                 options={
+                                                   Treatment?.map((job) => job.course_name) || []
+                                                 }
+                                                 onChange={async (e, value) => {
+                                                   const selectedCourse = Treatment?.find(
+                                                     (job) => job.course_name === value
+                                                   );
+                                                   const courseId = selectedCourse
+                                                     ? selectedCourse.course_id
+                                                     : null;
+                                                   setFieldValue("treatment_course_id", courseId);
+                                                 
+                                                 }}
+                                                 renderInput={(params) => <TextField {...params} />}
+                                                 sx={{
+                                                   "& .MuiOutlinedInput-root": {
+                                                     padding: "0px",
+                                                     "&:hover fieldset": {
+                                                       borderColor: "#ced4da",
+                                                     },
+                                                   },
+                                                 }}
+                                               />
                         </div>
                       </div>
                       <div className="col-sm-6">

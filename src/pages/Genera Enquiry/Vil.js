@@ -140,8 +140,8 @@ export default function Vil() {
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Treatment</TableCell>
-              <TableCell>country</TableCell>
-              <TableCell>Number of Attend</TableCell>
+              <TableCell>Country</TableCell>
+              <TableCell>Number of Attendants</TableCell>
               <TableCell>Passport</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>

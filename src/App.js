@@ -205,9 +205,6 @@ function App() {
               <Route index path="/Admin/General_Enquiries"
                element={<GerGeneralEnquiry />} />
 
-
-
-
               <Route index path="/Admin/add-Enquiry" element={<AddEnquiry />} />
               <Route
                 index

@@ -13,28 +13,23 @@
 // import { useLocation, useNavigate } from "react-router-dom";
 // import axios from "axios";
 // import { baseurl } from "../Basurl/Baseurl";
-
 // export default function ActivityTracker() {
 //   const dispatch = useDispatch();
 // const navigate =useNavigate()
 //   const { Activity, loading, error } = useSelector((state) => state.Activity);
-
 //   const location = useLocation()
 //   const dataID=location.state.userId;
 //   const [rows, setRows] = useState([]);
 //   const [page, setPage] = useState(0);
 //   const [rowsPerPage] = useState(10);
-
 //   useEffect(() => {
 //     dispatch(GetAllActivity());
 //   }, [dispatch]);
-
 //   useEffect(() => {
 //     if (Activity) {
 //       setRows(Activity);
 //     }
 //   }, [Activity]);
-
 //   const handleChangePage = (event, newPage) => {
 //     setPage(newPage);
 //   };
@@ -77,7 +72,6 @@
 //                           <TableCell>View</TableCell>
 //                         </TableRow>
 //                       </TableHead>
-
 //                       <TableBody>
 //                         {rows.length > 0 ? (
 //                           rows
@@ -103,7 +97,6 @@
 //                         )}
 //                       </TableBody>
 //                     </Table>
-
 //                     {/* PAGINATION */}
 //                     <Stack spacing={2} alignItems="end" marginTop={2}>
 //                       <Pagination
@@ -136,44 +129,33 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { baseurl } from "../Basurl/Baseurl";
 import Swal from "sweetalert2";
-
 export default function ActivityUserLogs() {
   const location = useLocation();
-
   // ⭐ RECEIVING DATA HERE
   const { userId, userName } = location.state || {};
-
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
-
   // ⭐ FETCH USER LOGS
-
 const getUserActivity = async () => {
   try {
     const response = await axios.get(`${baseurl}getUserLogs/${userId}`);
-
     setLogs(response.data.data || []);
     console.log("USER LOGS:", response.data);
-
   } catch (error) {
     Swal.fire({
       title: "Error!",
       text: error.response?.data?.message || "Something went wrong",
       icon: "error",
     });
-
     console.log(error);
   }
 };
-
-
   useEffect(() => {
     if (userId) {
       getUserActivity();
     }
   }, [userId]);
-
   return (
     <>
       <div className="page-wrapper">
@@ -191,7 +173,6 @@ const getUserActivity = async () => {
                   <TableCell>Duration</TableCell>
                 </TableRow>
               </TableHead>
-
               <TableBody>
                 {logs.length > 0 ? (
                   logs
@@ -214,7 +195,6 @@ const getUserActivity = async () => {
                 )}
               </TableBody>
             </Table>
-
             {/* Pagination */}
             <Stack spacing={2} alignItems="end" marginTop={2}>
               <Pagination

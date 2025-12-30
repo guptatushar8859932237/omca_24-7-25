@@ -150,7 +150,8 @@ export default function Hotel() {
               <TableCell>Phone</TableCell>
               <TableCell>City</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell>Total People</TableCell>
+              <TableCell>Number of People</TableCell>
+              <TableCell>Number of People</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>

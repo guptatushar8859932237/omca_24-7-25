@@ -158,7 +158,7 @@ export default function AirAmbulance() {
               <TableCell> Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
-              <TableCell>Service</TableCell>
+              <TableCell>Services</TableCell>
               <TableCell>From</TableCell>
               <TableCell>To</TableCell>
               <TableCell>Total Travel</TableCell>

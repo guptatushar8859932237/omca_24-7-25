@@ -436,6 +436,97 @@ export default function MedicalVisa() {
                     </div>
                   </div>
                 </div>
+                {/* <div className="col-md-12 mb-3">
+                  <div className="all-hd mb-3">
+                    <h6>Document Details</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="" value={selectedRecord.reference_name} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Permanent Address" value={selectedRecord.reference_permanent_address} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Phone Number" value={selectedRecord.reference_phone_number} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Country Name" value={selectedRecord.reference_name_country} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Permanent Address-2" value={selectedRecord.reference_permanent_address_2} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Phone Number-2" value={selectedRecord.reference_phone_number_2} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div> */}
+              <div className="col-md-12 mt-3">
+                 <div className="all-hd mb-3">
+                    <h6>Document  Details</h6>
+                  </div>
+                  <div className="card">
+                    <div
+                    className="card-body">
+
+  <div className="row">
+
+    {/* Document 1 */}
+    <div className="col-md-4 mb-3">
+      <div className="border rounded p-2 text-center">
+        <h6 className="mb-2 fw-bold">
+          {selectedRecord.reference_doc_name_1 || "image"}
+        </h6>
+        <img
+          src={`https://yellowcabsanfrancisco.com/omca/public/upload/photo/${selectedRecord.applicant_photo}`}
+            
+          
+          alt="doc-1"
+          className="img-fluid rounded"
+          style={{ height: "180px", objectFit: "cover", width: "100%" }}
+        />
+      </div>
+    </div>
+
+    {/* Document 2 */}
+    <div className="col-md-4 mb-3">
+      <div className="border rounded p-2 text-center">
+        <h6 className="mb-2 fw-bold">
+          {selectedRecord.reference_doc_name_2 || "Visa"}
+        </h6>
+        <img
+          src={`https://yellowcabsanfrancisco.com/omca/public/upload/medicalvisa/${selectedRecord.medical_visa}`}
+          alt="doc-2"
+          className="img-fluid rounded"
+          style={{ height: "180px", objectFit: "cover", width: "100%" }}
+        />
+      </div>
+    </div>
+
+    {/* Document 3 */}
+    <div className="col-md-4 mb-3">
+      <div className="border rounded p-2 text-center">
+        <h6 className="mb-2 fw-bold">
+          {selectedRecord.reference_doc_name_3 || "Passport"}
+        </h6>
+        <img
+          src={`https://yellowcabsanfrancisco.com/omca/public/upload/passport/${selectedRecord.passport_copy}`}
+          alt="doc-3"
+          className="img-fluid rounded"
+          style={{ height: "180px", objectFit: "cover", width: "100%" }}
+        />
+      </div>
+    </div>
+
+  </div>
+                    </div>
+                  </div>
+</div>
+
               </div>
             </Box>
           )}

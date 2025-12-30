@@ -26,9 +26,7 @@ const MenuProps = {
 export default function AddPatientTreatment() {
   const location = useLocation();
   console.log(location?.state?.patient);
-  const [treatmentCours, setTretmentCours] = useState([]);
   const dispatch = useDispatch();
-  const [selectedImage, setSelectedImage] = useState(null);
   const { Treatment, loading, error } = useSelector((state) => state.Treatment);
   const [Service, setService] = useState([]);
   const [personName, setPersonName] = React.useState([]);

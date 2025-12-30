@@ -119,7 +119,6 @@ export default function ForexService() {
               <TableCell>Services</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Select Date</TableCell>
-              <TableCell>Traveller  Count</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -133,7 +132,6 @@ export default function ForexService() {
                   <TableCell>{item.services?.replaceAll("_"," ")}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")=="01/01/1970"?"":new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell>
-                  <TableCell>{item.travellers_count}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"

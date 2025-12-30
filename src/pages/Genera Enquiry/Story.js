@@ -134,11 +134,10 @@ export default function Stay() {
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
+              <TableCell>Booking Id</TableCell>
               <TableCell> Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Total People</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Date</TableCell>
+              <TableCell>Guest House</TableCell>
+              <TableCell>Check-in Date</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -147,11 +146,10 @@ export default function Stay() {
               paginatedData.map((item, i) => (
                 <TableRow key={i}>
                   <TableCell>{page * rowsPerPage + i + 1}</TableCell>
+                  <TableCell>{item.booking_id}</TableCell>
                   <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.number_of_people}</TableCell>
-                  <TableCell>{item.phone}</TableCell>
-                  <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell>
+                  <TableCell>{item.guesthouse}</TableCell>
+                  <TableCell>{new Date(item.date).toLocaleDateString("en-GB")}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
@@ -264,18 +262,54 @@ export default function Stay() {
                             <InfoItem label="Phone Number" value={selectedRecord.phone} />
                           </div>
                           <div className="col-md-4">
-                            <InfoItem label="Date" value={new Date(selectedRecord.select_date).toLocaleDateString("en-GB")} />
+                            <InfoItem label="Length of Stay" value={selectedRecord.length_of_story} />
+                          </div>
+                          <div className="col-md-4">
+                            <InfoItem label="Date" value={new Date(selectedRecord.date).toLocaleDateString("en-GB")} />
                           </div>
                           <div className="col-md-4">
                             <InfoItem label="City" value={selectedRecord.city} />
                           </div>
                           <div className="col-md-4">
-                            <InfoItem label="Whatsapp Number" value={selectedRecord.number_of_people} />
+                            <InfoItem label="Number of People" value={selectedRecord.number_of_people} />
+                          </div>
+                          <div className="col-md-4">
+                            <InfoItem label="Total Stay " value={`${selectedRecord.length_of_story} Days`}   />
+                          </div>
+                          <div className="col-md-4">
+                            <InfoItem label="Booking ID" value={selectedRecord.booking_id} />
+                          </div>
+                          <div className="col-md-4">
+                            <InfoItem label="Guest House" value={selectedRecord.guesthouse} />
+                          </div>
+                          <div className="col-md-4">
+                            <InfoItem label="Room Type" value={selectedRecord.guesthouse_room_type} />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                         <div className="col-md-12 mb-3">
+                  <div className="all-hd mb-3">
+                    <h6>Payment Details</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Payment Id" value={selectedRecord.payment_id} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Payment Amount" value={selectedRecord.payment_amount} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Payment Status" value={selectedRecord.payment_status} />
+                        </div>
+                      
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 </div>
               </Box>
             )}
