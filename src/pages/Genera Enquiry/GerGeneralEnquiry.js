@@ -18,10 +18,10 @@ export default function GerGeneralEnquiry() {
     "Forex Service",
     "Flight Service",
     "Pickup and Drop",
-    "Nursing Care",
+    // "Nursing Care",
     // "Lab Test",
-    "VISA",
-    "Hotel",
+    // "VISA",
+    // "Hotel",
     "Air Ambulance",
     "Test Form",
   ];
@@ -31,10 +31,10 @@ export default function GerGeneralEnquiry() {
     <ForexService />,
     <FlightSrvices />,
     <PickUpanddrops />,
-    <NursinfCare />,
+    // <NursinfCare />,
     // <Labstests />,
-    <Vil />,
-    <Hotel />,
+    // <Vil />,
+    // <Hotel />,
     <AirAmbulance />,
     <TestForm />
   ];

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { baseurl } from "../../Basurl/Baseurl";
+import { AdminBaseUrl, baseu11, baseurl } from "../../Basurl/Baseurl";
 import { useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -26,6 +26,8 @@ import {
   Stack,
   Tabs,
   Tab,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
 function TabPanel({ children, value, index }) {
   return value === index && <Box sx={{ p: 2 }}>{children}</Box>;
@@ -37,10 +39,14 @@ export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
   const [page, setPage] = useState(0);
-  const [openModalApp11, setOpenModalApp11] = useState(false);
-  const [fullWidth, setFullWidth] = React.useState(true);
-  const [maxWidth, setMaxWidth] = React.useState("sm");
+  const [pageAPP, setPageAPP] = useState(0);
+const [rowsPerPageAPP] = useState(10);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [dataApp, setDataApp] = useState([]);
+const fullWidth = true;
+  const maxWidth = "md"; // xs | sm | md | lg | xl
+    const [open, setOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
   const [pdfRowLimit, setPdfRowLimit] = useState(null);
    const [statuddropdown, setStatuddropdown] = useState("offline");
   const [filterValue, setFilterValue] = useState("");
@@ -108,6 +114,7 @@ export default function Appointments() {
   };
   useEffect(() => {
     getAppointments();
+    getAppFromApp()
   }, []);
   const handleFilter = (event) => {
     if (event.target.value === "") {
@@ -192,6 +199,33 @@ export default function Appointments() {
    const handleTabChange = (_, newVal) => {
     setTabValue(newVal);
   };
+
+  const getAppFromApp = async ()=>{
+      try {
+        const response = await axios.post(`${AdminBaseUrl}app_appointments`)
+        console.log(response.data.data)
+        setDataApp(response.data.data)
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
+// const handleTabChange = (_, newVal) => {
+//   setTabValue(newVal);
+//   setPageAPP(0); // only TAB-2 reset
+// };
+ const handleView = (record) => {
+    setSelectedRecord(record);
+    setOpen(true);
+  };
+const handleClose = () => setOpen(false);
+
+ const InfoItem = ({ label, value }) => (
+    <div className="">
+      <h6>{label}</h6>
+      <p>{value || "-"}</p>
+    </div>
+  );
   return (
     <>
       <div className="page-wrapper">
@@ -420,9 +454,159 @@ export default function Appointments() {
 
       {/* ---------- TAB 2 : ANOTHER PAGE ---------- */}
       <TabPanel value={tabValue} index={1}>
-        <h3>Add your other page code here...</h3>
+          <div className="main_content">
+            <div className="row">
+              <div className="col-md-12">
+                <div className="table-responsive">
+                  <TableContainer
+                    component={Paper}
+                    style={{ overflowX: "auto" }}
+                    ref={targetRef}
+                  >
+                    <Table
+                      stickyHeader
+                      aria-label="sticky table"
+                      className="table-no-card"
+                    >
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Sr.No.</TableCell>
+                          <TableCell>Patient Name</TableCell>
+                          <TableCell>Patient email</TableCell>
+                          <TableCell>City</TableCell>
+                          <TableCell>Disease  </TableCell>
+                          <TableCell>Appointment Date</TableCell>
+                          <TableCell>Paid Amount</TableCell>
+                          <TableCell>Action</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {dataApp.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={8} align="center">
+                              No data found
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          ( 
+                           dataApp.slice(
+  pageAPP * rowsPerPageAPP,
+  pageAPP * rowsPerPageAPP + rowsPerPageAPP
+)
+                          ).map((info, i) => (
+                            <TableRow
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={info.code}
+                            >
+                              <TableCell>
+                                {pdfRowLimit
+                                  ? i + 1
+                                  : page * rowsPerPage + i + 1}
+                              </TableCell>
+                              <TableCell>{info.name}</TableCell>
+                              <TableCell>{info.email}</TableCell>
+                              <TableCell>{info.city}</TableCell>
+                              <TableCell>{info.health_issue}</TableCell>
+                              <TableCell>
+                                {new Date(
+                                  info.apt_on
+                                ).toLocaleDateString("en-GB")}
+                              </TableCell>
+                              <TableCell>{info.paid_amount}</TableCell>
+                              <TableCell>
+                                <i className="fa fa-eye"   onClick={() => handleView(info)}
+                      style={{cursor:"pointer"}}></i>
+                              </TableCell>
+                             
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                    {!pdfRowLimit && (
+                      <Stack spacing={2} alignItems="end" marginTop={2}>
+                      <Pagination
+  count={Math.ceil(dataApp.length / rowsPerPageAPP)}
+  page={pageAPP + 1}
+  onChange={(event, value) => setPageAPP(value - 1)}
+  shape="rounded"
+  className="page-item"
+/>
+                      </Stack>
+                    )}
+                  </TableContainer>
+                </div>
+              </div>
+            </div>
+          </div>
       </TabPanel>
+         <Dialog
+               fullWidth={fullWidth}
+               maxWidth={maxWidth}
+               open={open} onClose={handleClose}
+             >
+               <div className="main-card-header">
+                 <div className="top-fixed-hd">
+                   <div className="note-hd">
+                     < h6>Detail's</h6>
+                   </div>
+                   <div className="cross-icon" onClick={handleClose}>
+                     <i className="fa-solid fa-xmark"></i>
+                   </div>
+                 </div>
+               </div>
+               <DialogContent className="main-box view-table-detail">
+                 {selectedRecord && (
+                   <Box>
+                     <div className="row">
+                       <div className="col-md-12 mb-3">
+                         <div className="card">
+                           <div className="card-body">
+                             <div className="row">
+                               <div className="col-md-4">
+                                 <InfoItem label="Name" value={selectedRecord.name} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="Email" value={selectedRecord.email} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="Phone Number" value={selectedRecord.phone} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="Appointment Type" value={selectedRecord.apt_type} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="City" value={selectedRecord.city} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="Country" value={selectedRecord.country} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="Doctor" value={selectedRecord.doctor} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="Health Issue" value={(selectedRecord.health_issue)} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="Home Visit Address" value={(selectedRecord.home_visit_address)} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="Paid Amount" value={(selectedRecord.paid_amount)} />
+                               </div>
+                               <div className="col-md-4">
+                                 <InfoItem label="Treatment" value={(selectedRecord.treatment)} />
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </Box>
+                 )}
+               </DialogContent>
        
+             </Dialog>
         <ToastContainer />
       </div>
     </>

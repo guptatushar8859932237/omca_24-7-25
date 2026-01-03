@@ -83,6 +83,7 @@ export default function AddEnquiry() {
                   patient_relation_address: "",
                   patient_relation_id: null,
                   patient_id_proof: null,
+                  platform:"1",
                   patient_Profile: null,
                   dial_code: "",
                 }}

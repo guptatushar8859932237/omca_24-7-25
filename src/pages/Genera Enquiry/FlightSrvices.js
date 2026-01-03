@@ -227,46 +227,10 @@ export default function FlightSrvices() {
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-          {/* <Box>
-            {selectedRecord && (
-              <div className="table-responsive dataset">
-                <table className="table table-bordered mb-0">
-                  <tbody>
-                    {Object.entries(selectedRecord)
-                      .filter(([key]) =>
-                        [
-                          "first_name",
-                          "email",
-                          "phone",
-                          "services",
-                          "from",
-                          "to",
-                          "select_date",
-                        ].includes(key)
-                      )
-                      .map(([key, value]) => (
-                        <tr key={key}>
-                          <th>
-                            {key
-                              .replace(/_/g, " ")
-                              .replace(/\b\w/g, (char) => char.toUpperCase())}
-                          </th>
-                          <td>{String(value)}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Box> */}
           {selectedRecord && (
             <Box>
               <div className="row">
-                {/* personal */}
                 <div className="col-md-12 mb-3">
-                  {/* <div className="all-hd mb-3">
-                      <h6>Personal Information</h6>
-                    </div> */}
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
