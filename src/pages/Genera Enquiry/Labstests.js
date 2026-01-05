@@ -32,7 +32,7 @@ export default function Labstests() {
     dispatch(testForms());
   }, [dispatch]);
 
-  const medicalVisaData = formData?.data?.lab_test || [];
+  const medicalVisaData = formData?.data?.get_treatment_estimate || [];
 
   const handleFilter = (e) => {
     setFilterValue(e.target.value);
@@ -51,9 +51,10 @@ export default function Labstests() {
       item.name?.toLowerCase().includes(search) ||
       item.email?.toLowerCase().includes(search) ||
       item.phone?.toLowerCase().includes(search) ||
-      item.date?.toLowerCase().includes(search) ||
-      item.time?.toLowerCase().includes(search) ||
-      item.address?.toLowerCase().includes(search)
+      item.whatsapp?.toLowerCase().includes(search) ||
+      item.country?.toLowerCase().includes(search) ||
+      item.treatment?.toLowerCase().includes(search) ||
+      item.message?.toLowerCase().includes(search)
     );
   });
 
@@ -87,7 +88,7 @@ export default function Labstests() {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
-          <h2>Labs Test</h2>
+          <h2>Treatment Estimate</h2>
         </div >
         <div>
           <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
@@ -132,8 +133,6 @@ export default function Labstests() {
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell>Time</TableCell>
-              <TableCell>Address</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -145,9 +144,7 @@ export default function Labstests() {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{new Date(item.date).toLocaleDateString('en-GB')}</TableCell>
-                  <TableCell>{item.time}</TableCell>
-                  <TableCell>{item.address}</TableCell>
+                  <TableCell>{new Date(item.created_at).toLocaleDateString('en-GB')}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
@@ -187,7 +184,7 @@ export default function Labstests() {
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Labs Test Request</h6>
+              < h6>Estimate Treatment Request </h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>
@@ -195,37 +192,6 @@ export default function Labstests() {
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-          {/* <Box>
-            {selectedRecord && (
-              <div className="table-responsive dataset">
-                <table className="table table-bordered mb-0">
-                  <tbody>
-                    {Object.entries(selectedRecord)
-                      .filter(([key]) =>
-                        [
-                          "name",
-                          "email",
-                          "phone",
-                          "date",
-                          "time",
-                          "address",
-                        ].includes(key)
-                      )
-                      .map(([key, value]) => (
-                        <tr key={key}>
-                          <th>
-                            {key
-                              .replace(/_/g, " ")
-                              .replace(/\b\w/g, (char) => char.toUpperCase())}
-                          </th>
-                          <td>{String(value)}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Box> */}
           {selectedRecord && (
             <Box>
               <div className="row">
@@ -247,14 +213,36 @@ export default function Labstests() {
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Date" value={new Date(selectedRecord.date).toLocaleDateString('en-GB')} />
+                          <InfoItem label="Date" value={new Date(selectedRecord.created_at).toLocaleDateString('en-GB')} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Time" value={selectedRecord.time} />
+                          <InfoItem label="Whatsapp" value={selectedRecord.whatsapp} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Address" value={selectedRecord.address} />
+                          <InfoItem label="Country" value={selectedRecord.country} />
                         </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Treatment" value={selectedRecord.treatment} />
+                        </div>
+                    <div className="col-md-4">
+  <h6>Image</h6>
+  {selectedRecord.image ? (
+    <img
+      src={selectedRecord.image}
+      alt="treatment"
+      style={{
+        width: "120px",
+        height: "120px",
+        objectFit: "cover",
+        borderRadius: "6px",
+        border: "1px solid #ddd"
+      }}
+    />
+  ) : (
+    <p>-</p>
+  )}
+</div>
+
                       </div>
                     </div>
                   </div>

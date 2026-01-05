@@ -59,7 +59,7 @@ export default function NursinfCare() {
     dispatch(testForms());
   }, [dispatch]);
 
-  const medicalVisaData = formData?.data?.nursing_care || [];
+  const medicalVisaData = formData?.data?.contact_us || [];
 
   const handleFilter = (e) => {
     setFilterValue(e.target.value);
@@ -78,9 +78,10 @@ export default function NursinfCare() {
       item.name?.toLowerCase().includes(search) ||
       item.email?.toLowerCase().includes(search) ||
       item.phone?.toLowerCase().includes(search) ||
-      item.services?.toLowerCase().includes(search) ||
+      item.country?.toLowerCase().includes(search) ||
       item.city?.toLowerCase().includes(search) ||
-      item.terms_condition?.toLowerCase().includes(search)
+      item.description?.toLowerCase().includes(search) ||
+      item.title?.toLowerCase().includes(search)
     );
   });
 
@@ -112,7 +113,7 @@ export default function NursinfCare() {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
-          <h2>Nurse Care</h2>
+          <h2>Contact Us</h2>
         </div >
         <div>
           <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
@@ -156,7 +157,6 @@ export default function NursinfCare() {
               <TableCell> Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
-              <TableCell>Services</TableCell>
               <TableCell>City</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -169,7 +169,6 @@ export default function NursinfCare() {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{item.services}</TableCell>
                   <TableCell>{item.city}</TableCell>
                   <TableCell>
                     <VisibilityIcon
@@ -223,7 +222,7 @@ export default function NursinfCare() {
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Nurse Care Request</h6>
+              < h6>Contact Us</h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>
@@ -282,10 +281,19 @@ export default function NursinfCare() {
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Services" value={selectedRecord.services} />
+                          <InfoItem label="City" value={selectedRecord.city} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="City" value={selectedRecord.city} />
+                          <InfoItem label="Country" value={selectedRecord.country} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Title" value={selectedRecord.title} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Description" value={selectedRecord.description} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Created At" value={new Date(selectedRecord.created_at).toLocaleDateString("en-GB")} />
                         </div>
                       </div>
                     </div>
