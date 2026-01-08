@@ -122,7 +122,7 @@ export default function TestForm() {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
-          <h2>Test Forms</h2>
+          <h2>Test Form</h2>
         </div >
         <div>
           <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
@@ -168,7 +168,6 @@ export default function TestForm() {
               <TableCell>Phone</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Time</TableCell>
-              <TableCell>Address</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -182,7 +181,6 @@ export default function TestForm() {
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{new Date(item.date).toLocaleDateString('en-GB')}</TableCell>
                   <TableCell>{item.time}</TableCell>
-                  <TableCell>{item.address}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                     style={{cursor:"pointer"}}
@@ -235,7 +233,7 @@ export default function TestForm() {
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Test Form Request</h6>
+              < h6>Test Form </h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>
@@ -301,8 +299,18 @@ export default function TestForm() {
                           <InfoItem label="Time" value={selectedRecord.time} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Address" value={selectedRecord.address} />
+                          <InfoItem label="City" value={selectedRecord.city} />
                         </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Test Names" value={selectedRecord.test_names} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Hospital" value={selectedRecord.hospital} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Home Sample Collection" value={selectedRecord.home_sample_collection} />
+                        </div>
+                       
                       </div>
                     </div>
                   </div>

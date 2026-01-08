@@ -184,7 +184,7 @@ export default function Labstests() {
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Estimate Treatment Request </h6>
+              < h6>Estimate Treatment  </h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>

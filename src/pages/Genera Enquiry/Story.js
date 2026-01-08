@@ -92,7 +92,7 @@ export default function Stay() {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
-          <h2>Stay</h2>
+          <h2>Guest House/Stay</h2>
 
         </div >
         <div>
@@ -202,7 +202,7 @@ export default function Stay() {
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Stay Request</h6>
+              < h6>Guest House/Stay</h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>

@@ -14,7 +14,7 @@ export default function GerGeneralEnquiry() {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = [
     "Medical Visa",
-    "Stay",
+    "Guest House/Stay",
     "Forex Service",
     "Flight Service",
     "Pickup and Drop",

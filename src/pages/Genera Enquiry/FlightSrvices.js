@@ -219,7 +219,7 @@ export default function FlightSrvices() {
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Flight Service Request</h6>
+              < h6>Flight Service </h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>

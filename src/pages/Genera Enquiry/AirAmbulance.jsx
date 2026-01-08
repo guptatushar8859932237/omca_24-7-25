@@ -228,7 +228,7 @@ export default function AirAmbulance() {
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Air Ambulance Request</h6>
+              < h6>Air Ambulance </h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>
