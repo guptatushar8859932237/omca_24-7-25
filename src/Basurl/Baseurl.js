@@ -6,7 +6,7 @@ export const excelExoprt = 'https://sisccltd.com/'  //server
 export const AdminBaseUrl ="https://yellowcabsanfrancisco.com/omca/api/crm/"
 // export const baseurl = 'http://192.168.1.25:5201/api/'
 // export const baseu11 = 'http://192.168.1.25:5201'
-// export const excelExoprt = 'http://192.168.1.25:5201/api/'
+// export const excelExoprt = 'http://192.168.1.25:5201/api/'adds
 // export const image = 'https://sisccltd.com/omca_crm/'     
 // export const imageUrl = 'http://192.168.1.25:5201/uploads/'  //local   
         //    

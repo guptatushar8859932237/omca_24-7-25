@@ -909,6 +909,7 @@ const gettreatment11 =async()=>{
       const formData = new FormData();
       formData.append("reportTitle", iniData.reportTitle);
       formData.append("treatmentReport", imagefile);
+      formData.append("platform", 1);
 
       const response = await axios.post(
         `${baseurl}addReports/${treatmentId}`,
@@ -1206,7 +1207,7 @@ const handledelete = async (info, item) => {
                                 <div className="d-flex">
                                   <div>
                                     <FormControl
-                                      sx={{ m: 1, minWidth: 120 }}
+                                      sx={{ m: 1, minWidth: 130 }}
                                       size="small"
                                       className="status-treat cont-main"
                                     >
@@ -1221,11 +1222,26 @@ const handledelete = async (info, item) => {
                                         }}
                                         className="status-direct"
                                       >
-                                        <MenuItem value="Pending">
-                                          Pending
-                                        </MenuItem>
-                                        <MenuItem value="InProgress">
+                                        <MenuItem value="In Progress">
                                           In Progress
+                                        </MenuItem>
+                                        <MenuItem value="Assigned">
+                                          Assigned
+                                        </MenuItem>
+                                        <MenuItem value="Admitted">
+                                          Admitted
+                                        </MenuItem>
+                                        <MenuItem value="Under Review">
+                                          Under Review
+                                        </MenuItem>
+                                        <MenuItem value="Under Surgery">
+                                          Under Surgery
+                                        </MenuItem>
+                                        <MenuItem value="Under Recovery">
+                                          Under Recovery
+                                        </MenuItem>
+                                        <MenuItem value="Discharged">
+                                          Discharged
                                         </MenuItem>
                                         <MenuItem value="Complete">
                                           Completed

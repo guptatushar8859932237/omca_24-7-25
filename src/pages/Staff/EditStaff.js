@@ -23,7 +23,7 @@ export default function EditStaff() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { staff } = useSelector((state) => state.staff);
-  const { Countries } = useSelector((state) => state.Countries);
+const { Countries } = useSelector((state) => state.Countries);
   const [editStaff, setEditStaff] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const statusOptions = [
@@ -56,13 +56,15 @@ export default function EditStaff() {
     name: Yup.string().required("Name is required"),
     role: Yup.string()
       .oneOf(
-        ["Admin", "Manager", "Staff", "Finance", "Coordinator", "Receptionist"],
+        ["Manager", "Staff", "Finance", "Coordinator", "Receptionist"],
         "Invalid role"
       )
       .required("Role is required"),
-    phone_no: Yup.string()
-      .matches(/^[0-9]{10,11}$/, "Invalid phone number")
-      .required(),
+   phone_no: Yup.string()
+     .required("Phone number is required")
+     .matches(/^[0-9]+$/, "Phone number must contain only digits")
+     .min(6, "Phone number must be at least 6 digits")
+     .max(15, "Phone number must not exceed 15 digits"),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"])
       .required("Gender is required"),
@@ -210,7 +212,7 @@ export default function EditStaff() {
                       </Field>
                     </div>
                   </div>
-                  <div className="col-sm-6">
+                  {/* <div className="col-sm-6">
                     <div className="field-set">
                       <label>Dial Code *</label>
                       <Field
@@ -235,13 +237,52 @@ export default function EditStaff() {
                         className="text-danger"
                       />
                     </div>
-                  </div>
+                  </div> */}
+                  <div className="col-sm-6">
+  <div className="field-set">
+    <label>
+      Phone No <span className="text-danger">*</span>
+    </label>
+
+    <div className="d-flex">
+      {/* Dial Code – 30% */}
+      <input
+        type="text"
+        className="form-control"
+        style={{ width: "10%" }}
+        value={values.dial_code}
+        disabled
+      />
+
+      {/* Phone Number – 70% */}
+      <input
+        type="text"
+        className="form-control"
+        style={{ width: "90%" }}
+        name="phone_no"
+        value={values.phone_no}
+        onChange={(e) => {
+          const val = e.target.value.replace(/[^0-9]/g, "");
+          setFieldValue("phone_no", val);
+        }}
+        placeholder="Enter phone number"
+      />
+    </div>
+
+    <ErrorMessage
+      name="phone_no"
+      component="div"
+      className="text-danger"
+    />
+  </div>
+</div>
+
                   <div className="col-sm-6">
                     <div className="field-set">
                       <label>Role *</label>
                       <Field as="select" name="role" className="form-control">
                         <option value="">Select Role</option>
-                        <option value="Admin">Admin</option>
+                        {/* <option value="Admin">Admin</option> */}
                         <option value="Manager">Manager</option>
                         <option value="Receptionist">Receptionist</option>
                         <option value="Finance">Finance</option>

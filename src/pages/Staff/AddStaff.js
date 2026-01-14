@@ -15,9 +15,12 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
-import { GetAllCountries2 } from "../../reducer/Countries";
+import { GetAllCountries, GetAllCountries2 } from "../../reducer/Countries";
+import axios from "axios";
+import { baseurl } from "../../Basurl/Baseurl";
 export default function AddStaff() {
-  const { Countries } = useSelector((state) => state.Countries);
+  // const { Countries } = useSelector((state) => state.Countries);
+
   const statusOptions = [
     "Foundation",
     "Private",
@@ -32,6 +35,8 @@ export default function AddStaff() {
   ];
   const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(null);
+  const { Countries } = useSelector((state) => state.Countries);
+  // const [Countries,setCountries]=useState([])
   const { staff, loading, error } = useSelector((state) => state.staff);
   console.log(error);
   const navigate = useNavigate();
@@ -49,9 +54,12 @@ export default function AddStaff() {
       .email("Invalid email format")
       .required("Email is required"),
     password: Yup.string().required("Password is Required"),
-    phone_no: Yup.string()
-      .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
-      .required("Phone number is required"),
+  dial_code: Yup.string().required(),
+phone_no: Yup.string()
+  .required("Phone number is required")
+  .matches(/^[0-9]+$/, "Phone number must contain only digits")
+  .min(6, "Phone number must be at least 6 digits")
+  .max(15, "Phone number must not exceed 15 digits"),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
       .required("Gender is required"),
@@ -70,8 +78,9 @@ export default function AddStaff() {
       ),
   });
   useEffect(() => {
-    dispatch(GetAllCountries2);
+    dispatch(GetAllCountries2());
   }, [dispatch]);
+    // const { Countries } = useSelector((state) => state.Countries);
   return (
     <>
       <div className="page-wrapper">
@@ -186,63 +195,43 @@ export default function AddStaff() {
                       <div className="field-set">
                         <label>
                           Country<span className="text-danger">*</span>
-                        </label>
-                        <Field name="country">
+                        </label> 
+                     <Field name="country">
                           {({ field, form }) => (
                             <>
-                              <FormControl fullWidth size="small">
-                                <Select
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const selectedCountry = Countries.find(
-                                      (c) => c.name === e.target.value
-                                    );
-                                    form.setFieldValue(
-                                      "country",
-                                      e.target.value
-                                    );
-                                    form.setFieldValue(
-                                      "dial_code",
-                                      selectedCountry?.dial_code || ""
-                                    );
-                                  }}
-                                  input={
-                                    <OutlinedInput placeholder="Select Country" />
-                                  }
-                                  displayEmpty
-                                  sx={{ height: 40 }}
-                                  className="select-country form-control"
-                                  MenuProps={{
-                                    PaperProps: { style: { maxHeight: 200 } },
-                                  }}
-                                >
-                                  <MenuItem value="">
-                                    <em>Select Country</em>
-                                  </MenuItem>
-                                  {Countries && Countries.length > 0 ? (
-                                    Countries.map((con, idx) => (
-                                      <MenuItem key={idx} value={con.name}>
-                                        {con.name}
-                                      </MenuItem>
-                                    ))
-                                  ) : (
-                                    <MenuItem disabled>
-                                      No countries available
-                                    </MenuItem>
-                                  )}
-                                </Select>
-                              </FormControl>
-                              <ErrorMessage
-                                name="country"
-                                component="div"
-                                style={{ color: "red" }}
-                              />
-                            </>
-                          )}
-                        </Field>
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
+                    <FormControl fullWidth size="small">
+  <Select
+    value={field.value}
+    className="select-country form-control"
+    onChange={(e) => {
+      const selectedCountry = Countries.find(
+        (c) => c.name === e.target.value
+      );
+      form.setFieldValue("country", e.target.value);
+     form.setFieldValue(
+  "dial_code",
+  selectedCountry?.dial_code || ""
+);
+    }}
+    displayEmpty
+    sx={{ height: 40 }}
+  >
+    <MenuItem value="">
+      <em>Select Country</em>
+    </MenuItem>
+
+    {Countries?.map((con, idx) => (
+      <MenuItem key={idx} value={con.name}>
+        {con.name}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+</>)}
+</Field>
+</div>
+</div>
+                    {/* <div className="col-sm-6">
                       <div className="field-set">
                         <label>
                           Dial Code<span className="text-danger">*</span>
@@ -250,11 +239,12 @@ export default function AddStaff() {
                         <Field
                           className="form-control"
                           type="text"
+                          disabled
                           name="dial_code"
                         />
                       </div>
-                    </div>
-                    <div className="col-sm-6">
+                    </div> */}
+                    {/* <div className="col-sm-6">
                       <div className="field-set">
                         <label>
                           Phone No <span className="text-danger">*</span>
@@ -270,7 +260,43 @@ export default function AddStaff() {
                           style={{ color: "red" }}
                         />
                       </div>
-                    </div>
+                    </div> */}
+                 <div className="col-sm-6">
+  <div className="field-set">
+    <label>
+      Phone No <span className="text-danger">*</span>
+    </label>
+
+    <div className="phone-wrapper">
+      {/* Dial Code (20%) */}
+      <input
+        type="text"
+        className="phone-code"
+        value={values.dial_code}
+        disabled
+      />
+
+      {/* Phone Number (80%) */}
+      <input
+        type="text"
+        className="phone-number"
+        value={values.phone_no}
+        name="phone_no"
+        onChange={(e) =>
+          setFieldValue("phone_no", e.target.value)
+        }
+        placeholder="Enter phone number"
+      />
+    </div>
+
+    <ErrorMessage
+      name="phone_no"
+      component="div"
+      style={{ color: "red" }}
+    />
+  </div>
+</div>
+
                     <div className="col-sm-6">
                       <div className="field-set">
                         <label>
@@ -280,7 +306,7 @@ export default function AddStaff() {
                           <option value="">Select Role</option>
                           <option value="Manager">Manager</option>
                           <option value="Receptionist">Receptionist</option>
-                          <option value="Doctor">Doctor</option>
+                          {/* <option value="Doctor">Doctor</option> */}
                           <option value="Finance">Finance</option>
                           <option value="Coordinator">Coordinator</option>
                         </Field>
@@ -383,55 +409,17 @@ export default function AddStaff() {
                       <label>
                         Give Permission<span className="text-danger">*</span>
                       </label>
-                      {/* <div className="field-set">
-                        <FormControl fullWidth>
-                          <InputLabel>Status</InputLabel>
-                          <Select
-                            multiple
-                            value={values.roleStatuses}
-                            name="roleStatuses"
-                            onChange={(event) =>
-                              setFieldValue("roleStatuses", event.target.value)
-                            }
-                            className="form-control"
-                            renderValue={(selected) => selected.join(", ")}
-                          >
-                            {statusOptions.map((roleStatuses) => (
-                              <MenuItem key={roleStatuses} value={roleStatuses}>
-                                <Checkbox
-                                  checked={
-                                    values.roleStatuses.indexOf(roleStatuses) >
-                                    -1
-                                  }
-                                />
-                                <ListItemText primary={roleStatuses} />
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        <ErrorMessage
-                          name="roleStatuses"
-                          component="div"
-                          style={{ color: "red" }}
-                        />
-                      </div> */}
                       <FormControl fullWidth>
-
                         <Select
                           multiple
                           value={values.roleStatuses}
-
                           name="roleStatuses"
                           onChange={(event) => {
                             const value = event.target.value;
-
-                            // Handle Select All logic
                             if (value.includes("All")) {
                               if (values.roleStatuses.length === statusOptions.length) {
-                                // Deselect All
                                 setFieldValue("roleStatuses", []);
                               } else {
-                                // Select All
                                 setFieldValue("roleStatuses", statusOptions);
                               }
                             } else {
