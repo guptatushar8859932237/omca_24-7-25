@@ -368,6 +368,19 @@ export default function AddEnquiry() {
                         </div>
                       </div>
                       <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Notes<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" name="Notes" />
+                          <ErrorMessage
+                            name="Notes"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
                         <div className="field-set gender-select">
                           <label className="gen-label">
                             Gender<span className="text-danger">*</span>
