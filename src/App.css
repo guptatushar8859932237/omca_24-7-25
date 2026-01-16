@@ -651,6 +651,7 @@ table.table td h2 span {
 
 .dropdown-menu {
   font-size: 13px;
+  padding: 0px;
 }
 
 .btn-link,
@@ -6914,11 +6915,11 @@ input:checked + .slider:before {
   border-radius: 8px;
 }
 
-.view-table-detail .card{
+.view-table-detail .card {
   /* background-color: #fafafa; */
   border: 1px solid #e0e0e0;
   margin-bottom: 0px;
- /* box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px; */
+  /* box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px; */
 }
 
 .phone-wrapper {
@@ -6946,4 +6947,72 @@ input:checked + .slider:before {
 .phone-code:focus,
 .phone-number:focus {
   outline: none;
+}
+
+/* =======================surbhi(15-01-26)======================= */
+.treatment-status-card,
+.treatment-distribution-card,
+.revenue-payment-card,
+.apointment-card,
+.hospital-performance-card,
+.holistic-flow-card {
+  margin-bottom: 0px;
+  height: 100%;
+}
+.treatment-status-card .dropdown-item.active,
+.treatment-status-card .dropdown-item:active {
+  background-color: var(--bs-blue-color) !important;
+}
+.treatment-status-card .dropdown-item:focus,
+.treatment-status-card .dropdown-item:hover {
+  background-color: #f2f2f2;
+}
+.treatment-distribution-card .dropdown-item.active,
+.treatment-distribution-card .dropdown-item:active {
+  background-color: var(--bs-blue-color) !important;
+}
+.treatment-distribution-card .dropdown-item:focus,
+.treatment-distribution-card .dropdown-item:hover {
+  background-color: #f2f2f2;
+}
+.revenue-payment-card .dropdown-item.active,
+.revenue-payment-card .dropdown-item:active {
+  background-color: var(--bs-blue-color) !important;
+}
+.revenue-payment-card .dropdown-item:focus,
+.revenue-payment-card .dropdown-item:hover {
+  background-color: #f2f2f2;
+}
+.apointment-card .dropdown-item.active,
+.apointment-card .dropdown-item:active {
+  background-color: var(--bs-blue-color) !important;
+}
+.apointment-card .dropdown-item:focus,
+.apointment-card .dropdown-item:hover {
+  background-color: #f2f2f2;
+}
+.dropdown-item:last-child {
+  border-radius: 0px;
+}
+.dropdown-item:first-child {
+  border-radius: 0px;
+}
+.dropdown-toggle::after {
+  vertical-align: middle;
+}
+.hospital-performance-card .dropdown-item.active,
+.hospital-performance-card .dropdown-item:active {
+  background-color: var(--bs-blue-color) !important;
+}
+.hospital-performance-card .dropdown-item:focus,
+.hospital-performance-card .dropdown-item:hover {
+  background-color: #f2f2f2;
+}
+.holistic-flow-card .dropdown-item.active,
+.holistic-flow-card .dropdown-item:active {
+  background-color: var(--bs-blue-color) !important;
+}
+.holistic-flow-card .dropdown-item:focus,
+.holistic-flow-card .dropdown-item:hover {
+  background-color: #f2f2f2;
 }
