@@ -383,7 +383,9 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/staff")}>
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+            //  style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/staff")}
+             >
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i className="fa fa-users" aria-hidden="true"></i>
@@ -394,7 +396,9 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Inquiry")}>
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+            //  style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Inquiry")}
+             >
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i className="fa fa-user-md"></i>
@@ -405,7 +409,9 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Appointments")}>
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
+            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Appointments")}
+            >
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i className="fa fa-calendar-check-o" aria-hidden="true"></i>
@@ -416,7 +422,9 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/patients")}>
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+            //  style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/patients")}
+             >
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i class="fas fa-user-injured"></i>
@@ -427,7 +435,9 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}>
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
+            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}
+              >
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i className="fa fa-clipboard" aria-hidden="true"></i>
@@ -438,7 +448,9 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Hospitals")}>
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
+            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Hospitals")}
+            >
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i class="fa-solid fa-hospital"></i>
@@ -449,7 +461,9 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}>
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
+            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}
+            >
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i
@@ -463,7 +477,9 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Services")}>
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
+            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Services")}
+            >
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i class="fa-solid fa-server"></i>
@@ -475,19 +491,20 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-md-12">
+          {/* <div className="row"> */}
+            {/* <div className="col-md-12">
               <div className="treat-hd">
                 <h6>Treatment Cases</h6>
                 <span className="line"></span>
               </div>
-            </div>
-          </div>
-          <div className="row">
+            </div> */}
+          {/* </div> */}
+          {/* <div className="row">
             {arraycount &&
               arraycount.length > 0 &&
               arraycount.map((item, index) => (
-                <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" key={index} style={{ cursor: "pointer" }} onClick={() => handleclicknavi(item.course_name)}>
+                <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" key={index} 
+                style={{ cursor: "pointer" }} onClick={() => handleclicknavi(item.course_name)}>
                   <div className="dash-widget">
                     <div className="">
                       <span className="widget-title">{item.course_name}</span>
@@ -503,7 +520,7 @@ export default function Dashboard() {
                   </div>
                 </div>
               ))}
-          </div>
+          </div> */}
           <div className="row gy-4">
             {/* appointment-graph */}
             <div className="col-md-6">
