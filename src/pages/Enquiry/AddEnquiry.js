@@ -305,18 +305,17 @@ export default function AddEnquiry() {
                           </Field>
                         </div>
                       </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
+                     
+                      <div className="col-sm-6 d-flex">
+                        <div className="field-set col-sm-3">
                           <label>Dial Code</label>
                           <Field
                             className="form-control"
                             name="dial_code"
                             disabled
                           />
-                        </div>
                       </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
+                        <div className="field-set col-9">
                           <label>
                             {" "}
                             Phone No / WhatsApp
@@ -333,8 +332,16 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
+                      <div className="col-sm-6 d-flex">
+                         <div className="field-set col-sm-3">
+                          <label>Dial Code</label>
+                          <Field
+                            className="form-control"
+                            name="dial_code"
+                            disabled
+                          />
+                      </div>
+                        <div className="field-set col-9">
                           <label>Emergency Contact No</label>
                           <Field
                             className="form-control"
@@ -355,6 +362,19 @@ export default function AddEnquiry() {
                           <Field className="form-control" name="town" />
                           <ErrorMessage
                             name="town"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Notes<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" name="Notes" />
+                          <ErrorMessage
+                            name="Notes"
                             component="div"
                             className="text-danger"
                           />

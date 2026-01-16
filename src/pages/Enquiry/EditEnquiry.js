@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
-import {FormControl} from "@mui/material";
+import {FormControl, MenuItem, OutlinedInput, Select} from "@mui/material";
 import { image } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg"
@@ -215,8 +215,20 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
+                      <div className="col-sm-6 d-flex">
+                           <div className="field-set col-3">
+                          <label>
+                            Dial Code<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" disabled name="dial_code" />
+                          <ErrorMessage
+                            name="dial_code"
+                            component="div"
+                            
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                        <div className="field-set col-9">
                           <label>
                             Phone No (WhatsApp)
                             <span className="text-danger">*</span>
@@ -232,8 +244,20 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
+                      <div className="col-sm-6 d-flex">
+                           <div className="field-set col-3">
+                          <label>
+                            Dial Code<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" disabled name="dial_code" />
+                          <ErrorMessage
+                            name="dial_code"
+                            component="div"
+                            
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                        <div className="field-set col-9">
                           <label>
                             Emergency Contact No
 
@@ -349,9 +373,7 @@ export default function EditEnquiry() {
                                 size="small"
                                 error={!!meta.touched && !!meta.error}
                               >
-
-
-                                {/* <Select
+                                <Select
                                   value={field.value}
                                   onChange={(e) => {
                                     const selected = Countries.find(
@@ -379,8 +401,8 @@ export default function EditEnquiry() {
                                       {country.name}
                                     </MenuItem>
                                   ))}
-                                </Select> */}
-                                <Autocomplete
+                                </Select>
+                                {/* <Autocomplete
                                   options={Countries || []}                  // Array of countries
                                   getOptionLabel={(option) => option.name}   // Display country name
                                   value={Countries.find(c => c.name === field.value) || null} // Current value
@@ -397,7 +419,7 @@ export default function EditEnquiry() {
                                     />
                                   )}
                                   isOptionEqualToValue={(option, value) => option.name === value.name}
-                                />
+                                /> */}
                                 <ErrorMessage
                                   name="country"
                                   component="div"
@@ -409,17 +431,7 @@ export default function EditEnquiry() {
                         </div>
                       </div>
                       <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Dial Code<span className="text-danger">*</span>
-                          </label>
-                          <Field className="form-control" name="phoneCode" />
-                          <ErrorMessage
-                            name="phoneCode"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
+                     
                       </div>
                       <div className="col-sm-6">
                         <div className="field-set">
