@@ -383,20 +383,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-            //  style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/staff")}
-             >
-              <div className="dash-widget1">
-                <div className="dash-widget-bg">
-                  <i className="fa fa-users" aria-hidden="true"></i>
-                </div>
-                <div className="dash-widget-info1">
-                  <h3>{count.totalStaff}</h3>
-                  <span className="widget-title">Total Staff</span>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+             <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
             //  style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Inquiry")}
              >
               <div className="dash-widget1">
@@ -405,11 +392,11 @@ export default function Dashboard() {
                 </div>
                 <div className="dash-widget-info1">
                   <h3>{count.all_Enquiry}</h3>
-                  <span className="widget-title">Enquiries</span>
+                  <span className="widget-title">Total Enquiries</span>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
+               <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
             // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Appointments")}
             >
               <div className="dash-widget1">
@@ -422,7 +409,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+             <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
             //  style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/patients")}
              >
               <div className="dash-widget1">
@@ -435,23 +422,10 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
-            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}
-              >
-              <div className="dash-widget1">
-                <div className="dash-widget-bg">
-                  <i className="fa fa-clipboard" aria-hidden="true"></i>
-                </div>
-                <div className="dash-widget-info1">
-                  <h3>{count.OMCA_total_Earning}</h3>
-                  <span className="widget-title">Fees Paid Patients</span>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
-            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Hospitals")}
-            >
-              <div className="dash-widget1">
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+            //  style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/staff")}
+             >
+                <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i class="fa-solid fa-hospital"></i>
                 </div>
@@ -460,7 +434,26 @@ export default function Dashboard() {
                   <span className="widget-title">Hospitals</span>
                 </div>
               </div>
+            
             </div>
+           
+         
+           
+            <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
+            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}
+              >
+                    <div className="dash-widget1">
+                <div className="dash-widget-bg">
+                  <i class="fa-solid fa-server"></i>
+                </div>
+                <div className="dash-widget-info1">
+                  <h3>{count.services}</h3>
+                  <span className="widget-title">Services</span>
+                </div>
+              </div>
+              
+            </div>
+        
             <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
             // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}
             >
@@ -472,21 +465,34 @@ export default function Dashboard() {
                   ></i>
                 </div>
                 <div className="dash-widget-info1">
-                  <h3>{count.duePaymentAll}</h3>
-                  <span className="widget-title">Due Payments</span>
+                  <h3>0</h3>
+                  <span className="widget-title">Treatment</span>
+                </div>
+              </div>
+            </div>
+                <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
+            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Hospitals")}
+            >
+              <div className="dash-widget1">
+                <div className="dash-widget-bg">
+                  <i className="fa fa-users" aria-hidden="true"></i>
+                </div>
+                <div className="dash-widget-info1">
+                  <h3>{count.totalStaff}</h3>
+                  <span className="widget-title">Total Staff</span>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
             // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Services")}
             >
-              <div className="dash-widget1">
+          <div className="dash-widget1">
                 <div className="dash-widget-bg">
-                  <i class="fa-solid fa-server"></i>
+                  <i className="fa fa-clipboard" aria-hidden="true"></i>
                 </div>
                 <div className="dash-widget-info1">
-                  <h3>{count.services}</h3>
-                  <span className="widget-title">Services</span>
+                  <h3>0</h3>
+                  <span className="widget-title">Country</span>
                 </div>
               </div>
             </div>

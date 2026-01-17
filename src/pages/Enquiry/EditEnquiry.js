@@ -495,7 +495,7 @@ export default function EditEnquiry() {
                         <div className="field-set">
                           <label>
                             Patient Id Proof
-                            <span className="text-danger">*</span>
+                            {/* <span className="text-danger">*</span> */}
                           </label>
                           <input
                             className="form-control"
@@ -530,7 +530,7 @@ export default function EditEnquiry() {
                         <div className="field-set">
                           <label>
                             Patient Profile
-                            <span className="text-danger">*</span>
+                            {/* <span className="text-danger">*</span> */}
                           </label>
                           <input
                             className="form-control"
