@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { baseurl, image } from "../../Basurl/Baseurl";
+import { baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import avtar from "../../img/avtarImg.jpg"
 export default function EnquiryDetail() {
   const location = useLocation();
@@ -105,11 +105,33 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-6">
                     <div className="field-set">
+                      <label>Age<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.age}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="field-set">
                       <label>Address<span className="text-danger">*</span></label>
                       <input
                         class="form-control"
                         type="text"
                         value={row.address}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="field-set">
+                      <label>Dial Code<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.dial_code}
                         readonly=""
                       />
                     </div>
@@ -160,6 +182,17 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-6">
                     <div className="field-set">
+                      <label>Town</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.town}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="field-set">
                       <label>Country<span className="text-danger">*</span></label>
                       <input
                         class="form-control"
@@ -199,15 +232,26 @@ export default function EnquiryDetail() {
                           src={`${image}${row.patient_id_proof}`}
                           alt="No Document"
                         /> */}
-                        <img
-                          src={row.patient_id_proof ? `${image}${row.patient_id_proof}` : `${avtar}`}
-                          alt="No Document"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = `${avtar}`;
-                          }}
-                        />
-
+                       {Array.isArray(row.patient_id_proof) && row.patient_id_proof.length > 0 ? (
+    row.patient_id_proof.map((img, index) => (
+      <img
+        key={index}
+        src={`${imageUrl}${img}`}
+        alt="No Document"
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = avtar;
+        }}
+        style={{ width: "80px", marginRight: "8px" }}
+      />
+    ))
+  ) : (
+    <img
+      src={avtar}
+      alt="No Document"
+      style={{ width: "80px" }}
+    />
+  )}
                       </div>
                     </div>
                   </div>
@@ -220,7 +264,7 @@ export default function EnquiryDetail() {
                           alt="No Document"
                         /> */}
                         <img
-                          src={row.patient_Profile ? `${image}${row.patient_Profile}` : `${avtar}`}
+                          src={row.patient_Profile ? `${imageUrl}${row.patient_Profile}` : `${avtar}`}
                           alt="No Document"
                           onError={(e) => {
                             e.target.onerror = null;
@@ -290,7 +334,7 @@ export default function EnquiryDetail() {
                           <label>Attendant Id<span className="text-danger">*</span></label>
                           <div className="imgid-main">
                             <img
-                              src={`${image}${row.patient_relation_id}`}
+                              src={`${imageUrl}${row.patient_relation_id}`}
                               alt="No Document" />
                           </div>
                         </div>

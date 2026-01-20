@@ -91,12 +91,22 @@ export default function Inquiry() {
     dispatch(GetAllEnquiry());
     console.log(error, Enquiry);
   }, [dispatch]);
+  // useEffect(() => {
+  //   if (Enquiry) {
+  //     setRows(Enquiry);
+  //     setSearchApiData(Enquiry);
+  //   }
+  // }, [Enquiry]);
   useEffect(() => {
-    if (Enquiry) {
-      setRows(Enquiry);
-      setSearchApiData(Enquiry);
-    }
-  }, [Enquiry]);
+  if (Enquiry) {
+    const filtered = Enquiry.filter(
+      (item) => item.Enquiry_status !== "Confirmed"
+    );
+    setRows(filtered);
+    setSearchApiData(filtered);
+  }
+}, [Enquiry]);
+
   console.log(searchApiData);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -115,24 +125,50 @@ export default function Inquiry() {
       },
     });
   };
+
   const handleChange = async (event, id) => {
-    const { value } = event.target;
-    setSeekerStatus((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-    try {
-      const result = await dispatch(
-        EnquiryStatus({ id, status: Number(value) })
-      ).unwrap();
-      Swal.fire("Success!", "Status updated successfully!", "success");
-      setTimeout(async () => {
-        await dispatch(GetAllEnquiry()).unwrap();
-      }, 500);
-    } catch (err) {
-      Swal.fire("Error!", err?.message || "An error occurred", "error");
-    }
-  };
+  const { value } = event.target;
+
+  setSeekerStatus((prev) => ({
+    ...prev,
+    [id]: value,
+  }));
+
+  try {
+    await dispatch(
+      EnquiryStatus({ id, status: Number(value) })
+    ).unwrap();
+
+    Swal.fire("Success!", "Status updated successfully!", "success");
+
+    // 🔥 REMOVE ROW LOCALLY
+    setRows((prevRows) =>
+      prevRows.filter((item) => item.enquiryId !== id)
+    );
+
+  } catch (err) {
+    Swal.fire("Error!", err?.message || "An error occurred", "error");
+  }
+};
+
+  // const handleChange = async (event, id) => {
+  //   const { value } = event.target;
+  //   setSeekerStatus((prev) => ({
+  //     ...prev,
+  //     [id]: value,
+  //   }));
+  //   try {
+  //     const result = await dispatch(
+  //       EnquiryStatus({ id, status: Number(value) })
+  //     ).unwrap();
+  //     Swal.fire("Success!", "Status updated successfully!", "success");
+  //     setTimeout(async () => {
+  //       await dispatch(GetAllEnquiry()).unwrap();
+  //     }, 500);
+  //   } catch (err) {
+  //     Swal.fire("Error!", err?.message || "An error occurred", "error");
+  //   }
+  // };
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_enquiries`, {

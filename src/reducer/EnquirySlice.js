@@ -189,6 +189,7 @@ export const EnquiryStatus = createAsyncThunk(
       if (!token) {
         throw new Error("Authorization token is missing");
       }
+      console.log(object)
       const response = await axios.post(
         `${baseurl}update_Enquiry_status/${object.id}`,
         { status: object.status }, // Ensure you're passing the correct payload
@@ -199,6 +200,7 @@ export const EnquiryStatus = createAsyncThunk(
           },
         }
       );
+      console.log(response.data)
       return response.data; // Success response
     } catch (err) {
       console.error(

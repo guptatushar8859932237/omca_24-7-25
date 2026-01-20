@@ -12,7 +12,6 @@ import { useLocation } from "react-router-dom";
 import { baseurl,AdminBaseUrl, baseu11 } from "../../Basurl/Baseurl";
 import axios from "axios";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -103,13 +102,11 @@ export default function AddPatientTreatment() {
                   const result = await dispatch(
                     AddTretmentForPatient(values)
                   ).unwrap();
-
                   Swal.fire("Treatment added successfully!", "", "success");
                   navigate("/Admin/Patient-Detail", {
                     state: { patientId: location?.state?.patient },
                   });
                 } catch (err) {
-                  // patientId
                   console.error("Submission Error:", err);
                   Swal.fire(
                     "Error!",
@@ -235,7 +232,7 @@ export default function AddPatientTreatment() {
                           renderInput={(params) => (
                             <TextField {...params} label="Select Services" />
                           )}
-                          value={personName} // Display the selected names
+                          value={personName}
                           size="small"
                           sx={{
                             "& .MuiOutlinedInput-root": {

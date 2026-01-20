@@ -6,16 +6,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
-import {FormControl, MenuItem, OutlinedInput, Select} from "@mui/material";
-import { image } from "../../Basurl/Baseurl";
+import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
+import { image, imageUrl } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
-import avtar from "../../img/avtarImg.jpg"
+import avtar from "../../img/avtarImg.jpg";
 export default function EditEnquiry() {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const { Enquiry, loading } = useSelector((state) => state.Enquiry);
-   const { Treatment, error } = useSelector((state) => state.Treatment);
+  const { Treatment, error } = useSelector((state) => state.Treatment);
   const { Countries } = useSelector((state) => state.Countries);
   const [editenquiry, setEnquiry] = useState("");
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function EditEnquiry() {
   useEffect(() => {
     if (location.state?.enquiryId && Enquiry.length > 0) {
       const selectedUser = Enquiry.find(
-        (item) => item.enquiryId === location.state.enquiryId
+        (item) => item.enquiryId === location.state.enquiryId,
       );
       console.log(selectedUser);
       setEnquiry(selectedUser || {});
@@ -42,8 +42,7 @@ export default function EditEnquiry() {
     emergency_contact_no: Yup.string()
       .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
       .required("Phone number is required"),
-    passport_num: Yup.string()
-      .required("Passport number is required"),
+    passport_num: Yup.string().required("Passport number is required"),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
       .required("Gender is required"),
@@ -79,6 +78,11 @@ export default function EditEnquiry() {
                   email: editenquiry?.email || "",
                   gender: editenquiry?.gender || "",
                   dial_code: editenquiry?.phoneCode || "",
+                  has_relation: !!(
+                    editenquiry?.patient_relation_name ||
+                    editenquiry?.patient_relation ||
+                    editenquiry?.patient_relation_no
+                  ),
                   emergency_contact_no: editenquiry?.emergency_contact || "",
                   patient_relation_name:
                     editenquiry?.patient_relation_name || "",
@@ -129,7 +133,7 @@ export default function EditEnquiry() {
                       EditEnquiryType({
                         id: editenquiry.enquiryId,
                         formData,
-                      })
+                      }),
                     ).unwrap();
 
                     Swal.fire("Enquiry updated successfully!", "", "success");
@@ -138,19 +142,20 @@ export default function EditEnquiry() {
                     Swal.fire(
                       "Error!",
                       err?.message || "An error occurred",
-                      "error"
+                      "error",
                     );
                   }
                   setSubmitting(false);
                 }}
               >
-                {({ isSubmitting, setFieldValue }) => (
+                {({ values, isSubmitting, setFieldValue }) => (
                   <Form encType="multipart/form-data">
                     <div className="row">
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Passport Number<span className="text-danger">*</span>
+                            Passport Number
+                            <span className="text-danger">*</span>
                           </label>
                           <Field
                             className="form-control"
@@ -216,15 +221,18 @@ export default function EditEnquiry() {
                         </div>
                       </div>
                       <div className="col-sm-6 d-flex">
-                           <div className="field-set col-3">
+                        <div className="field-set col-3">
                           <label>
                             Dial Code<span className="text-danger">*</span>
                           </label>
-                          <Field className="form-control" disabled name="dial_code" />
+                          <Field
+                            className="form-control"
+                            disabled
+                            name="dial_code"
+                          />
                           <ErrorMessage
                             name="dial_code"
                             component="div"
-                            
                             style={{ color: "red" }}
                           />
                         </div>
@@ -245,23 +253,23 @@ export default function EditEnquiry() {
                         </div>
                       </div>
                       <div className="col-sm-6 d-flex">
-                           <div className="field-set col-3">
+                        <div className="field-set col-3">
                           <label>
                             Dial Code<span className="text-danger">*</span>
                           </label>
-                          <Field className="form-control" disabled name="dial_code" />
+                          <Field
+                            className="form-control"
+                            disabled
+                            name="dial_code"
+                          />
                           <ErrorMessage
                             name="dial_code"
                             component="div"
-                            
                             style={{ color: "red" }}
                           />
                         </div>
                         <div className="field-set col-9">
-                          <label>
-                            Emergency Contact No
-
-                          </label>
+                          <label>Emergency Contact No</label>
                           <Field
                             className="form-control"
                             name="patient_emergency_contact_no"
@@ -289,33 +297,32 @@ export default function EditEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Disease Name<span className="text-danger">*</span>
+                            Treatment name<span className="text-danger">*</span>
                           </label>
                           <Autocomplete
-                                                 disablePortal
-                                                 options={
-                                                   Treatment?.map((job) => job.course_name) || []
-                                                 }
-                                                 onChange={async (e, value) => {
-                                                   const selectedCourse = Treatment?.find(
-                                                     (job) => job.course_name === value
-                                                   );
-                                                   const courseId = selectedCourse
-                                                     ? selectedCourse.course_id
-                                                     : null;
-                                                   setFieldValue("treatment_course_id", courseId);
-                                                 
-                                                 }}
-                                                 renderInput={(params) => <TextField {...params} />}
-                                                 sx={{
-                                                   "& .MuiOutlinedInput-root": {
-                                                     padding: "0px",
-                                                     "&:hover fieldset": {
-                                                       borderColor: "#ced4da",
-                                                     },
-                                                   },
-                                                 }}
-                                               />
+                            disablePortal
+                            options={
+                              Treatment?.map((job) => job.course_name) || []
+                            }
+                            onChange={async (e, value) => {
+                              const selectedCourse = Treatment?.find(
+                                (job) => job.course_name === value,
+                              );
+                              const courseId = selectedCourse
+                                ? selectedCourse.course_id
+                                : null;
+                              setFieldValue("treatment_course_id", courseId);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                padding: "0px",
+                                "&:hover fieldset": {
+                                  borderColor: "#ced4da",
+                                },
+                              },
+                            }}
+                          />
                         </div>
                       </div>
                       <div className="col-sm-6">
@@ -377,13 +384,13 @@ export default function EditEnquiry() {
                                   value={field.value}
                                   onChange={(e) => {
                                     const selected = Countries.find(
-                                      (c) => c.name === e.target.value
+                                      (c) => c.name === e.target.value,
                                     );
 
                                     setFieldValue("country", e.target.value);
                                     setFieldValue(
                                       "dial_code",
-                                      selected?.dial_code || ""
+                                      selected?.dial_code || "",
                                     );
                                   }}
                                   input={
@@ -430,9 +437,7 @@ export default function EditEnquiry() {
                           </Field>
                         </div>
                       </div>
-                      <div className="col-sm-6">
-                     
-                      </div>
+                      <div className="col-sm-6"></div>
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
@@ -510,8 +515,49 @@ export default function EditEnquiry() {
                           />
                           <div className="imgid-main mt-1">
                             <img
-
-                              src={editenquiry.patient_id_proof ? `${image}${editenquiry.patient_id_proof}` : `${avtar}`}
+                              src={
+                                editenquiry.patient_id_proof
+                                  ? `${imageUrl}${editenquiry.patient_id_proof}`
+                                  : `${avtar}`
+                              }
+                              alt=".."
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = `${avtar}`;
+                              }}
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="patient_id_proof"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                        <div className="field-set">
+                          <label>
+                            Patient Profile
+                            {/* <span className="text-danger">*</span> */}
+                          </label>
+                          <input
+                            className="form-control"
+                            type="file"
+                            name="patient_Profile"
+                            accept="image/*,application/pdf"
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.currentTarget.files);
+                              setFieldValue("patient_Profile", files);
+                            }}
+                          />
+                          <div className="imgid-main mt-1">
+                            <img
+                              src={
+                                editenquiry.patient_Profile
+                                  ? `${imageUrl}${editenquiry.patient_Profile}`
+                                  : `${avtar}`
+                              }
                               alt=".."
                               onError={(e) => {
                                 e.target.onerror = null;
@@ -540,13 +586,17 @@ export default function EditEnquiry() {
                             onChange={(e) =>
                               setFieldValue(
                                 "patient_Profile",
-                                e.currentTarget.files[0]
+                                e.currentTarget.files[0],
                               )
                             }
                           />
                           <div className="imgid-main mt-1">
                             <img
-                              src={editenquiry.patient_Profile ? `${image}${editenquiry.patient_Profile}` : `${avtar}`}
+                              src={
+                                editenquiry.patient_Profile
+                                  ? `${imageUrl}${editenquiry.patient_Profile}`
+                                  : `${avtar}`
+                              }
                               alt=".."
                               onError={(e) => {
                                 e.target.onerror = null;
@@ -563,9 +613,7 @@ export default function EditEnquiry() {
                       </div>
                       <div className="col-sm-6">
                         <div className="field-set">
-                          <label>
-                            Referral Name
-                          </label>
+                          <label>Referral Name</label>
                           <Field
                             className="form-control"
                             name="Referral_Name"
@@ -578,122 +626,141 @@ export default function EditEnquiry() {
                         </div>
                       </div>
                     </div>
-
-                    <div className="treat-hd">
-                      <h6>Attendant Details</h6>
-                      <span className="line"></span>
-                    </div>
-                    <div className="row">
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Attendant Relation Name
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="patient_relation_name"
-                          />
-                          <ErrorMessage
-                            name="patient_relation_name"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Attendant Relation
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="patient_relation"
-                          />
-                          <ErrorMessage
-                            name="patient_relation"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Attendant Address
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="patient_relation_address"
-                          />
-                          <ErrorMessage
-                            name="patient_relation_address"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Attendant Relation Number
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="patient_relation_no"
-                          />
-                          <ErrorMessage
-                            name="patient_relation_no"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Attendant Relation ID
-                            <span className="text-danger">*</span>
-                          </label>
-                          <input
-                            className="form-control"
-                            type="file"
-                            name="relation_id"
-                            accept="image/*,application/pdf"
-                            onChange={(e) =>
-                              setFieldValue(
-                                "relation_id",
-                                e.currentTarget.files[0]
-                              )
-                            }
-                          />
-                          <div className="w-25 h-25 my-2">
-                            <img
-                              style={{ width: "25px", height: "25px" }}
-                              src={`${image}${editenquiry.patient_relation_id}`}
-                              alt=".."
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="relation_id"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
-                      <div className="">
-                        <button
-                          type="submit"
-                          className="submit-btn"
-                          disabled={isSubmitting || loading}
+                    <div className="col-sm-12">
+                      <div className="form-check mb-3">
+                        <Field
+                          type="checkbox"
+                          name="has_relation"
+                          className="form-check-input"
+                          id="hasRelation"
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="hasRelation"
                         >
-                          {loading ? "Submitting..." : "Submit"}
-                        </button>
+                          Add Attendant / Patient Relation Details
+                        </label>
                       </div>
                     </div>
+                    {values.has_relation && (
+                      <>
+                        <div className="treat-hd">
+                          <h6>Attendant Detail's</h6>
+                          <span className="line"></span>
+                        </div>
+                        <div className="row">
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                              Attendant Full Name
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation_name"
+                              />
+                              <ErrorMessage
+                                name="patient_relation_name"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                               Relationship with Patient
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation"
+                              />
+                              <ErrorMessage
+                                name="patient_relation"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                                Attendant Address
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation_address"
+                              />
+                              <ErrorMessage
+                                name="patient_relation_address"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                              Attendant Contact Number
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation_no"
+                              />
+                              <ErrorMessage
+                                name="patient_relation_no"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                               Attendant ID Proof
+                                <span className="text-danger">*</span>
+                              </label>
+                              <input
+                                className="form-control"
+                                type="file"
+                                name="relation_id"
+                                accept="image/*,application/pdf"
+                                onChange={(e) =>
+                                  setFieldValue(
+                                    "relation_id",
+                                    e.currentTarget.files[0],
+                                  )
+                                }
+                              />
+                              <div className="w-25 h-25 my-2">
+                                <img
+                                  style={{ width: "25px", height: "25px" }}
+                                  src={`${imageUrl}${editenquiry.patient_relation_id}`}
+                                  alt=".."
+                                />
+                              </div>
+                              <ErrorMessage
+                                name="relation_id"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
+                          </div>
+                          <div className="">
+                            <button
+                              type="submit"
+                              className="submit-btn"
+                              disabled={isSubmitting || loading}
+                            >
+                              {loading ? "Submitting..." : "Submit"}
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </Form>
                 )}
               </Formik>

@@ -93,6 +93,7 @@ function PatientDetail() {
   const [chkservice, setChkservice] = useState([]);
   const [blogErr, setBlogErr] = useState(false);
   const [appointErr, setAppointErr] = useState(false);
+  const [openNotes, setOpenNotes] = useState(false);
   const [kysErr, setKysErr] = useState(false);
   const [treatmentuser, setTreatmentuser] = useState([]);
   const [noteErr, setNoteErr] = useState(false);
@@ -163,6 +164,13 @@ function PatientDetail() {
   const handleClickOpen1 = (e, tretmentId, listhospital) => {
     console.log(e.target.value, treatmentId, listhospital);
     setOpen1(true);
+    setTreatmentId(tretmentId);
+    setIShospitalArray(listhospital);
+  };
+  const handleClickOpenNotes = (e, tretmentId, listhospital) => {
+    console.log(e.target.value, treatmentId, listhospital);
+    setOpen5(true)
+    setOpenNotes(true);
     setTreatmentId(tretmentId);
     setIShospitalArray(listhospital);
   };
@@ -681,7 +689,7 @@ const gettreatment11 =async()=>{
       return;
     }
     axios
-      .post(`${baseurl}add_notes/${location.state.enqId}`, {
+      .post(`${baseurl}add_notes/${treatmentId}`, {
         note: note2,
         date: date2,
       })
@@ -1144,11 +1152,11 @@ const handledelete = async (info, item) => {
                   Add Passport
                 </a>
               </li>
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <a className="nav-link" href="#bottom-tab3" data-toggle="tab">
                   Discussion Notes
                 </a>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <a className="nav-link" href="#bottom-tab4" data-toggle="tab">
                   Payment Details
@@ -1277,6 +1285,21 @@ const handledelete = async (info, item) => {
                                       <i className="fa fa-plus"></i>
                                     </span>{" "}
                                     Add Appointment
+                                  </button>
+                                  <button
+                                    onClick={(e) =>
+                                      handleClickOpenNotes(
+                                        e,
+                                        info?.treatment_id,
+                                        info?.Hospital_details
+                                      )
+                                    }
+                                    className="add-button1"
+                                  >
+                                    <span>
+                                      <i className="fa fa-plus"></i>
+                                    </span>{" "}
+                                    Add Notes
                                   </button>
                                 </div>
                               </div>

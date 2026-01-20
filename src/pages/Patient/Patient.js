@@ -460,7 +460,7 @@ export default function Patient() {
                             <MenuItem value="Confirmed">Confirmed</MenuItem>
                             <MenuItem value="Pending">Pending</MenuItem>
                             <MenuItem value="On Hold">On Hold</MenuItem>
-                            <MenuItem value="Cancel">Cancel</MenuItem>
+                            <MenuItem value="Cancelled">Cancelled</MenuItem>
                             <MenuItem value="Local Case">Local Case</MenuItem>
                             <MenuItem value="Follow Up">Follow Up</MenuItem>
                             <MenuItem value="Passed Away">Passed Away</MenuItem>
