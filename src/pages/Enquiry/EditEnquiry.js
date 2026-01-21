@@ -12,6 +12,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
 export default function EditEnquiry() {
   const dispatch = useDispatch();
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
   const location = useLocation();
   const navigate = useNavigate();
   const { Enquiry, loading } = useSelector((state) => state.Enquiry);
@@ -39,15 +40,50 @@ export default function EditEnquiry() {
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
     address: Yup.string().required("Address is required"),
-    emergency_contact_no: Yup.string()
-      .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
-      .required("Phone number is required"),
+    emergency_contact_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Phone number must be Digit and between 8-15 digits",
+    ),
+    // .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
+    // .required("Phone number is required"),
     passport_num: Yup.string().required("Passport number is required"),
+    patient_emergency_contact_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Emergency Contact must be Digit and between 8-15 digits",
+    ),
+    patient_relation_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Patient Relation Number must be Digit and between 8-15 digits",
+    ),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
       .required("Gender is required"),
     disease_name: Yup.string().required("Disease Name is required"),
     country: Yup.string().required("Country is required"),
+     patient_id_proof: Yup.array().test(
+    "fileSize",
+    "Each file must be less than 2 MB",
+    (files) => {
+      if (!files || files.length === 0) return true;
+      return files.every((file) => file.size <= MAX_FILE_SIZE);
+    }
+  ),
+  patient_Profile: Yup.mixed().test(
+    "fileSize",
+    "File size must be less than 2 MB",
+    (file) => {
+      if (!file) return true;
+      return file.size <= MAX_FILE_SIZE;
+    }
+  ),
+    relation_id: Yup.mixed().test(
+    "fileSize",
+    "File size must be less than 2 MB",
+    (file) => {
+      if (!file) return true;
+      return file.size <= MAX_FILE_SIZE;
+    }
+  ),
   });
   return (
     <div className="page-wrapper">
@@ -139,10 +175,7 @@ export default function EditEnquiry() {
                     Swal.fire("Enquiry updated successfully!", "", "success");
                     navigate("/Admin/Inquiry");
                   } catch (err) {
-                    Swal.fire(
-                      "Error!",
-                      err?.message || "An error occurred",
-                    );
+                    Swal.fire("Error!", err?.message || "An error occurred");
                   }
                   setSubmitting(false);
                 }}
@@ -299,20 +332,36 @@ export default function EditEnquiry() {
                             Treatment name<span className="text-danger">*</span>
                           </label>
                           <Autocomplete
-                            disablePortal
-                            options={
-                              Treatment?.map((job) => job.course_name) || []
+                            options={Treatment || []}
+                            getOptionLabel={(option) =>
+                              option.course_name || ""
                             }
-                            onChange={async (e, value) => {
-                              const selectedCourse = Treatment?.find(
-                                (job) => job.course_name === value,
+                            value={
+                              Treatment?.find(
+                                (item) =>
+                                  item.course_name === values.disease_name,
+                              ) || null
+                            }
+                            onChange={(e, value) => {
+                              setFieldValue(
+                                "disease_name",
+                                value?.course_name || "",
                               );
-                              const courseId = selectedCourse
-                                ? selectedCourse.course_id
-                                : null;
-                              setFieldValue("treatment_course_id", courseId);
+                              setFieldValue(
+                                "treatment_course_id",
+                                value?.course_id || null,
+                              );
                             }}
-                            renderInput={(params) => <TextField {...params} />}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                placeholder="Select Treatment"
+                                error={Boolean(
+                                  values.disease_name === "" &&
+                                  basicSchema?.fields?.disease_name,
+                                )}
+                              />
+                            )}
                             sx={{
                               "& .MuiOutlinedInput-root": {
                                 padding: "0px",
@@ -329,49 +378,6 @@ export default function EditEnquiry() {
                           <label>
                             Country<span className="text-danger">*</span>
                           </label>
-                          {/* <Field name="country">
-                            {({ field, form: { setFieldValue }, meta }) => (
-                              <FormControl
-                                fullWidth
-                                size="small"
-                                error={!!meta.touched && !!meta.error}
-                              >
-                                <InputLabel>Select Country</InputLabel>
-                                <Select
-                                  value={field.value}
-                                  onChange={(e) =>
-                                    setFieldValue("country", e.target.value)
-                                  }
-                                  input={
-                                    <OutlinedInput label="Select Country" />
-                                  }
-                                  displayEmpty
-                                  sx={{ height: 40 }}
-                                  MenuProps={{
-                                    PaperProps: {
-                                      style: {
-                                        maxHeight: 200,
-                                      },
-                                    },
-                                  }}
-                                >
-                                  <MenuItem value="">
-                                    <em>Select Country</em>
-                                  </MenuItem>
-                                  {Countries.map((country, i) => (
-                                    <MenuItem key={i} value={country.name}>
-                                      {country.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
-                                />
-                              </FormControl>
-                            )}
-                          </Field> */}
                           <Field name="country">
                             {({ field, form: { setFieldValue }, meta }) => (
                               <FormControl
@@ -408,24 +414,6 @@ export default function EditEnquiry() {
                                     </MenuItem>
                                   ))}
                                 </Select>
-                                {/* <Autocomplete
-                                  options={Countries || []}                  // Array of countries
-                                  getOptionLabel={(option) => option.name}   // Display country name
-                                  value={Countries.find(c => c.name === field.value) || null} // Current value
-                                  onChange={(event, newValue) => {
-                                    setFieldValue("country", newValue?.name || "");
-                                    setFieldValue("dial_code", newValue?.dial_code || "");
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      placeholder="Select Country"
-                                      variant="outlined"
-                                      size="small"
-                                    />
-                                  )}
-                                  isOptionEqualToValue={(option, value) => option.name === value.name}
-                                /> */}
                                 <ErrorMessage
                                   name="country"
                                   component="div"
@@ -498,8 +486,8 @@ export default function EditEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Patient Id Proof  accept only{" "}(.jpeg,.jpg,.png,.jfif,.pdf)
-                            {/* <span className="text-danger">*</span> */}
+                            Patient Id Proof accept only{" "}
+                            (.jpeg,.jpg,.png,.jfif,.pdf)
                           </label>
                           <input
                             className="form-control"
@@ -512,20 +500,31 @@ export default function EditEnquiry() {
                               setFieldValue("patient_id_proof", files);
                             }}
                           />
-                          <div className="imgid-main mt-1">
-                            <img
-                              src={
-                                editenquiry.patient_id_proof
-                                  ? `${imageUrl}${editenquiry.patient_id_proof}`
-                                  : `${avtar}`
-                              }
-                              alt=".."
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = `${avtar}`;
-                              }}
-                            />
+                          {/* <ErrorMessage name="patient_id_proof" /> */}
+                          <div className="imgid-main mt-1 d-flex gap-2 flex-wrap">
+                            {Array.isArray(editenquiry.patient_id_proof) &&
+                            editenquiry.patient_id_proof.length > 0 ? (
+                              editenquiry.patient_id_proof.map((img, index) => (
+                                <img
+                                  key={index}
+                                  src={`${imageUrl}${img}`}
+                                  alt={`patient-id-${index}`}
+                                  style={{
+                                    objectFit: "cover",
+                                    borderRadius: "8px",
+                                    border: "1px solid #ddd",
+                                  }}
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = avtar;
+                                  }}
+                                />
+                              ))
+                            ) : (
+                              <img src={avtar} alt="default" />
+                            )}
                           </div>
+
                           <ErrorMessage
                             name="patient_id_proof"
                             component="div"
@@ -536,8 +535,8 @@ export default function EditEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Patient Profile  accept only{" "}(.jpeg,.jpg,.png,.jfif,.pdf)
-                            {/* <span className="text-danger">*</span> */}
+                            Patient Profile accept only{" "}
+                            (.jpeg,.jpg,.png,.jfif,.pdf)
                           </label>
                           <input
                             className="form-control"
@@ -545,43 +544,10 @@ export default function EditEnquiry() {
                             name="patient_Profile"
                             accept="image/*,application/pdf"
                             multiple
-                            onChange={(e) => {
-                              const files = Array.from(e.currentTarget.files);
-                              setFieldValue("patient_Profile", files);
-                            }}
-                          />
-                          <div className="imgid-main mt-1">
-                            <img
-                              src={
-                                editenquiry.patient_Profile
-                                  ? `${imageUrl}${editenquiry.patient_Profile}`
-                                  : `${avtar}`
-                              }
-                              alt=".."
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = `${avtar}`;
-                              }}
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="patient_id_proof"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
-                      {/* <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Patient Profile
-                            {/* <span className="text-danger">*</span> */}
-                          {/* </label>
-                          <input
-                            className="form-control"
-                            type="file"
-                            name="patient_Profile"
-                            accept="image/*,application/pdf"
+                            // onChange={(e) => {
+                            //   const files = Array.from(e.currentTarget.files);
+                            //   setFieldValue("patient_Profile", files);
+                            // }}
                             onChange={(e) =>
                               setFieldValue(
                                 "patient_Profile",
@@ -602,14 +568,15 @@ export default function EditEnquiry() {
                                 e.target.src = `${avtar}`;
                               }}
                             />
+                          {/* <ErrorMessage name="patient_Profile" /> */}
                           </div>
                           <ErrorMessage
-                            name="patient_id_proof"
+                            name="patient_Profile"
                             component="div"
                             className="text-danger"
                           />
                         </div>
-                      </div> */} 
+                      </div>
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>Referral Name</label>
@@ -651,7 +618,7 @@ export default function EditEnquiry() {
                           <div className="col-sm-6">
                             <div className="field-set">
                               <label>
-                              Attendant Full Name
+                                Attendant Full Name
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
@@ -668,7 +635,7 @@ export default function EditEnquiry() {
                           <div className="col-sm-6">
                             <div className="field-set">
                               <label>
-                               Relationship with Patient
+                                Relationship with Patient
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
@@ -702,7 +669,7 @@ export default function EditEnquiry() {
                           <div className="col-sm-6">
                             <div className="field-set">
                               <label>
-                              Attendant Contact Number
+                                Attendant Contact Number
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
@@ -719,7 +686,7 @@ export default function EditEnquiry() {
                           <div className="col-sm-6">
                             <div className="field-set">
                               <label>
-                               Attendant ID Proof {" "}(.jpeg,.jpg,.png,.jfif,.pdf)
+                                Attendant ID Proof (.jpeg,.jpg,.png,.jfif,.pdf)
                                 <span className="text-danger">*</span>
                               </label>
                               <input
@@ -741,6 +708,7 @@ export default function EditEnquiry() {
                                   alt=".."
                                 />
                               </div>
+                              {/* <ErrorMessage name="relation_id" /> */}
                               <ErrorMessage
                                 name="relation_id"
                                 component="div"
@@ -748,19 +716,18 @@ export default function EditEnquiry() {
                               />
                             </div>
                           </div>
-                      
                         </div>
                       </>
                     )}
-                        <div className="">
-                            <button
-                              type="submit"
-                              className="submit-btn"
-                              disabled={isSubmitting || loading}
-                            >
-                              {loading ? "Submitting..." : "Submit"}
-                            </button>
-                          </div>
+                    <div className="">
+                      <button
+                        type="submit"
+                        className="submit-btn"
+                        disabled={isSubmitting || loading}
+                      >
+                        {loading ? "Submitting..." : "Submit"}
+                      </button>
+                    </div>
                   </Form>
                 )}
               </Formik>

@@ -29,12 +29,16 @@ export default function AddEnquiry() {
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
     emergency_contact_no: Yup.string()
-      .matches(/^[0-9]{8,15}$/, "Phone number must be 8-15 digits")
+      .matches(/^[0-9]{8,15}$/, "Phone number must be Digit and between 8-15 digits")
       .required("Phone number is required"),
     passport_num: Yup.string().required("Passport is required"),
     patient_emergency_contact_no: Yup.string().matches(
       /^[0-9]{8,15}$/,
-      "Emergency Contact must be 8-15 digits"
+      "Emergency Contact must be Digit and between 8-15  digits"
+    ),
+    patient_relation_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Patient Relation Number must be Digit and between 8-15 digits"
     ),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"])
