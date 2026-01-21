@@ -131,7 +131,7 @@ export default function EnquiryDetail() {
                       <input
                         class="form-control"
                         type="text"
-                        value={row.dial_code}
+                        value={row.phoneCode}
                         readonly=""
                       />
                     </div>
@@ -287,7 +287,7 @@ export default function EnquiryDetail() {
                     <div className="row">
                       <div className="col-md-6">
                         <div className="field-set">
-                          <label>Attendant Relation<span className="text-danger">*</span></label>
+                          <label>Relationship with Patient<span className="text-danger"></span></label>
                           <input
                             class="form-control"
                             type="text"
@@ -298,7 +298,7 @@ export default function EnquiryDetail() {
                       </div>
                       <div className="col-md-6">
                         <div className="field-set">
-                          <label>Attendant Relation Name<span className="text-danger">*</span></label>
+                          <label>Attendant Full Name<span className="text-danger"></span></label>
                           <input
                             class="form-control"
                             type="text"
@@ -309,7 +309,7 @@ export default function EnquiryDetail() {
                       </div>
                       <div className="col-md-6">
                         <div className="field-set">
-                          <label>Attendant Address<span className="text-danger">*</span></label>
+                          <label>Attendant Address<span className="text-danger"></span></label>
                           <input
                             class="form-control"
                             type="text"
@@ -320,7 +320,7 @@ export default function EnquiryDetail() {
                       </div>
                       <div className="col-md-6">
                         <div className="field-set">
-                          <label>Attendant Relation Number<span className="text-danger">*</span></label>
+                          <label>Attendant Contact Number<span className="text-danger"></span></label>
                           <input
                             class="form-control"
                             type="text"
@@ -331,7 +331,7 @@ export default function EnquiryDetail() {
                       </div>
                       <div className="col-md-6">
                         <div className="field-set">
-                          <label>Attendant Id<span className="text-danger">*</span></label>
+                          <label>Attendant ID Proof<span className="text-danger"></span></label>
                           <div className="imgid-main">
                             <img
                               src={`${imageUrl}${row.patient_relation_id}`}

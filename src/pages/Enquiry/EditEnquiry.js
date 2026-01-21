@@ -621,7 +621,7 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Full Name
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -638,7 +638,7 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Relationship with Patient
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -655,7 +655,7 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Address
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -672,7 +672,7 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Contact Number
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -689,7 +689,7 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant ID Proof (.jpeg,.jpg,.png,.jfif,.pdf)
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <input
                                 className="form-control"

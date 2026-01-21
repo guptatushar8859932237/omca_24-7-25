@@ -50,7 +50,14 @@ export default function EditPatient() {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    emergency_contact_no: Yup.string().required("Contact number is required"),
+    emergency_contact_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Emergency Contact Number be Digit and between 8-15 digits",
+    ).required("Contact number is required"),
+    patient_relation_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Patient Relation Number be Digit and between 8-15 digits",
+    ),
     country: Yup.string().required("Country is required"),
   });
   if (!ispatient) return <div>Loading...</div>;
@@ -89,12 +96,19 @@ export default function EditPatient() {
                       : "",
                     emergency_contact_no: ispatient?.emergency_contact || "",
                     country: ispatient?.country || "",
-                    patient_relation: ispatient?.patient_relation || "",
-                    patient_relation_no:
-                      ispatient?.patient_relation_no || "",
+                    // patient_relation: ispatient?.patient_relation || "",
+                    // patient_relation_no:
+                    //   ispatient?.patient_relation_no || "",
                     patientNumber: ispatient?.patientNumber || "",
                     Referral_Name: ispatient?.Referral_Name || "",
-                    patient_relation_name: ispatient?.patient_relation_name || "",
+                    // patient_relation_name: ispatient?.patient_relation_name || "",
+                    has_relation: !!ispatient?.patient_relation_name,
+
+                  patient_relation_name:
+                    ispatient?.patient_relation_name || "",
+                  patient_relation: ispatient?.patient_relation || "",
+                  patient_relation_no:
+                    ispatient?.patient_relation_no || "",
                   }}
                   validationSchema={basicSchema}
                   onSubmit={async (values, { setSubmitting }) => {
@@ -119,7 +133,7 @@ export default function EditPatient() {
                     setSubmitting(false);
                   }}
                 >
-                  {({ isSubmitting }) => (
+                  {({ isSubmitting,values }) => (
                     <Form>
                       <div className="row">
                         <div className="col-sm-6">
@@ -356,14 +370,89 @@ export default function EditPatient() {
                           />
 
                         </div>
+ <div className="col-sm-12 mt-3">
+                        <div className="form-check">
+                          <Field
+                            type="checkbox"
+                            name="has_relation"
+                            className="form-check-input"
+                            id="hasRelation"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="hasRelation"
+                          >
+                            Has Attendant / Patient Relation
+                          </label>
+                        </div>
+                      </div>
 
-
-                        <div className="treat-hd">
+                        {/* <div className="treat-hd">
                           <h6>Attendant Details</h6>
                           <span className="line"></span>
-                        </div>
+                        </div> */}
+ {values.has_relation && (
+                        <>
+                          <div className="treat-hd mt-3">
+                            <h6>Attendant Details</h6>
+                            <span className="line"></span>
+                          </div>
 
-                        <div className="col-sm-6">
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                                Relation Name{" "}
+                                <span className="text-danger"></span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation_name"
+                              />
+                              <ErrorMessage
+                                name="patient_relation_name"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                                Relation <span className="text-danger"></span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation"
+                              />
+                              <ErrorMessage
+                                name="patient_relation"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-sm-6">
+                            <div className="field-set">
+                              <label>
+                                Relation Number{" "}
+                                <span className="text-danger"></span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation_no"
+                              />
+                              <ErrorMessage
+                                name="patient_relation_no"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
+                        {/* <div className="col-sm-6">
                           <div className="field-set">
                             <label>
                               Patient Relation Name{" "}
@@ -437,7 +526,7 @@ export default function EditPatient() {
                             />
                           </div>
                         </div>
-                      </div>
+                      </div> */}
 
                       <div className="">
                         <button
@@ -448,6 +537,7 @@ export default function EditPatient() {
                           Submit
                         </button>
                       </div>
+                  </div>
                     </Form>
                   )}
                 </Formik>

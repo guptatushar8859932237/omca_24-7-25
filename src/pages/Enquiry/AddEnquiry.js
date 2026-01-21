@@ -569,8 +569,8 @@ export default function AddEnquiry() {
                           <div className="col-sm-6">
                             <div className="field-set">
                               <label>
-                                Attendant Name
-                                <span className="text-danger">*</span>
+                               Attendant Full Name
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -586,8 +586,8 @@ export default function AddEnquiry() {
                           <div className="col-sm-6">
                             <div className="field-set">
                               <label>
-                                Attendant Relation
-                                <span className="text-danger">*</span>
+                               Relationship with Patient
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -603,8 +603,8 @@ export default function AddEnquiry() {
                           <div className="col-sm-6">
                             <div className="field-set">
                               <label>
-                                Attendant Id{" "}accept only(.jpeg,.jpg,.png,.jfif,.pdf)
-                                <span className="text-danger">*</span>
+                               Attendant ID Proof{" "}accept only(.jpeg,.jpg,.png,.jfif,.pdf)
+                                <span className="text-danger"></span>
                               </label>
                               <input
                                 className="form-control"
@@ -647,7 +647,7 @@ export default function AddEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Address
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -664,8 +664,8 @@ export default function AddEnquiry() {
                             <div className="field-set">
                               <label>
                                 {" "}
-                                Attendant Contact
-                                <span className="text-danger">*</span>
+                             Attendant Contact Number
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
