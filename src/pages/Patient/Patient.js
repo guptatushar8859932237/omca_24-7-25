@@ -723,8 +723,8 @@ export default function Patient() {
                                             <MenuItem value="On Hold">
                                               On Hold
                                             </MenuItem>
-                                            <MenuItem value="Cancel">
-                                              Cancel
+                                            <MenuItem value="Cancelled">
+                                              Cancelled
                                             </MenuItem>
                                             <MenuItem value="Local Case">
                                               Local Case

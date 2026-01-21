@@ -370,7 +370,7 @@ export default function AddEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Notes<span className="text-danger">*</span>
+                            Notes<span className="text-danger"></span>
                           </label>
                           <Field className="form-control" name="Notes" />
                           <ErrorMessage
@@ -428,7 +428,7 @@ export default function AddEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Patient I’d Proof{" "}
+                            Patient I’d Proof{" "}accept only(.jpeg,.jpg,.png,.jfif,.pdf)
                             <span className="text-danger"> </span>
                           </label>
                           <input
@@ -476,7 +476,7 @@ export default function AddEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Patient Profile{" "}
+                            Patient Profile{" "}accept only(.jpeg,.jpg,.png,.jfif,.pdf)
                             <span className="text-danger"> </span>
                           </label>
                           <input
@@ -599,7 +599,7 @@ export default function AddEnquiry() {
                           <div className="col-sm-6">
                             <div className="field-set">
                               <label>
-                                Attendant Id{" "}
+                                Attendant Id{" "}accept only(.jpeg,.jpg,.png,.jfif,.pdf)
                                 <span className="text-danger">*</span>
                               </label>
                               <input

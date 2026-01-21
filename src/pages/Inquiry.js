@@ -97,15 +97,19 @@ export default function Inquiry() {
   //     setSearchApiData(Enquiry);
   //   }
   // }, [Enquiry]);
-  useEffect(() => {
-  if (Enquiry) {
+useEffect(() => {
+  if (Array.isArray(Enquiry) && Enquiry.length > 0) {
     const filtered = Enquiry.filter(
       (item) => item.Enquiry_status !== "Confirmed"
     );
     setRows(filtered);
     setSearchApiData(filtered);
+  } else {
+    setRows([]);
+    setSearchApiData([]);
   }
 }, [Enquiry]);
+
 
   console.log(searchApiData);
   const handleChangePage = (event, newPage) => {
@@ -145,7 +149,7 @@ export default function Inquiry() {
     setRows((prevRows) =>
       prevRows.filter((item) => item.enquiryId !== id)
     );
-
+ dispatch(GetAllEnquiry());
   } catch (err) {
     Swal.fire("Error!", err?.message || "An error occurred", "error");
   }

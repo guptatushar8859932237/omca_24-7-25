@@ -142,7 +142,6 @@ export default function EditEnquiry() {
                     Swal.fire(
                       "Error!",
                       err?.message || "An error occurred",
-                      "error",
                     );
                   }
                   setSubmitting(false);
@@ -499,7 +498,7 @@ export default function EditEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Patient Id Proof
+                            Patient Id Proof  accept only{" "}(.jpeg,.jpg,.png,.jfif,.pdf)
                             {/* <span className="text-danger">*</span> */}
                           </label>
                           <input
@@ -537,7 +536,7 @@ export default function EditEnquiry() {
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>
-                            Patient Profile
+                            Patient Profile  accept only{" "}(.jpeg,.jpg,.png,.jfif,.pdf)
                             {/* <span className="text-danger">*</span> */}
                           </label>
                           <input
@@ -572,12 +571,12 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      {/* <div className="col-sm-6">
                         <div className="field-set">
                           <label>
                             Patient Profile
                             {/* <span className="text-danger">*</span> */}
-                          </label>
+                          {/* </label>
                           <input
                             className="form-control"
                             type="file"
@@ -610,7 +609,7 @@ export default function EditEnquiry() {
                             className="text-danger"
                           />
                         </div>
-                      </div>
+                      </div> */} 
                       <div className="col-sm-6">
                         <div className="field-set">
                           <label>Referral Name</label>
@@ -720,7 +719,7 @@ export default function EditEnquiry() {
                           <div className="col-sm-6">
                             <div className="field-set">
                               <label>
-                               Attendant ID Proof
+                               Attendant ID Proof {" "}(.jpeg,.jpg,.png,.jfif,.pdf)
                                 <span className="text-danger">*</span>
                               </label>
                               <input
@@ -749,7 +748,11 @@ export default function EditEnquiry() {
                               />
                             </div>
                           </div>
-                          <div className="">
+                      
+                        </div>
+                      </>
+                    )}
+                        <div className="">
                             <button
                               type="submit"
                               className="submit-btn"
@@ -758,9 +761,6 @@ export default function EditEnquiry() {
                               {loading ? "Submitting..." : "Submit"}
                             </button>
                           </div>
-                        </div>
-                      </>
-                    )}
                   </Form>
                 )}
               </Formik>
