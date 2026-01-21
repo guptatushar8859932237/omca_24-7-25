@@ -472,7 +472,8 @@ export default function EditEnquiry() {
                                 name="gender"
                                 value="Others"
                                 className="form-check-input"
-                              />{" "}
+                              />
+                              {" "}
                               Others
                             </label>
                           </div>
@@ -530,6 +531,7 @@ export default function EditEnquiry() {
                             component="div"
                             className="text-danger"
                           />
+                          {/* saddam is a good boy */}
                         </div>
                       </div>
                       <div className="col-sm-6">
