@@ -7027,6 +7027,7 @@ input:checked + .slider:before {
   border-right: 0px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
+  background-color: #0fa3dd3b;
 }
 .code-in {
   border-left: 0px;
@@ -7043,6 +7044,16 @@ input:checked + .slider:before {
 }
 
 .bs-tooltip-right .tooltip-arrow::before {
-  border-right-color:var(--bs-text-color);
+  border-right-color: var(--bs-text-color);
 }
-
+.engpatimg img {
+  width: 50px;
+  height: 37px;
+  border: 1px solid var(--bs-text-color);
+  object-fit: cover;
+  border-radius: 5px;
+}
+.engpatimg {
+  display: flex;
+  gap: 8px;
+}

@@ -29,12 +29,16 @@ export default function AddEnquiry() {
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
     emergency_contact_no: Yup.string()
-      .matches(/^[0-9]{8,15}$/, "Phone number must be 8-15 digits")
+      .matches(/^[0-9]{8,15}$/, "Phone number must be Digit and between 8-15 digits")
       .required("Phone number is required"),
     passport_num: Yup.string().required("Passport is required"),
     patient_emergency_contact_no: Yup.string().matches(
       /^[0-9]{8,15}$/,
-      "Emergency Contact must be 8-15 digits"
+      "Emergency Contact must be Digit and between 8-15  digits"
+    ),
+    patient_relation_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Patient Relation Number must be Digit and between 8-15 digits"
     ),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"])
@@ -43,12 +47,27 @@ export default function AddEnquiry() {
   useEffect(() => {
     dispatch(GetAllTreatment());
   }, [dispatch]);
-  const tooltipTriggerList = document.querySelectorAll(
-    '[data-bs-toggle="tooltip"]'
-  );
-  [...tooltipTriggerList].map(
-    (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
-  );
+  useEffect(() => {
+    const initTooltips = () => {
+      if (!window.bootstrap) return;
+
+      const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+      );
+
+      tooltipTriggerList.forEach((el) => {
+        if (!el._tooltip) {
+          el._tooltip = new window.bootstrap.Tooltip(el, {
+            placement: el.getAttribute('data-bs-placement') || 'top', // fallback
+            trigger: 'hover focus'
+          });
+        }
+      });
+    };
+
+    setTimeout(initTooltips, 300);
+  }, [showAttendant, Countries, Treatment]);
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -147,7 +166,53 @@ export default function AddEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Name<span className="text-danger">*</span>
+                            {" "}
+                            Phone No / WhatsApp With Country Code
+                            <span className="text-danger">*</span>
+                          </label>
+                          <div className="country-code">
+                            <Field
+                              className="form-control code-dial"
+                              name="dial_code"
+                              disabled
+                            />
+                            <Field
+                              className="form-control code-in"
+                              name="emergency_contact_no"
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="emergency_contact_no"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Emergency Contact No With Country Code</label>
+                          <div className="country-code">
+                            <Field
+                              className="form-control code-dial"
+                              name="dial_code"
+                              disabled
+                            />
+                            <Field
+                              className="form-control code-in"
+                              name="patient_emergency_contact_no"
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="patient_emergency_contact_no"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Patient's Name <span className="text-danger">*</span>
                           </label>
                           <Field
                             className="form-control"
@@ -162,17 +227,45 @@ export default function AddEnquiry() {
                         </div>
                       </div>
                       <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Email<span className="text-danger">*</span>
+                        <div className="field-set gender-select">
+                          <label className="gen-label">
+                            Gender<span className="text-danger">*</span>
                           </label>
-                          <Field
-                            className="form-control"
-                            name="email"
-                            type="email"
-                          />
+                          <div className="form-check-inline">
+                            <label className="form-check-label">
+                              <Field
+                                type="radio"
+                                name="gender"
+                                value="Male"
+                                className="form-check-input"
+                              />{" "}
+                              Male
+                            </label>
+                          </div>
+                          <div className="form-check-inline">
+                            <label className="form-check-label">
+                              <Field
+                                type="radio"
+                                name="gender"
+                                value="Female"
+                                className="form-check-input"
+                              />{" "}
+                              Female
+                            </label>
+                          </div>
+                          <div className="form-check-inline">
+                            <label className="form-check-label">
+                              <Field
+                                type="radio"
+                                name="gender"
+                                value="Others"
+                                className="form-check-input"
+                              />{" "}
+                              Others
+                            </label>
+                          </div>
                           <ErrorMessage
-                            name="email"
+                            name="gender"
                             component="div"
                             className="text-danger"
                           />
@@ -198,11 +291,15 @@ export default function AddEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Address<span className="text-danger">*</span>
+                            Email<span className="text-danger">*</span>
                           </label>
-                          <Field className="form-control" name="address" />
+                          <Field
+                            className="form-control"
+                            name="email"
+                            type="email"
+                          />
                           <ErrorMessage
-                            name="address"
+                            name="email"
                             component="div"
                             className="text-danger"
                           />
@@ -257,109 +354,6 @@ export default function AddEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Treatment Name{" "}
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field name="disease_name">
-                            {({ form, meta }) => (
-                              <>
-                                <Autocomplete
-                                  options={Treatment || []}
-                                  getOptionLabel={(option) =>
-                                    option.course_name || ""
-                                  }
-                                  value={
-                                    Treatment?.find(
-                                      (item) =>
-                                        item.course_name ===
-                                        form.values.disease_name
-                                    ) || null
-                                  }
-                                  onChange={(e, newValue) => {
-                                    form.setFieldValue(
-                                      "disease_name",
-                                      newValue ? newValue.course_name : ""
-                                    );
-                                    form.setFieldValue(
-                                      "treatment_course_id",
-                                      newValue ? newValue.course_id : null
-                                    );
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      size="small"
-                                      placeholder="Select Disease"
-                                      error={
-                                        meta.touched && Boolean(meta.error)
-                                      }
-                                    />
-                                  )}
-                                  sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                      padding: "0px",
-                                    },
-                                  }}
-                                />
-                                {meta.touched && meta.error && (
-                                  <div className="text-danger">
-                                    {meta.error}
-                                  </div>
-                                )}
-                              </>
-                            )}
-                          </Field>
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            {" "}
-                            Phone No / WhatsApp With Country Code
-                            <span className="text-danger">*</span>
-                          </label>
-                          <div className="country-code">
-                            <Field
-                              className="form-control code-dial"
-                              name="dial_code"
-                              disabled
-                            />
-                            <Field
-                              className="form-control code-in"
-                              name="emergency_contact_no"
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="emergency_contact_no"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Emergency Contact No With Country Code</label>
-                          <div className="country-code">
-                            <Field
-                              className="form-control code-dial"
-                              name="dial_code"
-                              disabled
-                            />
-                            <Field
-                              className="form-control code-in"
-                              name="patient_emergency_contact_no"
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="patient_emergency_contact_no"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
                             Town<span className="text-danger">*</span>
                           </label>
                           <Field className="form-control" name="town" />
@@ -373,56 +367,11 @@ export default function AddEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Notes<span className="text-danger"></span>
+                            Address<span className="text-danger">*</span>
                           </label>
-                          <Field className="form-control" name="Notes" />
+                          <Field className="form-control" name="address" />
                           <ErrorMessage
-                            name="Notes"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set gender-select">
-                          <label className="gen-label">
-                            Gender<span className="text-danger">*</span>
-                          </label>
-                          <div className="form-check-inline">
-                            <label className="form-check-label">
-                              <Field
-                                type="radio"
-                                name="gender"
-                                value="Male"
-                                className="form-check-input"
-                              />{" "}
-                              Male
-                            </label>
-                          </div>
-                          <div className="form-check-inline">
-                            <label className="form-check-label">
-                              <Field
-                                type="radio"
-                                name="gender"
-                                value="Female"
-                                className="form-check-input"
-                              />{" "}
-                              Female
-                            </label>
-                          </div>
-                          <div className="form-check-inline">
-                            <label className="form-check-label">
-                              <Field
-                                type="radio"
-                                name="gender"
-                                value="Others"
-                                className="form-check-input"
-                              />{" "}
-                              Others
-                            </label>
-                          </div>
-                          <ErrorMessage
-                            name="gender"
+                            name="address"
                             component="div"
                             className="text-danger"
                           />
@@ -524,7 +473,7 @@ export default function AddEnquiry() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Referral Name</label>
+                          <label>Referral Name<span className="text-danger">*</span></label>
                           <Field
                             className="form-control"
                             name="Referral_Name"
@@ -534,6 +483,76 @@ export default function AddEnquiry() {
                             component="div"
                             className="text-danger"
                           />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Treatment Name{" "}
+                            <span className="text-danger">*</span>
+                          </label>
+                          <Field name="disease_name">
+                            {({ form, meta }) => (
+                              <>
+                                <Autocomplete
+                                  options={Treatment || []}
+                                  getOptionLabel={(option) =>
+                                    option.course_name || ""
+                                  }
+                                  value={
+                                    Treatment?.find(
+                                      (item) =>
+                                        item.course_name ===
+                                        form.values.disease_name
+                                    ) || null
+                                  }
+                                  onChange={(e, newValue) => {
+                                    form.setFieldValue(
+                                      "disease_name",
+                                      newValue ? newValue.course_name : ""
+                                    );
+                                    form.setFieldValue(
+                                      "treatment_course_id",
+                                      newValue ? newValue.course_id : null
+                                    );
+                                  }}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      size="small"
+                                      placeholder="Select Disease"
+                                      error={
+                                        meta.touched && Boolean(meta.error)
+                                      }
+                                    />
+                                  )}
+                                  sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                      padding: "0px",
+                                    },
+                                  }}
+                                />
+                                {meta.touched && meta.error && (
+                                  <div className="text-danger">
+                                    {meta.error}
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </Field>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Treating In<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" name="Notes" />
+                          {/* <ErrorMessage
+                            name="Notes"
+                            component="div"
+                            className="text-danger"
+                          /> */}
                         </div>
                       </div>
                     </div>
@@ -570,7 +589,7 @@ export default function AddEnquiry() {
                           <div className="col-md-4">
                             <div className="field-set">
                               <label>
-                                Attendant Name
+                                Attendant Full Name
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
@@ -587,7 +606,7 @@ export default function AddEnquiry() {
                           <div className="col-md-4">
                             <div className="field-set">
                               <label>
-                                Attendant Relation
+                                Relationship with Patient
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
@@ -603,9 +622,27 @@ export default function AddEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="field-set">
-                              <label>Attendant Id{" "}
-                                <span className="text-danger" data-bs-placement="right" data-bs-toggle="tooltip" title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
-                                  Max size: 2 MB per file">(i)</span>
+                              <label>
+                                {" "}
+                                Attendant Contact Number
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation_no"
+                              />
+                              <ErrorMessage
+                                name="patient_relation_no"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="field-set">
+                              <label>Attendant ID Proof{" "}
+                                <span className="text-danger" data-bs-toggle="tooltip" title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
+                                  Max size: 2 MB per file" data-bs-placement="right">(i)</span>
                               </label>
                               <input
                                 className="form-control"
@@ -648,7 +685,7 @@ export default function AddEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Address
-                                <span className="text-danger">*</span>
+                              <span className="text-danger">*</span>
                               </label>
                               <Field
                                 className="form-control"
@@ -656,24 +693,6 @@ export default function AddEnquiry() {
                               />
                               <ErrorMessage
                                 name="patient_relation_address"
-                                component="div"
-                                className="text-danger"
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-4">
-                            <div className="field-set">
-                              <label>
-                                {" "}
-                                Attendant Contact
-                                <span className="text-danger">*</span>
-                              </label>
-                              <Field
-                                className="form-control"
-                                name="patient_relation_no"
-                              />
-                              <ErrorMessage
-                                name="patient_relation_no"
                                 component="div"
                                 className="text-danger"
                               />

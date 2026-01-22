@@ -83,121 +83,51 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
+                      <label>Phone No / WhatsApp With Country Code
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="country-code">
+                        <input
+                          class="form-control code-dial"
+                          type="text"
+                          value={row.phoneCode}
+                          readonly=""
+                        />
+                        <input
+                          class="form-control code-in"
+                          type="text"
+                          value={row.emergency_contact_no}
+                          readonly=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Emergency Contact Number<span className="text-danger">*</span></label>
+                      <div className="country-code">
+                        <input
+                          class="form-control code-dial"
+                          type="text"
+                          value={row.phoneCode}
+                          readonly=""
+                        />
+                        <input
+                          class="form-control code-in"
+                          type="text"
+                          value={row.patient_emergency_contact_no}
+                          readonly=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
                       <label>Patient Name<span className="text-danger">*</span></label>
                       <input
                         class="form-control"
                         type="text"
                         value={row.name}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Enq status<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.enq_status}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Age<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.age}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Address<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.address}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Dial Code<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.dial_code}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Contact Number<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.emergency_contact_no}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Email<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.email}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Treatment Name<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.disease_name}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Emergency Contact Number</label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.patient_emergency_contact_no}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Town</label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.town}
-                        readonly=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Country<span className="text-danger">*</span></label>
-                      <input
-                        class="form-control"
-                        type="email"
-                        value={row.country}
                         readonly=""
                       />
                     </div>
@@ -215,7 +145,114 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Referral Name</label>
+                      <label>Age<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.age}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Enq status<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.enq_status}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Email<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.email}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Country<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="email"
+                        value={row.country}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Town<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.town}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Address<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.address}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Patient ID proof<span className="text-danger">*</span></label>
+                      <div className="engpatimg">
+                        {Array.isArray(row.patient_id_proof) && row.patient_id_proof.length > 0 ? (
+                          row.patient_id_proof.map((img, index) => (
+                            <img
+                              key={index}
+                              src={`${imageUrl}${img}`}
+                              alt="No Document"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = avtar;
+                              }}
+                            />
+                          ))
+                        ) : (
+                          <img
+                            src={avtar}
+                            alt="No Document"
+
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Patient Profile<span className="text-danger">*</span></label>
+                      <div className="engpatimg">
+                        <img
+                          src={row.patient_Profile ? `${imageUrl}${row.patient_Profile}` : `${avtar}`}
+                          alt="No Document"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `${avtar}`
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Referral Name<span className="text-danger">*</span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -226,52 +263,24 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Patient ID proof<span className="text-danger">*</span></label>
-                      <div className="imgid-main">
-                        {/* <img
-                          src={`${image}${row.patient_id_proof}`}
-                          alt="No Document"
-                        /> */}
-                       {Array.isArray(row.patient_id_proof) && row.patient_id_proof.length > 0 ? (
-    row.patient_id_proof.map((img, index) => (
-      <img
-        key={index}
-        src={`${imageUrl}${img}`}
-        alt="No Document"
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src = avtar;
-        }}
-        style={{  marginRight: "8px" }}
-      />
-    ))
-  ) : (
-    <img
-      src={avtar}
-      alt="No Document"
-     
-    />
-  )}
-                      </div>
+                      <label>Treatment Name<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.disease_name}
+                        readonly=""
+                      />
                     </div>
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Patient Profile<span className="text-danger">*</span></label>
-                      <div className="imgid-main">
-                        {/* <img
-                          src={`${image}${row.patient_Profile}`}
-                          alt="No Document"
-                        /> */}
-                        <img
-                          src={row.patient_Profile ? `${imageUrl}${row.patient_Profile}` : `${avtar}`}
-                          alt="No Document"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = `${avtar}`
-                          }}
-                        />
-                      </div>
+                      <label>Treating In<span className="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value=""
+                        readonly=""
+                      />
                     </div>
                   </div>
                 </div>
@@ -287,7 +296,18 @@ export default function EnquiryDetail() {
                     <div className="row">
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Attendant Relation<span className="text-danger">*</span></label>
+                          <label>Attendant Full Name<span className="text-danger">*</span></label>
+                          <input
+                            class="form-control"
+                            type="text"
+                            value={row.patient_relation_name}
+                            readonly=""
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Relationship with Patient<span className="text-danger">*</span></label>
                           <input
                             class="form-control"
                             type="text"
@@ -298,13 +318,21 @@ export default function EnquiryDetail() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Attendant Relation Name<span className="text-danger">*</span></label>
+                          <label>Attendant Contact Number<span className="text-danger">*</span></label>
                           <input
                             class="form-control"
                             type="text"
-                            value={row.patient_relation_name}
+                            value={row.patient_relation_no}
                             readonly=""
                           />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Attendant ID Proof<span className="text-danger">*</span></label>
+                          <div className="engpatimg">
+                            <img src={`${imageUrl}${row.patient_relation_id}`} alt="No Document" />
+                          </div>
                         </div>
                       </div>
                       <div className="col-md-4">
@@ -318,27 +346,8 @@ export default function EnquiryDetail() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Attendant Relation Number<span className="text-danger">*</span></label>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value={row.patient_relation_no}
-                            readonly=""
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Attendant Id<span className="text-danger">*</span></label>
-                          <div className="imgid-main">
-                            <img
-                              src={`${imageUrl}${row.patient_relation_id}`}
-                              alt="No Document" />
-                          </div>
-                        </div>
-                      </div>
+
+
                     </div> : ""
                 }
                 {

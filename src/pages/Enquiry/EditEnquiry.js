@@ -12,6 +12,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
 export default function EditEnquiry() {
   const dispatch = useDispatch();
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
   const location = useLocation();
   const navigate = useNavigate();
   const { Enquiry, loading } = useSelector((state) => state.Enquiry);
@@ -22,6 +23,7 @@ export default function EditEnquiry() {
     dispatch(GetAllCountries2());
     dispatch(GetAllEnquiry());
   }, [dispatch]);
+
   useEffect(() => {
     if (location.state?.enquiryId && Enquiry.length > 0) {
       const selectedUser = Enquiry.find(
@@ -39,16 +41,72 @@ export default function EditEnquiry() {
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
     address: Yup.string().required("Address is required"),
-    emergency_contact_no: Yup.string()
-      .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
-      .required("Phone number is required"),
+    emergency_contact_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Phone number must be Digit and between 8-15 digits",
+    ),
+    // .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
+    // .required("Phone number is required"),
     passport_num: Yup.string().required("Passport number is required"),
+    patient_emergency_contact_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Emergency Contact must be Digit and between 8-15 digits",
+    ),
+    patient_relation_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Patient Relation Number must be Digit and between 8-15 digits",
+    ),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
       .required("Gender is required"),
     disease_name: Yup.string().required("Disease Name is required"),
     country: Yup.string().required("Country is required"),
+    patient_id_proof: Yup.array().test(
+      "fileSize",
+      "Each file must be less than 2 MB",
+      (files) => {
+        if (!files || files.length === 0) return true;
+        return files.every((file) => file.size <= MAX_FILE_SIZE);
+      }
+    ),
+    patient_Profile: Yup.mixed().test(
+      "fileSize",
+      "File size must be less than 2 MB",
+      (file) => {
+        if (!file) return true;
+        return file.size <= MAX_FILE_SIZE;
+      }
+    ),
+    relation_id: Yup.mixed().test(
+      "fileSize",
+      "File size must be less than 2 MB",
+      (file) => {
+        if (!file) return true;
+        return file.size <= MAX_FILE_SIZE;
+      }
+    ),
   });
+  useEffect(() => {
+    const initTooltips = () => {
+      if (!window.bootstrap) return;
+
+      const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+      );
+
+      tooltipTriggerList.forEach((el) => {
+        if (!el._tooltip) {
+          el._tooltip = new window.bootstrap.Tooltip(el, {
+            placement: el.getAttribute('data-bs-placement') || 'top', // fallback
+            trigger: 'hover focus'
+          });
+        }
+      });
+    };
+
+    setTimeout(initTooltips, 300);
+  })
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -139,10 +197,7 @@ export default function EditEnquiry() {
                     Swal.fire("Enquiry updated successfully!", "", "success");
                     navigate("/Admin/Inquiry");
                   } catch (err) {
-                    Swal.fire(
-                      "Error!",
-                      err?.message || "An error occurred",
-                    );
+                    Swal.fire("Error!", err?.message || "An error occurred");
                   }
                   setSubmitting(false);
                 }}
@@ -150,7 +205,7 @@ export default function EditEnquiry() {
                 {({ values, isSubmitting, setFieldValue }) => (
                   <Form encType="multipart/form-data">
                     <div className="row">
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Passport Number
@@ -168,10 +223,56 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Name<span className="text-danger">*</span>
+                            {" "}
+                            Phone No / WhatsApp With Country Code
+                            <span className="text-danger">*</span>
+                          </label>
+                          <div className="country-code">
+                            <Field
+                              className="form-control code-dial"
+                              name="dial_code"
+                              disabled
+                            />
+                            <Field
+                              className="form-control code-in"
+                              name="emergency_contact_no"
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="dial_code"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Emergency Contact No With Country Code</label>
+                          <div className="country-code">
+                            <Field
+                              className="form-control code-dial"
+                              name="dial_code"
+                              disabled
+                            />
+                            <Field
+                              className="form-control code-in"
+                              name="patient_emergency_contact_no"
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="patient_emergency_contact_no"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Patient's Name<span className="text-danger">*</span>
                           </label>
                           <Field
                             className="form-control"
@@ -185,272 +286,7 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Email<span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="email"
-                            type="email"
-                          />
-                          <ErrorMessage
-                            name="email"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Age<span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="age"
-                            type="number"
-                          />
-                          <ErrorMessage
-                            name="age"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6 d-flex">
-                        <div className="field-set col-3">
-                          <label>
-                            Dial Code<span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            disabled
-                            name="dial_code"
-                          />
-                          <ErrorMessage
-                            name="dial_code"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                        <div className="field-set col-9">
-                          <label>
-                            Phone No (WhatsApp)
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="emergency_contact_no"
-                          />
-                          <ErrorMessage
-                            name="emergency_contact_no"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6 d-flex">
-                        <div className="field-set col-3">
-                          <label>
-                            Dial Code<span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            disabled
-                            name="dial_code"
-                          />
-                          <ErrorMessage
-                            name="dial_code"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                        <div className="field-set col-9">
-                          <label>Emergency Contact No</label>
-                          <Field
-                            className="form-control"
-                            name="patient_emergency_contact_no"
-                          />
-                          <ErrorMessage
-                            name="patient_emergency_contact_no"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Address<span className="text-danger">*</span>
-                          </label>
-                          <Field className="form-control" name="address" />
-                          <ErrorMessage
-                            name="address"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Treatment name<span className="text-danger">*</span>
-                          </label>
-                          <Autocomplete
-                            disablePortal
-                            options={
-                              Treatment?.map((job) => job.course_name) || []
-                            }
-                            onChange={async (e, value) => {
-                              const selectedCourse = Treatment?.find(
-                                (job) => job.course_name === value,
-                              );
-                              const courseId = selectedCourse
-                                ? selectedCourse.course_id
-                                : null;
-                              setFieldValue("treatment_course_id", courseId);
-                            }}
-                            renderInput={(params) => <TextField {...params} />}
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
-                                padding: "0px",
-                                "&:hover fieldset": {
-                                  borderColor: "#ced4da",
-                                },
-                              },
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Country<span className="text-danger">*</span>
-                          </label>
-                          {/* <Field name="country">
-                            {({ field, form: { setFieldValue }, meta }) => (
-                              <FormControl
-                                fullWidth
-                                size="small"
-                                error={!!meta.touched && !!meta.error}
-                              >
-                                <InputLabel>Select Country</InputLabel>
-                                <Select
-                                  value={field.value}
-                                  onChange={(e) =>
-                                    setFieldValue("country", e.target.value)
-                                  }
-                                  input={
-                                    <OutlinedInput label="Select Country" />
-                                  }
-                                  displayEmpty
-                                  sx={{ height: 40 }}
-                                  MenuProps={{
-                                    PaperProps: {
-                                      style: {
-                                        maxHeight: 200,
-                                      },
-                                    },
-                                  }}
-                                >
-                                  <MenuItem value="">
-                                    <em>Select Country</em>
-                                  </MenuItem>
-                                  {Countries.map((country, i) => (
-                                    <MenuItem key={i} value={country.name}>
-                                      {country.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
-                                />
-                              </FormControl>
-                            )}
-                          </Field> */}
-                          <Field name="country">
-                            {({ field, form: { setFieldValue }, meta }) => (
-                              <FormControl
-                                fullWidth
-                                size="small"
-                                error={!!meta.touched && !!meta.error}
-                              >
-                                <Select
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const selected = Countries.find(
-                                      (c) => c.name === e.target.value,
-                                    );
-
-                                    setFieldValue("country", e.target.value);
-                                    setFieldValue(
-                                      "dial_code",
-                                      selected?.dial_code || "",
-                                    );
-                                  }}
-                                  input={
-                                    <OutlinedInput label="Select Country" />
-                                  }
-                                  displayEmpty
-                                  sx={{ height: 40 }}
-                                >
-                                  <MenuItem value="">
-                                    <em>Select Country</em>
-                                  </MenuItem>
-
-                                  {Countries.map((country, i) => (
-                                    <MenuItem key={i} value={country.name}>
-                                      {country.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                {/* <Autocomplete
-                                  options={Countries || []}                  // Array of countries
-                                  getOptionLabel={(option) => option.name}   // Display country name
-                                  value={Countries.find(c => c.name === field.value) || null} // Current value
-                                  onChange={(event, newValue) => {
-                                    setFieldValue("country", newValue?.name || "");
-                                    setFieldValue("dial_code", newValue?.dial_code || "");
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      placeholder="Select Country"
-                                      variant="outlined"
-                                      size="small"
-                                    />
-                                  )}
-                                  isOptionEqualToValue={(option, value) => option.name === value.name}
-                                /> */}
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
-                                />
-                              </FormControl>
-                            )}
-                          </Field>
-                        </div>
-                      </div>
-                      <div className="col-sm-6"></div>
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>
-                            Town<span className="text-danger">*</span>
-                          </label>
-                          <Field className="form-control" name="town" />
-                          <ErrorMessage
-                            name="town"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set gender-select">
                           <label className="gen-label">
                             Gender<span className="text-danger">*</span>
@@ -484,7 +320,8 @@ export default function EditEnquiry() {
                                 name="gender"
                                 value="Others"
                                 className="form-check-input"
-                              />{" "}
+                              />
+                              {" "}
                               Others
                             </label>
                           </div>
@@ -495,62 +332,186 @@ export default function EditEnquiry() {
                           style={{ color: "red" }}
                         />
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Id Proof  accept only{" "}(.jpeg,.jpg,.png,.jfif,.pdf)
-                            {/* <span className="text-danger">*</span> */}
+                            Age<span className="text-danger">*</span>
                           </label>
-                          <input
+                          <Field
                             className="form-control"
-                            type="file"
-                            name="patient_id_proof"
-                            accept="image/*,application/pdf"
-                            multiple
-                            onChange={(e) => {
-                              const files = Array.from(e.currentTarget.files);
-                              setFieldValue("patient_id_proof", files);
-                            }}
+                            name="age"
+                            type="number"
                           />
-                          <div className="imgid-main mt-1">
-                            <img
-                              src={
-                                editenquiry.patient_id_proof
-                                  ? `${imageUrl}${editenquiry.patient_id_proof}`
-                                  : `${avtar}`
-                              }
-                              alt=".."
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = `${avtar}`;
+                          <ErrorMessage
+                            name="age"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Email<span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="email"
+                            type="email"
+                          />
+                          <ErrorMessage
+                            name="email"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Country<span className="text-danger">*</span>
+                          </label>
+                          <Field name="country">
+                            {({ field, form: { setFieldValue }, meta }) => (
+                              <FormControl
+                                fullWidth
+                                size="small"
+                                error={!!meta.touched && !!meta.error}
+                              >
+                                <Select
+                                  value={field.value}
+                                  onChange={(e) => {
+                                    const selected = Countries.find(
+                                      (c) => c.name === e.target.value,
+                                    );
+
+                                    setFieldValue("country", e.target.value);
+                                    setFieldValue(
+                                      "dial_code",
+                                      selected?.dial_code || "",
+                                    );
+                                  }}
+                                // input={
+                                //   <OutlinedInput label="Select Country" />
+                                // }
+                                // displayEmpty
+                                // sx={{ height: 40 }}
+                                >
+                                  <MenuItem value="">
+                                    <em>Select Country</em>
+                                  </MenuItem>
+
+                                  {Countries.map((country, i) => (
+                                    <MenuItem key={i} value={country.name}>
+                                      {country.name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                                <ErrorMessage
+                                  name="country"
+                                  component="div"
+                                  style={{ color: "red" }}
+                                />
+                              </FormControl>
+                            )}
+                          </Field>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Town<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" name="town" />
+                          <ErrorMessage
+                            name="town"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Address<span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" name="address" />
+                          <ErrorMessage
+                            name="address"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Patient Id Proof <span className="text-danger" data-bs-placement="right" data-bs-toggle="tooltip"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file">(i)</span>
+                          </label>
+                          <div className="engpatimg">
+                            <input
+                              className="form-control"
+                              type="file"
+                              name="patient_id_proof"
+                              accept="image/*,application/pdf"
+                              multiple
+                              onChange={(e) => {
+                                const files = Array.from(e.currentTarget.files);
+                                setFieldValue("patient_id_proof", files);
                               }}
                             />
+
+                            {Array.isArray(editenquiry.patient_id_proof) &&
+                              editenquiry.patient_id_proof.length > 0 ? (
+                              editenquiry.patient_id_proof.map((img, index) => (
+                                <img
+                                  key={index}
+                                  src={`${imageUrl}${img}`}
+                                  alt={`patient-id-${index}`}
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = avtar;
+                                  }}
+                                />
+                              ))
+                            ) : (
+                              <img src={avtar} alt="default" />
+                            )}
                           </div>
+
                           <ErrorMessage
                             name="patient_id_proof"
                             component="div"
                             className="text-danger"
                           />
+
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Profile  accept only{" "}(.jpeg,.jpg,.png,.jfif,.pdf)
-                            {/* <span className="text-danger">*</span> */}
+                            Patient Profile <span className="text-danger" data-bs-placement="right" data-bs-toggle="tooltip"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file">(i)</span>
                           </label>
-                          <input
-                            className="form-control"
-                            type="file"
-                            name="patient_Profile"
-                            accept="image/*,application/pdf"
-                            multiple
-                            onChange={(e) => {
-                              const files = Array.from(e.currentTarget.files);
-                              setFieldValue("patient_Profile", files);
-                            }}
-                          />
-                          <div className="imgid-main mt-1">
+                          <div className="engpatimg">
+                            <input
+                              className="form-control"
+                              type="file"
+                              name="patient_Profile"
+                              accept="image/*,application/pdf"
+                              multiple
+                              // onChange={(e) => {
+                              //   const files = Array.from(e.currentTarget.files);
+                              //   setFieldValue("patient_Profile", files);
+                              // }}
+                              onChange={(e) =>
+                                setFieldValue(
+                                  "patient_Profile",
+                                  e.currentTarget.files[0],
+                                )
+                              }
+                            />
                             <img
                               src={
                                 editenquiry.patient_Profile
@@ -563,56 +524,18 @@ export default function EditEnquiry() {
                                 e.target.src = `${avtar}`;
                               }}
                             />
+
                           </div>
                           <ErrorMessage
-                            name="patient_id_proof"
+                            name="patient_Profile"
                             component="div"
                             className="text-danger"
                           />
                         </div>
                       </div>
-                      {/* <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
-                          <label>
-                            Patient Profile
-                            {/* <span className="text-danger">*</span> */}
-                          {/* </label>
-                          <input
-                            className="form-control"
-                            type="file"
-                            name="patient_Profile"
-                            accept="image/*,application/pdf"
-                            onChange={(e) =>
-                              setFieldValue(
-                                "patient_Profile",
-                                e.currentTarget.files[0],
-                              )
-                            }
-                          />
-                          <div className="imgid-main mt-1">
-                            <img
-                              src={
-                                editenquiry.patient_Profile
-                                  ? `${imageUrl}${editenquiry.patient_Profile}`
-                                  : `${avtar}`
-                              }
-                              alt=".."
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = `${avtar}`;
-                              }}
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="patient_id_proof"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div> */} 
-                      <div className="col-sm-6">
-                        <div className="field-set">
-                          <label>Referral Name</label>
+                          <label>Referral Name<span className="text-danger">*</span></label>
                           <Field
                             className="form-control"
                             name="Referral_Name"
@@ -624,21 +547,82 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                    </div>
-                    <div className="col-sm-12">
-                      <div className="form-check mb-3">
-                        <Field
-                          type="checkbox"
-                          name="has_relation"
-                          className="form-check-input"
-                          id="hasRelation"
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="hasRelation"
-                        >
-                          Add Attendant / Patient Relation Details
-                        </label>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Treatment name<span className="text-danger">*</span>
+                          </label>
+                          <Autocomplete
+                            options={Treatment || []}
+                            getOptionLabel={(option) =>
+                              option.course_name || ""
+                            }
+                            value={
+                              Treatment?.find(
+                                (item) =>
+                                  item.course_name === values.disease_name,
+                              ) || null
+                            }
+                            onChange={(e, value) => {
+                              setFieldValue(
+                                "disease_name",
+                                value?.course_name || "",
+                              );
+                              setFieldValue(
+                                "treatment_course_id",
+                                value?.course_id || null,
+                              );
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                placeholder="Select Treatment"
+                                error={Boolean(
+                                  values.disease_name === "" &&
+                                  basicSchema?.fields?.disease_name,
+                                )}
+                              />
+                            )}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                padding: "0px",
+                                "&:hover fieldset": {
+                                  borderColor: "#ced4da",
+                                },
+                              },
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Treating In<span className="text-danger">*</span></label>
+                          <Field
+                            className="form-control"
+                            name="Referral_Name"
+                          />
+                          {/* <ErrorMessage
+                            name="Referral_Name"
+                            component="div"
+                            style={{ color: "red" }}
+                          /> */}
+                        </div>
+                      </div>
+                      <div className="col-md-12">
+                        <div className="form-check mb-3">
+                          <Field
+                            type="checkbox"
+                            name="has_relation"
+                            className="form-check-input"
+                            id="hasRelation"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="hasRelation"
+                          >
+                            Add Attendant / Patient Relation Details
+                          </label>
+                        </div>
                       </div>
                     </div>
                     {values.has_relation && (
@@ -648,10 +632,10 @@ export default function EditEnquiry() {
                           <span className="line"></span>
                         </div>
                         <div className="row">
-                          <div className="col-sm-6">
+                          <div className="col-md-4">
                             <div className="field-set">
                               <label>
-                              Attendant Full Name
+                                Attendant Full Name
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
@@ -665,10 +649,10 @@ export default function EditEnquiry() {
                               />
                             </div>
                           </div>
-                          <div className="col-sm-6">
+                          <div className="col-md-4">
                             <div className="field-set">
                               <label>
-                               Relationship with Patient
+                                Relationship With Patient
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
@@ -682,7 +666,56 @@ export default function EditEnquiry() {
                               />
                             </div>
                           </div>
-                          <div className="col-sm-6">
+                          <div className="col-md-4">
+                            <div className="field-set">
+                              <label>
+                                Attendant Contact Number
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="patient_relation_no"
+                              />
+                              <ErrorMessage
+                                name="patient_relation_no"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="field-set">
+                              <label>
+                                Attendant ID Proof
+                                <span className="text-danger" data-bs-toggle="tooltip" title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
+                                  Max size: 2 MB per file" data-bs-placement="right">(i)</span>
+                              </label>
+                              <div className="engpatimg">
+                                <input
+                                  className="form-control"
+                                  type="file"
+                                  name="relation_id"
+                                  accept="image/*,application/pdf"
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      "relation_id",
+                                      e.currentTarget.files[0],
+                                    )
+                                  }
+                                />
+                                <img src={`${imageUrl}${editenquiry.patient_relation_id}`}
+                                  alt=".."
+                                />
+                              </div>
+                              {/* <ErrorMessage name="relation_id" /> */}
+                              <ErrorMessage
+                                name="relation_id"
+                                component="div"
+                                className="text-danger"
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
                             <div className="field-set">
                               <label>
                                 Attendant Address
@@ -699,68 +732,18 @@ export default function EditEnquiry() {
                               />
                             </div>
                           </div>
-                          <div className="col-sm-6">
-                            <div className="field-set">
-                              <label>
-                              Attendant Contact Number
-                                <span className="text-danger">*</span>
-                              </label>
-                              <Field
-                                className="form-control"
-                                name="patient_relation_no"
-                              />
-                              <ErrorMessage
-                                name="patient_relation_no"
-                                component="div"
-                                style={{ color: "red" }}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-sm-6">
-                            <div className="field-set">
-                              <label>
-                               Attendant ID Proof {" "}(.jpeg,.jpg,.png,.jfif,.pdf)
-                                <span className="text-danger">*</span>
-                              </label>
-                              <input
-                                className="form-control"
-                                type="file"
-                                name="relation_id"
-                                accept="image/*,application/pdf"
-                                onChange={(e) =>
-                                  setFieldValue(
-                                    "relation_id",
-                                    e.currentTarget.files[0],
-                                  )
-                                }
-                              />
-                              <div className="w-25 h-25 my-2">
-                                <img
-                                  style={{ width: "25px", height: "25px" }}
-                                  src={`${imageUrl}${editenquiry.patient_relation_id}`}
-                                  alt=".."
-                                />
-                              </div>
-                              <ErrorMessage
-                                name="relation_id"
-                                component="div"
-                                className="text-danger"
-                              />
-                            </div>
-                          </div>
-                      
                         </div>
                       </>
                     )}
-                        <div className="">
-                            <button
-                              type="submit"
-                              className="submit-btn"
-                              disabled={isSubmitting || loading}
-                            >
-                              {loading ? "Submitting..." : "Submit"}
-                            </button>
-                          </div>
+                    <div className="">
+                      <button
+                        type="submit"
+                        className="submit-btn"
+                        disabled={isSubmitting || loading}
+                      >
+                        {loading ? "Submitting..." : "Submit"}
+                      </button>
+                    </div>
                   </Form>
                 )}
               </Formik>
