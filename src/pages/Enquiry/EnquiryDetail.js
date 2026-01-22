@@ -59,7 +59,7 @@ export default function EnquiryDetail() {
             <div class="main_content">
               <form>
                 <div class="row">
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div className="field-set">
                       <label>Enquiry Id<span className="text-danger">*</span></label>
                       <input
@@ -70,7 +70,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div className="field-set">
                       <label>Passport Number<span className="text-danger">*</span></label>
                       <input
@@ -81,7 +81,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Patient Name<span className="text-danger">*</span></label>
                       <input
@@ -92,7 +92,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Enq status<span className="text-danger">*</span></label>
                       <input
@@ -103,7 +103,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Age<span className="text-danger">*</span></label>
                       <input
@@ -114,7 +114,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Address<span className="text-danger">*</span></label>
                       <input
@@ -125,7 +125,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Dial Code<span className="text-danger">*</span></label>
                       <input
@@ -136,7 +136,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Contact Number<span className="text-danger">*</span></label>
                       <input
@@ -147,7 +147,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Email<span className="text-danger">*</span></label>
                       <input
@@ -158,7 +158,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Treatment Name<span className="text-danger">*</span></label>
                       <input
@@ -169,7 +169,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Emergency Contact Number</label>
                       <input
@@ -180,7 +180,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Town</label>
                       <input
@@ -191,7 +191,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Country<span className="text-danger">*</span></label>
                       <input
@@ -202,7 +202,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Gender<span className="text-danger">*</span></label>
                       <input
@@ -213,7 +213,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Referral Name</label>
                       <input
@@ -224,7 +224,7 @@ export default function EnquiryDetail() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Patient ID proof<span className="text-danger">*</span></label>
                       <div className="imgid-main">
@@ -242,20 +242,20 @@ export default function EnquiryDetail() {
           e.target.onerror = null;
           e.target.src = avtar;
         }}
-        style={{ width: "80px", marginRight: "8px" }}
+        style={{  marginRight: "8px" }}
       />
     ))
   ) : (
     <img
       src={avtar}
       alt="No Document"
-      style={{ width: "80px" }}
+     
     />
   )}
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="field-set">
                       <label>Patient Profile<span className="text-danger">*</span></label>
                       <div className="imgid-main">
@@ -285,7 +285,7 @@ export default function EnquiryDetail() {
                 {
                   row.patient_relation ?
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant Relation<span className="text-danger">*</span></label>
                           <input
@@ -296,7 +296,7 @@ export default function EnquiryDetail() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant Relation Name<span className="text-danger">*</span></label>
                           <input
@@ -307,7 +307,7 @@ export default function EnquiryDetail() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant Address<span className="text-danger">*</span></label>
                           <input
@@ -318,7 +318,7 @@ export default function EnquiryDetail() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant Relation Number<span className="text-danger">*</span></label>
                           <input
@@ -329,7 +329,7 @@ export default function EnquiryDetail() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant Id<span className="text-danger">*</span></label>
                           <div className="imgid-main">

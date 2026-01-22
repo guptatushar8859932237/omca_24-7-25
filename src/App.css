@@ -6777,7 +6777,8 @@ input:checked + .slider:before {
   height: 38px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+  box-shadow:
+    rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
     rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 .checkbox-align {
@@ -7016,3 +7017,32 @@ input:checked + .slider:before {
 .holistic-flow-card .dropdown-item:hover {
   background-color: #f2f2f2;
 }
+
+.country-code {
+  display: flex;
+  width: 100%;
+}
+.country-code .code-dial {
+  width: 20%;
+  border-right: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.code-in {
+  border-left: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+.tooltip-inner {
+  background-color: #fff;
+  color: var(--bs-heading-color);
+  font-size: 12px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid var(--bs-text-color);
+}
+
+.bs-tooltip-right .tooltip-arrow::before {
+  border-right-color:var(--bs-text-color);
+}
+

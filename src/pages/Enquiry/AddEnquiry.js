@@ -43,6 +43,12 @@ export default function AddEnquiry() {
   useEffect(() => {
     dispatch(GetAllTreatment());
   }, [dispatch]);
+  const tooltipTriggerList = document.querySelectorAll(
+    '[data-bs-toggle="tooltip"]'
+  );
+  [...tooltipTriggerList].map(
+    (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
+  );
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -83,7 +89,7 @@ export default function AddEnquiry() {
                   patient_relation_address: "",
                   patient_relation_id: null,
                   patient_id_proof: null,
-                  platform:"1",
+                  platform: "1",
                   patient_Profile: null,
                   dial_code: "",
                 }}
@@ -125,7 +131,7 @@ export default function AddEnquiry() {
                 {({ isSubmitting, setFieldValue }) => (
                   <Form>
                     <div className="row">
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Passport<span className="text-danger">*</span>
@@ -138,7 +144,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Name<span className="text-danger">*</span>
@@ -155,7 +161,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Email<span className="text-danger">*</span>
@@ -172,7 +178,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Age<span className="text-danger">*</span>
@@ -189,7 +195,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Address<span className="text-danger">*</span>
@@ -202,7 +208,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Country<span className="text-danger">*</span>
@@ -248,7 +254,7 @@ export default function AddEnquiry() {
                           </Field>
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Treatment Name{" "}
@@ -305,26 +311,24 @@ export default function AddEnquiry() {
                           </Field>
                         </div>
                       </div>
-                     
-                      <div className="col-sm-6 d-flex">
-                        <div className="field-set col-sm-3">
-                          <label>Dial Code</label>
-                          <Field
-                            className="form-control"
-                            name="dial_code"
-                            disabled
-                          />
-                      </div>
-                        <div className="field-set col-9">
+                      <div className="col-md-4">
+                        <div className="field-set">
                           <label>
                             {" "}
-                            Phone No / WhatsApp
+                            Phone No / WhatsApp With Country Code
                             <span className="text-danger">*</span>
                           </label>
-                          <Field
-                            className="form-control"
-                            name="emergency_contact_no"
-                          />
+                          <div className="country-code">
+                            <Field
+                              className="form-control code-dial"
+                              name="dial_code"
+                              disabled
+                            />
+                            <Field
+                              className="form-control code-in"
+                              name="emergency_contact_no"
+                            />
+                          </div>
                           <ErrorMessage
                             name="emergency_contact_no"
                             component="div"
@@ -332,21 +336,20 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6 d-flex">
-                         <div className="field-set col-sm-3">
-                          <label>Dial Code</label>
-                          <Field
-                            className="form-control"
-                            name="dial_code"
-                            disabled
-                          />
-                      </div>
-                        <div className="field-set col-9">
-                          <label>Emergency Contact No</label>
-                          <Field
-                            className="form-control"
-                            name="patient_emergency_contact_no"
-                          />
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Emergency Contact No With Country Code</label>
+                          <div className="country-code">
+                            <Field
+                              className="form-control code-dial"
+                              name="dial_code"
+                              disabled
+                            />
+                            <Field
+                              className="form-control code-in"
+                              name="patient_emergency_contact_no"
+                            />
+                          </div>
                           <ErrorMessage
                             name="patient_emergency_contact_no"
                             component="div"
@@ -354,7 +357,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Town<span className="text-danger">*</span>
@@ -367,7 +370,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Notes<span className="text-danger"></span>
@@ -380,7 +383,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set gender-select">
                           <label className="gen-label">
                             Gender<span className="text-danger">*</span>
@@ -425,11 +428,12 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient I’d Proof{" "}accept only(.jpeg,.jpg,.png,.jfif,.pdf)
-                            <span className="text-danger"> </span>
+                            Patient I’d Proof{" "}
+                            <span className="text-danger" data-bs-placement="right" data-bs-toggle="tooltip"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file">(i)</span>
                           </label>
                           <input
                             className="form-control"
@@ -473,11 +477,12 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Profile{" "}accept only(.jpeg,.jpg,.png,.jfif,.pdf)
-                            <span className="text-danger"> </span>
+                            Patient Profile{" "}
+                            <span className="text-danger" data-bs-placement="right" data-bs-toggle="tooltip" title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
+                             Max size: 2 MB per file">(i)</span>
                           </label>
                           <input
                             className="form-control"
@@ -517,7 +522,7 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>Referral Name</label>
                           <Field
@@ -562,7 +567,7 @@ export default function AddEnquiry() {
                     {showAttendant && (
                       <>
                         <div className="row">
-                          <div className="col-sm-6">
+                          <div className="col-md-4">
                             <div className="field-set">
                               <label>
                                 Attendant Name
@@ -579,7 +584,7 @@ export default function AddEnquiry() {
                               />
                             </div>
                           </div>
-                          <div className="col-sm-6">
+                          <div className="col-md-4">
                             <div className="field-set">
                               <label>
                                 Attendant Relation
@@ -596,11 +601,11 @@ export default function AddEnquiry() {
                               />
                             </div>
                           </div>
-                          <div className="col-sm-6">
+                          <div className="col-md-4">
                             <div className="field-set">
-                              <label>
-                                Attendant Id{" "}accept only(.jpeg,.jpg,.png,.jfif,.pdf)
-                                <span className="text-danger">*</span>
+                              <label>Attendant Id{" "}
+                                <span className="text-danger" data-bs-placement="right" data-bs-toggle="tooltip" title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
+                                  Max size: 2 MB per file">(i)</span>
                               </label>
                               <input
                                 className="form-control"
@@ -639,7 +644,7 @@ export default function AddEnquiry() {
                               />
                             </div>
                           </div>
-                          <div className="col-sm-6">
+                          <div className="col-md-4">
                             <div className="field-set">
                               <label>
                                 Attendant Address
@@ -656,7 +661,7 @@ export default function AddEnquiry() {
                               />
                             </div>
                           </div>
-                          <div className="col-sm-6">
+                          <div className="col-md-4">
                             <div className="field-set">
                               <label>
                                 {" "}
