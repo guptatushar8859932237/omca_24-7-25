@@ -145,6 +145,7 @@ export default function EditEnquiry() {
                   patient_relation_name:
                     editenquiry?.patient_relation_name || "",
                   country: editenquiry?.country || "",
+                  treatingIn: editenquiry?.treatingIn || "",
                   disease_name: editenquiry?.disease_name || "",
                   address: editenquiry?.address || "",
                   patient_emergency_contact_no:
@@ -223,7 +224,58 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-4">
+                        <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Country<span className="text-danger">*</span>
+                          </label>
+                          <Field name="country">
+                            {({ field, form: { setFieldValue }, meta }) => (
+                              <FormControl
+                                fullWidth
+                                size="small"
+                                error={!!meta.touched && !!meta.error}
+                              >
+                                <Select
+                                  value={field.value}
+                                  onChange={(e) => {
+                                    const selected = Countries.find(
+                                      (c) => c.name === e.target.value,
+                                    );
+
+                                    setFieldValue("country", e.target.value);
+                                    setFieldValue(
+                                      "dial_code",
+                                      selected?.dial_code || "",
+                                    );
+                                  }}
+                                // input={
+                                //   <OutlinedInput label="Select Country" />
+                                // }
+                                // displayEmpty
+                                // sx={{ height: 40 }}
+                                >
+                                  <MenuItem value="">
+                                    <em>Select Country</em>
+                                  </MenuItem>
+
+                                  {Countries.map((country, i) => (
+                                    <MenuItem key={i} value={country.name}>
+                                      {country.name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                                <ErrorMessage
+                                  name="country"
+                                  component="div"
+                                  style={{ color: "red" }}
+                                />
+                              </FormControl>
+                            )}
+                          </Field>
+                        </div>
+                      </div>
+                        <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             {" "}
@@ -248,27 +300,7 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Emergency Contact No With Country Code</label>
-                          <div className="country-code">
-                            <Field
-                              className="form-control code-dial"
-                              name="dial_code"
-                              disabled
-                            />
-                            <Field
-                              className="form-control code-in"
-                              name="patient_emergency_contact_no"
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="patient_emergency_contact_no"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
+                    
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -366,57 +398,7 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Country<span className="text-danger">*</span>
-                          </label>
-                          <Field name="country">
-                            {({ field, form: { setFieldValue }, meta }) => (
-                              <FormControl
-                                fullWidth
-                                size="small"
-                                error={!!meta.touched && !!meta.error}
-                              >
-                                <Select
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const selected = Countries.find(
-                                      (c) => c.name === e.target.value,
-                                    );
-
-                                    setFieldValue("country", e.target.value);
-                                    setFieldValue(
-                                      "dial_code",
-                                      selected?.dial_code || "",
-                                    );
-                                  }}
-                                // input={
-                                //   <OutlinedInput label="Select Country" />
-                                // }
-                                // displayEmpty
-                                // sx={{ height: 40 }}
-                                >
-                                  <MenuItem value="">
-                                    <em>Select Country</em>
-                                  </MenuItem>
-
-                                  {Countries.map((country, i) => (
-                                    <MenuItem key={i} value={country.name}>
-                                      {country.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
-                                />
-                              </FormControl>
-                            )}
-                          </Field>
-                        </div>
-                      </div>
+                
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -438,6 +420,27 @@ export default function EditEnquiry() {
                           <Field className="form-control" name="address" />
                           <ErrorMessage
                             name="address"
+                            component="div"
+                            style={{ color: "red" }}
+                          />
+                        </div>
+                      </div>
+                          <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Emergency Contact No With Country Code</label>
+                          <div className="country-code">
+                            <Field
+                              className="form-control code-dial"
+                              name="dial_code"
+                              disabled
+                            />
+                            <Field
+                              className="form-control code-in"
+                              name="patient_emergency_contact_no"
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="patient_emergency_contact_no"
                             component="div"
                             style={{ color: "red" }}
                           />
@@ -547,6 +550,8 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
+                      <hr />
+                      <div className="row d-flex">
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -594,20 +599,49 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-4">
+                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Treating In<span className="text-danger">*</span></label>
-                          <Field
-                            className="form-control"
-                            name="Referral_Name"
-                          />
-                          {/* <ErrorMessage
-                            name="Referral_Name"
-                            component="div"
-                            style={{ color: "red" }}
-                          /> */}
+                          <label>
+                            Treating In Country<span className="text-danger">*</span>
+                          </label>
+                          <Field name="treatingIn">
+                            {({ field, form: { setFieldValue }, meta }) => (
+                              <FormControl
+                                fullWidth
+                                size="small"
+                                error={!!meta.touched && !!meta.error}
+                              >
+                                <Select
+                                  value={field.value}
+                                  onChange={(e) => {
+                                    const selected = Countries.find(
+                                      (c) => c.name === e.target.value,
+                                    );
+                                    setFieldValue("treatingIn", e.target.value);
+                                  }}
+                                >
+                                  <MenuItem value="">
+                                    <em>Select Country</em>
+                                  </MenuItem>
+
+                                  {Countries.map((country, i) => (
+                                    <MenuItem key={i} value={country.name}>
+                                      {country.name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                                <ErrorMessage
+                                  name="country"
+                                  component="div"
+                                  style={{ color: "red" }}
+                                />
+                              </FormControl>
+                            )}
+                          </Field>
                         </div>
                       </div>
+                      </div>
+                        <hr />
                       <div className="col-md-12">
                         <div className="form-check mb-3">
                           <Field

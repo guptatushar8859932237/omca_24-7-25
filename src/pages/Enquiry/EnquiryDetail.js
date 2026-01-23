@@ -274,11 +274,11 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Treating In<span className="text-danger">*</span></label>
+                      <label>Treating In Country<span className="text-danger">*</span></label>
                       <input
                         class="form-control"
                         type="text"
-                        value=""
+                        value={row.treatingIn}
                         readonly=""
                       />
                     </div>
@@ -346,8 +346,6 @@ export default function EnquiryDetail() {
                           />
                         </div>
                       </div>
-
-
                     </div> : ""
                 }
                 {
