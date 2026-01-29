@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { GetAllHositalData } from "../reducer/HospitalSlice";
 export default function Dashboard() {
   const [arraycount, setArraycount] = useState([]);
   const navigate = useNavigate()
@@ -43,6 +44,14 @@ export default function Dashboard() {
   useEffect(() => {
     GetDashboard();
   }, []);
+
+  const { hospital } = useSelector((state) => state.hospital);
+    useEffect(() => {
+      dispatch(GetAllHositalData());
+      console.log(error, hospital);
+    }, [dispatch]);
+
+
   const handleclicknavi = (coursename) => {
     console.log(coursename)
     navigate('/Admin/filterdtata')
@@ -430,7 +439,7 @@ export default function Dashboard() {
                   <i class="fa-solid fa-hospital"></i>
                 </div>
                 <div className="dash-widget-info1">
-                  <h3>{count.totalHospital}</h3>
+                  <h3>{hospital.length}</h3>
                   <span className="widget-title">Hospitals</span>
                 </div>
               </div>

@@ -41,7 +41,6 @@ export const EditHospital = createAsyncThunk(
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem("token")}`,
                     "Content-Type": "application/json",
-
                 },
             });
             return response.data; // Success response

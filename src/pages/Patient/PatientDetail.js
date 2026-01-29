@@ -1079,9 +1079,6 @@ const handledelete = async (info, item) => {
                         <div class="part-img">
                           <img src={`${image}${ispatient?.patient_Profile}`} className="pro-img" />
                         </div>
-                        {/* <button class="image-change" type="button"> */}
-                        {/* <i class="fa fa-camera" aria-hidden="true"></i> */}
-                        {/* </button> */}
                         <input
                           type="file"
                           class="form-control d-none"
@@ -1091,7 +1088,6 @@ const handledelete = async (info, item) => {
                     </form>
                     <div class="part-txt">
                       <h6>{ispatient?.patient_name}</h6>
-                      {/* <p>{ispatient?.country}</p> */}
                       <p>
                         Patient ID :{" "}
                         {ispatient?.patientNumber
@@ -1128,6 +1124,10 @@ const handledelete = async (info, item) => {
                         <tr>
                           <td>Gender:</td>
                           <td className="even">{ispatient?.gender}</td>
+                        </tr>
+                        <tr>
+                          <td>Passport Number:</td>
+                          <td className="even">{ispatient?.passport_num}</td>
                         </tr>
                       </tbody>
                     </table>

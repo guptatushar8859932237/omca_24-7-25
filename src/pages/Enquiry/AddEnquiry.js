@@ -9,6 +9,7 @@ import { GetAllCountries2 } from "../../reducer/Countries";
 import FormControl from "@mui/material/FormControl";
 import { Autocomplete, TextField } from "@mui/material";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
+import uploadImage from "../../img/image (6).png"
 export default function AddEnquiry() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,6 +20,10 @@ export default function AddEnquiry() {
   const { Treatment, error } = useSelector((state) => state.Treatment);
   const { loading } = useSelector((state) => state.Enquiry);
   const { Countries } = useSelector((state) => state.Countries);
+  const [foundPatientByPhone, setFoundPatientByPhone] = useState(null);
+  const [foundPatientByPassport, setFoundPatientByPassport] = useState(null);
+  const [passportValue, setPassportValue] = useState("");
+  const [phoneValue, setPhoneValue] = useState("");
   useEffect(() => {
     dispatch(GetAllCountries2());
   }, [dispatch]);
@@ -167,65 +172,74 @@ export default function AddEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Passport<span className="text-danger">*</span>
+                            NIC/Passport<span className="text-danger">*</span>
                           </label>
-                          <Field
-                            className="form-control"
-                            name="passport_num"
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              setFieldValue("passport_num", value);
+                          <div style={{ position: 'relative' }}>
+                            <Field
+                              className="form-control"
+                              name="passport_num"
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                setFieldValue("passport_num", value);
+                                setPassportValue(value);
+                              }}
+                            />
+                            <img
+                              src={uploadImage}
+                              alt="autofill"
+                              onClick={async () => {
+                                const value = passportValue || document.querySelector('[name="passport_num"]')?.value;
+                                if (!value || value.length < 7) {
+                                  Swal.fire(
+                                    "Please enter at least 7 characters",
+                                    "",
+                                    "warning",
+                                  );
+                                  return;
+                                }
 
-                              if (value.length < 7) return;
+                                const data = await fetchPatientByPhoneOrPassport({
+                                  passport_num: value,
+                                });
 
-                              if (passportDebounceRef.current) {
-                                clearTimeout(passportDebounceRef.current);
-                              }
+                                if (data) {
+                                  const selectedCountry = Countries?.find(
+                                    (c) => c.name === data.country,
+                                  );
 
-                              passportDebounceRef.current = setTimeout(
-                                async () => {
-                                  const data =
-                                    await fetchPatientByPhoneOrPassport({
-                                      passport_num: value,
-                                    });
+                                  setValues((prev) => ({
+                                    ...prev,
+                                    ...data,
+                                    country: selectedCountry?.name || "",
+                                    dial_code: selectedCountry?.dial_code || "",
+                                    passport_num: value,
+                                  }));
 
-                                  // if (data) {
-                                  //   Swal.fire(
-                                  //     "Patient Found",
-                                  //     "Auto-filled",
-                                  //     "info",
-                                  //   );
-                                  //   setValues((prev) => ({
-                                  //     ...prev,
-                                  //     ...data,
-                                  //     passport_num: value,
-                                  //   }));
-                                  // }
-                                  if (data) {
-                                    const selectedCountry = Countries?.find(
-                                      (c) => c.name === data.country,
-                                    );
-
-                                    setValues((prev) => ({
-                                      ...prev,
-                                      ...data,
-                                      country: selectedCountry?.name || "",
-                                      dial_code:
-                                        selectedCountry?.dial_code || "",
-                                      passport_num: value,
-                                    }));
-
-                                    Swal.fire(
-                                      "Patient Found",
-                                      "Auto-filled",
-                                      "info",
-                                    );
-                                  }
-                                },
-                                500,
-                              );
-                            }}
-                          />
+                                  Swal.fire(
+                                    "Patient Found",
+                                    "Auto-filled",
+                                    "success",
+                                  );
+                                } else {
+                                  Swal.fire(
+                                    "Patient Not Found",
+                                    "No patient found with this passport number",
+                                    "info",
+                                  );
+                                }
+                              }}
+                              style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                width: '30px',
+                                height: '30px',
+                                cursor: 'pointer',
+                                padding: '5px'
+                              }}
+                            />
+                          </div>
                           <ErrorMessage
                             name="passport_num"
                             component="div"
@@ -369,7 +383,7 @@ export default function AddEnquiry() {
                             Phone No / WhatsApp With Country Code
                             <span className="text-danger">*</span>
                           </label>
-                          <div className="country-code">
+                          <div className="country-code" style={{ position: 'relative' }}>
                             <Field
                               className="form-control code-dial"
                               name="dial_code"
@@ -381,55 +395,62 @@ export default function AddEnquiry() {
                               onChange={(e) => {
                                 const value = e.target.value;
                                 setFieldValue("emergency_contact_no", value);
-
-                                if (value.length < 8) return;
-
-                                if (phoneDebounceRef.current) {
-                                  clearTimeout(phoneDebounceRef.current);
+                                setPhoneValue(value);
+                              }}
+                            />
+                            <img
+                              src={uploadImage}
+                              alt="autofill"
+                              onClick={async () => {
+                                const value = phoneValue || document.querySelector('[name="emergency_contact_no"]')?.value;
+                                if (!value || value.length < 8) {
+                                  Swal.fire(
+                                    "Please enter at least 8 digits",
+                                    "",
+                                    "warning",
+                                  );
+                                  return;
                                 }
 
-                                phoneDebounceRef.current = setTimeout(
-                                  async () => {
-                                    const data =
-                                      await fetchPatientByPhoneOrPassport({
-                                        emergency_contact_no: value,
-                                      });
+                                const data = await fetchPatientByPhoneOrPassport({
+                                  emergency_contact_no: value,
+                                });
 
-                                    // if (data) {
-                                    //   Swal.fire(
-                                    //     "Patient Found",
-                                    //     "Auto-filled",
-                                    //     "info",
-                                    //   );
-                                    //   setValues((prev) => ({
-                                    //     ...prev,
-                                    //     ...data,
-                                    //     emergency_contact_no: value,
-                                    //   }));
-                                    // }
-                                    if (data) {
-                                      const selectedCountry = Countries?.find(
-                                        (c) => c.name === data.country,
-                                      );
+                                if (data) {
+                                  const selectedCountry = Countries?.find(
+                                    (c) => c.name === data.country,
+                                  );
 
-                                      setValues((prev) => ({
-                                        ...prev,
-                                        ...data,
-                                        country: selectedCountry?.name || "",
-                                        dial_code:
-                                          selectedCountry?.dial_code || "",
-                                        passport_num: value,
-                                      }));
+                                  setValues((prev) => ({
+                                    ...prev,
+                                    ...data,
+                                    country: selectedCountry?.name || "",
+                                    dial_code: selectedCountry?.dial_code || "",
+                                    emergency_contact_no: value,
+                                  }));
 
-                                      Swal.fire(
-                                        "Patient Found",
-                                        "Auto-filled",
-                                        "info",
-                                      );
-                                    }
-                                  },
-                                  500,
-                                );
+                                  Swal.fire(
+                                    "Patient Found",
+                                    "Auto-filled",
+                                    "success",
+                                  );
+                                } else {
+                                  Swal.fire(
+                                    "Patient Not Found",
+                                    "No patient found with this phone number",
+                                    "info",
+                                  );
+                                }
+                              }}
+                              style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                width: '30px',
+                                height: '30px',
+                                cursor: 'pointer',
+                                padding: '5px'
                               }}
                             />
                           </div>
@@ -838,44 +859,45 @@ export default function AddEnquiry() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                        <div className="field-set">
-                          <label>
-                             Treating In Country<span className="text-danger">*</span>
-                          </label>
-                          <Field name="treatingIn" >
-                            {({ form }) => {
-                              const selectedCountry =
-                                Countries?.find(
-                                  (c) => c.name === form.values.treatingIn,
-                                ) || null;
-                              return (
-                                <Autocomplete
-                                  options={Countries || []}
-                                  value={selectedCountry} // ✅ OBJECT
-                                  getOptionLabel={(option) =>
-                                    option?.name || ""
-                                  }
-                                  isOptionEqualToValue={(option, value) =>
-                                    option.name === value?.name
-                                  }
-                                  onChange={(e, newValue) => {
-                                    form.setFieldValue(
-                                      "treatingIn",
-                                      newValue?.name || "",
-                                    );
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      placeholder="Select Country"
-                                      size="small"
-                                    />
-                                  )}
-                                />
-                              );
-                            }}
-                          </Field>
-                      </div>
+                          <div className="field-set">
+                            <label>
+                              Treating In Country
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field name="treatingIn">
+                              {({ form }) => {
+                                const selectedCountry =
+                                  Countries?.find(
+                                    (c) => c.name === form.values.treatingIn,
+                                  ) || null;
+                                return (
+                                  <Autocomplete
+                                    options={Countries || []}
+                                    value={selectedCountry} // ✅ OBJECT
+                                    getOptionLabel={(option) =>
+                                      option?.name || ""
+                                    }
+                                    isOptionEqualToValue={(option, value) =>
+                                      option.name === value?.name
+                                    }
+                                    onChange={(e, newValue) => {
+                                      form.setFieldValue(
+                                        "treatingIn",
+                                        newValue?.name || "",
+                                      );
+                                    }}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        placeholder="Select Country"
+                                        size="small"
+                                      />
+                                    )}
+                                  />
+                                );
+                              }}
+                            </Field>
+                          </div>
                         </div>
                       </div>
                     </div>

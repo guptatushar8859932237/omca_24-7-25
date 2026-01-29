@@ -308,6 +308,58 @@ export default function Patient() {
     });
   };
 
+  const handleChangtype = async (e, i) => {
+    console.log(e, i);
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("Authorization token is missing");
+      }
+
+      const response = await axios.post(
+        `${baseurl}changePatientTypeStatus/${i}`,
+        { p_status: e.target.value },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // If response is OK, show success
+      if (response.status === 200 || response.status === 201) {
+        dispatch(GetAllPatients());
+        Swal.fire(
+          "Success!",
+          "patient status updated successfully!",
+          "success"
+        );
+
+        try {
+          // await getAppointments(); // make sure it's awaited if it’s async
+        } catch (refreshError) {
+          console.error("Error refreshing appointments:", refreshError);
+          toast.error("Failed to refresh appointments!");
+        }
+
+        return response.data;
+      } else {
+        // Handle unexpected non-200 responses
+        throw new Error("Failed to update status. Please try again!");
+      }
+    } catch (err) {
+      console.error("Full Error:", err);
+      if (err.response && err.response.data && err.response.data.message) {
+        toast.error(err.response.data.message);
+      } else if (err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error("Something went wrong. Please try again!");
+      }
+    }
+  };
   const handleChangefffff = async (e, i) => {
     console.log(e, i);
     try {
@@ -597,6 +649,7 @@ export default function Patient() {
                           <TableCell>Patient Disease</TableCell>
                           {showActions === true ? (
                             <>
+                              <TableCell>Patient Type</TableCell>
                               <TableCell>Status</TableCell>
                               <TableCell>Action</TableCell>
                             </>
@@ -682,6 +735,46 @@ export default function Patient() {
                                       .map((item) => item.disease_name)
                                       .join(", ")}
                                   </TableCell>
+                                         <TableCell>
+                                        <FormControl
+                                          sx={{ m: 1, minWidth: 120 }}
+                                          size="small"
+                                          className="cont-main"
+                                        >
+                                          <Select
+                                            value={info.patient_type_new}
+                                            onChange={(e) =>
+                                              handleChangtype(
+                                                e,
+                                                info.patientId
+                                              )
+                                            }
+                                            displayEmpty
+                                            inputProps={{
+                                              "aria-label": "Without label",
+                                            }}
+                                            className="status-direct"
+                                          >
+                                            <MenuItem value="Private">
+                                              Private
+                                            </MenuItem>
+                                            <MenuItem value="Foundation">
+                                              Foundation
+                                            </MenuItem>
+                                            <MenuItem value="Insurance">
+                                              Insurance
+                                            </MenuItem>
+                                            <MenuItem value="Insurance + Private">
+                                              Insurance + Private
+                                            </MenuItem>
+                                          
+                                          </Select>
+                                        </FormControl>
+                                      </TableCell>
+
+
+
+
                                   {showActions === true ? (
                                     <>
                                       <TableCell>
@@ -704,12 +797,12 @@ export default function Patient() {
                                             }}
                                             className="status-direct"
                                           >
-                                            <MenuItem value="Foundation">
+                                            {/* <MenuItem value="Foundation">
                                               Foundation
                                             </MenuItem>
                                             <MenuItem value="Private">
                                               Private
-                                            </MenuItem>
+                                            </MenuItem> */}
                                             <MenuItem value="Travelled">
                                               {" "}
                                               Travelled
@@ -722,6 +815,9 @@ export default function Patient() {
                                             </MenuItem>
                                             <MenuItem value="On Hold">
                                               On Hold
+                                            </MenuItem>
+                                            <MenuItem value="Treatment Completed">
+                                              Treatment Completed
                                             </MenuItem>
                                             <MenuItem value="Cancelled">
                                               Cancelled
