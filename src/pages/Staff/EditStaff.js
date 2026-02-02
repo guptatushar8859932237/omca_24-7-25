@@ -29,14 +29,8 @@ const { Countries } = useSelector((state) => state.Countries);
   const statusOptions = [
     "Foundation",
     "Private",
-    "Travelled",
-    "Confirmed",
-    "Pending",
-    "On Hold",
-    "Cancel",
-    "Passed Away",
-    "Local Case",
-    "Follow Up",
+    "Insurance",
+    "Insurance + Private",
   ];
   useEffect(() => {
     dispatch(GetAllStaffUser());

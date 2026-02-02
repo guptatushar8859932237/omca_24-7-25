@@ -1,21 +1,3 @@
-// import React from 'react'
-
-// export default function PickUpanddrops() {
-//   return (
-//     <div>
-//       Pickup and drops
-//     </div>
-//   )
-// }
-// // import React from 'react'
-
-// // export default function Story() {
-// //   return (
-// //     <div>
-// //       Story
-// //     </div>
-// //   )
-// // }
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -152,8 +134,7 @@ export default function PickUpanddrops() {
               <TableCell>Phone</TableCell>
               <TableCell>Pickup Location</TableCell>
               <TableCell>Drop Location</TableCell>
-              <TableCell>Travel  Date</TableCell>
-              <TableCell>Time</TableCell>
+              <TableCell>Travel Date</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -166,9 +147,8 @@ export default function PickUpanddrops() {
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item.pickup_location}</TableCell>
-                  <TableCell>{item.drop_location}</TableCell>
-                  <TableCell>{new Date(item.travel_date).toLocaleDateString('en-GB')}</TableCell>
-                  <TableCell>{item.perfired_time}</TableCell>
+                  <TableCell>{item.destination_location}</TableCell>
+                  <TableCell>{new Date(item.pickup_date).toLocaleDateString('en-GB')}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
@@ -229,46 +209,14 @@ export default function PickUpanddrops() {
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-          {/* <Box>
-            {selectedRecord && (
-              <div className="table-responsive dataset">
-                <table className="table table-bordered mb-0">
-                  <tbody>
-                    {Object.entries(selectedRecord)
-                      .filter(([key]) =>
-                        [
-                          "name",
-                          "email",
-                          "phone",
-                          "pickup_location",
-                          "drop_location",
-                          "travel_date",
-                          "perfired_time",
-                        ].includes(key)
-                      )
-                      .map(([key, value]) => (
-                        <tr key={key}>
-                          <th>
-                            {key
-                              .replace(/_/g, " ")
-                              .replace(/\b\w/g, (char) => char.toUpperCase())}
-                          </th>
-                          <td>{String(value)}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Box> */}
            {selectedRecord && (
             <Box>
               <div className="row">
                 {/* personal */}
                 <div className="col-md-12 mb-3">
-                  {/* <div className="all-hd mb-3">
-                        <h6>Personal Information</h6>
-                      </div> */}
+                  <div className="all-hd mb-3">
+                        <h6>User Information</h6>
+                      </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
@@ -281,17 +229,41 @@ export default function PickUpanddrops() {
                         <div className="col-md-4">
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="all-hd mb-3 mt-3">
+                        <h6>Pickup Details</h6>
+                      </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="Pickup Location" value={selectedRecord.pickup_location} />
+                          <InfoItem label="Pickup Address / Location" value={selectedRecord.pickup_location} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Time" value={selectedRecord.perfired_time} />
+                          <InfoItem label="Pickup Location Type" value={selectedRecord.pickup_location_type} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Date" value={new Date(selectedRecord.travel_date).toLocaleDateString('en-GB')} />
+                          <InfoItem label="Pickup  Date" value={new Date(selectedRecord.pickup_date).toLocaleDateString('en-GB')} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Drop Location" value={selectedRecord.drop_location} />
+                          <InfoItem label=" Pickup Time" value={selectedRecord.pickup_time} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="all-hd mb-3 mt-3">
+                        <h6>Destination Details</h6>
+                      </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Destination Address / Location" value={selectedRecord.destination_location} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Destination Location Type" value={selectedRecord.destination_location_type} />
                         </div>
                       </div>
                     </div>

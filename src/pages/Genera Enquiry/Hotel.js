@@ -1,21 +1,3 @@
-// import React from 'react'
-
-// export default function Hotel() {
-//   return (
-//     <div>
-//       Hotel
-//     </div>
-//   )
-// }
-// import React from 'react'
-
-// export default function Vil() {
-//   return (
-//     <div>
-//       vil
-//     </div>
-//   )
-// }
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,7 +32,7 @@ export default function Hotel() {
     dispatch(testForms());
   }, [dispatch]);
 
-  const medicalVisaData = formData?.data?.hotel || [];
+  const medicalVisaData = formData?.data?.ambulance_requests || [];
 
   const handleFilter = (e) => {
     setFilterValue(e.target.value);
@@ -104,7 +86,7 @@ export default function Hotel() {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
-          <h2>Hotel</h2>
+          <h2>Ambulance Services</h2>
         </div >
         <div>
           <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
@@ -148,10 +130,7 @@ export default function Hotel() {
               <TableCell> Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
-              <TableCell>City</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell>Number of People</TableCell>
-              <TableCell>Number of People</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -163,9 +142,7 @@ export default function Hotel() {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{item.city}</TableCell>
-                  <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell>
-                  <TableCell>{item.number_of_people}</TableCell>
+                  <TableCell>{new Date(item.created_at).toLocaleDateString("en-GB")}</TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
@@ -218,7 +195,7 @@ export default function Hotel() {
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Hotel Request</h6>
+              < h6>Ambulance Request</h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>
@@ -226,45 +203,13 @@ export default function Hotel() {
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-          {/* <Box>
-            {selectedRecord && (
-              <div className="table-responsive dataset">
-                <table className="table table-bordered mb-0">
-                  <tbody>
-                    {Object.entries(selectedRecord)
-                      .filter(([key]) =>
-                        [
-                          "name",
-                          "email",
-                          "phone",
-                          "city",
-                          "select_date",
-                          "number_of_people",
-                        ].includes(key)
-                      )
-                      .map(([key, value]) => (
-                        <tr key={key}>
-                          <th>
-                            {key
-                              .replace(/_/g, " ")
-                              .replace(/\b\w/g, (char) => char.toUpperCase())}
-                          </th>
-                          <td>{String(value)}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Box> */}
           {selectedRecord && (
             <Box>
               <div className="row">
-                {/* personal */}
                 <div className="col-md-12 mb-3">
-                  {/* <div className="all-hd mb-3">
-                      <h6>Personal Information</h6>
-                    </div> */}
+                  <div className="all-hd mb-3">
+                      <h6>User Information</h6>
+                    </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
@@ -277,14 +222,144 @@ export default function Hotel() {
                         <div className="col-md-4">
                           <InfoItem label="Phone Number" value={selectedRecord.phone} />
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                   <div className="all-hd mb-3 mt-3">
+                      <h6>Emergency Assessment</h6>
+                    </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="Dob" value={new Date(selectedRecord.select_date).toLocaleDateString('en-GB')} />
+                          <InfoItem label="Consciousness Status" value={selectedRecord.consciousness_status} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="City" value={selectedRecord.city} />
+                          <InfoItem label="Breathing Difficulty" value={selectedRecord.breathing_difficulty} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Whatsapp Number" value={selectedRecord.number_of_people} />
+                          <InfoItem label="Level of urgency" value={selectedRecord.level_of_urgency} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Bleeding or Trauma Details" value={selectedRecord.bleeding_or_trauma_details} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                   <div className="all-hd mb-3 mt-3">
+                      <h6>Pickup Details</h6>
+                    </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Pickup Address" value={selectedRecord.pickup_address} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Pickup Location Type" value={selectedRecord.pickup_location_type} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Pickup Date" value={selectedRecord.pickup_date} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Pickup Time" value={selectedRecord.pickup_time} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="GPS / Location Pin" value={selectedRecord.location_pin} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                   <div className="all-hd mb-3 mt-3">
+                      <h6>Destination Details</h6>
+                    </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Destination Address" value={selectedRecord.destination_address} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Hospital Name" value={selectedRecord.hospital_name} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Department or ward" value={selectedRecord.department_or_ward } />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                   <div className="all-hd mb-3 mt-3">
+                      <h6>Medical Information</h6>
+                    </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Reason For Ambulance Request/Chief Complaint" value={selectedRecord.reason_for_ambulance_request} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Patient Condition" value={selectedRecord.patient_condition} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Ambulance Type" value={selectedRecord.ambulance_type } />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Special Needs" value={selectedRecord.special_needs } />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                   <div className="all-hd mb-3 mt-3">
+                      <h6>Attendant / Contact Person</h6>
+                    </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Name of Caller Or Attendant" value={selectedRecord.name_of_caller_or_attendant} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Relationship to Patient" value={selectedRecord.relationship_to_patient} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Alternate Contact Number" value={selectedRecord.alternate_contact_number } />
+                        </div>
+                    
+                      </div>
+                    </div>
+                  </div>
+                   <div className="all-hd mb-3 mt-3">
+                      <h6>Payment & Authorization</h6>
+                    </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Payment Method" value={selectedRecord.payment_method} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Insurance Details" value={selectedRecord.insurance_details} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Approval/Reference Number" value={selectedRecord.reference_number } />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                   <div className="all-hd mb-3 mt-3">
+                      <h6>Additional Notes </h6>
+                    </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Special Instruction" value={selectedRecord.special_instructions} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Language Preference" value={selectedRecord.language_preference} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Doctor Reference" value={selectedRecord.doctor_reference } />
                         </div>
                       </div>
                     </div>

@@ -133,49 +133,103 @@ export default function Reports() {
       Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
   };
-  const getReportData = () => {
-    try {
-      axios
-        .get(
-          `${baseurl}exportfilteredpatient/?startDate=${encodeURIComponent(
-            startDate
-          )}&treatment_course_name=${encodeURIComponent(
-            report.treatment.trim()
-          )}&endDate=${encodeURIComponent(
-            endDate
-          )}&country=${encodeURIComponent(
-            report.country.trim()
-          )}&age=${encodeURIComponent(report.age.trim())}`
-        )
-        .then((response) => {
-          console.log(response.data);
-          if (response.data.success && response.data.data) {
-            setRows(response.data.data); // Show filtered patients in table
-          }
+  // const getReportData = () => {
+  //   try {
+  //     axios
+  //       .get(
+  //         `${baseurl}exportfilteredpatient/?startDate=${encodeURIComponent(
+  //           startDate
+  //         )}&treatment_course_name=${encodeURIComponent(
+  //           report.treatment.trim()
+  //         )}&endDate=${encodeURIComponent(
+  //           endDate
+  //         )}&country=${encodeURIComponent(
+  //           report.country.trim()
+  //         )}&age=${encodeURIComponent(report.age.trim())}`
+  //       )
+  //       .then((response) => {
+  //         console.log(response.data);
+  //         if (response.data.success && response.data.data) {
+  //           setRows(response.data.data); // Show filtered patients in table
+  //         }
+          
 
-          if (response.data.download_link) {
-            const link = document.createElement("a");
-            link.href = `${baseu11}${response.data.download_link}`;
-            link.setAttribute("download", "report.xlsx");
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          console.log(error?.response?.data);
-          const errorMessage =
-            error?.response?.data?.message ||
-            error?.response?.data?.error ||
-            "Something went wrong";
-          Swal.fire("Error", errorMessage, "error");
-        });
-    } catch (error) {
-      console.log(error);
+  //         if (response.data.download_link) {
+  //           const link = document.createElement("a");
+  //           link.href = `${baseu11}${response.data.download_link}`;
+  //           link.setAttribute("download", "report.xlsx");
+  //           document.body.appendChild(link);
+  //           link.click();
+  //           link.remove();
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         console.log(error?.response?.data);
+  //         const errorMessage =
+  //           error?.response?.data?.message ||
+  //           error?.response?.data?.error ||
+  //           "Something went wrong";
+  //         Swal.fire("Error", errorMessage, "error");
+  //       });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+const getReportData = async () => {
+  try {
+    const response = await axios.get(
+      `${baseurl}exportfilteredpatient/?startDate=${encodeURIComponent(
+        startDate
+      )}&treatment_course_name=${encodeURIComponent(
+        report.treatment.trim()
+      )}&endDate=${encodeURIComponent(
+        endDate
+      )}&country=${encodeURIComponent(
+        report.country.trim()
+      )}&age=${encodeURIComponent(report.age.trim())}`
+    );
+
+    console.log(response.data);
+
+    // 1️⃣ Table data show karo
+    if (response.data.success && response.data.data) {
+      setRows(response.data.data);
     }
-  };
-   const downloadPdf = async () => {
+
+    // 2️⃣ Agar download link hai to user se poochho
+    if (response.data.download_link) {
+      const result = await Swal.fire({
+        title: "Download Report?",
+        text: "Do you want to download the Excel report?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Download",
+        cancelButtonText: "No",
+      });
+
+      if (result.isConfirmed) {
+        const link = document.createElement("a");
+        link.href = `${baseu11}${response.data.download_link}`;
+        link.setAttribute("download", "report.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    const errorMessage =
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      "Something went wrong";
+    Swal.fire("Error", errorMessage, "error");
+  }
+};
+
+
+  const downloadPdf = async () => {
       const maxRows = rows.length || 1;
       Swal.fire({
         title: "Enter number of rows for PDF",
@@ -323,8 +377,8 @@ export default function Reports() {
                           </MenuItem>
                           {hospital && hospital.length > 0 ? (
                             hospital.map((item, index) => (
-                              <MenuItem key={index} value={item.hospitalName}>
-                                {item.hospitalName}
+                              <MenuItem key={index} value={item.name}>
+                                {item.name}
                               </MenuItem>
                             ))
                           ) : (

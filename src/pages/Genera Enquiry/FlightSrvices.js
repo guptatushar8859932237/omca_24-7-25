@@ -229,11 +229,55 @@ export default function FlightSrvices() {
         <DialogContent className="main-box view-table-detail">
           {selectedRecord && (
             <Box>
+              
               <div className="row">
                 <div className="col-md-12 mb-3">
+                   <div className="all-hd mb-3 mt-3">
+                      <h6>User Details</h6>
+                    </div>
+                     <div className="card">
+                    <div className="card-body">
+                     <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Name" value={selectedRecord.first_name} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Email" value={selectedRecord.email} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Phone Number" value={selectedRecord.phone} />
+                        </div>
+                      </div>
+                      </div>
+                      </div>
+                      <div className="all-hd mb-3 mt-3">
+                      <h6>Travel Details</h6>
+                    </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label=" From" value={selectedRecord.from} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="To" value={selectedRecord.to} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Travel Date" value={new Date(selectedRecord.select_date).toLocaleDateString("en-GB")} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Arrival Time " value={selectedRecord.arrival_time} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Number of Traveller" value={selectedRecord.travellers_count} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Service " value={selectedRecord.services} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                      {/* <div className="row">
                         <div className="col-md-4">
                           <InfoItem label="Name" value={selectedRecord.first_name} />
                         </div>
@@ -258,11 +302,9 @@ export default function FlightSrvices() {
                         <div className="col-md-4">
                           <InfoItem label="Flight Type" value={(selectedRecord.flight_type)} />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
-                </div>
-              </div>
             </Box>
           )}
         </DialogContent>

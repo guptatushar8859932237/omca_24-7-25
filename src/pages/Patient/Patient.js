@@ -39,7 +39,7 @@ export default function Patient() {
   const [showActions, setShowActions] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [onVaue,setOnVaue]=useState('')
+  const [onVaue, setOnVaue] = useState("");
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
   const [openfilter, setOpenFilter] = React.useState(false);
@@ -67,11 +67,9 @@ export default function Patient() {
   const handleJobTitleChange = (event, value) => {
     setSelectedJobTitle(value);
   };
-
   useEffect(() => {
     dispatch(GetAllTreatment());
   }, [dispatch]);
-
   useEffect(() => {
     if (Treatment) {
       setTreatmentname(Treatment);
@@ -81,7 +79,6 @@ export default function Patient() {
     dispatch(GetAllPatients());
     console.log(error, patient);
   }, [dispatch]);
-
   useEffect(() => {
     if (patient) {
       setRows(patient);
@@ -120,11 +117,9 @@ export default function Patient() {
       },
       buttonsStyling: false,
     });
-
     swalWithBootstrapButtons
       .fire({
         title: "Are you sure?",
-        // text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, delete it!",
@@ -134,13 +129,13 @@ export default function Patient() {
       .then((result) => {
         if (result.isConfirmed) {
           dispatch(DeletePatient({ id: patientId }))
-            .unwrap() // If using Redux Toolkit, unwrap to handle success/failure easily
+            .unwrap()
             .then(() => {
               return dispatch(GetAllPatients());
             })
             .then((newData) => {
               Swal.fire("Deleted!", "Patient has been deleted.", "success");
-              setRows(newData.payload); // Update rows with the latest data
+              setRows(newData.payload);
             })
             .catch((err) => {
               Swal.fire("Error!", err?.message || "An error occurred", "error");
@@ -148,24 +143,20 @@ export default function Patient() {
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire({
             title: "Cancelled",
-            // text: "Patient data is safe :)",
             icon: "error",
           });
         }
       });
   };
-
   const handleChange = (event, id) => {
     const { value } = event.target;
     setSeekerStatus(value);
   };
-
   const handleClickOpen = async (e, id) => {
-    e.preventDefault(); // Prevent default behavior of the event
-
+    e.preventDefault();
     try {
       const result = await dispatch(
-        StatusPatient({ id: id, status: Number(seekerStatus) })
+        StatusPatient({ id: id, status: Number(seekerStatus) }),
       ).unwrap();
       Swal.fire("Success!", "Patient details updated successfully.", "success");
       dispatch(GetAllPatients());
@@ -173,39 +164,36 @@ export default function Patient() {
       Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
   };
-
   const getReportData = () => {
     axios
       .get(
         `${baseurl}exportfilteredpatient/${localStorage.getItem(
-          "_id"
+          "_id",
         )}?gender=${encodeURIComponent(
-          report.gender.trim()
+          report.gender.trim(),
         )}&treatment_name=${encodeURIComponent(
-          selectedJobTitle.trim()
+          selectedJobTitle.trim(),
         )}&age=${encodeURIComponent(
-          report.age.trim()
+          report.age.trim(),
         )}&country=${encodeURIComponent(report.country.trim())}`,
         {
           responseType: "blob",
-        }
+        },
       )
       .then((response) => {
-        // Create a URL for the ip
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        // You can set a default file name here
         link.setAttribute("download", `report_${report}.xlsx`);
         document.body.appendChild(link);
         link.click();
-        link.remove(); // Clean up after download
+        link.remove();
       })
       .catch((error) => {
         Swal.fire(
           "Error",
           `No candidates found for the jobs posted by this client`,
-          "error"
+          "error",
         );
       })
       .finally(() => {});
@@ -266,12 +254,11 @@ export default function Patient() {
     } catch (err) {
       console.error(
         "Error downloading the sample file:",
-        err.response?.data?.message || err.message
+        err.response?.data?.message || err.message,
       );
       throw err;
     }
   };
-
   const downloadPdf = async () => {
     const maxRows = rows.length || 1;
     Swal.fire({
@@ -293,30 +280,25 @@ export default function Patient() {
           Swal.fire(
             "Invalid entry",
             `Please enter a number between 1 and ${maxRows}`,
-            "error"
+            "error",
           );
           return;
         }
-
         setPdfRowLimit(userInput);
-
         setTimeout(() => {
           toPDF();
-          setPdfRowLimit(null); // reset to normal view
+          setPdfRowLimit(null);
         }, 300);
       }
     });
   };
-
   const handleChangtype = async (e, i) => {
     console.log(e, i);
     try {
       const token = localStorage.getItem("token");
-
       if (!token) {
         throw new Error("Authorization token is missing");
       }
-
       const response = await axios.post(
         `${baseurl}changePatientTypeStatus/${i}`,
         { p_status: e.target.value },
@@ -325,28 +307,22 @@ export default function Patient() {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
-
-      // If response is OK, show success
       if (response.status === 200 || response.status === 201) {
         dispatch(GetAllPatients());
         Swal.fire(
           "Success!",
           "patient status updated successfully!",
-          "success"
+          "success",
         );
-
         try {
-          // await getAppointments(); // make sure it's awaited if it’s async
         } catch (refreshError) {
           console.error("Error refreshing appointments:", refreshError);
           toast.error("Failed to refresh appointments!");
         }
-
         return response.data;
       } else {
-        // Handle unexpected non-200 responses
         throw new Error("Failed to update status. Please try again!");
       }
     } catch (err) {
@@ -364,11 +340,9 @@ export default function Patient() {
     console.log(e, i);
     try {
       const token = localStorage.getItem("token");
-
       if (!token) {
         throw new Error("Authorization token is missing");
       }
-
       const response = await axios.post(
         `${baseurl}changePatientStatus/${i}`,
         { p_status: e.target.value },
@@ -377,28 +351,22 @@ export default function Patient() {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
-
-      // If response is OK, show success
       if (response.status === 200 || response.status === 201) {
         dispatch(GetAllPatients());
         Swal.fire(
           "Success!",
           "patient status updated successfully!",
-          "success"
+          "success",
         );
-
         try {
-          // await getAppointments(); // make sure it's awaited if it’s async
         } catch (refreshError) {
           console.error("Error refreshing appointments:", refreshError);
           toast.error("Failed to refresh appointments!");
         }
-
         return response.data;
       } else {
-        // Handle unexpected non-200 responses
         throw new Error("Failed to update status. Please try again!");
       }
     } catch (err) {
@@ -443,21 +411,20 @@ export default function Patient() {
     console.log("filter data");
     setOpenFilter(false);
   };
- 
-
-  const filterdataapi =async()=>{
-    console.log(onVaue)
+  const filterdataapi = async () => {
+    console.log(onVaue);
     try {
-         const response = await axios.get(`${baseurl}get_patients_by_status?p_status=${onVaue}`)
-      console.log(response.data.data)
-       setRows(response.data.data);
+      const response = await axios.get(
+        `${baseurl}get_patients_by_status?p_status=${onVaue}`,
+      );
+      console.log(response.data.data);
+      setRows(response.data.data);
       setSearchApiData(response.data.data);
-      closeFitler()
+      closeFitler();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -499,7 +466,9 @@ export default function Patient() {
                           <Select
                             placeholder="Filter data"
                             displayEmpty
-                            onChange={(e)=>{setOnVaue(e.target.value)}}
+                            onChange={(e) => {
+                              setOnVaue(e.target.value);
+                            }}
                             inputProps={{
                               "aria-label": "Without label",
                             }}
@@ -521,14 +490,14 @@ export default function Patient() {
                       </TableCell>
                       <div className="d-flex justify-content-center">
                         <button
-  className="add-button ms-2"
-  onClick={(e) => {
-    e.preventDefault();   // ⛔ stop page reload
-    filterdataapi();
-  }}
->
-  Filter Data
-</button>
+                          className="add-button ms-2"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            filterdataapi();
+                          }}
+                        >
+                          Filter Data
+                        </button>
                       </div>
                     </Box>
                   </Box>
@@ -670,7 +639,7 @@ export default function Patient() {
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
                                 page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
+                                page * rowsPerPage + rowsPerPage,
                               )
                           ).map((info, i) => {
                             console.log(info);
@@ -697,7 +666,7 @@ export default function Patient() {
                                       <TableCell>
                                         {info?.deletedAt &&
                                           new Date(
-                                            info.deletedAt
+                                            info.deletedAt,
                                           ).toLocaleTimeString("en-GB", {
                                             hour: "2-digit",
                                             minute: "2-digit",
@@ -705,14 +674,13 @@ export default function Patient() {
                                       </TableCell>
                                       <TableCell>
                                         {new Date(
-                                          info?.deletedAt
+                                          info?.deletedAt,
                                         ).toLocaleDateString("en-GB")}
                                       </TableCell>
                                     </>
                                   ) : (
                                     ""
                                   )}
-
                                   <TableCell>
                                     {info?.patientNumber
                                       ? info?.patientNumber
@@ -725,7 +693,7 @@ export default function Patient() {
                                   </TableCell>
                                   <TableCell>
                                     {new Date(
-                                      info.createdAt
+                                      info.createdAt,
                                     ).toLocaleDateString("en-GB")}
                                   </TableCell>
                                   <TableCell>{info.email}</TableCell>
@@ -735,45 +703,38 @@ export default function Patient() {
                                       .map((item) => item.disease_name)
                                       .join(", ")}
                                   </TableCell>
-                                         <TableCell>
-                                        <FormControl
-                                          sx={{ m: 1, minWidth: 120 }}
-                                          size="small"
-                                          className="cont-main"
-                                        >
-                                          <Select
-                                            value={info.patient_type_new}
-                                            onChange={(e) =>
-                                              handleChangtype(
-                                                e,
-                                                info.patientId
-                                              )
-                                            }
-                                            displayEmpty
-                                            inputProps={{
-                                              "aria-label": "Without label",
-                                            }}
-                                            className="status-direct"
-                                          >
-                                            <MenuItem value="Private">
-                                              Private
-                                            </MenuItem>
-                                            <MenuItem value="Foundation">
-                                              Foundation
-                                            </MenuItem>
-                                            <MenuItem value="Insurance">
-                                              Insurance
-                                            </MenuItem>
-                                            <MenuItem value="Insurance + Private">
-                                              Insurance + Private
-                                            </MenuItem>
-                                          
-                                          </Select>
-                                        </FormControl>
-                                      </TableCell>
-
-
-
+                                  <TableCell>
+                                    <FormControl
+                                      sx={{ m: 1, minWidth: 120 }}
+                                      size="small"
+                                      className="cont-main"
+                                    >
+                                      <Select
+                                        value={info.patient_type_new}
+                                        onChange={(e) =>
+                                          handleChangtype(e, info.patientId)
+                                        }
+                                        displayEmpty
+                                        inputProps={{
+                                          "aria-label": "Without label",
+                                        }}
+                                        className="status-direct"
+                                      >
+                                        <MenuItem value="Private">
+                                          Private
+                                        </MenuItem>
+                                        <MenuItem value="Foundation">
+                                          Foundation
+                                        </MenuItem>
+                                        <MenuItem value="Insurance">
+                                          Insurance
+                                        </MenuItem>
+                                        <MenuItem value="Insurance + Private">
+                                          Insurance + Private
+                                        </MenuItem>
+                                      </Select>
+                                    </FormControl>
+                                  </TableCell>
 
                                   {showActions === true ? (
                                     <>
@@ -788,7 +749,7 @@ export default function Patient() {
                                             onChange={(e) =>
                                               handleChangefffff(
                                                 e,
-                                                info.patientId
+                                                info.patientId,
                                               )
                                             }
                                             displayEmpty
@@ -841,7 +802,7 @@ export default function Patient() {
                                             PatientDetail(
                                               e,
                                               info.patientId,
-                                              info.enquiryId
+                                              info.enquiryId,
                                             )
                                           }
                                         />

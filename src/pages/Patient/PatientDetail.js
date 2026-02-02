@@ -38,7 +38,6 @@ import {
   TableRow,
 } from "@mui/material";
 import { CopyAll, PictureAsPdf } from "@mui/icons-material";
-
 function PatientDetail() {
   const navigate = useNavigate();
   const [seekerStatus, setSeekerStatus] = React.useState({});
@@ -374,56 +373,9 @@ const gettreatment11 =async()=>{
   }
 };
 
-  // const handlesubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (isSubmitting) return; // prevent multiple clicks
-
-  //   setIsSubmitting(true);
-  //   setBlogErr({
-  //     hospital_charge: false,
-  //   });
-
-  //   if (!hospitalcharge) {
-  //     setBlogErr((prevState) => ({ ...prevState, hospitalcharge: true }));
-  //   }
-  //   if (!hospitalcharge) {
-  //     return;
-  //   }
-  //   const result = await dispatch(
-  //     AddHospitalForPatient({
-  //       id: location.state.patientId,
-  //       hospitalId: hospitalId,
-  //       treatmentId: treatmentId,
-  //       hospital_charge: hospitalcharge,
-  //     })
-  //      if (AddHospitalForPatient.rejected.match(result)) {
-  //   const allErrors = result.payload;  // array of all messages
-  //   allErrors.forEach((e) => toast.error(e));
-  //   return;
-  // }
-  //   ).unwrap();
-  //   try {
-  //     setOpen(false);
-  //     Swal.fire("Patient assigned to Hospital successfully!", "", "success");
-
-  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  //     setTreatmentId("");
-  //     setNote("");
-  //     setDate("");
-  //     setHospitalId("");
-  //     setBlogErr(false);
-  //   } catch (err) {
-  //     setOpen(false);
-  //     Swal.fire("Error!", err?.message || "An error occurred", "error");
-  //   } finally {
-  //     setIsSubmitting(false); // Re-enable button
-  //   }
-  // };
   const handlesubmitAppoint = async (e) => {
     e.preventDefault();
-
     const isOffline = statuddropdown === "offline";
-
     setAppointErr({
       note: false,
       date: false,
@@ -434,9 +386,7 @@ const gettreatment11 =async()=>{
       appHospital: false,
       hospitalcharge: false,
     });
-
     let hasError = false;
-
     if (!appHospital) {
       setAppointErr((prev) => ({ ...prev, appHospital: true }));
       hasError = true;
@@ -462,15 +412,15 @@ const gettreatment11 =async()=>{
         hasError = true;
       }
 
-      if (!drivercontact) {
-        setAppointErr((prev) => ({ ...prev, drivercontact: true }));
-        hasError = true;
-      }
+      // if (!drivercontact) {
+      //   setAppointErr((prev) => ({ ...prev, drivercontact: true }));
+      //   hasError = true;
+      // }
 
-      if (!vehicalnumber) {
-        setAppointErr((prev) => ({ ...prev, vehicalnumber: true }));
-        hasError = true;
-      }
+      // if (!vehicalnumber) {
+      //   setAppointErr((prev) => ({ ...prev, vehicalnumber: true }));
+      //   hasError = true;
+      // }
     }
 
     // If any required field is missing, stop the submission
@@ -932,6 +882,7 @@ const gettreatment11 =async()=>{
 
       if (response.data.success === true) {
         handleClose10();
+        gtdatareportsdata()
         Swal.fire("Report Added Successfully!", "", "success");
       }
       console.log("Upload successful:", response.data);
@@ -1956,8 +1907,10 @@ const handledelete = async (info, item) => {
                                                 <div>
                                                   Paid Amount - {info.paid_amount}
                                                 </div>
-                                                <PictureAsPdf
-                                                  style={{ cursor: "pointer" }}
+                                                {/* <PictureAsPdf
+                                                 
+                                                /> */}
+                                                <button className="add-button"  style={{ cursor: "pointer" }}
                                                   onClick={() => {
                                                     navigate(
                                                       "/Admin/Patient-Pdfdetails",
@@ -1967,8 +1920,7 @@ const handledelete = async (info, item) => {
                                                         },
                                                       }
                                                     );
-                                                  }}
-                                                />
+                                                  }}> PDF Download</button>
                                               </div>
                                             </div>
                                           </li>
@@ -2504,7 +2456,7 @@ const handledelete = async (info, item) => {
                       </div>
                       <div className="field-set">
                         <label>
-                          Driver Contact<span className="text-danger">*</span>
+                          Driver Contact<span className="text-danger"></span>
                         </label>
                         <input
                           type="number"
@@ -2515,15 +2467,15 @@ const handledelete = async (info, item) => {
                           onChange={(e) => setDrivercontact(e.target.value)}
                           value={drivercontact}
                         />
-                        <span style={{ color: "red" }}>
+                        {/* <span style={{ color: "red" }}>
                           {appointErr && !drivercontact
                             ? "*Please Enter the Driver Name"
                             : ""}
-                        </span>
+                        </span> */}
                       </div>
                       <div className="field-set">
                         <label>
-                          Vehicle Number<span className="text-danger">*</span>
+                          Vehicle Number<span className="text-danger"></span>
                         </label>
                         <input
                           type="type"
@@ -2534,11 +2486,11 @@ const handledelete = async (info, item) => {
                           onChange={(e) => setVehicalnumber(e.target.value)}
                           value={vehicalnumber}
                         />
-                        <span style={{ color: "red" }}>
+                        {/* <span style={{ color: "red" }}>
                           {appointErr && !vehicalnumber
                             ? "*Please Enter the Driver Name"
                             : ""}
-                        </span>
+                        </span> */}
                       </div>
                     </>
                   ) : (
@@ -2804,8 +2756,8 @@ const handledelete = async (info, item) => {
                       value={data.paymentMethod}>
                       <option>Select</option>
                       <option value="Cash">Cash</option>
-                      <option value="Upi">Online via UPI</option>
-                      <option value="Credit Card">Debit Card / Credit Card</option>
+                      <option value="UPI">Online via UPI</option>
+                      <option value="Credit/Debit Card">Debit Card / Credit Card</option>
                     </select>
                   </div>
                   <div className="field-set">

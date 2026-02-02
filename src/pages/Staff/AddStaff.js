@@ -24,14 +24,9 @@ export default function AddStaff() {
   const statusOptions = [
     "Foundation",
     "Private",
-    "Travelled",
-    "Confirmed",
-    "Pending",
-    "On Hold",
-    "Cancel",
-    "Passed Away",
-    "Local Case",
-    "Follow Up",
+    "Insurance",
+    "Insurance + Private",
+   
   ];
   const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(null);
