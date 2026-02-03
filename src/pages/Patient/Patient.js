@@ -23,7 +23,6 @@ import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
-  import { useMemo } from "react";
 import {
   Dialog,
   FormControl,
@@ -200,120 +199,42 @@ export default function Patient() {
       .finally(() => {});
   };
   const handleFilter = (event) => {
-  const value = event.target.value.toLowerCase();
-  setFilterValue(event.target.value);
-  setPage(0); // ⭐ RESET PAGE HERE
-
-  if (value === "") {
+    if (event.target.value === "") {
+      setRows(searchApiData);
+    } else {
+      const filterResult = searchApiData.filter((item) => {
+        const enquiryId = item.patientId?.toLowerCase() || "";
+        const patientNumber = item.patientNumber?.toLowerCase() || "";
+        const emailMatches = item.email.toLowerCase();
+        const name = item.patient_name?.toLowerCase() || "";
+        const p_status = item.p_status?.toLowerCase() || "";
+        const contact = item?.emergency_contact
+          ? item.emergency_contact.toString().toLowerCase()
+          : "";
+        const country = item.country?.toLowerCase() || "";
+        const patientdesiese =
+          item.patient_disease[0].disease_name?.toLowerCase() || "";
+        const searchValue = event.target.value.toLowerCase();
+        return (
+          enquiryId.includes(searchValue) ||
+          patientNumber.includes(searchValue) ||
+          country.includes(searchValue) ||
+          patientdesiese.includes(searchValue) ||
+          p_status.includes(searchValue) ||
+          contact.includes(searchValue) ||
+          name.includes(searchValue) ||
+          emailMatches.includes(searchValue)
+        );
+      });
+      setRows(filterResult);
+    }
+    setFilterValue(event.target.value);
+  };
+  const handleClearFilter = () => {
+    setFilterValue("");
     setRows(searchApiData);
-    return;
-  }
-
-  const filterResult = searchApiData.filter((item) => {
-    const enquiryId = item.patientId?.toLowerCase() || "";
-    const patientNumber = item.patientNumber?.toLowerCase() || "";
-    const email = item.email?.toLowerCase() || "";
-    const name = item.patient_name?.toLowerCase() || "";
-    const p_status = item.p_status?.toLowerCase() || "";
-    const contact = item?.emergency_contact
-      ? item.emergency_contact.toString().toLowerCase()
-      : "";
-    const country = item.country?.toLowerCase() || "";
-    const patientDisease =
-      item.patient_disease?.[0]?.disease_name?.toLowerCase() || "";
-
-    return (
-      enquiryId.includes(value) ||
-      patientNumber.includes(value) ||
-      email.includes(value) ||
-      name.includes(value) ||
-      p_status.includes(value) ||
-      contact.includes(value) ||
-      country.includes(value) ||
-      patientDisease.includes(value)
-    );
-  });
-
-  setRows(filterResult);
-};
-const handleClearFilter = () => {
-  setFilterValue("");
-  setRows(searchApiData);
-  setPage(0); // ⭐ RESET PAGE
-};
-useEffect(() => {
-  setPage(0);
-}, [rows]);
-  // const handleFilter = (event) => {
-  //   if (event.target.value === "") {
-  //     setRows(searchApiData);
-  //   } else {
-  //     const filterResult = searchApiData.filter((item) => {
-  //       const enquiryId = item.patientId?.toLowerCase() || "";
-  //       const patientNumber = item.patientNumber?.toLowerCase() || "";
-  //       const emailMatches = item.email.toLowerCase();
-  //       const name = item.patient_name?.toLowerCase() || "";
-  //       const p_status = item.p_status?.toLowerCase() || "";
-  //       const contact = item?.emergency_contact
-  //         ? item.emergency_contact.toString().toLowerCase()
-  //         : "";
-  //       const country = item.country?.toLowerCase() || "";
-  //       const patientdesiese =
-  //         item.patient_disease[0].disease_name?.toLowerCase() || "";
-  //       const searchValue = event.target.value.toLowerCase();
-  //       return (
-  //         enquiryId.includes(searchValue) ||
-  //         patientNumber.includes(searchValue) ||
-  //         country.includes(searchValue) ||
-  //         patientdesiese.includes(searchValue) ||
-  //         p_status.includes(searchValue) ||
-  //         contact.includes(searchValue) ||
-  //         name.includes(searchValue) ||
-  //         emailMatches.includes(searchValue)
-  //       );
-  //     });
-  //     setRows(filterResult);
-  //   }
-  //   setFilterValue(event.target.value);
-  // };
-  // const handleClearFilter = () => {
-  //   setFilterValue("");
-  //   setRows(searchApiData);
-  // };
+  };
   console.log(seekerStatus);
-
-
-const filteredRows = useMemo(() => {
-  if (!filterValue) return searchApiData; // return all data if no filter
-
-  const value = filterValue.toLowerCase();
-
-  return searchApiData.filter((item) => {
-    const enquiryId = item.patientId?.toLowerCase() || "";
-    const patientNumber = item.patientNumber?.toLowerCase() || "";
-    const email = item.email?.toLowerCase() || "";
-    const name = item.patient_name?.toLowerCase() || "";
-    const p_status = item.p_status?.toLowerCase() || "";
-    const contact = item?.emergency_contact
-      ? item.emergency_contact.toString().toLowerCase()
-      : "";
-    const country = item.country?.toLowerCase() || "";
-    const patientDisease =
-      item.patient_disease?.[0]?.disease_name?.toLowerCase() || "";
-
-    return (
-      enquiryId.includes(value) ||
-      patientNumber.includes(value) ||
-      email.includes(value) ||
-      name.includes(value) ||
-      p_status.includes(value) ||
-      contact.includes(value) ||
-      country.includes(value) ||
-      patientDisease.includes(value)
-    );
-  });
-}, [filterValue, searchApiData]);
-
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_patients`, {
