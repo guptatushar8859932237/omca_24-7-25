@@ -34,58 +34,145 @@ export default function EditEnquiry() {
     }
   }, [location.state?.enquiryId, Enquiry]);
   const basicSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required").min(2).max(50),
-    email: Yup.string()
-      .email("Enter valid email")
-      .required("Email is required"),
-    age: Yup.string().required("Age is required"),
-    town: Yup.string().required("Town is required"),
-    address: Yup.string().required("Address is required"),
-    emergency_contact_no: Yup.string().matches(
-      /^[0-9]{8,15}$/,
-      "Phone number must be Digit and between 8-15 digits",
-    ),
-    // .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
-    // .required("Phone number is required"),
-    passport_num: Yup.string().required("Passport number is required"),
-    patient_emergency_contact_no: Yup.string().matches(
-      /^[0-9]{8,15}$/,
-      "Emergency Contact must be Digit and between 8-15 digits",
-    ),
-    patient_relation_no: Yup.string().matches(
-      /^[0-9]{8,15}$/,
-      "Patient Relation Number must be Digit and between 8-15 digits",
-    ),
-    gender: Yup.string()
-      .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
-      .required("Gender is required"),
-    disease_name: Yup.string().required("Disease Name is required"),
-    country: Yup.string().required("Country is required"),
-    patient_id_proof: Yup.array().test(
-      "fileSize",
-      "Each file must be less than 2 MB",
-      (files) => {
-        if (!files || files.length === 0) return true;
-        return files.every((file) => file.size <= MAX_FILE_SIZE);
-      }
-    ),
-    patient_Profile: Yup.mixed().test(
-      "fileSize",
-      "File size must be less than 2 MB",
-      (file) => {
-        if (!file) return true;
-        return file.size <= MAX_FILE_SIZE;
-      }
-    ),
-    relation_id: Yup.mixed().test(
-      "fileSize",
-      "File size must be less than 2 MB",
-      (file) => {
-        if (!file) return true;
-        return file.size <= MAX_FILE_SIZE;
-      }
-    ),
-  });
+  name: Yup.string().required("Name is required").min(2).max(50),
+  email: Yup.string().email("Enter valid email").required("Email is required"),
+  age: Yup.string().required("Age is required"),
+  town: Yup.string().required("Town is required"),
+  address: Yup.string().required("Address is required"),
+  passport_num: Yup.string().required("Passport number is required"),
+  gender: Yup.string()
+    .oneOf(["Male", "Female", "Others"])
+    .required("Gender is required"),
+
+  country: Yup.string().required("Country is required"),
+  disease_name: Yup.string().required("Disease Name is required"),
+
+  emergency_contact_no: Yup.string()
+    .matches(/^[0-9]{8,15}$/, "Invalid number"),
+
+  patient_emergency_contact_no: Yup.string()
+    .matches(/^[0-9]{8,15}$/, "Invalid number"),
+
+  /* ===========================
+     ATTENDANT CONDITIONAL FIELDS
+     =========================== */
+
+  patient_relation_name: Yup.string().when("has_relation", {
+    is: true,
+    then: (schema) => schema.required("Attendant name is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+
+  patient_relation: Yup.string().when("has_relation", {
+    is: true,
+    then: (schema) => schema.required("Relationship is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+
+  patient_relation_no: Yup.string().when("has_relation", {
+    is: true,
+    then: (schema) =>
+      schema
+        .required("Attendant contact is required")
+        .matches(/^[0-9]{8,15}$/, "Invalid number"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+
+  patient_relation_address: Yup.string().when("has_relation", {
+    is: true,
+    then: (schema) => schema.required("Attendant address is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+
+  /* ===========================
+     FILES (NOT MANDATORY)
+     =========================== */
+
+  patient_id_proof: Yup.array().test(
+    "fileSize",
+    "Each file must be less than 2 MB",
+    (files) => {
+      if (!files || files.length === 0) return true;
+      return files.every((file) => file.size <= MAX_FILE_SIZE);
+    }
+  ),
+
+  patient_Profile: Yup.mixed().test(
+    "fileSize",
+    "File size must be less than 2 MB",
+    (value) => {
+      if (!value) return true;
+      if (typeof value === "string") return true;
+      return value.size <= MAX_FILE_SIZE;
+    }
+  ),
+
+  relation_id: Yup.mixed().test(
+    "fileSize",
+    "File size must be less than 2 MB",
+    (value) => {
+      if (!value) return true;
+      if (typeof value === "string") return true;
+      return value.size <= MAX_FILE_SIZE;
+    }
+  ),
+});
+
+//   const basicSchema = Yup.object().shape({
+//     name: Yup.string().required("Name is required").min(2).max(50),
+//     email: Yup.string()
+//       .email("Enter valid email")
+//       .required("Email is required"),
+//     age: Yup.string().required("Age is required"),
+//     town: Yup.string().required("Town is required"),
+//     address: Yup.string().required("Address is required"),
+//     emergency_contact_no: Yup.string().matches(
+//       /^[0-9]{8,15}$/,
+//       "Phone number must be Digit and between 8-15 digits",
+//     ),
+//     // .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
+//     // .required("Phone number is required"),
+//     passport_num: Yup.string().required("Passport number is required"),
+//     patient_emergency_contact_no: Yup.string().matches(
+//       /^[0-9]{8,15}$/,
+//       "Emergency Contact must be Digit and between 8-15 digits",
+//     ),
+//     patient_relation_no: Yup.string().matches(
+//       /^[0-9]{8,15}$/,
+//       "Patient Relation Number must be Digit and between 8-15 digits",
+//     ),
+//     gender: Yup.string()
+//       .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
+//       .required("Gender is required"),
+//     disease_name: Yup.string().required("Disease Name is required"),
+//     country: Yup.string().required("Country is required"),
+//     patient_id_proof: Yup.array().test(
+//       "fileSize",
+//       "Each file must be less than 2 MB",
+//       (files) => {
+//         if (!files || files.length === 0) return true;
+//         return files.every((file) => file.size <= MAX_FILE_SIZE);
+//       }
+//     ),
+//     patient_Profile: Yup.mixed().test(
+//   "fileSize",
+//   "File size must be less than 2 MB",
+//   (value) => {
+//     if (!value) return true;
+//     if (typeof value === "string") return true;
+//     return value.size <= MAX_FILE_SIZE;
+//   }
+// ),
+//      relation_id: Yup.mixed().test(
+//   "fileSize",
+//   "File size must be less than 2 MB",
+//   (value) => {
+//     if (!value) return true;
+//     if (typeof value === "string") return true;
+//     return value.size <= MAX_FILE_SIZE;
+//   }
+// ),
+//   });
   useEffect(() => {
     const initTooltips = () => {
       if (!window.bootstrap) return;
@@ -93,7 +180,6 @@ export default function EditEnquiry() {
       const tooltipTriggerList = document.querySelectorAll(
         '[data-bs-toggle="tooltip"]'
       );
-
       tooltipTriggerList.forEach((el) => {
         if (!el._tooltip) {
           el._tooltip = new window.bootstrap.Tooltip(el, {
@@ -157,10 +243,11 @@ export default function EditEnquiry() {
                   patient_relation_no: editenquiry?.patient_relation_no || "",
                   patient_relation_address:
                     editenquiry?.patient_relation_address || "",
-                  relation_id: null,
-                  patient_id_proof: [],
-                  patient_Profile: null,
+                  relation_id:editenquiry?.relation_id || "",
+                  patient_id_proof:editenquiry?.patient_id_proof || [],
+                  patient_Profile: editenquiry?.patient_Profile || "",
                 }}
+                
                 validationSchema={basicSchema}
                 onSubmit={async (values, { setSubmitting }) => {
                   const formData = new FormData();

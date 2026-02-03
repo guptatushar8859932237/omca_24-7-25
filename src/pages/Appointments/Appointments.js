@@ -117,35 +117,82 @@ const fullWidth = true;
     getAppFromApp()
   }, []);
   const handleFilter = (event) => {
-    if (event.target.value === "") {
-      setAppointments(searchApiData);
-    } else {
-      const filterResult = searchApiData.filter((item) => {
-        const enquiryId = item.patientId?.toLowerCase() || "";
-        const country = item.patientName?.toLowerCase() || "";
-        const Hospital_name = item.Hospital_name?.toLowerCase() || "";
-        const appointement_status =
-          item.appointement_status?.toLowerCase() || "";
-        const appointmentId = item.appointmentId?.toLowerCase() || "";
-        const disease_name = item.disease_name?.toLowerCase() || "";
-        const searchValue = event.target.value.toLowerCase();
-        return (
-          enquiryId.includes(searchValue) ||
-          Hospital_name.includes(searchValue) ||
-          appointement_status.includes(searchValue) ||
-          disease_name.includes(searchValue) ||
-          appointmentId.includes(searchValue) ||
-          country.includes(searchValue)
-        );
-      });
-      setAppointments(filterResult);
-    }
-    setFilterValue(event.target.value);
-  };
-  const handleClearFilter = () => {
-    setFilterValue("");
+  const value = event.target.value.toLowerCase();
+  setFilterValue(event.target.value);
+  setPage(0); // ⭐ IMPORTANT
+
+  if (value === "") {
     setAppointments(searchApiData);
-  };
+    return;
+  }
+
+  const filterResult = searchApiData.filter((item) => {
+    const enquiryId = item.patientId?.toLowerCase() || "";
+    const country = item.patientName?.toLowerCase() || "";
+    const Hospital_name = item.Hospital_name?.toLowerCase() || "";
+    const appointement_status =
+      item.appointement_status?.toLowerCase() || "";
+    const appointmentId = item.appointmentId?.toLowerCase() || "";
+    const disease_name = item.disease_name?.toLowerCase() || "";
+
+    return (
+      enquiryId.includes(value) ||
+      Hospital_name.includes(value) ||
+      appointement_status.includes(value) ||
+      disease_name.includes(value) ||
+      appointmentId.includes(value) ||
+      country.includes(value)
+    );
+  });
+
+  setAppointments(filterResult);
+};
+
+  // const handleFilter = (event) => {
+  //   if (event.target.value === "") {
+  //     setAppointments(searchApiData);
+  //   } else {
+  //     const filterResult = searchApiData.filter((item) => {
+  //       const enquiryId = item.patientId?.toLowerCase() || "";
+  //       const country = item.patientName?.toLowerCase() || "";
+  //       const Hospital_name = item.Hospital_name?.toLowerCase() || "";
+  //       const appointement_status =
+  //         item.appointement_status?.toLowerCase() || "";
+  //       const appointmentId = item.appointmentId?.toLowerCase() || "";
+  //       const disease_name = item.disease_name?.toLowerCase() || "";
+  //       const searchValue = event.target.value.toLowerCase();
+  //       return (
+  //         enquiryId.includes(searchValue) ||
+  //         Hospital_name.includes(searchValue) ||
+  //         appointement_status.includes(searchValue) ||
+  //         disease_name.includes(searchValue) ||
+  //         appointmentId.includes(searchValue) ||
+  //         country.includes(searchValue)
+  //       );
+  //     });
+  //     setAppointments(filterResult);
+  //   }
+  //   setFilterValue(event.target.value);
+  // };
+  // const handleClearFilter = () => {
+  //   setFilterValue("");
+  //   setAppointments(searchApiData);
+  // };
+  const handleClearFilter = () => {
+  setFilterValue("");
+  setAppointments(searchApiData);
+  setPage(0); // ⭐ IMPORTANT
+};
+const handleTabChange = (_, newVal) => {
+  setTabValue(newVal);
+
+  if (newVal === 0) {
+    setPage(0);     // CRM tab
+  } else {
+    setPageAPP(0);  // APP tab
+  }
+};
+
   const handleSampleFile = () => {
     fetch(`${baseurl}export_appointments`, {
       headers: {
@@ -196,9 +243,9 @@ const fullWidth = true;
     });
   };
 
-   const handleTabChange = (_, newVal) => {
-    setTabValue(newVal);
-  };
+  //  const handleTabChange = (_, newVal) => {
+  //   setTabValue(newVal);
+  // };
 
   const getAppFromApp = async ()=>{
       try {
@@ -209,7 +256,13 @@ const fullWidth = true;
         console.log(error)
       }
   }
+useEffect(() => {
+  setPage(0);
+}, [appointments]);
 
+useEffect(() => {
+  setPageAPP(0);
+}, [dataApp]);
 // const handleTabChange = (_, newVal) => {
 //   setTabValue(newVal);
 //   setPageAPP(0); // only TAB-2 reset
@@ -357,7 +410,7 @@ const handleClose = () => setOpen(false);
                               <TableCell>
                                 {pdfRowLimit
                                   ? i + 1
-                                  : page * rowsPerPage + i + 1}
+                                  : pageAPP * rowsPerPageAPP + i + 1}
                               </TableCell>
                               <TableCell>{info.patientId}</TableCell>
                               <TableCell>{info.patientName}</TableCell>
@@ -502,7 +555,7 @@ const handleClose = () => setOpen(false);
                               <TableCell>
                                 {pdfRowLimit
                                   ? i + 1
-                                  : page * rowsPerPage + i + 1}
+                                  :pageAPP * rowsPerPageAPP + i + 1}
                               </TableCell>
                               <TableCell>{info.name}</TableCell>
                               <TableCell>{info.email}</TableCell>

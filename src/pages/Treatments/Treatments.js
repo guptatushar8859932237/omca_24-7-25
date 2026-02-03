@@ -235,6 +235,10 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import ClearIcon from "@mui/icons-material/Clear";
 import { usePDF } from "react-to-pdf";
 
 export default function Treatments() {
@@ -242,7 +246,8 @@ export default function Treatments() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [pdfRowLimit, setPdfRowLimit] = useState(null); // for PDF control
-
+const [filterValue, setFilterValue] = useState("");
+const [searchApiData, setSearchApiData] = useState([]);
   const dispatch = useDispatch();
   const { Treatment } = useSelector((state) => state.Treatment);
   const { toPDF, targetRef } = usePDF({ filename: "treatments.pdf" });
@@ -252,11 +257,44 @@ export default function Treatments() {
     dispatch(GetAllTreatment());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (Treatment) {
-      setRows(Treatment);
-    }
-  }, [Treatment]);
+useEffect(() => {
+  if (Treatment) {
+    setRows(Treatment);
+    setSearchApiData(Treatment); // ⭐ store original data
+    setPage(0); // safety
+  }
+}, [Treatment]);
+
+const handleFilter = (event) => {
+  const value = event.target.value.toLowerCase();
+  setFilterValue(value);
+  setPage(0); // ⭐ RESET PAGE
+
+  if (!value) {
+    setRows(searchApiData);
+    return;
+  }
+
+  const filtered = searchApiData.filter((item) => {
+    const name = item.course_name?.toLowerCase() || "";
+    const price = item.course_price?.toString().toLowerCase() || "";
+    const country = item.most_demanded_country?.toLowerCase() || "";
+
+    return (
+      name.includes(value) ||
+      price.includes(value) ||
+      country.includes(value)
+    );
+  });
+
+  setRows(filtered);
+};
+
+const handleClearFilter = () => {
+  setFilterValue("");
+  setRows(searchApiData);
+  setPage(0); // ⭐ RESET PAGE
+};
 
   const handlePdfGeneration = () => {
     const maxRows = rows.length || 1;
@@ -295,6 +333,9 @@ export default function Treatments() {
     });
   };
 
+  useEffect(() => {
+  setPage(0);
+}, [rows]);
   const handledelet = (e, hospitalId) => {
     e.preventDefault();
 
@@ -354,6 +395,27 @@ export default function Treatments() {
                   <h4 className="page-title mb-0">Manage Treatments</h4>
                 </div>
                 <div className="search-btn-main">
+                  <TextField
+  className="field-count"
+  sx={{ width: "220px", mr: 2 }}
+  label="Search"
+  size="small"
+  value={filterValue}
+  onChange={handleFilter}
+  InputLabelProps={{ shrink: true }}
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        {filterValue && (
+          <IconButton onClick={handleClearFilter}>
+            <ClearIcon />
+          </IconButton>
+        )}
+      </InputAdornment>
+    ),
+  }}
+/>
+
                   <div>
                     <Link to="/Admin/add-treatments" className="add-button">
                       <i className="fa fa-plus"></i> New Treatment

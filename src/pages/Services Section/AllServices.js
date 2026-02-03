@@ -88,32 +88,60 @@ export default function AllServices() {
     }
   };
 
-  const handleFilter = (event) => {
-    const value = event.target.value.toLowerCase();
-    setFilterValue(value);
-    if (!value) {
-      setRows(searchApiData);
-      return;
-    }
-    const filtered = searchApiData.filter((item) => {
-      const id = item.serviceId?.toLowerCase() || "";
-      const name = item.serviceName?.toLowerCase() || "";
-      const price = item.price?.toString().toLowerCase() || "";
-      const duration = item.duration?.toLowerCase() || "";
-      return (
-        id.includes(value) ||
-        name.includes(value) ||
-        price.includes(value) ||
-        duration.includes(value)
-      );
-    });
-    setRows(filtered);
-  };
+  // const handleFilter = (event) => {
+  //   const value = event.target.value.toLowerCase();
+  //   setFilterValue(value);
+  //   if (!value) {
+  //     setRows(searchApiData);
+  //     return;
+  //   }
+  //   const filtered = searchApiData.filter((item) => {
+  //     const id = item.serviceId?.toLowerCase() || "";
+  //     const name = item.serviceName?.toLowerCase() || "";
+  //     const price = item.price?.toString().toLowerCase() || "";
+  //     const duration = item.duration?.toLowerCase() || "";
+  //     return (
+  //       id.includes(value) ||
+  //       name.includes(value) ||
+  //       price.includes(value) ||
+  //       duration.includes(value)
+  //     );
+  //   });
+  //   setRows(filtered);
+  // };
+const handleFilter = (event) => {
+  const value = event.target.value.toLowerCase();
+  setFilterValue(value);
+  setPage(0); // ⭐ IMPORTANT
 
-  const handleClearFilter = () => {
-    setFilterValue("");
+  if (!value) {
     setRows(searchApiData);
-  };
+    return;
+  }
+
+  const filtered = searchApiData.filter((item) => {
+    const id = item.serviceId?.toLowerCase() || "";
+    const name = item.serviceName?.toLowerCase() || "";
+    const price = item.price?.toString().toLowerCase() || "";
+    const duration = item.duration?.toLowerCase() || "";
+
+    return (
+      id.includes(value) ||
+      name.includes(value) ||
+      price.includes(value) ||
+      duration.includes(value)
+    );
+  });
+
+  setRows(filtered);
+};
+
+ const handleClearFilter = () => {
+  setFilterValue("");
+  setRows(searchApiData);
+  setPage(0); // ⭐ IMPORTANT
+};
+
   const handlegetpdfdata = () => {
     const maxRows = rows.length || 1;
     Swal.fire({
@@ -147,29 +175,53 @@ export default function AllServices() {
       }
     });
   };
- const  handleclickondata =()=>{
-   setShowActions(true)
-       dispatch(GetAllServices());
- }
-  const handleclickpostdatadesltes = async () => {
-    setShowActions(false)
-    try {
-      const response = await axios.get(`${baseurl}get_deleted_services`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response) {
-        console.log(response.data.services);
-        setRows(response.data.services);
-      } else {
-        console.log("something went wrong");
-      }
-    } catch (error) {
-      console.log(error);
+const handleclickondata = () => {
+  setShowActions(true);
+  setPage(0); // ⭐ IMPORTANT
+  dispatch(GetAllServices());
+};
+const handleclickpostdatadesltes = async () => {
+  setShowActions(false);
+  setPage(0); // ⭐ IMPORTANT
+
+  try {
+    const response = await axios.get(`${baseurl}get_deleted_services`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response) {
+      setRows(response.data.services);
     }
-  };
+  } catch (error) {
+    console.log(error);
+  }
+};
+useEffect(() => {
+  setPage(0);
+}, [rows]);
+
+  // const handleclickpostdatadesltes = async () => {
+  //   setShowActions(false)
+  //   try {
+  //     const response = await axios.get(`${baseurl}get_deleted_services`, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     if (response) {
+  //       console.log(response.data.services);
+  //       setRows(response.data.services);
+  //     } else {
+  //       console.log("something went wrong");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   return (
     <div className="page-wrapper">
       <div className="content">

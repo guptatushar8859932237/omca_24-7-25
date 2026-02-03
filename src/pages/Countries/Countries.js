@@ -86,7 +86,7 @@ export default function Countries() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -100,10 +100,29 @@ export default function Countries() {
       console.error(error);
     }
   };
-
+  // const handleFilter = (event) => {
+  //   const value = event.target.value.toLowerCase();
+  //   setFilterValue(value);
+  //   if (value === "") {
+  //     setRows(searchApiData);
+  //   } else {
+  //     const filtered = searchApiData.filter((item) => {
+  //       const name = item.name?.toLowerCase() || "";
+  //       const code = item.code?.toLowerCase() || "";
+  //       const dial_code = item.dial_code?.toLowerCase() || "";
+  //       return (
+  //         name.includes(value) ||
+  //         code.includes(value) ||
+  //         dial_code.includes(value)
+  //       );
+  //     });
+  //     setRows(filtered);
+  //   }
+  // };
   const handleFilter = (event) => {
     const value = event.target.value.toLowerCase();
     setFilterValue(value);
+    setPage(0); 
     if (value === "") {
       setRows(searchApiData);
     } else {
@@ -120,11 +139,14 @@ export default function Countries() {
       setRows(filtered);
     }
   };
-
   const handleClearFilter = () => {
     setFilterValue("");
     setRows(searchApiData);
+    setPage(0); // ⭐ ADD THIS
   };
+  useEffect(() => {
+    setPage(0);
+  }, [rows]);
 
   return (
     <>
@@ -187,12 +209,12 @@ export default function Countries() {
                         {rows.length > 0 &&
                         rows.slice(
                           page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
+                          page * rowsPerPage + rowsPerPage,
                         ).length > 0 ? (
                           rows
                             .slice(
                               page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
+                              page * rowsPerPage + rowsPerPage,
                             )
                             .map((info, i) => (
                               <TableRow key={info._id || i}>
@@ -212,7 +234,7 @@ export default function Countries() {
                                       onChange={() =>
                                         handleStatusToggle(
                                           info._id,
-                                          info.status
+                                          info.status,
                                         )
                                       }
                                     />

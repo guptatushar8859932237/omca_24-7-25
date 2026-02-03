@@ -243,37 +243,78 @@ useEffect(() => {
     }
   };
   const handleFilter = (event) => {
-    if (event.target.value === "") {
-      setRows(searchApiData);
-    } else {
-      const filterResult = searchApiData.filter((item) => {
-        const enquiryId = item.enquiryId?.toLowerCase() || "";
-        const emailMatches = item.email.toLowerCase();
-        const country = item.country.toLowerCase();
-        const name = item.name?.toLowerCase() || "";
-        const age = item.age?.toString().toLowerCase() || "";
-        const comtact = item.emergency_contact?.toString().toLowerCase() || "";
-        const disease_name = item.disease_name?.toLowerCase() || "";
-        const searchValue = event.target.value.toLowerCase();
-        return (
-          enquiryId.includes(searchValue) ||
-          age.includes(searchValue) ||
-          comtact.includes(searchValue) ||
-          country.includes(searchValue) ||
-          disease_name.includes(searchValue) ||
-          name.includes(searchValue) ||
-          emailMatches.includes(searchValue) ||
-          name.includes(searchValue)
-        );
-      });
-      setRows(filterResult);
-    }
-    setFilterValue(event.target.value);
-  };
-  const handleClearFilter = () => {
-    setFilterValue("");
+  const value = event.target.value.toLowerCase();
+  setFilterValue(event.target.value);
+  setPage(0); // ⭐ RESET PAGE
+
+  if (value === "") {
     setRows(searchApiData);
-  };
+    return;
+  }
+
+  const filterResult = searchApiData.filter((item) => {
+    const enquiryId = item.enquiryId?.toLowerCase() || "";
+    const email = item.email?.toLowerCase() || "";
+    const country = item.country?.toLowerCase() || "";
+    const name = item.name?.toLowerCase() || "";
+    const age = item.age?.toString().toLowerCase() || "";
+    const contact =
+      item.emergency_contact?.toString().toLowerCase() || "";
+    const disease = item.disease_name?.toLowerCase() || "";
+
+    return (
+      enquiryId.includes(value) ||
+      email.includes(value) ||
+      country.includes(value) ||
+      name.includes(value) ||
+      age.includes(value) ||
+      contact.includes(value) ||
+      disease.includes(value)
+    );
+  });
+
+  setRows(filterResult);
+};
+const handleClearFilter = () => {
+  setFilterValue("");
+  setRows(searchApiData);
+  setPage(0); // ⭐ RESET PAGE
+};
+useEffect(() => {
+  setPage(0);
+}, [rows]);
+  // const handleFilter = (event) => {
+  //   if (event.target.value === "") {
+  //     setRows(searchApiData);
+  //   } else {
+  //     const filterResult = searchApiData.filter((item) => {
+  //       const enquiryId = item.enquiryId?.toLowerCase() || "";
+  //       const emailMatches = item.email.toLowerCase();
+  //       const country = item.country.toLowerCase();
+  //       const name = item.name?.toLowerCase() || "";
+  //       const age = item.age?.toString().toLowerCase() || "";
+  //       const comtact = item.emergency_contact?.toString().toLowerCase() || "";
+  //       const disease_name = item.disease_name?.toLowerCase() || "";
+  //       const searchValue = event.target.value.toLowerCase();
+  //       return (
+  //         enquiryId.includes(searchValue) ||
+  //         age.includes(searchValue) ||
+  //         comtact.includes(searchValue) ||
+  //         country.includes(searchValue) ||
+  //         disease_name.includes(searchValue) ||
+  //         name.includes(searchValue) ||
+  //         emailMatches.includes(searchValue) ||
+  //         name.includes(searchValue)
+  //       );
+  //     });
+  //     setRows(filterResult);
+  //   }
+  //   setFilterValue(event.target.value);
+  // };
+  // const handleClearFilter = () => {
+  //   setFilterValue("");
+  //   setRows(searchApiData);
+  // };
   const [age, setAge] = React.useState("");
   const handleChange3 = (event) => {
     setAge(event.target.value);

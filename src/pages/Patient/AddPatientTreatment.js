@@ -63,7 +63,14 @@ export default function AddPatientTreatment() {
       .of(Yup.string().required("Service ID is required"))
       .min(1, "Select at least one service"),
     totalCharge: Yup.string().required("Total Charge is required"),
-    amount_paid: Yup.string().required("Amount Paid is required"),
+    // amount_paid: Yup.string().required("Amount Paid is required"),
+     amount_paid: Yup.number().required("Amount Paid is required").typeError("Amount Paid must be a number")
+    .required("Amount Paid is required")            // ✅ REQUIRED
+    .min(1, "Amount Paid must be greater than 0")   // ✅ no 0 or negative
+    .max(
+      Yup.ref("totalCharge"),
+      "Amount Paid cannot be greater than Total Charge"
+    ),   
   });
 
   console.log(personName);

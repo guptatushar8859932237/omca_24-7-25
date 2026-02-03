@@ -1650,13 +1650,6 @@ const handledelete = async (info, item) => {
                             <div className="pass-detail">
                               <div className="img-patient">
                                 <h6>Patient Image</h6>
-                                {/* <img
-                                    src={`${image}${info.photo}`}
-                                    alt="no image"
-                                    className="rounded-circle shadow"
-                                    width="100"
-                                    height="100"
-                                  /> */}
                                 {info.photo ? (
                                   <img
                                     src={`${image}${info.photo}`}
@@ -1667,7 +1660,7 @@ const handledelete = async (info, item) => {
                                   />
                                 ) : (
                                   <img
-                                    src={avtar} // e.g., defaultAvatar from your import
+                                    src={avtar} 
                                     alt="avatar"
                                     className="rounded-circle shadow"
                                     width="100"
@@ -1730,7 +1723,6 @@ const handledelete = async (info, item) => {
                                     height="100"
                                   />)
                                 }
-
                               </div>
                               <div className="id-proof">
                                 <h6>Attende id Proof </h6>

@@ -13,15 +13,10 @@ import uploadImage from "../../img/image (6).png"
 export default function AddEnquiry() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [autoFilled, setAutoFilled] = useState(false);
-  const phoneDebounceRef = useRef(null);
-  const passportDebounceRef = useRef(null);
   const [showAttendant, setShowAttendant] = useState(false);
   const { Treatment, error } = useSelector((state) => state.Treatment);
   const { loading } = useSelector((state) => state.Enquiry);
   const { Countries } = useSelector((state) => state.Countries);
-  const [foundPatientByPhone, setFoundPatientByPhone] = useState(null);
-  const [foundPatientByPassport, setFoundPatientByPassport] = useState(null);
   const [passportValue, setPassportValue] = useState("");
   const [phoneValue, setPhoneValue] = useState("");
   useEffect(() => {
@@ -33,23 +28,43 @@ export default function AddEnquiry() {
     disease_name: Yup.string().required("Disease name is required"),
     country: Yup.string().required("Country is required"),
     address: Yup.string().required("Address is required"),
+    patient_relation_name: Yup.string().when("showAttendant", {
+    is: true,
+    then: (schema) => schema.required("Attendant name is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+    patient_relation: Yup.string().when("showAttendant", {
+    is: true,
+    then: (schema) => schema.required("Relationship is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+    patient_relation_address: Yup.string().when("showAttendant", {
+    is: true,
+    then: (schema) => schema.required("Attendant address is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
     email: Yup.string().matches(emailRegex, "Invalid email").required(),
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
+    passport_num: Yup.string().required("Passport is required"),
+      showAttendant: Yup.boolean(),
     emergency_contact_no: Yup.string()
       .matches(
         /^[0-9]{8,15}$/,
         "Phone number must be Digit and between 8-15 digits",
       )
       .required("Phone number is required"),
-    passport_num: Yup.string().required("Passport is required"),
+    patient_relation_no: Yup.string().when("showAttendant", {
+    is: true,
+    then: (schema) =>
+      schema
+        .matches(/^[0-9]{8,15}$/, "Invalid phone number")
+        .required("Attendant contact number is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
     patient_emergency_contact_no: Yup.string().matches(
       /^[0-9]{8,15}$/,
       "Emergency Contact must be Digit and between 8-15  digits",
-    ),
-    patient_relation_no: Yup.string().matches(
-      /^[0-9]{8,15}$/,
-      "Patient Relation Number must be Digit and between 8-15 digits",
     ),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"])
@@ -130,6 +145,7 @@ export default function AddEnquiry() {
                   platform: "1",
                   patient_Profile: null,
                   dial_code: "",
+                  showAttendant: false,
                 }}
                 validationSchema={basicSchema}
                 onSubmit={async (values, { setSubmitting }) => {
@@ -197,16 +213,13 @@ export default function AddEnquiry() {
                                   );
                                   return;
                                 }
-
                                 const data = await fetchPatientByPhoneOrPassport({
                                   passport_num: value,
                                 });
-
                                 if (data) {
                                   const selectedCountry = Countries?.find(
                                     (c) => c.name === data.country,
                                   );
-
                                   setValues((prev) => ({
                                     ...prev,
                                     ...data,
@@ -252,91 +265,7 @@ export default function AddEnquiry() {
                           <label>
                             Country<span className="text-danger">*</span>
                           </label>
-                          {/* <Field name="country">
-                            {({ field, form }) => (
-                              <>
-                                <FormControl fullWidth size="small">
-                                  <Autocomplete
-                                    options={Countries || []} // your countries array
-                                    getOptionLabel={(option) => option.name} // display the country name
-                                    onChange={(event, newValue) => {
-                                      form.setFieldValue(
-                                        "country",
-                                        newValue?.name || "",
-                                      );
-                                      form.setFieldValue(
-                                        "dial_code",
-                                        newValue?.dial_code || "",
-                                      );
-                                      console.log("Selected:", newValue);
-                                    }}
-                                    renderInput={(params) => (
-                                      <TextField
-                                        {...params}
-                                        placeholder="Select Country"
-                                        variant="outlined"
-                                        size="small"
-                                      />
-                                    )}
-                                    isOptionEqualToValue={(option, value) =>
-                                      option.name === value.name
-                                    }
-                                  />
-                                </FormControl>
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
-                                />
-                              </>
-                            )}
-                          </Field> */}
-                          {/* <Field name="country">
-                            {({ form }) => (
-                              <Autocomplete
-                                options={Countries || []}
-                                value={form.values.country} // 👈 controlled
-                                getOptionLabel={(option) => option?.name || ""}
-                                isOptionEqualToValue={(option, value) =>
-                                  option.name === value?.name
-                                }
-                                onChange={(event, newValue) => {
-                                  form.setFieldValue("country", newValue);
-                                  form.setFieldValue(
-                                    "dial_code",
-                                    newValue?.dial_code || "",
-                                  );
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    placeholder="Select Country"
-                                    size="small"
-                                  />
-                                )}
-                              />
-                            )}
-                          </Field> */}
-                          {/* <Field name="country">
-  {({ form }) => (
-    <Autocomplete
-      options={Countries || []}
-      getOptionLabel={(option) => option?.name || ""}
-      value={
-        Countries?.find(c => c.name === form.values.country) || null
-      }
-      onChange={(event, newValue) => {
-        form.setFieldValue("country", newValue?.name || "");
-        form.setFieldValue("dial_code", newValue?.dial_code || "");
-      }}
-      renderInput={(params) => (
-        <TextField {...params} placeholder="Select Country" size="small" />
-      )}
-    />
-  )}
-</Field> */}
-
-                          <Field name="country">
+                         <Field name="country">
                             {({ form }) => {
                               const selectedCountry =
                                 Countries?.find(
@@ -411,16 +340,13 @@ export default function AddEnquiry() {
                                   );
                                   return;
                                 }
-
                                 const data = await fetchPatientByPhoneOrPassport({
                                   emergency_contact_no: value,
                                 });
-
                                 if (data) {
                                   const selectedCountry = Countries?.find(
                                     (c) => c.name === data.country,
                                   );
-
                                   setValues((prev) => ({
                                     ...prev,
                                     ...data,
@@ -428,7 +354,6 @@ export default function AddEnquiry() {
                                     dial_code: selectedCountry?.dial_code || "",
                                     emergency_contact_no: value,
                                   }));
-
                                   Swal.fire(
                                     "Patient Found",
                                     "Auto-filled",
@@ -461,7 +386,6 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -479,7 +403,6 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -573,7 +496,6 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -608,7 +530,6 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -732,71 +653,6 @@ export default function AddEnquiry() {
                           />
                         </div>
                       </div>
-                      {/* <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Treatment Name{" "}
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field name="disease_name">
-                            {({ form, meta }) => (
-                              <>
-                                <Autocomplete
-                                  options={Treatment || []}
-                                  getOptionLabel={(option) =>
-                                    option.course_name || ""
-                                  }
-                                  value={
-                                    Treatment?.find(
-                                      (item) =>
-                                        item.course_name ===
-                                        form.values.disease_name,
-                                    ) || null
-                                  }
-                                  onChange={(e, newValue) => {
-                                    form.setFieldValue(
-                                      "disease_name",
-                                      newValue ? newValue.course_name : "",
-                                    );
-                                    form.setFieldValue(
-                                      "treatment_course_id",
-                                      newValue ? newValue.course_id : null,
-                                    );
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      size="small"
-                                      placeholder="Select Disease"
-                                      error={
-                                        meta.touched && Boolean(meta.error)
-                                      }
-                                    />
-                                  )}
-                                  sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                      padding: "0px",
-                                    },
-                                  }}
-                                />
-                                {meta.touched && meta.error && (
-                                  <div className="text-danger">
-                                    {meta.error}
-                                  </div>
-                                )}
-                              </>
-                            )}
-                          </Field>
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Treating In<span className="text-danger">*</span>
-                          </label>
-                          <Field className="form-control" name="Notes" />
-                        </div>
-                      </div> */}
                     </div>
                     <hr />
                     <div className="d-flex">
@@ -910,7 +766,7 @@ export default function AddEnquiry() {
                       <div className="col-sm-12">
                         <div className="field-set">
                           <div className="form-check mb-3">
-                            <input
+                            {/* <input
                               type="checkbox"
                               className="form-check-input"
                               id="addAttendant"
@@ -918,7 +774,17 @@ export default function AddEnquiry() {
                               onChange={(e) =>
                                 setShowAttendant(e.target.checked)
                               }
-                            />
+                            /> */}
+                            <input
+  type="checkbox"
+  className="form-check-input"
+  id="addAttendant"
+  checked={showAttendant}
+  onChange={(e) => {
+    setShowAttendant(e.target.checked);
+    setFieldValue("showAttendant", e.target.checked);
+  }}
+/>
                             <label
                               className="form-check-label"
                               htmlFor="addAttendant"
