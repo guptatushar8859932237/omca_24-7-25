@@ -61,7 +61,7 @@ export default function EnquiryDetail() {
                 <div class="row">
                   <div class="col-md-4">
                     <div className="field-set">
-                      <label>Enquiry Id<span className="text-danger">*</span></label>
+                      <label>Enquiry Id<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -72,7 +72,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div class="col-md-4">
                     <div className="field-set">
-                      <label>Passport Number<span className="text-danger">*</span></label>
+                      <label>Passport Number<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -84,7 +84,7 @@ export default function EnquiryDetail() {
                   <div className="col-md-4">
                     <div className="field-set">
                       <label>Phone No / WhatsApp With Country Code
-                        <span className="text-danger">*</span>
+                        <span className="text-danger"></span>
                       </label>
                       <div className="country-code">
                         <input
@@ -104,7 +104,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Emergency Contact Number<span className="text-danger">*</span></label>
+                      <label>Emergency Contact Number<span className="text-danger"></span></label>
                       <div className="country-code">
                         <input
                           class="form-control code-dial"
@@ -123,7 +123,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Patient Name<span className="text-danger">*</span></label>
+                      <label>Patient Name<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -134,7 +134,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Gender<span className="text-danger">*</span></label>
+                      <label>Gender<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -145,7 +145,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Age<span className="text-danger">*</span></label>
+                      <label>Age<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -156,7 +156,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Enq status<span className="text-danger">*</span></label>
+                      <label>Enq status<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -167,7 +167,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Email<span className="text-danger">*</span></label>
+                      <label>Email<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -178,7 +178,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Country<span className="text-danger">*</span></label>
+                      <label>Country<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="email"
@@ -189,7 +189,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Town<span className="text-danger">*</span></label>
+                      <label>Town<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -200,7 +200,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Address<span className="text-danger">*</span></label>
+                      <label>Address<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -211,7 +211,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Patient ID proof<span className="text-danger">*</span></label>
+                      <label>Patient ID proof<span className="text-danger"></span></label>
                       <div className="engpatimg">
                         {Array.isArray(row.patient_id_proof) && row.patient_id_proof.length > 0 ? (
                           row.patient_id_proof.map((img, index) => (
@@ -237,7 +237,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Patient Profile<span className="text-danger">*</span></label>
+                      <label>Patient Profile<span className="text-danger"></span></label>
                       <div className="engpatimg">
                         <img
                           src={row.patient_Profile ? `${imageUrl}${row.patient_Profile}` : `${avtar}`}
@@ -252,7 +252,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Referral Name<span className="text-danger">*</span></label>
+                      <label>Referral Name<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -263,7 +263,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Treatment Name<span className="text-danger">*</span></label>
+                      <label>Treatment Name<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -274,7 +274,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Treating In Country<span className="text-danger">*</span></label>
+                      <label>Treating In Country<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -296,7 +296,7 @@ export default function EnquiryDetail() {
                     <div className="row">
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Attendant Full Name<span className="text-danger">*</span></label>
+                          <label>Attendant Full Name<span className="text-danger"></span></label>
                           <input
                             class="form-control"
                             type="text"
@@ -307,7 +307,7 @@ export default function EnquiryDetail() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Relationship with Patient<span className="text-danger">*</span></label>
+                          <label>Relationship with Patient<span className="text-danger"></span></label>
                           <input
                             class="form-control"
                             type="text"
@@ -318,7 +318,7 @@ export default function EnquiryDetail() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Attendant Contact Number<span className="text-danger">*</span></label>
+                          <label>Attendant Contact Number<span className="text-danger"></span></label>
                           <input
                             class="form-control"
                             type="text"
@@ -329,7 +329,7 @@ export default function EnquiryDetail() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Attendant ID Proof<span className="text-danger">*</span></label>
+                          <label>Attendant ID Proof<span className="text-danger"></span></label>
                           <div className="engpatimg">
                             <img src={`${imageUrl}${row.patient_relation_id}`} alt="No Document" />
                           </div>
@@ -337,7 +337,7 @@ export default function EnquiryDetail() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Attendant Address<span className="text-danger">*</span></label>
+                          <label>Attendant Address<span className="text-danger"></span></label>
                           <input
                             class="form-control"
                             type="text"
@@ -379,7 +379,7 @@ export default function EnquiryDetail() {
                                                 {info.note}
                                               </a>
                                               <div>date-{new Date(info.date).toLocaleDateString("en-GB")}</div>
-                                              {/* <span className="time">treatment due payment-{info.treatment_due_payment}</span> */}
+                                              {/* {/ <span className="time">treatment due payment-{info.treatment_due_payment}</span> /} */}
                                             </div>
                                           </div>
                                         </li>

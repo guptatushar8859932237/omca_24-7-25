@@ -1,21 +1,45 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
 import { baseurl } from "../Basurl/Baseurl"
-
-export const GetAllPatients = createAsyncThunk('patient/GetAllPatients', async () => {
-  try {
-    const response = await axios.get(`${baseurl}all_patients`, {
-      headers: {
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    });
-    return response.data.details;
-  } catch (error) {
-    console.error("Error fetching patient:", error.response?.data || error.message);
-    throw error; // Rethrow to propagate the error in createAsyncThunk
+export const GetAllPatients = createAsyncThunk(
+  "patient/GetAllPatients",
+  async ({ page = 1 }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${baseurl}all_patients?page=${page}`,
+        {}, // 👈 body (empty agar kuch send nahi karna)
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to fetch patients" }
+      );
+    }
   }
-});
+);
+
+
+
+// export const GetAllPatients = createAsyncThunk('patient/GetAllPatients', async () => {
+//   try {
+//     const response = await axios.get(`${baseurl}all_patients`, {
+//       headers: {
+//         "Authorization": `Bearer ${localStorage.getItem("token")}`,
+//         "Content-Type": "application/json",
+//       },
+//     });
+//     return response.data.details;
+//   } catch (error) {
+//     console.error("Error fetching patient:", error.response?.data || error.message);
+//     throw error; // Rethrow to propagate the error in createAsyncThunk
+//   }
+// });
 export const AddAllPatients = createAsyncThunk(
   "patient/AddAllPatients",
   async (formData, { rejectWithValue }) => {
@@ -99,13 +123,6 @@ export const PainDService = createAsyncThunk(
     }
   })
 
-
-
-
-
-
-
-
 export const StatusPatient = createAsyncThunk(
   "patient/StatusPatient",
   async (object, { rejectWithValue }) => {
@@ -140,10 +157,16 @@ export const StatusPatient = createAsyncThunk(
 const patientSlice = createSlice({
   name: 'patient',
   initialState: {
-    patient: [],
-    loading: false,
-    error: null
+  patient: [],
+  pagination: {
+    totalRecords: 0,
+    currentPage: 1,
+    totalPages: 0,
+    perPage: 25,
   },
+  loading: false,
+  error: null,
+},
   reducers: {
     addPatient: (state, action) => {
       state.staffUserslice.push(action.payload)
@@ -156,9 +179,10 @@ const patientSlice = createSlice({
         state.loading = true;
         state.error = null
       })
-      .addCase(GetAllPatients.fulfilled, (state, action) => {
+     .addCase(GetAllPatients.fulfilled, (state, action) => {
         state.loading = false;
-        state.patient = action.payload
+        state.patient = action.payload.details;
+        state.pagination = action.payload.pagination;
       })
       .addCase(GetAllPatients.rejected, (state, action) => {
         state.loading = false;

@@ -37,7 +37,10 @@ export default function Patient() {
   const role = localStorage.getItem("Role");
   const navigate = useNavigate();
   const [showActions, setShowActions] = useState(true);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(0);
+  // const [rowsPerPage, setRowsPerPage] = useState(25);
+  // const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [onVaue, setOnVaue] = useState("");
   const [fullWidth, setFullWidth] = React.useState(true);
@@ -45,6 +48,7 @@ export default function Patient() {
   const [openfilter, setOpenFilter] = React.useState(false);
   const [rows, setRows] = useState([]);
   const dispatch = useDispatch();
+  const { pagination } = useSelector((state) => state.patient);
   const { patient, loading, error } = useSelector((state) => state.patient);
   const { Treatment } = useSelector((state) => state.Treatment);
   const [seekerStatus, setSeekerStatus] = React.useState({});
@@ -75,10 +79,10 @@ export default function Patient() {
       setTreatmentname(Treatment);
     }
   }, [Treatment]);
-  useEffect(() => {
-    dispatch(GetAllPatients());
-    console.log(error, patient);
-  }, [dispatch]);
+  
+ useEffect(() => {
+  dispatch(GetAllPatients({ page, limit: rowsPerPage }));
+}, [dispatch, page, rowsPerPage]);
   useEffect(() => {
     if (patient) {
       setRows(patient);
@@ -86,10 +90,10 @@ export default function Patient() {
     }
   }, [patient]);
   console.log(patient);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+ const handleChangeRowsPerPage = (event) => {
+  setRowsPerPage(+event.target.value);
+  setPage(1); // ✅ backend page 1-based
+};
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -630,79 +634,74 @@ export default function Patient() {
                       <TableBody>
                         {rows.length === 0 ? (
                           <TableRow>
-                            <TableCell colSpan={8} align="center">
+                            <TableCell colSpan={15} align="center">
                               No data found
                             </TableCell>
                           </TableRow>
                         ) : (
-                          (pdfRowLimit
-                            ? rows.slice(0, pdfRowLimit)
-                            : rows.slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage,
-                              )
-                          ).map((info, i) => {
-                            console.log(info);
-                            return (
-                              <>
-                                <TableRow
-                                  role="checkbox"
-                                  tabIndex={-1}
-                                  key={info.code}
+                          rows.map((info, i) => (
+                            <TableRow key={info.patientId}>
+                              <TableCell>
+                                {(page - 1) * rowsPerPage + i + 1}
+                              </TableCell>
+                              <TableCell>
+                                {info.patientNumber || info.patientId}
+                              </TableCell>
+                              <TableCell style={{cursor:"pointer"}}  onClick={(e) =>
+                                        PatientDetail(
+                                          e,
+                                          info.patientId,
+                                          info.enquiryId,
+                                        )
+                                      }>{info.patient_name}</TableCell>
+                              <TableCell>
+                                {info.emergency_contact ||
+                                  info.emergency_contact_no}
+                              </TableCell>
+                              <TableCell>
+                                {new Date(info.createdAt).toLocaleDateString(
+                                  "en-GB",
+                                )}
+                              </TableCell>
+                              <TableCell>{info.email}</TableCell>
+                              <TableCell>{info.country}</TableCell>
+                              <TableCell>
+                                {info.patient_disease
+                                  ?.map((d) => d.disease_name)
+                                  .join(", ")}
+                              </TableCell>
+                              <TableCell>
+                                <FormControl
+                                  sx={{ m: 1, minWidth: 120 }}
+                                  size="small"
+                                  className="cont-main"
                                 >
-                                  <TableCell>
-                                    {pdfRowLimit
-                                      ? i + 1
-                                      : page * rowsPerPage + i + 1}
-                                  </TableCell>
-                                  {showActions === false ? (
-                                    <>
-                                      <TableCell>
-                                        {info?.deletedBy?.name}
-                                      </TableCell>
-                                      <TableCell>
-                                        {info?.deletedBy?.email}
-                                      </TableCell>
-                                      <TableCell>
-                                        {info?.deletedAt &&
-                                          new Date(
-                                            info.deletedAt,
-                                          ).toLocaleTimeString("en-GB", {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                          })}
-                                      </TableCell>
-                                      <TableCell>
-                                        {new Date(
-                                          info?.deletedAt,
-                                        ).toLocaleDateString("en-GB")}
-                                      </TableCell>
-                                    </>
-                                  ) : (
-                                    ""
-                                  )}
-                                  <TableCell>
-                                    {info?.patientNumber
-                                      ? info?.patientNumber
-                                      : info.patientId}
-                                  </TableCell>
-                                  <TableCell>{info.patient_name}</TableCell>
-                                  <TableCell>
-                                    {info?.emergency_contact ||
-                                      info?.emergency_contact_no}
-                                  </TableCell>
-                                  <TableCell>
-                                    {new Date(
-                                      info.createdAt,
-                                    ).toLocaleDateString("en-GB")}
-                                  </TableCell>
-                                  <TableCell>{info.email}</TableCell>
-                                  <TableCell>{info.country}</TableCell>
-                                  <TableCell>
-                                    {info.patient_disease
-                                      .map((item) => item.disease_name)
-                                      .join(", ")}
-                                  </TableCell>
+                                  <Select
+                                    value={info.patient_type_new}
+                                    onChange={(e) =>
+                                      handleChangtype(e, info.patientId)
+                                    }
+                                    displayEmpty
+                                    inputProps={{
+                                      "aria-label": "Without label",
+                                    }}
+                                    className="status-direct"
+                                  >
+                                    <MenuItem value="Private">Private</MenuItem>
+                                    <MenuItem value="Foundation">
+                                      Foundation
+                                    </MenuItem>
+                                    <MenuItem value="Insurance">
+                                      Insurance
+                                    </MenuItem>
+                                    <MenuItem value="Insurance + Private">
+                                      Insurance + Private
+                                    </MenuItem>
+                                  </Select>
+                                </FormControl>
+                              </TableCell>
+                              {showActions === true ? (
+                                <>
                                   <TableCell>
                                     <FormControl
                                       sx={{ m: 1, minWidth: 120 }}
@@ -710,9 +709,9 @@ export default function Patient() {
                                       className="cont-main"
                                     >
                                       <Select
-                                        value={info.patient_type_new}
+                                        value={info.p_status}
                                         onChange={(e) =>
-                                          handleChangtype(e, info.patientId)
+                                          handleChangefffff(e, info.patientId)
                                         }
                                         displayEmpty
                                         inputProps={{
@@ -720,118 +719,78 @@ export default function Patient() {
                                         }}
                                         className="status-direct"
                                       >
-                                        <MenuItem value="Private">
-                                          Private
-                                        </MenuItem>
-                                        <MenuItem value="Foundation">
-                                          Foundation
-                                        </MenuItem>
-                                        <MenuItem value="Insurance">
-                                          Insurance
-                                        </MenuItem>
-                                        <MenuItem value="Insurance + Private">
-                                          Insurance + Private
-                                        </MenuItem>
-                                      </Select>
-                                    </FormControl>
-                                  </TableCell>
-
-                                  {showActions === true ? (
-                                    <>
-                                      <TableCell>
-                                        <FormControl
-                                          sx={{ m: 1, minWidth: 120 }}
-                                          size="small"
-                                          className="cont-main"
-                                        >
-                                          <Select
-                                            value={info.p_status}
-                                            onChange={(e) =>
-                                              handleChangefffff(
-                                                e,
-                                                info.patientId,
-                                              )
-                                            }
-                                            displayEmpty
-                                            inputProps={{
-                                              "aria-label": "Without label",
-                                            }}
-                                            className="status-direct"
-                                          >
-                                            {/* <MenuItem value="Foundation">
+                                        {/* <MenuItem value="Foundation">
                                               Foundation
                                             </MenuItem>
                                             <MenuItem value="Private">
                                               Private
-                                            </MenuItem> */}
-                                            <MenuItem value="Travelled">
-                                              {" "}
-                                              Travelled
-                                            </MenuItem>
-                                            <MenuItem value="Confirmed">
-                                              Confirmed
-                                            </MenuItem>
-                                            <MenuItem value="Pending">
-                                              Pending
-                                            </MenuItem>
-                                            <MenuItem value="On Hold">
-                                              On Hold
-                                            </MenuItem>
-                                            <MenuItem value="Treatment Completed">
-                                              Treatment Completed
-                                            </MenuItem>
-                                            <MenuItem value="Cancelled">
-                                              Cancelled
-                                            </MenuItem>
-                                            <MenuItem value="Local Case">
-                                              Local Case
-                                            </MenuItem>
-                                            <MenuItem value="Follow Up">
-                                              Follow Up
-                                            </MenuItem>
-                                            <MenuItem value="Passed Away">
-                                              Passed Away
-                                            </MenuItem>
-                                          </Select>
-                                        </FormControl>
-                                      </TableCell>
-                                      <TableCell className="action-icon">
-                                        <VisibilityIcon
-                                          className="eye-icon"
-                                          onClick={(e) =>
-                                            PatientDetail(
-                                              e,
-                                              info.patientId,
-                                              info.enquiryId,
-                                            )
-                                          }
-                                        />
-                                        <i
-                                          className="fa-solid fa-pen-to-square"
-                                          onClick={(e) =>
-                                            EditButton(e, info.patientId)
-                                          }
-                                        ></i>
-                                        {localStorage.getItem("Role") ===
-                                        "Admin" ? (
-                                          <i
-                                            className="fa-solid fa-trash"
-                                            onClick={(e) => {
-                                              handledelet(e, info.patientId);
-                                            }}
-                                          ></i>
-                                        ) : (
-                                          ""
-                                        )}
-                                      </TableCell>
-                                    </>
-                                  ) : (
-                                    ""
-                                  )}
-                                </TableRow>
-                              </>
-                            );
-                          })
+                                            </MenuItem>  */}
+                                        <MenuItem value="Travelled">
+                                          {" "}
+                                          Travelled
+                                        </MenuItem>
+                                        <MenuItem value="Confirmed">
+                                          Confirmed
+                                        </MenuItem>
+                                        <MenuItem value="Pending">
+                                          Pending
+                                        </MenuItem>
+                                        <MenuItem value="On Hold">
+                                          On Hold
+                                        </MenuItem>
+                                        <MenuItem value="Treatment Completed">
+                                          Treatment Completed
+                                        </MenuItem>
+                                        <MenuItem value="Cancelled">
+                                          Cancelled
+                                        </MenuItem>
+                                        <MenuItem value="Local Case">
+                                          Local Case
+                                        </MenuItem>
+                                        <MenuItem value="Follow Up">
+                                          Follow Up
+                                        </MenuItem>
+                                        <MenuItem value="Passed Away">
+                                          Passed Away
+                                        </MenuItem>
+                                      </Select>
+                                    </FormControl>
+                                  </TableCell>
+                                  <TableCell className="action-icon">
+                                    <VisibilityIcon
+                                      className="eye-icon"
+                                      onClick={(e) =>
+                                        PatientDetail(
+                                          e,
+                                          info.patientId,
+                                          info.enquiryId,
+                                        )
+                                      }
+                                    />
+                                    <i
+                                      className="fa-solid fa-pen-to-square"
+                                      onClick={(e) =>
+                                        EditButton(e, info.patientId)
+                                      }
+                                    ></i>
+                                    {localStorage.getItem("Role") ===
+                                    "Admin" ? (
+                                      <i
+                                        className="fa-solid fa-trash"
+                                        onClick={(e) => {
+                                          handledelet(e, info.patientId);
+                                        }}
+                                      ></i>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </TableCell>
+                                </>
+                              ) : (
+                                ""
+                              )}
+                            </TableRow>
+                          ))
                         )}
                       </TableBody>
                     </Table>
@@ -839,9 +798,9 @@ export default function Patient() {
                       <Stack spacing={2}>
                         <Pagination
                           className="page-nation"
-                          count={Math.ceil(rows.length / rowsPerPage)}
-                          page={page + 1}
-                          onChange={(event, value) => setPage(value - 1)}
+                          count={pagination.totalPages}
+                          page={page}
+                          onChange={(event, value) => setPage(value)}
                           color="primary"
                         />
                       </Stack>

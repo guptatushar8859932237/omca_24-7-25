@@ -62,6 +62,11 @@ export default function EditEnquiry() {
     then: (schema) => schema.required("Attendant name is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
+  relation_id: Yup.string().when("has_relation", {
+    is: true,
+    then: (schema) => schema.required(" Patient Relation Image is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 
   patient_relation: Yup.string().when("has_relation", {
     is: true,
@@ -69,20 +74,20 @@ export default function EditEnquiry() {
     otherwise: (schema) => schema.notRequired(),
   }),
 
-  patient_relation_no: Yup.string().when("has_relation", {
-    is: true,
-    then: (schema) =>
-      schema
-        .required("Attendant contact is required")
-        .matches(/^[0-9]{8,15}$/, "Invalid number"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+  // patient_relation_no: Yup.string().when("has_relation", {
+  //   is: true,
+  //   then: (schema) =>
+  //     schema
+  //       .required("Attendant contact is required")
+  //       .matches(/^[0-9]{8,15}$/, "Invalid number"),
+  //   otherwise: (schema) => schema.notRequired(),
+  // }),
 
-  patient_relation_address: Yup.string().when("has_relation", {
-    is: true,
-    then: (schema) => schema.required("Attendant address is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+  // patient_relation_address: Yup.string().when("has_relation", {
+  //   is: true,
+  //   then: (schema) => schema.required("Attendant address is required"),
+  //   otherwise: (schema) => schema.notRequired(),
+  // }),
 
   /* ===========================
      FILES (NOT MANDATORY)
@@ -791,17 +796,17 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Contact Number
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
                                 name="patient_relation_no"
                               />
-                              <ErrorMessage
+                              {/* <ErrorMessage
                                 name="patient_relation_no"
                                 component="div"
-                                style={{ color: "red" }}
-                              />
+                                style={{ color: "red" }} */}
+                              {/* /> */}
                             </div>
                           </div>
                           <div className="col-md-4">
@@ -809,7 +814,7 @@ export default function EditEnquiry() {
                               <label>
                                 Attendant ID Proof
                                 <span className="text-danger" data-bs-toggle="tooltip" title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
-                                  Max size: 2 MB per file" data-bs-placement="right">(i)</span>
+                                  Max size: 2 MB per file" data-bs-placement="right">* (i)</span>
                               </label>
                               <div className="engpatimg">
                                 <input
@@ -840,17 +845,17 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Address
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
                                 name="patient_relation_address"
                               />
-                              <ErrorMessage
+                              {/* <ErrorMessage
                                 name="patient_relation_address"
                                 component="div"
-                                style={{ color: "red" }}
-                              />
+                                style={{ color: "red" }} */}
+                              {/* /> */}
                             </div>
                           </div>
                         </div>

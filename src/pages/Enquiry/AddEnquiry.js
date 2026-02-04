@@ -28,9 +28,15 @@ export default function AddEnquiry() {
     disease_name: Yup.string().required("Disease name is required"),
     country: Yup.string().required("Country is required"),
     address: Yup.string().required("Address is required"),
+    // patient_relation_id: Yup.string().required("Patient Relation Image is required"),
     patient_relation_name: Yup.string().when("showAttendant", {
     is: true,
     then: (schema) => schema.required("Attendant name is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+    patient_relation_id: Yup.string().when("showAttendant", {
+    is: true,
+    then: (schema) => schema.required("Patient Relation Image is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
     patient_relation: Yup.string().when("showAttendant", {
@@ -38,11 +44,11 @@ export default function AddEnquiry() {
     then: (schema) => schema.required("Relationship is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
-    patient_relation_address: Yup.string().when("showAttendant", {
-    is: true,
-    then: (schema) => schema.required("Attendant address is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+  //   patient_relation_address: Yup.string().when("showAttendant", {
+  //   is: true,
+  //   then: (schema) => schema.required("Attendant address is required"),
+  //   otherwise: (schema) => schema.notRequired(),
+  // }),
     email: Yup.string().matches(emailRegex, "Invalid email").required(),
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
@@ -58,8 +64,7 @@ export default function AddEnquiry() {
     is: true,
     then: (schema) =>
       schema
-        .matches(/^[0-9]{8,15}$/, "Invalid phone number")
-        .required("Attendant contact number is required"),
+        .matches(/^[0-9]{8,15}$/, "Invalid phone number"),
     otherwise: (schema) => schema.notRequired(),
   }),
     patient_emergency_contact_no: Yup.string().matches(
@@ -837,17 +842,17 @@ export default function AddEnquiry() {
                               <label>
                                 {" "}
                                 Attendant Contact Number
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
                                 name="patient_relation_no"
                               />
-                              <ErrorMessage
+                              {/* <ErrorMessage
                                 name="patient_relation_no"
                                 component="div"
                                 className="text-danger"
-                              />
+                              /> */}
                             </div>
                           </div>
                           <div className="col-md-4">
@@ -861,7 +866,7 @@ export default function AddEnquiry() {
                                   Max size: 2 MB per file"
                                   data-bs-placement="right"
                                 >
-                                  (i)
+                                *  (i)
                                 </span>
                               </label>
                               <input
@@ -905,17 +910,17 @@ export default function AddEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Address
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
                                 name="patient_relation_address"
                               />
-                              <ErrorMessage
+                              {/* <ErrorMessage
                                 name="patient_relation_address"
                                 component="div"
                                 className="text-danger"
-                              />
+                              /> */}
                             </div>
                           </div>
                         </div>
