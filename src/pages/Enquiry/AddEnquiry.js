@@ -6,10 +6,9 @@ import * as Yup from "yup";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AddEnquirys } from "../../reducer/EnquirySlice";
 import { GetAllCountries2 } from "../../reducer/Countries";
-import FormControl from "@mui/material/FormControl";
 import { Autocomplete, TextField } from "@mui/material";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
-import uploadImage from "../../img/image (6).png"
+import uploadImage from "../../img/image (6).png";
 export default function AddEnquiry() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,33 +26,36 @@ export default function AddEnquiry() {
     name: Yup.string().min(2).max(50).required("Name is required"),
     disease_name: Yup.string().required("Disease name is required"),
     country: Yup.string().required("Country is required"),
+    treatingIn: Yup.string().required("Treating In is required"),
     address: Yup.string().required("Address is required"),
-    // patient_relation_id: Yup.string().required("Patient Relation Image is required"),
+    patient_id_proof: Yup.array()
+      .min(1, "Patient Id Proof is required")
+      .required("Patient Id Proof is required"),
     patient_relation_name: Yup.string().when("showAttendant", {
-    is: true,
-    then: (schema) => schema.required("Attendant name is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+      is: true,
+      then: (schema) => schema.required("Attendant name is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
     patient_relation_id: Yup.string().when("showAttendant", {
-    is: true,
-    then: (schema) => schema.required("Patient Relation Image is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+      is: true,
+      then: (schema) => schema.required("Attendant ID Proof is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
     patient_relation: Yup.string().when("showAttendant", {
-    is: true,
-    then: (schema) => schema.required("Relationship is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  //   patient_relation_address: Yup.string().when("showAttendant", {
-  //   is: true,
-  //   then: (schema) => schema.required("Attendant address is required"),
-  //   otherwise: (schema) => schema.notRequired(),
-  // }),
+      is: true,
+      then: (schema) => schema.required("Attendant Relationship is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+    //   patient_relation_address: Yup.string().when("showAttendant", {
+    //   is: true,
+    //   then: (schema) => schema.required("Attendant address is required"),
+    //   otherwise: (schema) => schema.notRequired(),
+    // }),
     email: Yup.string().matches(emailRegex, "Invalid email").required(),
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
     passport_num: Yup.string().required("Passport is required"),
-      showAttendant: Yup.boolean(),
+    showAttendant: Yup.boolean(),
     emergency_contact_no: Yup.string()
       .matches(
         /^[0-9]{8,15}$/,
@@ -61,12 +63,10 @@ export default function AddEnquiry() {
       )
       .required("Phone number is required"),
     patient_relation_no: Yup.string().when("showAttendant", {
-    is: true,
-    then: (schema) =>
-      schema
-        .matches(/^[0-9]{8,15}$/, "Invalid phone number"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+      is: true,
+      then: (schema) => schema.matches(/^[0-9]{8,15}$/, "Invalid phone number"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
     patient_emergency_contact_no: Yup.string().matches(
       /^[0-9]{8,15}$/,
       "Emergency Contact must be Digit and between 8-15  digits",
@@ -145,6 +145,7 @@ export default function AddEnquiry() {
                   passport_num: "",
                   patient_relation_no: "",
                   patient_relation_address: "",
+                  treatingIn: "",
                   patient_relation_id: null,
                   patient_id_proof: null,
                   platform: "1",
@@ -195,7 +196,7 @@ export default function AddEnquiry() {
                           <label>
                             NIC/Passport<span className="text-danger">*</span>
                           </label>
-                          <div style={{ position: 'relative' }}>
+                          <div style={{ position: "relative" }}>
                             <Field
                               className="form-control"
                               name="passport_num"
@@ -209,7 +210,11 @@ export default function AddEnquiry() {
                               src={uploadImage}
                               alt="autofill"
                               onClick={async () => {
-                                const value = passportValue || document.querySelector('[name="passport_num"]')?.value;
+                                const value =
+                                  passportValue ||
+                                  document.querySelector(
+                                    '[name="passport_num"]',
+                                  )?.value;
                                 if (!value || value.length < 7) {
                                   Swal.fire(
                                     "Please enter at least 7 characters",
@@ -218,9 +223,10 @@ export default function AddEnquiry() {
                                   );
                                   return;
                                 }
-                                const data = await fetchPatientByPhoneOrPassport({
-                                  passport_num: value,
-                                });
+                                const data =
+                                  await fetchPatientByPhoneOrPassport({
+                                    passport_num: value,
+                                  });
                                 if (data) {
                                   const selectedCountry = Countries?.find(
                                     (c) => c.name === data.country,
@@ -247,14 +253,14 @@ export default function AddEnquiry() {
                                 }
                               }}
                               style={{
-                                position: 'absolute',
-                                right: '10px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                width: '30px',
-                                height: '30px',
-                                cursor: 'pointer',
-                                padding: '5px'
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                width: "30px",
+                                height: "30px",
+                                cursor: "pointer",
+                                padding: "5px",
                               }}
                             />
                           </div>
@@ -270,7 +276,7 @@ export default function AddEnquiry() {
                           <label>
                             Country<span className="text-danger">*</span>
                           </label>
-                         <Field name="country">
+                          <Field name="country">
                             {({ form }) => {
                               const selectedCountry =
                                 Countries?.find(
@@ -308,6 +314,11 @@ export default function AddEnquiry() {
                               );
                             }}
                           </Field>
+                          <ErrorMessage
+                            name="country"
+                            component="div"
+                            className="text-danger"
+                          />
                         </div>
                       </div>
                       <div className="col-md-4">
@@ -317,7 +328,10 @@ export default function AddEnquiry() {
                             Phone No / WhatsApp With Country Code
                             <span className="text-danger">*</span>
                           </label>
-                          <div className="country-code" style={{ position: 'relative' }}>
+                          <div
+                            className="country-code"
+                            style={{ position: "relative" }}
+                          >
                             <Field
                               className="form-control code-dial"
                               name="dial_code"
@@ -336,7 +350,11 @@ export default function AddEnquiry() {
                               src={uploadImage}
                               alt="autofill"
                               onClick={async () => {
-                                const value = phoneValue || document.querySelector('[name="emergency_contact_no"]')?.value;
+                                const value =
+                                  phoneValue ||
+                                  document.querySelector(
+                                    '[name="emergency_contact_no"]',
+                                  )?.value;
                                 if (!value || value.length < 8) {
                                   Swal.fire(
                                     "Please enter at least 8 digits",
@@ -345,9 +363,10 @@ export default function AddEnquiry() {
                                   );
                                   return;
                                 }
-                                const data = await fetchPatientByPhoneOrPassport({
-                                  emergency_contact_no: value,
-                                });
+                                const data =
+                                  await fetchPatientByPhoneOrPassport({
+                                    emergency_contact_no: value,
+                                  });
                                 if (data) {
                                   const selectedCountry = Countries?.find(
                                     (c) => c.name === data.country,
@@ -373,14 +392,14 @@ export default function AddEnquiry() {
                                 }
                               }}
                               style={{
-                                position: 'absolute',
-                                right: '10px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                width: '30px',
-                                height: '30px',
-                                cursor: 'pointer',
-                                padding: '5px'
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                width: "30px",
+                                height: "30px",
+                                cursor: "pointer",
+                                padding: "5px",
                               }}
                             />
                           </div>
@@ -545,7 +564,7 @@ export default function AddEnquiry() {
                               data-bs-toggle="tooltip"
                               title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
                             >
-                              (i)
+                              * (i)
                             </span>
                           </label>
                           <input
@@ -645,7 +664,7 @@ export default function AddEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Referral Name<span className="text-danger">*</span>
+                            Referral Name<span className="text-danger"></span>
                           </label>
                           <Field
                             className="form-control"
@@ -758,15 +777,16 @@ export default function AddEnquiry() {
                                 );
                               }}
                             </Field>
+                            <ErrorMessage
+                              name="treatingIn"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
                         </div>
                       </div>
                     </div>
                     <hr />
-                    <div className="treat-hd">
-                      <h6>Attendant Details</h6>
-                      <span className="line"></span>
-                    </div>
                     <div className="row">
                       <div className="col-sm-12">
                         <div className="field-set">
@@ -781,15 +801,18 @@ export default function AddEnquiry() {
                               }
                             /> */}
                             <input
-  type="checkbox"
-  className="form-check-input"
-  id="addAttendant"
-  checked={showAttendant}
-  onChange={(e) => {
-    setShowAttendant(e.target.checked);
-    setFieldValue("showAttendant", e.target.checked);
-  }}
-/>
+                              type="checkbox"
+                              className="form-check-input"
+                              id="addAttendant"
+                              checked={showAttendant}
+                              onChange={(e) => {
+                                setShowAttendant(e.target.checked);
+                                setFieldValue(
+                                  "showAttendant",
+                                  e.target.checked,
+                                );
+                              }}
+                            />
                             <label
                               className="form-check-label"
                               htmlFor="addAttendant"
@@ -802,6 +825,10 @@ export default function AddEnquiry() {
                     </div>
                     {showAttendant && (
                       <>
+                        <div className="treat-hd">
+                          <h6>Attendant Details</h6>
+                          <span className="line"></span>
+                        </div>
                         <div className="row">
                           <div className="col-md-4">
                             <div className="field-set">
@@ -866,7 +893,7 @@ export default function AddEnquiry() {
                                   Max size: 2 MB per file"
                                   data-bs-placement="right"
                                 >
-                                *  (i)
+                                  * (i)
                                 </span>
                               </label>
                               <input

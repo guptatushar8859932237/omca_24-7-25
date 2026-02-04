@@ -35,17 +35,30 @@ export default function EditEnquiry() {
   }, [location.state?.enquiryId, Enquiry]);
   const basicSchema = Yup.object().shape({
   name: Yup.string().required("Name is required").min(2).max(50),
-  email: Yup.string().email("Enter valid email").required("Email is required"),
+
+  email: Yup.string()
+    .email("Enter valid email")
+    .required("Email is required"),
+
   age: Yup.string().required("Age is required"),
+
   town: Yup.string().required("Town is required"),
+
   address: Yup.string().required("Address is required"),
+
   passport_num: Yup.string().required("Passport number is required"),
+
+  // ✅ mandatory
+  treatingIn: Yup.string().required("Treating In is required"),
+
+  // ✅ mandatory
+  disease_name: Yup.string().required("Disease Name is required"),
+
   gender: Yup.string()
     .oneOf(["Male", "Female", "Others"])
     .required("Gender is required"),
 
   country: Yup.string().required("Country is required"),
-  disease_name: Yup.string().required("Disease Name is required"),
 
   emergency_contact_no: Yup.string()
     .matches(/^[0-9]{8,15}$/, "Invalid number"),
@@ -53,18 +66,9 @@ export default function EditEnquiry() {
   patient_emergency_contact_no: Yup.string()
     .matches(/^[0-9]{8,15}$/, "Invalid number"),
 
-  /* ===========================
-     ATTENDANT CONDITIONAL FIELDS
-     =========================== */
-
   patient_relation_name: Yup.string().when("has_relation", {
     is: true,
     then: (schema) => schema.required("Attendant name is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  relation_id: Yup.string().when("has_relation", {
-    is: true,
-    then: (schema) => schema.required(" Patient Relation Image is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
 
@@ -74,45 +78,51 @@ export default function EditEnquiry() {
     otherwise: (schema) => schema.notRequired(),
   }),
 
-  // patient_relation_no: Yup.string().when("has_relation", {
-  //   is: true,
-  //   then: (schema) =>
-  //     schema
-  //       .required("Attendant contact is required")
-  //       .matches(/^[0-9]{8,15}$/, "Invalid number"),
-  //   otherwise: (schema) => schema.notRequired(),
-  // }),
+  // ✅ FIXED & CORRECT
+  relation_id: Yup.mixed().when("has_relation", {
+    is: true,
+    then: (schema) =>
+      schema
+        .required("Attendant ID Proof is required")
+        .test(
+          "fileSize",
+          "File size must be less than 2 MB",
+          (value) => {
+            if (!value) return false;
 
-  // patient_relation_address: Yup.string().when("has_relation", {
-  //   is: true,
-  //   then: (schema) => schema.required("Attendant address is required"),
-  //   otherwise: (schema) => schema.notRequired(),
-  // }),
+            // edit mode → already uploaded file
+            if (typeof value === "string") return true;
 
-  /* ===========================
-     FILES (NOT MANDATORY)
-     =========================== */
+            return value.size <= MAX_FILE_SIZE;
+          }
+        ),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 
-  patient_id_proof: Yup.array().test(
-    "fileSize",
-    "Each file must be less than 2 MB",
-    (files) => {
-      if (!files || files.length === 0) return true;
-      return files.every((file) => file.size <= MAX_FILE_SIZE);
-    }
-  ),
+  // patient_id_proof: Yup.array().test(
+  //   "fileSize",
+  //   "Each file must be less than 2 MB",
+  //   (files) => {
+  //     if (!files || files.length === 0) return true;
+  //     return files.every((file) => file.size <= MAX_FILE_SIZE);
+  //   }
+  // ),
+patient_id_proof: Yup.array().test(
+  "fileSize",
+  "Each file must be less than 2 MB",
+  (files) => {
+    if (!files || files.length === 0) return true;
 
+    return files.every((file) => {
+      // ✅ already uploaded file (string path)
+      if (typeof file === "string") return true;
+
+      // ✅ newly selected file
+      return file.size <= MAX_FILE_SIZE;
+    });
+  }
+),
   patient_Profile: Yup.mixed().test(
-    "fileSize",
-    "File size must be less than 2 MB",
-    (value) => {
-      if (!value) return true;
-      if (typeof value === "string") return true;
-      return value.size <= MAX_FILE_SIZE;
-    }
-  ),
-
-  relation_id: Yup.mixed().test(
     "fileSize",
     "File size must be less than 2 MB",
     (value) => {
@@ -124,60 +134,77 @@ export default function EditEnquiry() {
 });
 
 //   const basicSchema = Yup.object().shape({
-//     name: Yup.string().required("Name is required").min(2).max(50),
-//     email: Yup.string()
-//       .email("Enter valid email")
-//       .required("Email is required"),
-//     age: Yup.string().required("Age is required"),
-//     town: Yup.string().required("Town is required"),
-//     address: Yup.string().required("Address is required"),
-//     emergency_contact_no: Yup.string().matches(
-//       /^[0-9]{8,15}$/,
-//       "Phone number must be Digit and between 8-15 digits",
-//     ),
-//     // .matches(/^[0-9]{10,11}$/, "Phone number must be 10-11 digits")
-//     // .required("Phone number is required"),
-//     passport_num: Yup.string().required("Passport number is required"),
-//     patient_emergency_contact_no: Yup.string().matches(
-//       /^[0-9]{8,15}$/,
-//       "Emergency Contact must be Digit and between 8-15 digits",
-//     ),
-//     patient_relation_no: Yup.string().matches(
-//       /^[0-9]{8,15}$/,
-//       "Patient Relation Number must be Digit and between 8-15 digits",
-//     ),
-//     gender: Yup.string()
-//       .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
-//       .required("Gender is required"),
-//     disease_name: Yup.string().required("Disease Name is required"),
-//     country: Yup.string().required("Country is required"),
-//     patient_id_proof: Yup.array().test(
-//       "fileSize",
-//       "Each file must be less than 2 MB",
-//       (files) => {
-//         if (!files || files.length === 0) return true;
-//         return files.every((file) => file.size <= MAX_FILE_SIZE);
-//       }
-//     ),
-//     patient_Profile: Yup.mixed().test(
-//   "fileSize",
-//   "File size must be less than 2 MB",
-//   (value) => {
-//     if (!value) return true;
-//     if (typeof value === "string") return true;
-//     return value.size <= MAX_FILE_SIZE;
-//   }
-// ),
-//      relation_id: Yup.mixed().test(
-//   "fileSize",
-//   "File size must be less than 2 MB",
-//   (value) => {
-//     if (!value) return true;
-//     if (typeof value === "string") return true;
-//     return value.size <= MAX_FILE_SIZE;
-//   }
-// ),
-//   });
+//   name: Yup.string().required("Name is required").min(2).max(50),
+//   email: Yup.string().email("Enter valid email").required("Email is required"),
+//   age: Yup.string().required("Age is required"),
+//   town: Yup.string().required("Town is required"),
+//   address: Yup.string().required("Address is required"),
+//   passport_num: Yup.string().required("Passport number is required"),
+//   gender: Yup.string()
+//     .oneOf(["Male", "Female", "Others"])
+//     .required("Gender is required"),
+//   country: Yup.string().required("Country is required"),
+//   treatingIn: Yup.string().required("Treating In is required"),
+//   disease_name: Yup.string().required("Disease Name is required"),
+//   emergency_contact_no: Yup.string()
+//     .matches(/^[0-9]{8,15}$/, "Invalid number"),
+//   patient_emergency_contact_no: Yup.string()
+//     .matches(/^[0-9]{8,15}$/, "Invalid number"),
+//   patient_relation_name: Yup.string().when("has_relation", {
+//     is: true,
+//     then: (schema) => schema.required("Attendant name is required"),
+//     otherwise: (schema) => schema.notRequired(),
+//   }),
+//  relation_id: Yup.mixed().when("has_relation", {
+//     is: true,
+//     then: (schema) =>
+//       schema
+//         .required("Attendant ID Proof is required")
+//         .test(
+//           "fileSize",
+//           "File size must be less than 2 MB",
+//           (value) => {
+//             if (!value) return false;
+
+//             // edit mode → already uploaded file
+//             if (typeof value === "string") return true;
+//             return value.size <= MAX_FILE_SIZE;
+//           }
+//         ),
+//     otherwise: (schema) => schema.notRequired(),
+//   }),
+//   patient_relation: Yup.string().when("has_relation", {
+//     is: true,
+//     then: (schema) => schema.required("Relationship is required"),
+//     otherwise: (schema) => schema.notRequired(),
+//   }),
+//   patient_id_proof: Yup.array().test(
+//     "fileSize",
+//     "Each file must be less than 2 MB",
+//     (files) => {
+//       if (!files || files.length === 0) return true;
+//       return files.every((file) => file.size <= MAX_FILE_SIZE);
+//     }
+//   ),
+//   patient_Profile: Yup.mixed().test(
+//     "fileSize",
+//     "File size must be less than 2 MB",
+//     (value) => {
+//       if (!value) return true;
+//       if (typeof value === "string") return true;
+//       return value.size <= MAX_FILE_SIZE;
+//     }
+//   ),
+//   relation_id: Yup.mixed().test(
+//     "fileSize",
+//     "File size must be less than 2 MB",
+//     (value) => {
+//       if (!value) return true;
+//       if (typeof value === "string") return true;
+//       return value.size <= MAX_FILE_SIZE;
+//     }
+//   ),
+// });
   useEffect(() => {
     const initTooltips = () => {
       if (!window.bootstrap) return;
@@ -194,10 +221,8 @@ export default function EditEnquiry() {
         }
       });
     };
-
     setTimeout(initTooltips, 300);
   })
-
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -252,7 +277,6 @@ export default function EditEnquiry() {
                   patient_id_proof:editenquiry?.patient_id_proof || [],
                   patient_Profile: editenquiry?.patient_Profile || "",
                 }}
-                
                 validationSchema={basicSchema}
                 onSubmit={async (values, { setSubmitting }) => {
                   const formData = new FormData();
@@ -542,7 +566,7 @@ export default function EditEnquiry() {
                         <div className="field-set">
                           <label>
                             Patient Id Proof <span className="text-danger" data-bs-placement="right" data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file">(i)</span>
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file">* (i)</span>
                           </label>
                           <div className="engpatimg">
                             <input
@@ -596,10 +620,6 @@ export default function EditEnquiry() {
                               name="patient_Profile"
                               accept="image/*,application/pdf"
                               multiple
-                              // onChange={(e) => {
-                              //   const files = Array.from(e.currentTarget.files);
-                              //   setFieldValue("patient_Profile", files);
-                              // }}
                               onChange={(e) =>
                                 setFieldValue(
                                   "patient_Profile",
@@ -630,7 +650,7 @@ export default function EditEnquiry() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Referral Name<span className="text-danger">*</span></label>
+                          <label>Referral Name<span className="text-danger"></span></label>
                           <Field
                             className="form-control"
                             name="Referral_Name"
@@ -746,7 +766,7 @@ export default function EditEnquiry() {
                             className="form-check-label"
                             htmlFor="hasRelation"
                           >
-                            Add Attendant / Patient Relation Details
+                            Add Attendant 
                           </label>
                         </div>
                       </div>
@@ -802,11 +822,6 @@ export default function EditEnquiry() {
                                 className="form-control"
                                 name="patient_relation_no"
                               />
-                              {/* <ErrorMessage
-                                name="patient_relation_no"
-                                component="div"
-                                style={{ color: "red" }} */}
-                              {/* /> */}
                             </div>
                           </div>
                           <div className="col-md-4">
@@ -833,7 +848,6 @@ export default function EditEnquiry() {
                                   alt=".."
                                 />
                               </div>
-                              {/* <ErrorMessage name="relation_id" /> */}
                               <ErrorMessage
                                 name="relation_id"
                                 component="div"
@@ -851,11 +865,6 @@ export default function EditEnquiry() {
                                 className="form-control"
                                 name="patient_relation_address"
                               />
-                              {/* <ErrorMessage
-                                name="patient_relation_address"
-                                component="div"
-                                style={{ color: "red" }} */}
-                              {/* /> */}
                             </div>
                           </div>
                         </div>

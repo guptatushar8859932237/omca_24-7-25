@@ -3,10 +3,10 @@ import axios from "axios"
 import { baseurl } from "../Basurl/Baseurl"
 export const GetAllPatients = createAsyncThunk(
   "patient/GetAllPatients",
-  async ({ page = 1 }, { rejectWithValue }) => {
+  async ({ page = 1,search='' }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${baseurl}all_patients?page=${page}`,
+        `${baseurl}all_patients?page=${page}&search=${search}`,
         {}, // 👈 body (empty agar kuch send nahi karna)
         {
           headers: {
@@ -177,7 +177,7 @@ const patientSlice = createSlice({
     builder
       .addCase(GetAllPatients.pending, (state) => {
         state.loading = true;
-        state.error = null
+       
       })
      .addCase(GetAllPatients.fulfilled, (state, action) => {
         state.loading = false;

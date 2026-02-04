@@ -9,6 +9,8 @@ import { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
+// components/Loader.jsx
+import CircularProgress from "@mui/material/CircularProgress";
 import { GetAllPatients } from "../../reducer/PatientsSlice";
 import { useNavigate } from "react-router-dom";
 import { DeletePatient } from "../../reducer/PatientsSlice";
@@ -33,6 +35,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import { usePDF } from "react-to-pdf";
+import Loader from "../../components/Loader"
 export default function Patient() {
   const role = localStorage.getItem("Role");
   const navigate = useNavigate();
@@ -47,6 +50,7 @@ export default function Patient() {
   const [maxWidth, setMaxWidth] = React.useState("sm");
   const [openfilter, setOpenFilter] = React.useState(false);
   const [rows, setRows] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
   const { pagination } = useSelector((state) => state.patient);
   const { patient, loading, error } = useSelector((state) => state.patient);
@@ -81,8 +85,18 @@ export default function Patient() {
   }, [Treatment]);
   
  useEffect(() => {
-  dispatch(GetAllPatients({ page, limit: rowsPerPage }));
-}, [dispatch, page, rowsPerPage]);
+  dispatch(
+    GetAllPatients({
+      page,
+      limit: rowsPerPage,
+      search: searchTerm,
+    })
+  );
+}, [dispatch, page, rowsPerPage, searchTerm]);
+const handleSearch = (e) => {
+  setSearchTerm(e.target.value);
+  setPage(1); // reset pagination on search
+};
   useEffect(() => {
     if (patient) {
       setRows(patient);
@@ -516,7 +530,7 @@ export default function Patient() {
                 <div className="d-flex">
                   <div className="search-btn-main">
                     <div className="mr-3">
-                      <TextField
+                      {/* <TextField
                         sx={{ width: "100%" }}
                         label="Search"
                         id="outlined-size-small"
@@ -542,7 +556,25 @@ export default function Patient() {
                             </InputAdornment>
                           ),
                         }}
-                      />
+                      /> */}
+                      <TextField
+  label="Search"
+  size="small"
+  value={searchTerm}
+  onChange={handleSearch}
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        {searchTerm && (
+          <IconButton onClick={() => setSearchTerm("")}>
+            <ClearIcon />
+          </IconButton>
+        )}
+      </InputAdornment>
+    ),
+  }}
+/>
+
                     </div>
                   </div>
                   <button onClick={handleSampleFile} className="add-button ">
@@ -590,6 +622,7 @@ export default function Patient() {
                 ) : null}
               </div>
               <div className="col-md-12">
+             
                 <div className="table-responsive" ref={targetRef}>
                   <TableContainer
                     component={Paper}
@@ -631,7 +664,7 @@ export default function Patient() {
                           )}
                         </TableRow>
                       </TableHead>
-                      <TableBody>
+                          {loading ? <Loader />:    <TableBody>
                         {rows.length === 0 ? (
                           <TableRow>
                             <TableCell colSpan={15} align="center">
@@ -792,7 +825,8 @@ export default function Patient() {
                             </TableRow>
                           ))
                         )}
-                      </TableBody>
+                      </TableBody>}
+                   
                     </Table>
                     {!pdfRowLimit && (
                       <Stack spacing={2}>
