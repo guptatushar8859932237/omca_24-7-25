@@ -8,7 +8,7 @@ export default function EditCountries() {
   const [inpdataa, setInpdataa] = useState({
     countryName: '',
     countryCode: '',
-    phoneCode:''
+    phoneCode: ''
   });
   const location = useLocation();
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export default function EditCountries() {
       <div className="content">
         <div className="row">
           <div className="col-md-12">
-            <h4 className="page-title"><span><i class="fi fi-sr-angle-double-small-left" style={{cursor:"pointer"}} onClick={()=>{
+            <h4 className="page-title"><span><i class="fi fi-sr-angle-double-small-left" style={{ cursor: "pointer" }} onClick={() => {
               window.history.back()
             }}></i></span>Edit Countries</h4>
           </div>

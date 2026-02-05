@@ -6647,9 +6647,7 @@ div:where(.swal2-container) .swal2-html-container {
   font-weight: 500;
   margin-bottom: 0px;
 }
-.service-list h6 {
-  font-size: 14px;
-}
+
 .total-amount h6 {
   font-size: 14px;
 }
@@ -7056,4 +7054,81 @@ input:checked + .slider:before {
 .engpatimg {
   display: flex;
   gap: 8px;
+}
+
+/* ------------------------------surbhi(05-2-26)-------------------------------- */
+.patientreat {
+  margin: 0px;
+  border: 1px solid #eaeaea;
+  box-shadow: unset;
+  height: 100%;
+}
+.service-list {
+  background-color: #fafafa !important;
+  border-bottom: 1px solid #eaeaea !important;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.service-list h6 {
+  font-size: 14px;
+  margin: 0px;
+}
+.table-card tbody tr td {
+  border-bottom: 1px solid #eaeaea !important;
+}
+.table-card tr th {
+  font-weight: 500 !important;
+  border-bottom: 1px solid #eaeaea !important;
+  background-color: unset !important;
+  color: #000 !important;
+}
+.table-card tbody tr:last-child td {
+  border-bottom: 0 !important;
+}
+.patientreat .card-body {
+  padding: 0px 5px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 180px;
+}
+
+/* ===== Scrollbar Custom Style ===== */
+.patientreat .card-body::-webkit-scrollbar {
+  width: 4px;
+  height: 20px;
+}
+
+/* Scrollbar Track */
+.patientreat .card-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+/* Scrollbar Thumb */
+.patientreat .card-body::-webkit-scrollbar-thumb {
+  background: var(--bs-blue-color);
+  border-radius: 8px;
+}
+.table-responsive::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+/* Scrollbar Track */
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+/* Scrollbar Thumb */
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 8px;
+}
+.free-list li {
+  padding: 10px 10px 0px 0px;
+}
+.free-list {
+  padding-left: 25px;
 }

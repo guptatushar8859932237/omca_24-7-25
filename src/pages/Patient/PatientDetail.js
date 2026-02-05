@@ -15,7 +15,7 @@ import TextField from "@mui/material/TextField";
 import Swal from "sweetalert2";
 import Autocomplete from "@mui/material/Autocomplete";
 import { AppointmentForPatient } from "../../reducer/PatientTreatmentSlice";
-import { AdminBaseUrl, base, baseu11, baseurl,image  } from "../../Basurl/Baseurl";
+import { AdminBaseUrl, base, baseu11, baseurl, image } from "../../Basurl/Baseurl";
 import { imageUrl } from "../../Basurl/Baseurl";
 import { AddKysDetail } from "../../reducer/PatientTreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
@@ -264,25 +264,25 @@ function PatientDetail() {
       console.log(error);
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     gettreatment11()
-  },[])
+  }, [])
 
-const gettreatment11 =async()=>{
-  try {
-    const response = await axios.post(`${baseurl}treatment_list`)
- console.log("ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",response.data.data)
-    // if(response.success===200){
-  //   console.log(response)
-  // }
-  // else{
-  //   console.log("something went wrong")
-  // }
-  } catch (error) {
-    console.log("getting error")
+  const gettreatment11 = async () => {
+    try {
+      const response = await axios.post(`${baseurl}treatment_list`)
+      console.log("ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt", response.data.data)
+      // if(response.success===200){
+      //   console.log(response)
+      // }
+      // else{
+      //   console.log("something went wrong")
+      // }
+    } catch (error) {
+      console.log("getting error")
+    }
+
   }
-  
-}
   useEffect(() => {
     gettreatment();
   }, [ispatient?.patientId]);
@@ -306,72 +306,72 @@ const gettreatment11 =async()=>{
     }
   };
   const handlesubmit = async (e) => {
-  e.preventDefault();
-  if (isSubmitting) return;
+    e.preventDefault();
+    if (isSubmitting) return;
 
-  setIsSubmitting(true);
+    setIsSubmitting(true);
 
-  // Reset errors
-  setBlogErr({ hospitalcharge: false });
+    // Reset errors
+    setBlogErr({ hospitalcharge: false });
 
-  // Frontend validation
-  if (!hospitalcharge) {
-    setBlogErr((prev) => ({ ...prev, hospitalcharge: true }));
-    setIsSubmitting(false);
-    return;
-  }
+    // Frontend validation
+    if (!hospitalcharge) {
+      setBlogErr((prev) => ({ ...prev, hospitalcharge: true }));
+      setIsSubmitting(false);
+      return;
+    }
 
-  // -------- API CALL START --------
-  const result = await dispatch(
-    AddHospitalForPatient({
-      id: location.state.patientId,
-      hospitalId: hospitalId,
-      treatmentId: treatmentId,
-      hospital_charge: hospitalcharge,
-    })
-  );
-
-  // ❌ If API failed (400 or any error)
- if (AddHospitalForPatient.rejected.match(result)) {
-  const allErrors = result.payload; // array of backend errors
-
-  // First close popup
-  setOpen(false);
-
-  // Show Swal and reopen popup after OK
-  Swal.fire({
-    title: "Error Occurred",
-    html: allErrors.join("<br>"),
-    icon: "error",
-  }).then(() => {
-    // Reopen the popup after user clicks OK
-    setOpen(true);
-  });
-
-  setIsSubmitting(false);
-  return;
-}
-  // -------- API CALL SUCCESS --------
-  try {
-    setOpen(false);
-    Swal.fire(
-      "Patient assigned to Hospital successfully!",
-      "",
-      "success"
+    // -------- API CALL START --------
+    const result = await dispatch(
+      AddHospitalForPatient({
+        id: location.state.patientId,
+        hospitalId: hospitalId,
+        treatmentId: treatmentId,
+        hospital_charge: hospitalcharge,
+      })
     );
-    dispatch(GetPatientTreatments({ id: location.state.patientId }));
-    setTreatmentId("");
-    setNote("");
-    setDate("");
-    setHospitalId("");
-    setBlogErr(false);
 
-  } catch (err) {
-    Swal.fire("Error!", err?.message || "An error occurred", "error");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+    // ❌ If API failed (400 or any error)
+    if (AddHospitalForPatient.rejected.match(result)) {
+      const allErrors = result.payload; // array of backend errors
+
+      // First close popup
+      setOpen(false);
+
+      // Show Swal and reopen popup after OK
+      Swal.fire({
+        title: "Error Occurred",
+        html: allErrors.join("<br>"),
+        icon: "error",
+      }).then(() => {
+        // Reopen the popup after user clicks OK
+        setOpen(true);
+      });
+
+      setIsSubmitting(false);
+      return;
+    }
+    // -------- API CALL SUCCESS --------
+    try {
+      setOpen(false);
+      Swal.fire(
+        "Patient assigned to Hospital successfully!",
+        "",
+        "success"
+      );
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      setTreatmentId("");
+      setNote("");
+      setDate("");
+      setHospitalId("");
+      setBlogErr(false);
+
+    } catch (err) {
+      Swal.fire("Error!", err?.message || "An error occurred", "error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handlesubmitAppoint = async (e) => {
     e.preventDefault();
@@ -530,9 +530,9 @@ const gettreatment11 =async()=>{
   const getdataApi = async () => {
     try {
       const rresponse = await axios.post(`${AdminBaseUrl}hospital_list`);
-      console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",rresponse.data.data);
+      console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", rresponse.data.data);
       if (rresponse.data.success === "true") {
-      
+
         setDataHospital(rresponse.data.data);
       }
     } catch (error) {
@@ -758,7 +758,7 @@ const gettreatment11 =async()=>{
     } catch (err) {
       console.error(err.response || err.message);
       if (err.response && err.response.data && err.response.data.message) {
-        Swal.fire("Error",err.response.data.message,"error");
+        Swal.fire("Error", err.response.data.message, "error");
       } else {
         toast.error("Something went wrong. Please try again!");
       }
@@ -830,7 +830,7 @@ const gettreatment11 =async()=>{
         },
       })
       .then((response) => {
-        console.log("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",response.data.availableServices);
+        console.log("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt", response.data.availableServices);
         setUndadedservice(response.data.availableServices);
       })
       .catch((error) => {
@@ -956,42 +956,42 @@ const gettreatment11 =async()=>{
     }
   };
 
-const handledelete = async (info, item) => {
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "This hospital will be permanently deleted!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete it!",
-  });
+  const handledelete = async (info, item) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This hospital will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
 
-  if (!result.isConfirmed) return;
+    if (!result.isConfirmed) return;
 
-  try {
-    const response = await axios.delete(
-      `${baseurl}deleteTreatmentHospital/${info.treatment_id}/${item.hospital_id}`
-    );
+    try {
+      const response = await axios.delete(
+        `${baseurl}deleteTreatmentHospital/${info.treatment_id}/${item.hospital_id}`
+      );
 
-    if (response.data.success === true) {
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      if (response.data.success === true) {
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
 
-      Swal.fire({
-        icon: "success",
-        title: "Deleted!",
-        text: "Hospital deleted successfully",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    } else {
-      Swal.fire("Error", "Something went wrong", "error");
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Hospital deleted successfully",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire("Error", "Something went wrong", "error");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Server error occurred", "error");
     }
-  } catch (error) {
-    console.error(error);
-    Swal.fire("Error", "Server error occurred", "error");
-  }
-};
+  };
   // const handledelete = async (info,item)=>{
   //   console.log(info)
   //   console.log(item)
@@ -1008,23 +1008,23 @@ const handledelete = async (info, item) => {
   // } catch (error) {
   //   console.log(error)
   // }
-  
+
   // }
 
   return (
     <>
       <div className="page-wrapper">
         <div className="content">
-         <div className="row">
-                        <div className="col-md-12">
-                            <h4 className="page-title">
-                                <span><i className="fi fi-sr-angle-double-small-left" style={{cursor:"pointer"}} onClick={()=>{
-                                    window.history.back()
-                                }}></i></span>
-                              Patient Details
-                            </h4>
-                        </div>
-                    </div>
+          <div className="row">
+            <div className="col-md-12">
+              <h4 className="page-title">
+                <span><i className="fi fi-sr-angle-double-small-left" style={{ cursor: "pointer" }} onClick={() => {
+                  window.history.back()
+                }}></i></span>
+                Patient Details
+              </h4>
+            </div>
+          </div>
           <div className="main_content">
             <div className="row align-items-center">
               <div className="col-md-6">
@@ -1260,351 +1260,481 @@ const handledelete = async (info, item) => {
                                 </div>
                               </div>
                               <hr></hr>
-                              <div className="row">
-                                <div className="col-md-6">
-                                  <div className="service-list">
-                                    <h5>Treatment</h5>
-                                  </div>
-                                  <ul>
-                                    <li>
-                                      <div className="row">
-                                        <div className="col-sm-3">
-                                          <div className="para-main-div">
-                                            <h6>Name:</h6>
-                                          </div>
+                              <div className="row gx-3 gy-3">
+                                <div className="col-md-8">
+                                  <div className="row gx-3 gy-3">
+                                    <div className="col-md-6">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list">
+                                          <h6>Treatment</h6>
                                         </div>
-                                        <div className="col-sm-5">
-                                          <div className="para-main-div">
-                                            <p>{info.treatment_name}</p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="row">
-                                        <div className="col-sm-3">
-                                          <div className="para-main-div">
-                                            <h6>Charge:</h6>
-                                          </div>
-                                        </div>
-                                        <div className="col-sm-5">
-                                          <div className="para-main-div">
-                                            <p>
-                                              {info.treatment_course_fee}{" "}
-                                              {info.duration}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="row">
-                                        <div className="col-sm-3">
-                                          <div className="para-main-div">
-                                            <h6>Date:</h6>
-                                          </div>
-                                        </div>
-                                        <div className="col-sm-5">
-                                          <div className="para-main-div">
-                                            <p>
-                                              {new Date(
-                                                info?.treatment_created_at
-                                              ).toLocaleDateString(
-                                                "en-GB"
-                                              )}{" "}
-                                              {info.duration}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="row">
-                                        <div className="col-sm-3">
-                                          <div className="para-main-div">
-                                            <h6>Time:</h6>
-                                          </div>
-                                        </div>
-                                        <div className="col-sm-5">
-                                          <div className="para-main-div">
-                                            <p>
-                                              {new Date(
-                                                info?.treatment_created_at
-                                              ).toLocaleTimeString([], {
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                                second: "2-digit",
-                                              })}{" "}
-                                              {info.duration}
-                                            </p>
+                                        <div className="card-body">
+                                          <div className="table-responsive table-no-card">
+                                            <table className="table-card w-100">
+                                              <tbody>
+                                                <tr>
+                                                  <td>Name:</td>
+                                                  <td>{info.treatment_name}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Charge:</td>
+                                                  <td>
+                                                    {info.treatment_course_fee}{" "}
+                                                    {info.duration}
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Date:</td>
+                                                  <td>
+                                                    {new Date(
+                                                      info?.treatment_created_at
+                                                    ).toLocaleDateString(
+                                                      "en-GB"
+                                                    )}{" "}
+                                                    {info.duration}
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Time:</td>
+                                                  <td>
+                                                    {new Date(
+                                                      info?.treatment_created_at
+                                                    ).toLocaleTimeString([], {
+                                                      hour: "2-digit",
+                                                      minute: "2-digit",
+                                                      second: "2-digit",
+                                                    })}{" "}
+                                                    {info.duration}
+                                                  </td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
                                           </div>
                                         </div>
                                       </div>
-                                    </li>
-                                  </ul>
-                                  <div className="service-list">
-                                    <h6>Hospital</h6>
-                                  </div>
-                                  <ul className="mb-2">
-                                    {info?.Hospital_details.map((item) => {
-                                      console.log(item);
-                                      return (
-                                        <>
-                                          <li>
-                                            <div className="row">
-                                              <div className="col-sm-3">
-                                                <div className="para-main-div">
-                                                  <h6>Name:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-5">
-                                                <div className="para-main-div d-flex">
-                                                  <p>{item.hospital_Name} </p>{item.hospital_Name? <i
-                                    className="fa-solid fa-trash"
-                                    onClick={() => handledelete(info,item)}
-                                  ></i>:""}
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div className="row">
-                                              <div className="col-sm-3">
-                                                <div className="para-main-div">
-                                                  <h6>Charge:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-5">
-                                                <div className="para-main-div">
-                                                  <p>{item.hospital_charge}</p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </li>
-                                        </>
-                                      );
-                                    })}
-                                  </ul>
-                                  <div className="service-list">
-                                    <h6>Free Services</h6>
-                                  </div>
-                                  <ul className="mb-2">
-                                    {info?.services?.map((item, index) => {
-                                      console.log(item);
-                                      if (item.service_type === "Free") {
-                                        return (
-                                          <li
-                                            key={item._id || item.serviceName}
-                                          >
-                                            <div className="row" key={index}>
-                                             
-                                              <div className="col-sm-5">
-                                                <div className="para-main-div">
-                                                  <p>{item.serviceName} </p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </li>
-                                        );
-                                      }
-                                      return null;
-                                    })}
-                                  </ul>
-                                  <div className="service-list">
-                                    <h6>Extra Services</h6>
-                                  </div>
-                                  <ul className="mb-2">
-                                    {info?.services?.map((item) => {
-                                      if (!item.price) return null;
-                                      return (
-                                        <li key={item._id || item.service_type}>
-                                          <div className="row">
-                                            <div className="col-sm-3">
-                                              <div className="para-main-div">
-                                                <h6>Name:</h6>
-                                              </div>
-                                            </div>
-                                            <div className="col-sm-5">
-                                              <div className="para-main-div">
-                                                <p>{item.serviceName}</p>
-                                              </div>
-                                            </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list">
+                                          <h6>Hospital</h6>
+                                        </div>
+                                        <div className="card-body">
+                                          {/* <ul className="mb-2">
+                                            {info?.Hospital_details.map((item) => {
+                                              console.log(item);
+                                              return (
+                                                <>
+                                                  <li>
+                                                    <div className="row">
+                                                      <div className="col-sm-3">
+                                                        <div className="para-main-div">
+                                                          <h6>Name:</h6>
+                                                        </div>
+                                                      </div>
+                                                      <div className="col-sm-5">
+                                                        <div className="para-main-div d-flex">
+                                                          <p>{item.hospital_Name} </p>{item.hospital_Name ? <i
+                                                            className="fa-solid fa-trash"
+                                                            onClick={() => handledelete(info, item)}
+                                                          ></i> : ""}
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <div className="row">
+                                                      <div className="col-sm-3">
+                                                        <div className="para-main-div">
+                                                          <h6>Charge:</h6>
+                                                        </div>
+                                                      </div>
+                                                      <div className="col-sm-5">
+                                                        <div className="para-main-div">
+                                                          <p>{item.hospital_charge}</p>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </li>
+                                                </>
+                                              );
+                                            })}
+                                          </ul> */}
+                                          <div className="table-responsive table-no-card">
+                                            <table className="table-card w-100">
+                                              <thead>
+                                                <tr>
+                                                  <th>Name</th>
+                                                  <th>Charge</th>
+                                                  <th></th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                {info?.Hospital_details.map((item, index) => (
+                                                  <tr key={index}>
+                                                    <td>{item.hospital_Name || "-"}</td>
+
+                                                    <td>{item.hospital_charge || "-"}</td>
+
+                                                    <td>
+                                                      {item.hospital_Name && (
+                                                        <i
+                                                          className="fa-solid fa-trash text-danger cursor-pointer"
+                                                          onClick={() => handledelete(info, item)}
+                                                        ></i>
+                                                      )}
+                                                    </td>
+                                                  </tr>
+                                                ))}
+                                              </tbody>
+                                            </table>
                                           </div>
-                                          <div className="row">
-                                            <div className="col-sm-3">
-                                              <div className="para-main-div">
-                                                <h6>Price:</h6>
-                                              </div>
-                                            </div>
-                                            <div className="col-sm-5">
-                                              <div className="para-main-div">
-                                                <p>
-                                                  {item.price} {"  "}{" "}
-                                                  {item.duration}
-                                                  <br />
-                                                  {new Date(
-                                                    item.startTime
-                                                  ).toLocaleDateString(
-                                                    "en-GB"
-                                                  )}{" "}
-                                                  to{" "}
-                                                  {new Date(
-                                                    item.endTime
-                                                  ).toLocaleDateString("en-GB")}
-                                                </p>
-                                              </div>
-                                            </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list">
+                                          <h6>Appointment</h6>
+                                        </div>
+                                        <div className="card-body">
+                                          {/* <ul className="mb-2">
+                                            {info.appointments_details?.map((item) => {
+                                              console.log(item);
+                                              return (
+                                                <>
+                                                  <li className="mb-3">
+                                                    <div className="row">
+                                                      <div className="col-sm-4">
+                                                        <div className="para-main-div">
+                                                          <h6>ID:</h6>
+                                                        </div>
+                                                      </div>
+                                                      <div className="col-sm-4">
+                                                        <div className="para-main-div">
+                                                          <p>{item.appointmentId}</p>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    {item.mode !== "online" && (
+                                                      <div className="row">
+                                                        <div className="col-sm-4">
+                                                          <div className="para-main-div">
+                                                            <h6>Vehicle Number:</h6>
+                                                          </div>
+                                                        </div>
+                                                        <div className="col-sm-4">
+                                                          <div className="para-main-div">
+                                                            <p>{item.vehicle_no}</p>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    )}
+                                                    {item.mode !== "online" && (
+                                                      <div className="row">
+                                                        <div className="col-sm-4">
+                                                          <div className="para-main-div">
+                                                            <h6>Driver Name:</h6>
+                                                          </div>
+                                                        </div>
+                                                        <div className="col-sm-4">
+                                                          <div className="para-main-div">
+                                                            <p>{item.driver_name}</p>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    )}
+                                                    {item.mode !== "online" && (
+                                                      <div className="row">
+                                                        <div className="col-sm-4">
+                                                          <div className="para-main-div">
+                                                            <h6>Driver Contact:</h6>
+                                                          </div>
+                                                        </div>
+                                                        <div className="col-sm-4">
+                                                          <div className="para-main-div">
+                                                            <p>{item.driver_contact}</p>
+                                                          </div>
+                                                        </div>
+                                                      </div>)}
+                                                    <div className="row">
+                                                      {item.mode !== "online" && (
+                                                        <div className="col-sm-4">
+                                                          <div className="para-main-div">
+                                                            <h6>Pickup Time:</h6>
+                                                          </div>
+                                                        </div>
+                                                      )}
+                                                      <div className="col-sm-4">
+                                                        <div className="para-main-div">
+                                                          <p>{item.pickup_time}</p>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <div className="row">
+                                                      <div className="col-sm-4">
+                                                        <div className="para-main-div">
+                                                          <h6>Date:</h6>
+                                                        </div>
+                                                      </div>
+                                                      <div className="col-sm-4">
+                                                        <div className="para-main-div1">
+                                                          <p>{item.appointment_Date}</p>
+                                                          {item.status ===
+                                                            "Complete" ? (
+                                                            <p className="ms-2">{item.status === "Complete" ? "Completed" : item.status}</p>
+                                                          ) : (
+                                                            <FormControl
+                                                              sx={{
+                                                                m: 1,
+                                                                minWidth: 120,
+                                                              }}
+                                                              size="small"
+                                                              className="app-status"
+                                                            >
+                                                              <Select
+                                                                value={
+                                                                  item.status ===
+                                                                    "pending"
+                                                                    ? "1"
+                                                                    : item.status ===
+                                                                      "Follow-Up"
+                                                                      ? "2"
+                                                                      : item.status ===
+                                                                        "Completed"
+                                                                        ? "3"
+                                                                        : item.status ===
+                                                                          "Cancelled"
+                                                                          ? "4"
+                                                                          : "1"
+                                                                }
+                                                                onChange={(e) =>
+                                                                  handleChangeDetails(
+                                                                    e,
+                                                                    item.appointmentId
+                                                                  )
+                                                                }
+                                                                displayEmpty
+                                                                inputProps={{
+                                                                  "aria-label":
+                                                                    "Without label",
+                                                                }}
+                                                                className="status-direct1"
+                                                              >
+                                                                <MenuItem
+                                                                  value="1"
+                                                                  disabled
+                                                                >
+                                                                  Schedule
+                                                                </MenuItem>
+                                                                <MenuItem value="2">
+                                                                  Follow-Up
+                                                                </MenuItem>
+                                                                <MenuItem value="3">
+                                                                  Completed
+                                                                </MenuItem>
+                                                                <MenuItem value="4">
+                                                                  Cancelled
+                                                                </MenuItem>
+                                                              </Select>
+                                                            </FormControl>
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </li>
+                                                </>
+                                              );
+                                            })}
+                                          </ul> */}
+                                          <div className="table-responsive table-no-card">
+                                            <table className="table-card w-100">
+                                              <thead>
+                                                <tr>
+                                                  <th>ID</th>
+                                                  <th>Vehicle No</th>
+                                                  <th>Driver Name</th>
+                                                  <th>Driver Contact</th>
+                                                  <th>Pickup Time</th>
+                                                  <th>Date</th>
+                                                  <th>Status</th>
+                                                  <th>Action</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                {info.appointments_details?.map((item) => (
+                                                  <tr key={item.appointmentId}>
+                                                    <td>{item.appointmentId}</td>
+                                                    <td>{item.mode !== "online" ? item.vehicle_no : "-"}</td>
+                                                    <td>{item.mode !== "online" ? item.driver_name : "-"}</td>
+                                                    <td>{item.mode !== "online" ? item.driver_contact : "-"}</td>
+                                                    <td>{item.mode !== "online" ? item.pickup_time : "-"}</td>
+                                                    <td>{item.appointment_Date}</td>
+                                                    <td>
+                                                      {item.status === "Complete" ? (
+                                                        <span className="badge bg-primary">Completed</span>
+                                                      ) : (
+                                                        <FormControl size="small" className="app-status">
+                                                          <Select
+                                                            value={
+                                                              item.status === "pending"
+                                                                ? "1"
+                                                                : item.status === "Follow-Up"
+                                                                  ? "2"
+                                                                  : item.status === "Completed"
+                                                                    ? "3"
+                                                                    : item.status === "Cancelled"
+                                                                      ? "4"
+                                                                      : "1"
+                                                            }
+                                                            onChange={(e) =>
+                                                              handleChangeDetails(e, item.appointmentId)
+                                                            }
+                                                            className="status-direct1"
+                                                          >
+                                                            <MenuItem value="1" disabled>
+                                                              Schedule
+                                                            </MenuItem>
+                                                            <MenuItem value="2">Follow-Up</MenuItem>
+                                                            <MenuItem value="3">Completed</MenuItem>
+                                                            <MenuItem value="4">Cancelled</MenuItem>
+                                                          </Select>
+                                                        </FormControl>
+                                                      )}
+                                                    </td>
+                                                    <td className="action-icon">
+                                                      <i className="fa-solid fa-pen-to-square"></i>
+                                                      <i className="fa-solid fa-trash"></i>
+                                                    </td>
+                                                  </tr>
+                                                ))}
+                                              </tbody>
+                                            </table>
                                           </div>
-                                        </li>
-                                      );
-                                    })}
-                                  </ul>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="col-md-6">
-                                  <div className="service-list">
-                                    <h6>Appointment</h6>
+                                <div className="col-md-4">
+                                  <div className="row gx-3 gy-3">
+                                    <div className="col-md-12">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list action-icon">
+                                          <h6>Free Services</h6>
+                                          <i className="fa-solid fa-pen-to-square"></i>
+                                        </div>
+                                        <div className="card-body">
+                                          <ul className="free-list">
+                                            {info?.services?.map((item, index) => {
+                                              console.log(item);
+                                              if (item.service_type === "Free") {
+                                                return (
+                                                  <li key={item._id || item.serviceName}>
+                                                    <div className="row" key={index}>
+                                                      <div className="col-md-12">
+                                                        <div className="para-main-div">
+                                                          <p>{item.serviceName} </p>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </li>
+                                                );
+                                              }
+                                              return null;
+                                            })}
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list">
+                                          <h6>Extra Services</h6>
+                                        </div>
+                                        <div className="card-body">
+                                          {/* <ul className="mb-2">
+                                            {info?.services?.map((item) => {
+                                              if (!item.price) return null;
+                                              return (
+                                                <li key={item._id || item.service_type}>
+                                                  <div className="row">
+                                                    <div className="col-sm-3">
+                                                      <div className="para-main-div">
+                                                        <h6>Name:</h6>
+                                                      </div>
+                                                    </div>
+                                                    <div className="col-sm-5">
+                                                      <div className="para-main-div">
+                                                        <p>{item.serviceName}</p>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  <div className="row">
+                                                    <div className="col-sm-3">
+                                                      <div className="para-main-div">
+                                                        <h6>Price:</h6>
+                                                      </div>
+                                                    </div>
+                                                    <div className="col-sm-5">
+                                                      <div className="para-main-div">
+                                                        <p>
+                                                          {item.price} {"  "}{" "}
+                                                          {item.duration}
+                                                          <br />
+                                                          {new Date(
+                                                            item.startTime
+                                                          ).toLocaleDateString(
+                                                            "en-GB"
+                                                          )}{" "}
+                                                          to{" "}
+                                                          {new Date(
+                                                            item.endTime
+                                                          ).toLocaleDateString("en-GB")}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                              );
+                                            })}
+                                          </ul> */}
+                                          <div className="table-responsive table-no-card">
+                                            <table className="table-card w-100">
+                                              <thead>
+                                                <tr>
+                                                  <th>Service Name</th>
+                                                  <th>Price</th>
+                                                  <th>Duration</th>
+                                                  <th>Valid From</th>
+                                                  <th>Valid To</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                {info?.services?.map((item) => {
+                                                  if (!item.price) return null;
+                                                  return (
+                                                    <tr key={item._id || item.service_type}>
+                                                      <td>{item.serviceName || "-"}</td>
+                                                      <td>{item.price}</td>
+                                                      <td>{item.duration || "-"}</td>
+                                                      <td>
+                                                        {item.startTime
+                                                          ? new Date(item.startTime).toLocaleDateString("en-GB")
+                                                          : "-"}
+                                                      </td>
+                                                      <td>
+                                                        {item.endTime
+                                                          ? new Date(item.endTime).toLocaleDateString("en-GB")
+                                                          : "-"}
+                                                      </td>
+                                                    </tr>
+                                                  );
+                                                })}
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <ul className="mb-2">
-                                    {info.appointments_details?.map((item) => {
-                                      console.log(item);
-                                      return (
-                                        <>
-                                          <li className="mb-3">
-                                            <div className="row">
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <h6>ID:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <p>{item.appointmentId}</p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                            {item.mode !== "online" && (
-                                              <div className="row">
-                                                <div className="col-sm-4">
-                                                  <div className="para-main-div">
-                                                    <h6>Vehicle Number:</h6>
-                                                  </div>
-                                                </div>
-                                                <div className="col-sm-4">
-                                                  <div className="para-main-div">
-                                                    <p>{item.vehicle_no}</p>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            )}
-                                            {item.mode !== "online" && (
-                                              <div className="row">
-                                                <div className="col-sm-4">
-                                                  <div className="para-main-div">
-                                                    <h6>Driver Name:</h6>
-                                                  </div>
-                                                </div>
-                                                <div className="col-sm-4">
-                                                  <div className="para-main-div">
-                                                    <p>{item.driver_name}</p>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            )}
-                                            {item.mode !== "online" && (
-                                              <div className="row">
-                                                <div className="col-sm-4">
-                                                  <div className="para-main-div">
-                                                    <h6>Driver Contact:</h6>
-                                                  </div>
-                                                </div>
-                                                <div className="col-sm-4">
-                                                  <div className="para-main-div">
-                                                    <p>{item.driver_contact}</p>
-                                                  </div>
-                                                </div>
-                                              </div>)}
-                                            <div className="row">
-                                              {item.mode !== "online" && (
-                                                <div className="col-sm-4">
-                                                  <div className="para-main-div">
-                                                    <h6>Pickup Time:</h6>
-                                                  </div>
-                                                </div>
-                                              )}
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <p>{item.pickup_time}</p>
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div className="row">
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div">
-                                                  <h6>Date:</h6>
-                                                </div>
-                                              </div>
-                                              <div className="col-sm-4">
-                                                <div className="para-main-div1">
-                                                  <p>{item.appointment_Date}</p>
-                                                  {item.status ===
-                                                    "Complete" ? (
-                                                    <p className="ms-2">{item.status==="Complete"?"Completed":item.status}</p>
-                                                  ) : (
-                                                    <FormControl
-                                                      sx={{
-                                                        m: 1,
-                                                        minWidth: 120,
-                                                      }}
-                                                      size="small"
-                                                      className="app-status"
-                                                    >
-                                                      <Select
-                                                        value={
-                                                          item.status ===
-                                                            "pending"
-                                                            ? "1"
-                                                            : item.status ===
-                                                              "Follow-Up"
-                                                              ? "2"
-                                                              : item.status ===
-                                                                "Completed"
-                                                                ? "3"
-                                                                : item.status ===
-                                                                  "Cancelled"
-                                                                  ? "4"
-                                                                  : "1"
-                                                        }
-                                                        onChange={(e) =>
-                                                          handleChangeDetails(
-                                                            e,
-                                                            item.appointmentId
-                                                          )
-                                                        }
-                                                        displayEmpty
-                                                        inputProps={{
-                                                          "aria-label":
-                                                            "Without label",
-                                                        }}
-                                                        className="status-direct1"
-                                                      >
-                                                        <MenuItem
-                                                          value="1"
-                                                          disabled
-                                                        >
-                                                          Schedule
-                                                        </MenuItem>
-                                                        <MenuItem value="2">
-                                                          Follow-Up
-                                                        </MenuItem>
-                                                        <MenuItem value="3">
-                                                          Completed
-                                                        </MenuItem>
-                                                        <MenuItem value="4">
-                                                          Cancelled
-                                                        </MenuItem>
-                                                      </Select>
-                                                    </FormControl>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </li>
-                                        </>
-                                      );
-                                    })}
-                                  </ul>
                                 </div>
                               </div>
                               <hr></hr>
@@ -1626,7 +1756,8 @@ const handledelete = async (info, item) => {
                           );
                         })}
                       </>
-                    )}
+                    )
+                    }
                   </div>
                 </div>
               </div>
@@ -1665,7 +1796,7 @@ const handledelete = async (info, item) => {
                                   />
                                 ) : (
                                   <img
-                                    src={avtar} 
+                                    src={avtar}
                                     alt="avatar"
                                     className="rounded-circle shadow"
                                     width="100"
@@ -1907,7 +2038,7 @@ const handledelete = async (info, item) => {
                                                 {/* <PictureAsPdf
                                                  
                                                 /> */}
-                                                <button className="add-button"  style={{ cursor: "pointer" }}
+                                                <button className="add-button" style={{ cursor: "pointer" }}
                                                   onClick={() => {
                                                     navigate(
                                                       "/Admin/Patient-Pdfdetails",
@@ -2036,7 +2167,7 @@ const handledelete = async (info, item) => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
       <React.Fragment>
         <Dialog fullWidth maxWidth="sm" open={openModal} onClose={closeModal}>
           <div className="main-card-header">
@@ -2172,7 +2303,7 @@ const handledelete = async (info, item) => {
           maxWidth={maxWidth}
           open={open}
           onClose={handleClose}
-          
+
         >
           <div className="main-card-header">
             <div className="note-hd">
@@ -2190,8 +2321,8 @@ const handledelete = async (info, item) => {
                 display: "flex",
                 flexDirection: "column",
                 width: "fit-content",
-             minHeight: '350px',
-             
+                minHeight: '350px',
+
               }}
 
               className="contact-form"
@@ -2360,7 +2491,7 @@ const handledelete = async (info, item) => {
                           (job) => job.hospital_Name === value
                         );
                         const courseId = selectedCourse
-                          
+
                         setAppHospital(courseId);
                       }}
                       renderInput={(params) => <TextField {...params} />}

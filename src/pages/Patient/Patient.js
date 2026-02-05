@@ -83,20 +83,20 @@ export default function Patient() {
       setTreatmentname(Treatment);
     }
   }, [Treatment]);
-  
- useEffect(() => {
-  dispatch(
-    GetAllPatients({
-      page,
-      limit: rowsPerPage,
-      search: searchTerm,
-    })
-  );
-}, [dispatch, page, rowsPerPage, searchTerm]);
-const handleSearch = (e) => {
-  setSearchTerm(e.target.value);
-  setPage(1); // reset pagination on search
-};
+
+  useEffect(() => {
+    dispatch(
+      GetAllPatients({
+        page,
+        limit: rowsPerPage,
+        search: searchTerm,
+      })
+    );
+  }, [dispatch, page, rowsPerPage, searchTerm]);
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    setPage(1); // reset pagination on search
+  };
   useEffect(() => {
     if (patient) {
       setRows(patient);
@@ -104,10 +104,10 @@ const handleSearch = (e) => {
     }
   }, [patient]);
   console.log(patient);
- const handleChangeRowsPerPage = (event) => {
-  setRowsPerPage(+event.target.value);
-  setPage(1); // ✅ backend page 1-based
-};
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(1); // ✅ backend page 1-based
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -214,7 +214,7 @@ const handleSearch = (e) => {
           "error",
         );
       })
-      .finally(() => {});
+      .finally(() => { });
   };
   const handleFilter = (event) => {
     if (event.target.value === "") {
@@ -558,22 +558,22 @@ const handleSearch = (e) => {
                         }}
                       /> */}
                       <TextField
-  label="Search"
-  size="small"
-  value={searchTerm}
-  onChange={handleSearch}
-  InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        {searchTerm && (
-          <IconButton onClick={() => setSearchTerm("")}>
-            <ClearIcon />
-          </IconButton>
-        )}
-      </InputAdornment>
-    ),
-  }}
-/>
+                        label="Search"
+                        size="small"
+                        value={searchTerm}
+                        onChange={handleSearch}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              {searchTerm && (
+                                <IconButton onClick={() => setSearchTerm("")}>
+                                  <ClearIcon />
+                                </IconButton>
+                              )}
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
 
                     </div>
                   </div>
@@ -622,7 +622,7 @@ const handleSearch = (e) => {
                 ) : null}
               </div>
               <div className="col-md-12">
-             
+
                 <div className="table-responsive" ref={targetRef}>
                   <TableContainer
                     component={Paper}
@@ -664,7 +664,7 @@ const handleSearch = (e) => {
                           )}
                         </TableRow>
                       </TableHead>
-                          {loading ? <Loader />:    <TableBody>
+                      {loading ? <Loader /> : <TableBody>
                         {rows.length === 0 ? (
                           <TableRow>
                             <TableCell colSpan={15} align="center">
@@ -680,13 +680,13 @@ const handleSearch = (e) => {
                               <TableCell>
                                 {info.patientNumber || info.patientId}
                               </TableCell>
-                              <TableCell style={{cursor:"pointer"}}  onClick={(e) =>
-                                        PatientDetail(
-                                          e,
-                                          info.patientId,
-                                          info.enquiryId,
-                                        )
-                                      }>{info.patient_name}</TableCell>
+                              <TableCell style={{ cursor: "pointer" }} onClick={(e) =>
+                                PatientDetail(
+                                  e,
+                                  info.patientId,
+                                  info.enquiryId,
+                                )
+                              }>{info.patient_name}</TableCell>
                               <TableCell>
                                 {info.emergency_contact ||
                                   info.emergency_contact_no}
@@ -807,7 +807,7 @@ const handleSearch = (e) => {
                                       }
                                     ></i>
                                     {localStorage.getItem("Role") ===
-                                    "Admin" ? (
+                                      "Admin" ? (
                                       <i
                                         className="fa-solid fa-trash"
                                         onClick={(e) => {
@@ -826,7 +826,7 @@ const handleSearch = (e) => {
                           ))
                         )}
                       </TableBody>}
-                   
+
                     </Table>
                     {!pdfRowLimit && (
                       <Stack spacing={2}>
