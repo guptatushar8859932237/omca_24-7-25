@@ -177,7 +177,14 @@ export default function Patient() {
         StatusPatient({ id: id, status: Number(seekerStatus) }),
       ).unwrap();
       Swal.fire("Success!", "Patient details updated successfully.", "success");
-      dispatch(GetAllPatients());
+    dispatch(
+  GetAllPatients({
+    page,
+    limit: rowsPerPage,
+    search: searchTerm,
+  })
+);
+
     } catch (err) {
       Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
@@ -328,12 +335,27 @@ export default function Patient() {
         },
       );
       if (response.status === 200 || response.status === 201) {
-        dispatch(GetAllPatients());
+      dispatch(
+  GetAllPatients({
+    page,
+    limit: rowsPerPage,
+    search: searchTerm,
+  })
+);
+
         Swal.fire(
           "Success!",
           "patient status updated successfully!",
           "success",
         );
+       dispatch(
+  GetAllPatients({
+    page,
+    limit: rowsPerPage,
+    search: searchTerm,
+  })
+);
+
         try {
         } catch (refreshError) {
           console.error("Error refreshing appointments:", refreshError);
@@ -372,12 +394,27 @@ export default function Patient() {
         },
       );
       if (response.status === 200 || response.status === 201) {
-        dispatch(GetAllPatients());
+      dispatch(
+  GetAllPatients({
+    page,
+    limit: rowsPerPage,
+    search: searchTerm,
+  })
+);
+
         Swal.fire(
           "Success!",
           "patient status updated successfully!",
           "success",
         );
+       dispatch(
+  GetAllPatients({
+    page,
+    limit: rowsPerPage,
+    search: searchTerm,
+  })
+);
+
         try {
         } catch (refreshError) {
           console.error("Error refreshing appointments:", refreshError);
@@ -400,7 +437,14 @@ export default function Patient() {
   };
   const handleclickondata = () => {
     setShowActions(true);
-    dispatch(GetAllPatients());
+  dispatch(
+  GetAllPatients({
+    page,
+    limit: rowsPerPage,
+    search: searchTerm,
+  })
+);
+
   };
   const handleclickpostdatadesltes = async () => {
     setShowActions(false);
