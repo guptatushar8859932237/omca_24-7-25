@@ -639,7 +639,7 @@ const gettreatment11 =async()=>{
       return;
     }
     axios
-      .post(`${baseurl}add_notes/${treatmentId}`, {
+      .post(`${baseurl}add_treatment_notes/${treatmentId}`, {
         note: note2,
         date: date2,
       })
