@@ -46,7 +46,14 @@ export default function EditEnquiry() {
 
   address: Yup.string().required("Address is required"),
 
-  passport_num: Yup.string().required("Passport number is required"),
+  passport_num: Yup.string()
+  .trim()
+  .uppercase()
+  .matches(
+    /^[A-Z0-9]{6,15}$/,
+    "Passport number must be 6–15 characters (letters & digits only)"
+  )
+  .required("Passport number is required"),
 
   // ✅ mandatory
   treatingIn: Yup.string().required("Treating In is required"),
@@ -133,78 +140,6 @@ patient_id_proof: Yup.array().test(
   ),
 });
 
-//   const basicSchema = Yup.object().shape({
-//   name: Yup.string().required("Name is required").min(2).max(50),
-//   email: Yup.string().email("Enter valid email").required("Email is required"),
-//   age: Yup.string().required("Age is required"),
-//   town: Yup.string().required("Town is required"),
-//   address: Yup.string().required("Address is required"),
-//   passport_num: Yup.string().required("Passport number is required"),
-//   gender: Yup.string()
-//     .oneOf(["Male", "Female", "Others"])
-//     .required("Gender is required"),
-//   country: Yup.string().required("Country is required"),
-//   treatingIn: Yup.string().required("Treating In is required"),
-//   disease_name: Yup.string().required("Disease Name is required"),
-//   emergency_contact_no: Yup.string()
-//     .matches(/^[0-9]{8,15}$/, "Invalid number"),
-//   patient_emergency_contact_no: Yup.string()
-//     .matches(/^[0-9]{8,15}$/, "Invalid number"),
-//   patient_relation_name: Yup.string().when("has_relation", {
-//     is: true,
-//     then: (schema) => schema.required("Attendant name is required"),
-//     otherwise: (schema) => schema.notRequired(),
-//   }),
-//  relation_id: Yup.mixed().when("has_relation", {
-//     is: true,
-//     then: (schema) =>
-//       schema
-//         .required("Attendant ID Proof is required")
-//         .test(
-//           "fileSize",
-//           "File size must be less than 2 MB",
-//           (value) => {
-//             if (!value) return false;
-
-//             // edit mode → already uploaded file
-//             if (typeof value === "string") return true;
-//             return value.size <= MAX_FILE_SIZE;
-//           }
-//         ),
-//     otherwise: (schema) => schema.notRequired(),
-//   }),
-//   patient_relation: Yup.string().when("has_relation", {
-//     is: true,
-//     then: (schema) => schema.required("Relationship is required"),
-//     otherwise: (schema) => schema.notRequired(),
-//   }),
-//   patient_id_proof: Yup.array().test(
-//     "fileSize",
-//     "Each file must be less than 2 MB",
-//     (files) => {
-//       if (!files || files.length === 0) return true;
-//       return files.every((file) => file.size <= MAX_FILE_SIZE);
-//     }
-//   ),
-//   patient_Profile: Yup.mixed().test(
-//     "fileSize",
-//     "File size must be less than 2 MB",
-//     (value) => {
-//       if (!value) return true;
-//       if (typeof value === "string") return true;
-//       return value.size <= MAX_FILE_SIZE;
-//     }
-//   ),
-//   relation_id: Yup.mixed().test(
-//     "fileSize",
-//     "File size must be less than 2 MB",
-//     (value) => {
-//       if (!value) return true;
-//       if (typeof value === "string") return true;
-//       return value.size <= MAX_FILE_SIZE;
-//     }
-//   ),
-// });
   useEffect(() => {
     const initTooltips = () => {
       if (!window.bootstrap) return;
@@ -273,7 +208,7 @@ patient_id_proof: Yup.array().test(
                   patient_relation_no: editenquiry?.patient_relation_no || "",
                   patient_relation_address:
                     editenquiry?.patient_relation_address || "",
-                  relation_id:editenquiry?.relation_id || "",
+                  relation_id:editenquiry?.relation_id || editenquiry?.patient_relation_id || null,
                   patient_id_proof:editenquiry?.patient_id_proof || [],
                   patient_Profile: editenquiry?.patient_Profile || "",
                 }}
@@ -818,10 +753,21 @@ patient_id_proof: Yup.array().test(
                                 Attendant Contact Number
                                 <span className="text-danger"></span>
                               </label>
-                              <Field
+                                <div className="country-code">
+                            <Field
+                              className="form-control code-dial"
+                              name="dial_code"
+                              disabled
+                            />
+                            <Field
+                              className="form-control code-in"
+                              name="patient_relation_no"
+                            />
+                          </div>
+                              {/* <Field
                                 className="form-control"
                                 name="patient_relation_no"
-                              />
+                              /> */}
                             </div>
                           </div>
                           <div className="col-md-4">

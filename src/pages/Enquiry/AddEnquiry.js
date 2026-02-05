@@ -54,7 +54,13 @@ export default function AddEnquiry() {
     email: Yup.string().matches(emailRegex, "Invalid email").required(),
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
-    passport_num: Yup.string().required("Passport is required"),
+    // passport_num: Yup.string().required("Passport is required"),
+      passport_num: Yup.string()
+  .matches(
+    /^[A-Za-z0-9]{6,15}$/,
+    "Passport number must be 6–15 characters (letters & digits only)",
+  )
+  .required("Passport Number is required"),
     showAttendant: Yup.boolean(),
     emergency_contact_no: Yup.string()
       .matches(
@@ -871,10 +877,85 @@ export default function AddEnquiry() {
                                 Attendant Contact Number
                                 <span className="text-danger"></span>
                               </label>
-                              <Field
+                              <div
+                            className="country-code"
+                            style={{ position: "relative" }}
+                          >
+                            <Field
+                              className="form-control code-dial"
+                              name="dial_code"
+                              disabled
+                            />
+                            <Field
+                              className="form-control code-in"
+                              name="patient_relation_no"
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                setFieldValue("patient_relation_no", value);
+                                setPhoneValue(value);
+                              }}
+                            />
+                            {/* <img
+                              src={uploadImage}
+                              alt="autofill"
+                              onClick={async () => {
+                                const value =
+                                  phoneValue ||
+                                  document.querySelector(
+                                    '[name="patient_relation_no"]',
+                                  )?.value;
+                                if (!value || value.length < 8) {
+                                  Swal.fire(
+                                    "Please enter at least 8 digits",
+                                    "",
+                                    "warning",
+                                  );
+                                  return;
+                                }
+                                const data =
+                                  await fetchPatientByPhoneOrPassport({
+                                    patient_relation_no: value,
+                                  });
+                                if (data) {
+                                  const selectedCountry = Countries?.find(
+                                    (c) => c.name === data.country,
+                                  );
+                                  setValues((prev) => ({
+                                    ...prev,
+                                    ...data,
+                                    country: selectedCountry?.name || "",
+                                    dial_code: selectedCountry?.dial_code || "",
+                                    patient_relation_no: value,
+                                  }));
+                                  Swal.fire(
+                                    "Patient Found",
+                                    "Auto-filled",
+                                    "success",
+                                  );
+                                } else {
+                                  Swal.fire(
+                                    "Patient Not Found",
+                                    "No patient found with this phone number",
+                                    "info",
+                                  );
+                                }
+                              }}
+                              style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                width: "30px",
+                                height: "30px",
+                                cursor: "pointer",
+                                padding: "5px",
+                              }}
+                            /> */}
+                          </div>
+                              {/* <Field
                                 className="form-control"
                                 name="patient_relation_no"
-                              />
+                              /> */}
                               {/* <ErrorMessage
                                 name="patient_relation_no"
                                 component="div"

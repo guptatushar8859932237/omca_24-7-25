@@ -1015,11 +1015,16 @@ const handledelete = async (info, item) => {
     <>
       <div className="page-wrapper">
         <div className="content">
-          <div className="row">
-            <div className="col-sm-7 col-6">
-              <h4 className="page-title">View-Details</h4>
-            </div>
-          </div>
+         <div className="row">
+                        <div className="col-md-12">
+                            <h4 className="page-title">
+                                <span><i className="fi fi-sr-angle-double-small-left" style={{cursor:"pointer"}} onClick={()=>{
+                                    window.history.back()
+                                }}></i></span>
+                              Patient Details
+                            </h4>
+                        </div>
+                    </div>
           <div className="main_content">
             <div className="row align-items-center">
               <div className="col-md-6">
