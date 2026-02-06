@@ -6223,6 +6223,19 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
   display: inline-block;
   border: 0px;
 }
+.add-button122 {
+  padding: 0px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 0px;
+  border-left: 1px solid #666 !important;
+  background: unset;
+  padding-top: 10px;
+  line-height: 24px;
+  color: var(--bs-text-color);
+  display: inline-block;
+  border: 0px;
+}
 .treat-card {
   display: flex;
   justify-content: space-between;

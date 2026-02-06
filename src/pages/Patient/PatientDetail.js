@@ -47,7 +47,6 @@ function PatientDetail() {
   const [drivercontact, setDrivercontact] = useState("");
   const location = useLocation();
   const dispatch = useDispatch();
-
   const { PatientTreatments, loading, error } = useSelector(
     (state) => state.PatientTreatments
   );
@@ -484,16 +483,13 @@ function PatientDetail() {
       setAppointErr((prev) => ({ ...prev, note: true }));
       hasError = true;
     }
-
     if (!date) {
       setAppointErr((prev) => ({ ...prev, date: true }));
       hasError = true;
     }
-
     if (hasError) {
       return;
     }
-
     try {
       const result = await dispatch(
         AppointmentForPatient({
@@ -505,12 +501,9 @@ function PatientDetail() {
           appointment_Date: date,
         })
       ).unwrap();
-
       setOpen1(false);
       Swal.fire("Patient assigned to Appointment successfully!", "", "success");
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-
-      // Reset form fields
       setTreatmentId("");
       sethospitalharge("");
       setHospitalId("");
@@ -525,14 +518,12 @@ function PatientDetail() {
       Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
   };
-
   const [filesData, setFilesData] = useState({});
   const getdataApi = async () => {
     try {
       const rresponse = await axios.post(`${AdminBaseUrl}hospital_list`);
-      console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", rresponse.data.data);
+      console.log("yyyyyyyyyyyyyyyy", rresponse.data.data);
       if (rresponse.data.success === "true") {
-
         setDataHospital(rresponse.data.data);
       }
     } catch (error) {
@@ -542,12 +533,9 @@ function PatientDetail() {
   useEffect(() => {
     getdataApi();
   }, []);
-
   const onChangeFile = (e, fieldName) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    // Only validate image type for 'photo' field
     if (fieldName === "photo" && fieldName === "Attende_photo") {
       const isImage = file.type.startsWith("image/");
       if (!isImage) {
@@ -555,14 +543,11 @@ function PatientDetail() {
         return;
       }
     }
-
-    // Update the file in state
     setFilesData((prevState) => ({
       ...prevState,
       [fieldName]: file,
     }));
   };
-
   const handleKysDetail = async (e) => {
     e.preventDefault();
     const result = await dispatch(
@@ -660,9 +645,11 @@ function PatientDetail() {
         Swal.fire("Error", `${error?.response?.data?.message}`, "error");
       });
   };
-  const handleAddTritmentPayment = async (e) => {
-    e.preventDefault();
-    const result = await dispatch(
+ const handleAddTritmentPayment = async (e) => {
+  e.preventDefault();
+
+  try {
+    await dispatch(
       AddNewTretmentPayment({
         id: treatmentId,
         paid_amount: data.paid_amount,
@@ -670,35 +657,113 @@ function PatientDetail() {
         payment_Date: data.payment_Date,
       })
     ).unwrap();
-    // console.log(filesData);
-    try {
-      setOpen3(false);
-      Swal.fire("Payment Details Added Successfully!", "", "success");
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      setTreatmentId("");
-      setData("");
-    } catch (err) {
-      console.group("Submission Error");
-      console.log("Raw error:", err);
 
-      let errorMessage = "An error occurred";
+    setOpen3(false);
+    Swal.fire("Success!", "Payment Details Added Successfully!", "success");
+    dispatch(GetPatientTreatments({ id: location.state.patientId }));
+    setTreatmentId("");
+    setData("");
 
-      if (typeof err === "string") {
-        errorMessage = err;
-      } else if (err instanceof Error) {
-        errorMessage = err.message;
-      } else if (err?.response?.data?.message) {
-        errorMessage = err.response.data.message;
-      } else if (err?.message) {
-        errorMessage = err.message;
-      } else if (typeof err === "object") {
-        errorMessage = JSON.stringify(err);
-      }
+  } catch (err) {
+    const errorMessage =
+      typeof err === "string"
+        ? err
+        : err?.message || "Something went wrong";
 
-      console.error("Parsed error message:", errorMessage);
-      Swal.fire("Error!", errorMessage, "error");
-    }
-  };
+    // ✅ STEP 1: close modal
+    setOpen3(false);
+
+    // ✅ STEP 2: show error swal
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: errorMessage,
+      confirmButtonText: "OK",
+    }).then(() => {
+      // ✅ STEP 3: reopen modal after OK
+      setOpen3(true);
+    });
+  }
+};
+
+
+//   const handleAddTritmentPayment = async (e) => {
+//   e.preventDefault();
+
+//   try {
+//     const result = await dispatch(
+//       AddNewTretmentPayment({
+//         id: treatmentId,
+//         paid_amount: data.paid_amount,
+//         paymentMethod: data.paymentMethod,
+//         payment_Date: data.payment_Date,
+//       })
+//     ).unwrap();
+
+//     setOpen3(false);
+//     Swal.fire("Payment Details Added Successfully!", "", "success");
+//     dispatch(GetPatientTreatments({ id: location.state.patientId }));
+//     setTreatmentId("");
+//     setData("");
+
+//   } catch (err) {
+//     console.group("Submission Error");
+//     console.log("Raw error:", err);
+
+//     let errorMessage = "An error occurred";
+
+//     // 👇 RTK rejectWithValue usually comes like this
+//     if (typeof err === "string") {
+//       errorMessage = err;
+//     } else if (err?.message) {
+//       errorMessage = err.message;
+//     } else if (err?.error) {
+//       errorMessage = err.error;
+//     }
+
+//     console.error("Parsed error message:", errorMessage);
+//     Swal.fire("Error!", errorMessage, "error");
+//   }
+// };
+
+  // const handleAddTritmentPayment = async (e) => {
+  //   e.preventDefault();
+  //   const result = await dispatch(
+  //     AddNewTretmentPayment({
+  //       id: treatmentId,
+  //       paid_amount: data.paid_amount,
+  //       paymentMethod: data.paymentMethod,
+  //       payment_Date: data.payment_Date,
+  //     })
+  //   ).unwrap();
+  //   try {
+  //     setOpen3(false);
+  //     Swal.fire("Payment Details Added Successfully!", "", "success");
+  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //     setTreatmentId("");
+  //     setData("");
+  //   } catch (err) {
+  //     console.group("Submission Error");
+  //     console.log("Raw error:", err);
+
+  //     let errorMessage = "An error occurred";
+
+  //     if (typeof err === "string") {
+  //       errorMessage = err;
+  //     } else if (err instanceof Error) {
+  //       errorMessage = err.message;
+  //     } else if (err?.response?.data?.message) {
+  //       errorMessage = err.response.data.message;
+  //     } else if (err?.message) {
+  //       errorMessage = err.message;
+  //     } else if (typeof err === "object") {
+  //       errorMessage = JSON.stringify(err);
+  //     }
+
+  //     console.error("Parsed error message:", errorMessage);
+  //     Swal.fire("Error!", errorMessage, "error");
+  //   }
+  // };
   const handleChange = async (event, id) => {
     console.log(event.target, id);
     const { value } = event.target;
@@ -1169,8 +1234,9 @@ function PatientDetail() {
                                   </div>
                                 </div>
                                 <div className="d-flex">
-                                  <div>
-                                    <FormControl
+                                  {/* <div> */}
+                                     <p className="mx-2 my-2" style={{fontWeight:"500", fontSize:"14px"}}>{info.treatment_status}</p>
+                                    {/* <FormControl
                                       sx={{ m: 1, minWidth: 130 }}
                                       size="small"
                                       className="status-treat cont-main"
@@ -1214,8 +1280,8 @@ function PatientDetail() {
                                           Cancelled
                                         </MenuItem>
                                       </Select>
-                                    </FormControl>
-                                  </div>
+                                    </FormControl> */}
+                                  {/* </div> */}
                                   <button
                                     onClick={(e) =>
                                       handleClickOpen(e, info.treatment_id)
@@ -1571,32 +1637,33 @@ function PatientDetail() {
                                                       {item.status === "Complete" ? (
                                                         <span className="badge bg-primary">Completed</span>
                                                       ) : (
-                                                        <FormControl size="small" className="app-status">
-                                                          <Select
-                                                            value={
-                                                              item.status === "pending"
-                                                                ? "1"
-                                                                : item.status === "Follow-Up"
-                                                                  ? "2"
-                                                                  : item.status === "Completed"
-                                                                    ? "3"
-                                                                    : item.status === "Cancelled"
-                                                                      ? "4"
-                                                                      : "1"
-                                                            }
-                                                            onChange={(e) =>
-                                                              handleChangeDetails(e, item.appointmentId)
-                                                            }
-                                                            className="status-direct1"
-                                                          >
-                                                            <MenuItem value="1" disabled>
-                                                              Schedule
-                                                            </MenuItem>
-                                                            <MenuItem value="2">Follow-Up</MenuItem>
-                                                            <MenuItem value="3">Completed</MenuItem>
-                                                            <MenuItem value="4">Cancelled</MenuItem>
-                                                          </Select>
-                                                        </FormControl>
+                                                         <span className="badge bg-primary">{item.status}</span>
+                                                        // <FormControl size="small" className="app-status">
+                                                        //   <Select
+                                                        //     value={
+                                                        //       item.status === "pending"
+                                                        //         ? "1"
+                                                        //         : item.status === "Follow-Up"
+                                                        //           ? "2"
+                                                        //           : item.status === "Completed"
+                                                        //             ? "3"
+                                                        //             : item.status === "Cancelled"
+                                                        //               ? "4"
+                                                        //               : "1"
+                                                        //     }
+                                                        //     onChange={(e) =>
+                                                        //       handleChangeDetails(e, item.appointmentId)
+                                                        //     }
+                                                        //     className="status-direct1"
+                                                        //   >
+                                                        //     <MenuItem value="1" disabled>
+                                                        //       Schedule
+                                                        //     </MenuItem>
+                                                        //     <MenuItem value="2">Follow-Up</MenuItem>
+                                                        //     <MenuItem value="3">Completed</MenuItem>
+                                                        //     <MenuItem value="4">Cancelled</MenuItem>
+                                                        //   </Select>
+                                                        // </FormControl>
                                                       )}
                                                     </td>
                                                     <td className="action-icon">

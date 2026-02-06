@@ -190,15 +190,38 @@ export const AddNewTretmentPayment = createAsyncThunk(
           },
         }
       );
-      return response.data; // Success response
+      return response.data;
     } catch (error) {
-      console.error("Error adding staff user:", error.response?.data?.message);
       return rejectWithValue(
-        error.response?.data || { message: "An unknown error occurred" }
+        error.response?.data?.message || "An unknown error occurred"
       );
     }
   }
 );
+
+// export const AddNewTretmentPayment = createAsyncThunk(
+//   "PatientTreatments/AddNewTretmentPayment",
+//   async (object, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.post(
+//         `${baseurl}add_new_treatment_payment/${object.id}`,
+//         object,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       );
+//       return response.data; // Success response
+//     } catch (error) {
+//       console.error("Error adding staff user:", error.response?.data?.message);
+//       return rejectWithValue(
+//         error.response?.data || { message: "An unknown error occurred" }
+//       );
+//     }
+//   }
+// );
 // export const TritmentStatus = createAsyncThunk(
 //     "PatientTreatments/TritmentStatus",
 //     async (object, { rejectWithValue }) => {

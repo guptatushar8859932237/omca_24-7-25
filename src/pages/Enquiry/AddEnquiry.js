@@ -57,8 +57,8 @@ export default function AddEnquiry() {
     // passport_num: Yup.string().required("Passport is required"),
       passport_num: Yup.string()
   .matches(
-    /^[A-Za-z0-9]{6,15}$/,
-    "Passport number must be 6–15 characters (letters & digits only)",
+    /^[A-Za-z0-9]{7,15}$/,
+    "Passport number must be 7–15 characters (letters & digits only)",
   )
   .required("Passport Number is required"),
     showAttendant: Yup.boolean(),
