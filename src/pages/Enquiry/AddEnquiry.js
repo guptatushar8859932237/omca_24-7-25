@@ -36,9 +36,9 @@ export default function AddEnquiry() {
       then: (schema) => schema.required("Attendant name is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
-    patient_relation_id: Yup.string().when("showAttendant", {
+    patient_relation_id: Yup.array().when("showAttendant", {
       is: true,
-      then: (schema) => schema.required("Attendant ID Proof is required"),
+      then: (schema) => schema.min(1, "Attendant ID Proof is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
     patient_relation: Yup.string().when("showAttendant", {
@@ -55,12 +55,12 @@ export default function AddEnquiry() {
     age: Yup.string().required("Age is required"),
     town: Yup.string().required("Town is required"),
     // passport_num: Yup.string().required("Passport is required"),
-      passport_num: Yup.string()
-  .matches(
-    /^[A-Za-z0-9]{7,15}$/,
-    "Passport number must be 7–15 characters (letters & digits only)",
-  )
-  .required("Passport Number is required"),
+    passport_num: Yup.string()
+      .matches(
+        /^[A-Za-z0-9]{7,15}$/,
+        "Passport number must be 7–15 characters (letters & digits only)",
+      )
+      .required("Passport Number is required"),
     showAttendant: Yup.boolean(),
     emergency_contact_no: Yup.string()
       .matches(
@@ -152,7 +152,7 @@ export default function AddEnquiry() {
                   patient_relation_no: "",
                   patient_relation_address: "",
                   treatingIn: "",
-                  patient_relation_id: null,
+                  patient_relation_id: [],
                   patient_id_proof: null,
                   platform: "1",
                   patient_Profile: null,
@@ -165,19 +165,28 @@ export default function AddEnquiry() {
                   for (const key in values) {
                     if (
                       key !== "patient_id_proof" &&
-                      key !== "patient_Profile"
+                      key !== "patient_Profile" &&
+                      key !== "patient_relation_id"
                     ) {
                       formData.append(key, values[key]);
                     }
                   }
-                  if (
-                    values.patient_id_proof &&
-                    values.patient_id_proof.length > 0
-                  ) {
+
+                  // Patient ID Proof (multiple)
+                  if (values.patient_id_proof?.length > 0) {
                     values.patient_id_proof.forEach((file) => {
                       formData.append("patient_id_proof", file);
                     });
                   }
+
+                  // ✅ Attendant ID Proof (multiple)
+                  if (values.patient_relation_id?.length > 0) {
+                    values.patient_relation_id.forEach((file) => {
+                      formData.append("patient_relation_id", file);
+                    });
+                  }
+
+                  // Patient profile
                   if (values.patient_Profile) {
                     formData.append("patient_Profile", values.patient_Profile);
                   }
@@ -878,24 +887,24 @@ export default function AddEnquiry() {
                                 <span className="text-danger"></span>
                               </label>
                               <div
-                            className="country-code"
-                            style={{ position: "relative" }}
-                          >
-                            <Field
-                              className="form-control code-dial"
-                              name="dial_code"
-                              disabled
-                            />
-                            <Field
-                              className="form-control code-in"
-                              name="patient_relation_no"
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                setFieldValue("patient_relation_no", value);
-                                setPhoneValue(value);
-                              }}
-                            />
-                            {/* <img
+                                className="country-code"
+                                style={{ position: "relative" }}
+                              >
+                                <Field
+                                  className="form-control code-dial"
+                                  name="dial_code"
+                                  disabled
+                                />
+                                <Field
+                                  className="form-control code-in"
+                                  name="patient_relation_no"
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    setFieldValue("patient_relation_no", value);
+                                    setPhoneValue(value);
+                                  }}
+                                />
+                                {/* <img
                               src={uploadImage}
                               alt="autofill"
                               onClick={async () => {
@@ -951,7 +960,7 @@ export default function AddEnquiry() {
                                 padding: "5px",
                               }}
                             /> */}
-                          </div>
+                              </div>
                               {/* <Field
                                 className="form-control"
                                 name="patient_relation_no"
@@ -977,7 +986,7 @@ export default function AddEnquiry() {
                                   * (i)
                                 </span>
                               </label>
-                              <input
+                              {/* <input
                                 className="form-control"
                                 type="file"
                                 name="patient_relation_id"
@@ -1005,6 +1014,46 @@ export default function AddEnquiry() {
                                     }
                                     setFieldValue("patient_relation_id", file);
                                   }
+                                }}
+                              /> */}
+                              <input
+                                className="form-control"
+                                type="file"
+                                name="patient_relation_id"
+                                accept="image/*"
+                                multiple
+                                onChange={(e) => {
+                                  const files = Array.from(
+                                    e.currentTarget.files,
+                                  );
+                                  const validFiles = [];
+
+                                  for (const file of files) {
+                                    if (!file.type.startsWith("image/")) {
+                                      Swal.fire(
+                                        "Only image files allowed",
+                                        "",
+                                        "warning",
+                                      );
+                                      e.target.value = "";
+                                      return;
+                                    }
+                                    if (file.size > 2 * 1024 * 1024) {
+                                      Swal.fire(
+                                        "Each image must be < 2MB",
+                                        "",
+                                        "warning",
+                                      );
+                                      e.target.value = "";
+                                      return;
+                                    }
+                                    validFiles.push(file);
+                                  }
+
+                                  setFieldValue(
+                                    "patient_relation_id",
+                                    validFiles,
+                                  );
                                 }}
                               />
                               <ErrorMessage

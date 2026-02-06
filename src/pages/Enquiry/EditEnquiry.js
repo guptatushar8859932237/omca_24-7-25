@@ -34,130 +34,161 @@ export default function EditEnquiry() {
     }
   }, [location.state?.enquiryId, Enquiry]);
   const basicSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required").min(2).max(50),
+    name: Yup.string().required("Name is required").min(2).max(50),
 
-  email: Yup.string()
-    .email("Enter valid email")
-    .required("Email is required"),
+    email: Yup.string()
+      .email("Enter valid email")
+      .required("Email is required"),
 
-  age: Yup.string().required("Age is required"),
+    age: Yup.string().required("Age is required"),
 
-  town: Yup.string().required("Town is required"),
+    town: Yup.string().required("Town is required"),
 
-  address: Yup.string().required("Address is required"),
+    address: Yup.string().required("Address is required"),
 
-  passport_num: Yup.string()
-  .trim()
-  .uppercase()
-  .matches(
-    /^[A-Z0-9]{6,15}$/,
-    "Passport number must be 6–15 characters (letters & digits only)"
-  )
-  .required("Passport number is required"),
+    passport_num: Yup.string()
+      .trim()
+      .uppercase()
+      .matches(
+        /^[A-Z0-9]{7,15}$/,
+        "Passport number must be 7–15 characters (letters & digits only)",
+      )
+      .required("Passport number is required"),
 
-  // ✅ mandatory
-  treatingIn: Yup.string().required("Treating In is required"),
+    // ✅ mandatory
+    treatingIn: Yup.string().required("Treating In is required"),
 
-  // ✅ mandatory
-  disease_name: Yup.string().required("Disease Name is required"),
+    // ✅ mandatory
+    disease_name: Yup.string().required("Disease Name is required"),
 
-  gender: Yup.string()
-    .oneOf(["Male", "Female", "Others"])
-    .required("Gender is required"),
+    gender: Yup.string()
+      .oneOf(["Male", "Female", "Others"])
+      .required("Gender is required"),
 
-  country: Yup.string().required("Country is required"),
+    country: Yup.string().required("Country is required"),
 
-  emergency_contact_no: Yup.string()
-    .matches(/^[0-9]{8,15}$/, "Invalid number"),
+    emergency_contact_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Invalid number",
+    ),
 
-  patient_emergency_contact_no: Yup.string()
-    .matches(/^[0-9]{8,15}$/, "Invalid number"),
+    patient_emergency_contact_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Invalid number",
+    ),
 
-  patient_relation_name: Yup.string().when("has_relation", {
-    is: true,
-    then: (schema) => schema.required("Attendant name is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+    patient_relation_name: Yup.string().when("has_relation", {
+      is: true,
+      then: (schema) => schema.required("Attendant name is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
 
-  patient_relation: Yup.string().when("has_relation", {
-    is: true,
-    then: (schema) => schema.required("Relationship is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+    patient_relation: Yup.string().when("has_relation", {
+      is: true,
+      then: (schema) => schema.required("Relationship is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
 
-  // ✅ FIXED & CORRECT
-  relation_id: Yup.mixed().when("has_relation", {
-    is: true,
-    then: (schema) =>
-      schema
-        .required("Attendant ID Proof is required")
-        .test(
-          "fileSize",
-          "File size must be less than 2 MB",
-          (value) => {
-            if (!value) return false;
+    // ✅ FIXED & CORRECT
+    // relation_id: Yup.mixed().when("has_relation", {
+    //   is: true,
+    //   then: (schema) =>
+    //     schema
+    //       .required("Attendant ID Proof is required")
+    //       .test(
+    //         "fileSize",
+    //         "File size must be less than 2 MB",
+    //         (value) => {
+    //           if (!value) return false;
 
-            // edit mode → already uploaded file
-            if (typeof value === "string") return true;
+    //           // edit mode → already uploaded file
+    //           if (typeof value === "string") return true;
 
-            return value.size <= MAX_FILE_SIZE;
-          }
-        ),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+    //           return value.size <= MAX_FILE_SIZE;
+    //         }
+    //       ),
+    //   otherwise: (schema) => schema.notRequired(),
+    // }),
+   patient_relation_id: Yup.array().when("has_relation", {
+  is: true,
+  then: (schema) =>
+    schema
+      .min(1, "At least one Attendant ID Proof is required")
+      .test(
+        "fileSize",
+        "Each file must be less than 2 MB",
+        (files) => {
+          if (!Array.isArray(files)) return false;
 
-  // patient_id_proof: Yup.array().test(
-  //   "fileSize",
-  //   "Each file must be less than 2 MB",
-  //   (files) => {
-  //     if (!files || files.length === 0) return true;
-  //     return files.every((file) => file.size <= MAX_FILE_SIZE);
-  //   }
-  // ),
-patient_id_proof: Yup.array().test(
-  "fileSize",
-  "Each file must be less than 2 MB",
-  (files) => {
-    if (!files || files.length === 0) return true;
+          return files.every((file) => {
+            // ✅ already uploaded image (string path)
+            if (typeof file === "string") return true;
 
-    return files.every((file) => {
-      // ✅ already uploaded file (string path)
-      if (typeof file === "string") return true;
+            // ✅ newly uploaded file
+            if (file instanceof File) {
+              return file.size <= MAX_FILE_SIZE;
+            }
 
-      // ✅ newly selected file
-      return file.size <= MAX_FILE_SIZE;
-    });
-  }
-),
-  patient_Profile: Yup.mixed().test(
-    "fileSize",
-    "File size must be less than 2 MB",
-    (value) => {
-      if (!value) return true;
-      if (typeof value === "string") return true;
-      return value.size <= MAX_FILE_SIZE;
-    }
-  ),
-});
+            // ❌ anything unexpected
+            return false;
+          });
+        }
+      ),
+  otherwise: (schema) => schema.notRequired(),
+}),
+
+    // patient_id_proof: Yup.array().test(
+    //   "fileSize",
+    //   "Each file must be less than 2 MB",
+    //   (files) => {
+    //     if (!files || files.length === 0) return true;
+    //     return files.every((file) => file.size <= MAX_FILE_SIZE);
+    //   }
+    // ),
+    patient_id_proof: Yup.array().test(
+      "fileSize",
+      "Each file must be less than 2 MB",
+      (files) => {
+        if (!files || files.length === 0) return true;
+
+        return files.every((file) => {
+          // ✅ already uploaded file (string path)
+          if (typeof file === "string") return true;
+
+          // ✅ newly selected file
+          return file.size <= MAX_FILE_SIZE;
+        });
+      },
+    ),
+    patient_Profile: Yup.mixed().test(
+      "fileSize",
+      "File size must be less than 2 MB",
+      (value) => {
+        if (!value) return true;
+        if (typeof value === "string") return true;
+        return value.size <= MAX_FILE_SIZE;
+      },
+    ),
+  });
 
   useEffect(() => {
     const initTooltips = () => {
       if (!window.bootstrap) return;
 
       const tooltipTriggerList = document.querySelectorAll(
-        '[data-bs-toggle="tooltip"]'
+        '[data-bs-toggle="tooltip"]',
       );
       tooltipTriggerList.forEach((el) => {
         if (!el._tooltip) {
           el._tooltip = new window.bootstrap.Tooltip(el, {
-            placement: el.getAttribute('data-bs-placement') || 'top', // fallback
-            trigger: 'hover focus'
+            placement: el.getAttribute("data-bs-placement") || "top", // fallback
+            trigger: "hover focus",
           });
         }
       });
     };
     setTimeout(initTooltips, 300);
-  })
+  });
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -208,8 +239,8 @@ patient_id_proof: Yup.array().test(
                   patient_relation_no: editenquiry?.patient_relation_no || "",
                   patient_relation_address:
                     editenquiry?.patient_relation_address || "",
-                  relation_id:editenquiry?.relation_id || editenquiry?.patient_relation_id || null,
-                  patient_id_proof:editenquiry?.patient_id_proof || [],
+                  patient_relation_id: editenquiry?.patient_relation_id || [],
+                  patient_id_proof: editenquiry?.patient_id_proof || [],
                   patient_Profile: editenquiry?.patient_Profile || "",
                 }}
                 validationSchema={basicSchema}
@@ -219,7 +250,7 @@ patient_id_proof: Yup.array().test(
                     if (
                       key !== "patient_id_proof" &&
                       key !== "patient_Profile" &&
-                      key !== "relation_id"
+                      key !== "patient_relation_id"
                     ) {
                       formData.append(key, values[key]);
                     }
@@ -235,10 +266,19 @@ patient_id_proof: Yup.array().test(
                   if (values.patient_Profile) {
                     formData.append("patient_Profile", values.patient_Profile);
                   }
-                  if (values.relation_id) {
-                    formData.append("relation_id", values.relation_id);
-                  }
+                 if (
+  values.patient_relation_id &&
+  values.patient_relation_id.length > 0
+) {
+  values.patient_relation_id.forEach((file) => {
+    // skip already uploaded strings in edit mode
+    if (typeof file !== "string") {
+      formData.append("patient_relation_id", file);
+    }
+  });
+}
                   try {
+                    console.log(formData)
                     await dispatch(
                       EditEnquiryType({
                         id: editenquiry.enquiryId,
@@ -275,7 +315,7 @@ patient_id_proof: Yup.array().test(
                           />
                         </div>
                       </div>
-                        <div className="col-md-4">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             Country<span className="text-danger">*</span>
@@ -300,11 +340,11 @@ patient_id_proof: Yup.array().test(
                                       selected?.dial_code || "",
                                     );
                                   }}
-                                // input={
-                                //   <OutlinedInput label="Select Country" />
-                                // }
-                                // displayEmpty
-                                // sx={{ height: 40 }}
+                                  // input={
+                                  //   <OutlinedInput label="Select Country" />
+                                  // }
+                                  // displayEmpty
+                                  // sx={{ height: 40 }}
                                 >
                                   <MenuItem value="">
                                     <em>Select Country</em>
@@ -326,7 +366,7 @@ patient_id_proof: Yup.array().test(
                           </Field>
                         </div>
                       </div>
-                        <div className="col-md-4">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>
                             {" "}
@@ -351,7 +391,7 @@ patient_id_proof: Yup.array().test(
                           />
                         </div>
                       </div>
-                    
+
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -403,8 +443,7 @@ patient_id_proof: Yup.array().test(
                                 name="gender"
                                 value="Others"
                                 className="form-check-input"
-                              />
-                              {" "}
+                              />{" "}
                               Others
                             </label>
                           </div>
@@ -449,7 +488,7 @@ patient_id_proof: Yup.array().test(
                           />
                         </div>
                       </div>
-                
+
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -476,7 +515,7 @@ patient_id_proof: Yup.array().test(
                           />
                         </div>
                       </div>
-                          <div className="col-md-4">
+                      <div className="col-md-4">
                         <div className="field-set">
                           <label>Emergency Contact No With Country Code</label>
                           <div className="country-code">
@@ -500,8 +539,15 @@ patient_id_proof: Yup.array().test(
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Id Proof <span className="text-danger" data-bs-placement="right" data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file">* (i)</span>
+                            Patient Id Proof{" "}
+                            <span
+                              className="text-danger"
+                              data-bs-placement="right"
+                              data-bs-toggle="tooltip"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
+                            >
+                              * (i)
+                            </span>
                           </label>
                           <div className="engpatimg">
                             <input
@@ -517,7 +563,7 @@ patient_id_proof: Yup.array().test(
                             />
 
                             {Array.isArray(editenquiry.patient_id_proof) &&
-                              editenquiry.patient_id_proof.length > 0 ? (
+                            editenquiry.patient_id_proof.length > 0 ? (
                               editenquiry.patient_id_proof.map((img, index) => (
                                 <img
                                   key={index}
@@ -539,14 +585,20 @@ patient_id_proof: Yup.array().test(
                             component="div"
                             className="text-danger"
                           />
-
                         </div>
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Profile <span className="text-danger" data-bs-placement="right" data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file">(i)</span>
+                            Patient Profile{" "}
+                            <span
+                              className="text-danger"
+                              data-bs-placement="right"
+                              data-bs-toggle="tooltip"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
+                            >
+                              (i)
+                            </span>
                           </label>
                           <div className="engpatimg">
                             <input
@@ -574,7 +626,6 @@ patient_id_proof: Yup.array().test(
                                 e.target.src = `${avtar}`;
                               }}
                             />
-
                           </div>
                           <ErrorMessage
                             name="patient_Profile"
@@ -585,7 +636,9 @@ patient_id_proof: Yup.array().test(
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Referral Name<span className="text-danger"></span></label>
+                          <label>
+                            Referral Name<span className="text-danger"></span>
+                          </label>
                           <Field
                             className="form-control"
                             name="Referral_Name"
@@ -599,96 +652,101 @@ patient_id_proof: Yup.array().test(
                       </div>
                       <hr />
                       <div className="row d-flex">
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Treatment name<span className="text-danger">*</span>
-                          </label>
-                          <Autocomplete
-                            options={Treatment || []}
-                            getOptionLabel={(option) =>
-                              option.course_name || ""
-                            }
-                            value={
-                              Treatment?.find(
-                                (item) =>
-                                  item.course_name === values.disease_name,
-                              ) || null
-                            }
-                            onChange={(e, value) => {
-                              setFieldValue(
-                                "disease_name",
-                                value?.course_name || "",
-                              );
-                              setFieldValue(
-                                "treatment_course_id",
-                                value?.course_id || null,
-                              );
-                            }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                placeholder="Select Treatment"
-                                error={Boolean(
-                                  values.disease_name === "" &&
-                                  basicSchema?.fields?.disease_name,
-                                )}
-                              />
-                            )}
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
-                                padding: "0px",
-                                "&:hover fieldset": {
-                                  borderColor: "#ced4da",
-                                },
-                              },
-                            }}
-                          />
-                        </div>
-                      </div>
-                       <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Treating In Country<span className="text-danger">*</span>
-                          </label>
-                          <Field name="treatingIn">
-                            {({ field, form: { setFieldValue }, meta }) => (
-                              <FormControl
-                                fullWidth
-                                size="small"
-                                error={!!meta.touched && !!meta.error}
-                              >
-                                <Select
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const selected = Countries.find(
-                                      (c) => c.name === e.target.value,
-                                    );
-                                    setFieldValue("treatingIn", e.target.value);
-                                  }}
-                                >
-                                  <MenuItem value="">
-                                    <em>Select Country</em>
-                                  </MenuItem>
-
-                                  {Countries.map((country, i) => (
-                                    <MenuItem key={i} value={country.name}>
-                                      {country.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>
+                              Treatment name
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Autocomplete
+                              options={Treatment || []}
+                              getOptionLabel={(option) =>
+                                option.course_name || ""
+                              }
+                              value={
+                                Treatment?.find(
+                                  (item) =>
+                                    item.course_name === values.disease_name,
+                                ) || null
+                              }
+                              onChange={(e, value) => {
+                                setFieldValue(
+                                  "disease_name",
+                                  value?.course_name || "",
+                                );
+                                setFieldValue(
+                                  "treatment_course_id",
+                                  value?.course_id || null,
+                                );
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  placeholder="Select Treatment"
+                                  error={Boolean(
+                                    values.disease_name === "" &&
+                                    basicSchema?.fields?.disease_name,
+                                  )}
                                 />
-                              </FormControl>
-                            )}
-                          </Field>
+                              )}
+                              sx={{
+                                "& .MuiOutlinedInput-root": {
+                                  padding: "0px",
+                                  "&:hover fieldset": {
+                                    borderColor: "#ced4da",
+                                  },
+                                },
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>
+                              Treating In Country
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field name="treatingIn">
+                              {({ field, form: { setFieldValue }, meta }) => (
+                                <FormControl
+                                  fullWidth
+                                  size="small"
+                                  error={!!meta.touched && !!meta.error}
+                                >
+                                  <Select
+                                    value={field.value}
+                                    onChange={(e) => {
+                                      const selected = Countries.find(
+                                        (c) => c.name === e.target.value,
+                                      );
+                                      setFieldValue(
+                                        "treatingIn",
+                                        e.target.value,
+                                      );
+                                    }}
+                                  >
+                                    <MenuItem value="">
+                                      <em>Select Country</em>
+                                    </MenuItem>
+
+                                    {Countries.map((country, i) => (
+                                      <MenuItem key={i} value={country.name}>
+                                        {country.name}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                  <ErrorMessage
+                                    name="country"
+                                    component="div"
+                                    style={{ color: "red" }}
+                                  />
+                                </FormControl>
+                              )}
+                            </Field>
+                          </div>
                         </div>
                       </div>
-                      </div>
-                        <hr />
+                      <hr />
                       <div className="col-md-12">
                         <div className="form-check mb-3">
                           <Field
@@ -701,7 +759,7 @@ patient_id_proof: Yup.array().test(
                             className="form-check-label"
                             htmlFor="hasRelation"
                           >
-                            Add Attendant 
+                            Add Attendant
                           </label>
                         </div>
                       </div>
@@ -753,17 +811,17 @@ patient_id_proof: Yup.array().test(
                                 Attendant Contact Number
                                 <span className="text-danger"></span>
                               </label>
-                                <div className="country-code">
-                            <Field
-                              className="form-control code-dial"
-                              name="dial_code"
-                              disabled
-                            />
-                            <Field
-                              className="form-control code-in"
-                              name="patient_relation_no"
-                            />
-                          </div>
+                              <div className="country-code">
+                                <Field
+                                  className="form-control code-dial"
+                                  name="dial_code"
+                                  disabled
+                                />
+                                <Field
+                                  className="form-control code-in"
+                                  name="patient_relation_no"
+                                />
+                              </div>
                               {/* <Field
                                 className="form-control"
                                 name="patient_relation_no"
@@ -774,28 +832,48 @@ patient_id_proof: Yup.array().test(
                             <div className="field-set">
                               <label>
                                 Attendant ID Proof
-                                <span className="text-danger" data-bs-toggle="tooltip" title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
-                                  Max size: 2 MB per file" data-bs-placement="right">* (i)</span>
+                                <span
+                                  className="text-danger"
+                                  data-bs-toggle="tooltip"
+                                  title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
+                                  Max size: 2 MB per file"
+                                  data-bs-placement="right"
+                                >
+                                  * (i)
+                                </span>
                               </label>
                               <div className="engpatimg">
-                                <input
-                                  className="form-control"
-                                  type="file"
-                                  name="relation_id"
-                                  accept="image/*,application/pdf"
-                                  onChange={(e) =>
-                                    setFieldValue(
-                                      "relation_id",
-                                      e.currentTarget.files[0],
-                                    )
-                                  }
+                                 <input
+                              className="form-control"
+                              type="file"
+                              name="patient_relation_id"
+                              accept="image/*,application/pdf"
+                              multiple
+                              onChange={(e) => {
+                                const files = Array.from(e.currentTarget.files);
+                                setFieldValue("patient_relation_id", files);
+                              }}
+                            />
+
+                            {Array.isArray(editenquiry.patient_relation_id) &&
+                            editenquiry.patient_relation_id.length > 0 ? (
+                              editenquiry.patient_relation_id.map((img, index) => (
+                                <img
+                                  key={index}
+                                  src={`${imageUrl}${img}`}
+                                  alt={`patient-id-${index}`}
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = avtar;
+                                  }}
                                 />
-                                <img src={`${imageUrl}${editenquiry.patient_relation_id}`}
-                                  alt=".."
-                                />
+                              ))
+                            ) : (
+                              <img src={avtar} alt="default" />
+                            )}
                               </div>
                               <ErrorMessage
-                                name="relation_id"
+                                name="patient_relation_id"
                                 component="div"
                                 className="text-danger"
                               />

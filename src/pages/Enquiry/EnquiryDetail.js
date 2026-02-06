@@ -331,7 +331,26 @@ export default function EnquiryDetail() {
                         <div className="field-set">
                           <label>Attendant ID Proof<span className="text-danger"></span></label>
                           <div className="engpatimg">
-                            <img src={`${imageUrl}${row.patient_relation_id}`} alt="No Document" />
+                             {Array.isArray(row.patient_relation_id) && row.patient_relation_id.length > 0 ? (
+                          row.patient_relation_id.map((img, index) => (
+                            <img
+                              key={index}
+                              src={`${imageUrl}${img}`}
+                              alt="No Document"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = avtar;
+                              }}
+                            />
+                          ))
+                        ) : (
+                          <img
+                            src={avtar}
+                            alt="No Document"
+
+                          />
+                        )}
+                            {/* <img src={`${imageUrl}${row.patient_relation_id}`} alt="No Document" /> */}
                           </div>
                         </div>
                       </div>
@@ -379,7 +398,7 @@ export default function EnquiryDetail() {
                                                 {info.note}
                                               </a>
                                               <div>date-{new Date(info.date).toLocaleDateString("en-GB")}</div>
-                                              {/* {/ <span className="time">treatment due payment-{info.treatment_due_payment}</span> /} */}
+                                              {/* {/ <span className="time">treatment due payment-{info.treatment_due_payment}</span>  */}
                                             </div>
                                           </div>
                                         </li>
