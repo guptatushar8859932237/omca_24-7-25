@@ -29,8 +29,7 @@ export default function AddEnquiry() {
     treatingIn: Yup.string().required("Treating In is required"),
     address: Yup.string().required("Address is required"),
     patient_id_proof: Yup.array()
-      .min(1, "Patient Id Proof is required")
-      .required("Patient Id Proof is required"),
+      .min(1, "Patient Id Proof is required"),
     patient_relation_name: Yup.string().when("showAttendant", {
       is: true,
       then: (schema) => schema.required("Attendant name is required"),
