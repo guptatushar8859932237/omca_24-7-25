@@ -79,13 +79,13 @@ export default function EditEnquiry() {
 
     patient_relation_name: Yup.string().when("has_relation", {
       is: true,
-      then: (schema) => schema.required("Attendant name is required"),
+      then: (schema) => schema.required("Attendant  name is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
 
     patient_relation: Yup.string().when("has_relation", {
       is: true,
-      then: (schema) => schema.required("Relationship is required"),
+      then: (schema) => schema.required("Attendant Relationship is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
 
@@ -546,7 +546,7 @@ export default function EditEnquiry() {
                               data-bs-toggle="tooltip"
                               title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
                             >
-                              * (i)
+                               (i)
                             </span>
                           </label>
                           <div className="engpatimg">
@@ -791,7 +791,7 @@ export default function EditEnquiry() {
                           <div className="col-md-4">
                             <div className="field-set">
                               <label>
-                                Relationship With Patient
+                              Attendant  Relationship With Patient
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
