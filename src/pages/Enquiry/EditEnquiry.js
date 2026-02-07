@@ -10,6 +10,7 @@ import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
 import { image, imageUrl } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
+import axios from "axios";
 export default function EditEnquiry() {
   const dispatch = useDispatch();
   const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
@@ -88,74 +89,30 @@ export default function EditEnquiry() {
       then: (schema) => schema.required("Attendant Relationship is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
-
-    // ✅ FIXED & CORRECT
-    // relation_id: Yup.mixed().when("has_relation", {
-    //   is: true,
-    //   then: (schema) =>
-    //     schema
-    //       .required("Attendant ID Proof is required")
-    //       .test(
-    //         "fileSize",
-    //         "File size must be less than 2 MB",
-    //         (value) => {
-    //           if (!value) return false;
-
-    //           // edit mode → already uploaded file
-    //           if (typeof value === "string") return true;
-
-    //           return value.size <= MAX_FILE_SIZE;
-    //         }
-    //       ),
-    //   otherwise: (schema) => schema.notRequired(),
-    // }),
-   patient_relation_id: Yup.array().when("has_relation", {
-  is: true,
-  then: (schema) =>
-    schema
-      .min(1, "At least one Attendant ID Proof is required")
-      .test(
-        "fileSize",
-        "Each file must be less than 2 MB",
-        (files) => {
-          if (!Array.isArray(files)) return false;
-
-          return files.every((file) => {
-            // ✅ already uploaded image (string path)
-            if (typeof file === "string") return true;
-
-            // ✅ newly uploaded file
-            if (file instanceof File) {
-              return file.size <= MAX_FILE_SIZE;
-            }
-
-            // ❌ anything unexpected
-            return false;
-          });
-        }
-      ),
-  otherwise: (schema) => schema.notRequired(),
-}),
-
-    // patient_id_proof: Yup.array().test(
-    //   "fileSize",
-    //   "Each file must be less than 2 MB",
-    //   (files) => {
-    //     if (!files || files.length === 0) return true;
-    //     return files.every((file) => file.size <= MAX_FILE_SIZE);
-    //   }
-    // ),
+    patient_relation_id: Yup.array().when("has_relation", {
+      is: true,
+      then: (schema) =>
+        schema
+          .min(1, "At least one Attendant ID Proof is required")
+          .test("fileSize", "Each file must be less than 2 MB", (files) => {
+            if (!Array.isArray(files)) return false;
+            return files.every((file) => {
+              if (typeof file === "string") return true;
+              if (file instanceof File) {
+                return file.size <= MAX_FILE_SIZE;
+              }
+              return false;
+            });
+          }),
+      otherwise: (schema) => schema.notRequired(),
+    }),
     patient_id_proof: Yup.array().test(
       "fileSize",
       "Each file must be less than 2 MB",
       (files) => {
         if (!files || files.length === 0) return true;
-
         return files.every((file) => {
-          // ✅ already uploaded file (string path)
           if (typeof file === "string") return true;
-
-          // ✅ newly selected file
           return file.size <= MAX_FILE_SIZE;
         });
       },
@@ -189,6 +146,133 @@ export default function EditEnquiry() {
     };
     setTimeout(initTooltips, 300);
   });
+
+const handleDeletePatientIdProof = (index) => {
+  Swal.fire({
+    title: "Delete this image?",
+    text: "This action cannot be undone",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete",
+  }).then(async (res) => {
+    if (res.isConfirmed) {
+      try {
+        await axios.delete(
+          "http://192.168.1.68:5201/api/deletePatientIdProofByIndex",
+          {
+            data: {
+              enquiryId: editenquiry.enquiryId,
+              index,
+            },
+          }
+        );
+
+        // ✅ Update UI instantly
+        setEnquiry((prev) => ({
+          ...prev,
+          patient_id_proof: prev.patient_id_proof.filter(
+            (_, i) => i !== index
+          ),
+        }));
+
+        Swal.fire("Deleted!", "Image removed successfully.", "success");
+      } catch (err) {
+        Swal.fire("Error", "Unable to delete image", "error");
+      }
+    }
+  });
+};
+
+
+  // const handleDeletePatientIdProof = async (index) => {
+  //   try {
+  //     await axios.delete(
+  //       "http://192.168.1.68:5201/api/deletePatientIdProofByIndex",
+  //       {
+  //         data: {
+  //           enquiryId: editenquiry.enquiryId,
+  //           index,
+  //         },
+  //       },
+  //     );
+
+  //     // update UI instantly
+  //     setEnquiry((prev) => ({
+  //       ...prev,
+  //       patient_id_proof: prev.patient_id_proof.filter((_, i) => i !== index),
+  //     }));
+  //   } catch (err) {
+  //     Swal.fire("Error", "Unable to delete image", "error");
+  //   }
+  // };
+
+//   const handleDeleteAttendantIdProof = async (index) => {
+//     Swal.fire({
+//   title: "Delete this image?",
+//   icon: "warning",
+//   showCancelButton: true,
+// }).then((res) => {
+//   if (res.isConfirmed) {
+//     handleDeletePatientIdProof(index);
+//   }
+// });
+//     try {
+//       await axios.delete(
+//         "http://192.168.1.68:5201/api/deletePatientRelationImageByIndex",
+//         {
+//           data: {
+//             enquiryId: editenquiry.enquiryId,
+//             index,
+//           },
+//         },
+//       );
+
+//       setEnquiry((prev) => ({
+//         ...prev,
+//         patient_relation_id: prev.patient_relation_id.filter(
+//           (_, i) => i !== index,
+//         ),
+//       }));
+//     } catch (err) {
+//       Swal.fire("Error", "Unable to delete image", "error");
+//     }
+//   };
+const handleDeleteAttendantIdProof = async (index) => {
+  Swal.fire({
+    title: "Delete this image?",
+    text: "This action cannot be undone",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete",
+  }).then(async (res) => {
+    if (res.isConfirmed) {
+      try {
+        await axios.delete(
+          "http://192.168.1.68:5201/api/deletePatientRelationImageByIndex",
+          {
+            data: {
+              enquiryId: editenquiry.enquiryId,
+              index,
+            },
+          }
+        );
+
+        // ✅ Update UI immediately
+        setEnquiry((prev) => ({
+          ...prev,
+          patient_relation_id: prev.patient_relation_id.filter(
+            (_, i) => i !== index
+          ),
+        }));
+
+        Swal.fire("Deleted!", "Image removed successfully.", "success");
+      } catch (err) {
+        Swal.fire("Error", "Unable to delete image", "error");
+      }
+    }
+  });
+};
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -266,19 +350,18 @@ export default function EditEnquiry() {
                   if (values.patient_Profile) {
                     formData.append("patient_Profile", values.patient_Profile);
                   }
-                 if (
-  values.patient_relation_id &&
-  values.patient_relation_id.length > 0
-) {
-  values.patient_relation_id.forEach((file) => {
-    // skip already uploaded strings in edit mode
-    if (typeof file !== "string") {
-      formData.append("patient_relation_id", file);
-    }
-  });
-}
+                  if (
+                    values.patient_relation_id &&
+                    values.patient_relation_id.length > 0
+                  ) {
+                    values.patient_relation_id.forEach((file) => {
+                      if (typeof file !== "string") {
+                        formData.append("patient_relation_id", file);
+                      }
+                    });
+                  }
                   try {
-                    console.log(formData)
+                    console.log(formData);
                     await dispatch(
                       EditEnquiryType({
                         id: editenquiry.enquiryId,
@@ -546,7 +629,7 @@ export default function EditEnquiry() {
                               data-bs-toggle="tooltip"
                               title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
                             >
-                               (i)
+                              (i)
                             </span>
                           </label>
                           <div className="engpatimg">
@@ -562,7 +645,7 @@ export default function EditEnquiry() {
                               }}
                             />
 
-                            {Array.isArray(editenquiry.patient_id_proof) &&
+                            {/* {Array.isArray(editenquiry.patient_id_proof) &&
                             editenquiry.patient_id_proof.length > 0 ? (
                               editenquiry.patient_id_proof.map((img, index) => (
                                 <img
@@ -574,6 +657,28 @@ export default function EditEnquiry() {
                                     e.target.src = avtar;
                                   }}
                                 />
+                              ))
+                            ) : (
+                              <img src={avtar} alt="default" />
+                            )} */}
+                            {Array.isArray(editenquiry.patient_id_proof) &&
+                            editenquiry.patient_id_proof.length > 0 ? (
+                              editenquiry.patient_id_proof.map((img, index) => (
+                                <div className="image-wrapper" key={index}>
+                                  <span
+                                    className="delete-icon"
+                                    onClick={() =>
+                                      handleDeletePatientIdProof(index)
+                                    }
+                                  >
+                                    ✕
+                                  </span>
+                                  <img
+                                    src={`${imageUrl}${img}`}
+                                    alt={`patient-id-${index}`}
+                                    onError={(e) => (e.target.src = avtar)}
+                                  />
+                                </div>
                               ))
                             ) : (
                               <img src={avtar} alt="default" />
@@ -791,7 +896,7 @@ export default function EditEnquiry() {
                           <div className="col-md-4">
                             <div className="field-set">
                               <label>
-                              Attendant  Relationship With Patient
+                                Attendant Relationship With Patient
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
@@ -822,10 +927,6 @@ export default function EditEnquiry() {
                                   name="patient_relation_no"
                                 />
                               </div>
-                              {/* <Field
-                                className="form-control"
-                                name="patient_relation_no"
-                              /> */}
                             </div>
                           </div>
                           <div className="col-md-4">
@@ -843,34 +944,71 @@ export default function EditEnquiry() {
                                 </span>
                               </label>
                               <div className="engpatimg">
-                                 <input
-                              className="form-control"
-                              type="file"
-                              name="patient_relation_id"
-                              accept="image/*,application/pdf"
-                              multiple
-                              onChange={(e) => {
-                                const files = Array.from(e.currentTarget.files);
-                                setFieldValue("patient_relation_id", files);
-                              }}
-                            />
-
-                            {Array.isArray(editenquiry.patient_relation_id) &&
-                            editenquiry.patient_relation_id.length > 0 ? (
-                              editenquiry.patient_relation_id.map((img, index) => (
-                                <img
-                                  key={index}
-                                  src={`${imageUrl}${img}`}
-                                  alt={`patient-id-${index}`}
-                                  onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = avtar;
+                                <input
+                                  className="form-control"
+                                  type="file"
+                                  name="patient_relation_id"
+                                  accept="image/*,application/pdf"
+                                  multiple
+                                  onChange={(e) => {
+                                    const files = Array.from(
+                                      e.currentTarget.files,
+                                    );
+                                    setFieldValue("patient_relation_id", files);
                                   }}
                                 />
-                              ))
-                            ) : (
-                              <img src={avtar} alt="default" />
-                            )}
+
+                                {/* {Array.isArray(
+                                  editenquiry.patient_relation_id,
+                                ) &&
+                                editenquiry.patient_relation_id.length > 0 ? (
+                                  editenquiry.patient_relation_id.map(
+                                    (img, index) => (
+                                      <img
+                                        key={index}
+                                        src={`${imageUrl}${img}`}
+                                        alt={`patient-id-${index}`}
+                                        onError={(e) => {
+                                          e.target.onerror = null;
+                                          e.target.src = avtar;
+                                        }}
+                                      />
+                                    ),
+                                  )
+                                ) : (
+                                  <img src={avtar} alt="default" />
+                                )} */}
+                                {Array.isArray(
+                                  editenquiry.patient_relation_id,
+                                ) &&
+                                editenquiry.patient_relation_id.length > 0 ? (
+                                  editenquiry.patient_relation_id.map(
+                                    (img, index) => (
+                                      <div
+                                        className="image-wrapper"
+                                        key={index}
+                                      >
+                                        <span
+                                          className="delete-icon"
+                                          onClick={() =>
+                                            handleDeleteAttendantIdProof(index)
+                                          }
+                                        >
+                                          ✕
+                                        </span>
+                                        <img
+                                          src={`${imageUrl}${img}`}
+                                          alt={`attendant-id-${index}`}
+                                          onError={(e) =>
+                                            (e.target.src = avtar)
+                                          }
+                                        />
+                                      </div>
+                                    ),
+                                  )
+                                ) : (
+                                  <img src={avtar} alt="default" />
+                                )}
                               </div>
                               <ErrorMessage
                                 name="patient_relation_id"
