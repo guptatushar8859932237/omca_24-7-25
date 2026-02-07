@@ -127,45 +127,96 @@ export default function Patient() {
     });
   };
   const handledelet = (e, patientId) => {
-    e.preventDefault();
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success",
-        cancelButton: "btn btn-danger",
-      },
-      buttonsStyling: false,
-    });
-    swalWithBootstrapButtons
-      .fire({
-        title: "Are you sure?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No, cancel!",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          dispatch(DeletePatient({ id: patientId }))
-            .unwrap()
-            .then(() => {
-              return dispatch(GetAllPatients());
+  e.preventDefault();
+
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "btn btn-success",
+      cancelButton: "btn btn-danger",
+    },
+    buttonsStyling: false,
+  });
+
+  swalWithBootstrapButtons
+    .fire({
+      title: "Are you sure?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true,
+    })
+    .then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await dispatch(DeletePatient({ id: patientId })).unwrap();
+
+          await dispatch(
+            GetAllPatients({
+              page,
+              limit: rowsPerPage,
+              search: searchTerm,
             })
-            .then((newData) => {
-              Swal.fire("Deleted!", "Patient has been deleted.", "success");
-              setRows(newData.payload);
-            })
-            .catch((err) => {
-              Swal.fire("Error!", err?.message || "An error occurred", "error");
-            });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire({
-            title: "Cancelled",
-            icon: "error",
-          });
+          );
+
+          Swal.fire("Deleted!", "Patient has been deleted.", "success");
+        } catch (err) {
+          Swal.fire("Error!", err?.message || "An error occurred", "error");
         }
-      });
-  };
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        swalWithBootstrapButtons.fire({
+          title: "Cancelled",
+          icon: "info",
+        });
+      }
+    });
+};
+
+  // const handledelet = (e, patientId) => {
+  //   e.preventDefault();
+  //   const swalWithBootstrapButtons = Swal.mixin({
+  //     customClass: {
+  //       confirmButton: "btn btn-success",
+  //       cancelButton: "btn btn-danger",
+  //     },
+  //     buttonsStyling: false,
+  //   });
+  //   swalWithBootstrapButtons
+  //     .fire({
+  //       title: "Are you sure?",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "Yes, delete it!",
+  //       cancelButtonText: "No, cancel!",
+  //       reverseButtons: true,
+  //     })
+  //     .then((result) => {
+  //       if (result.isConfirmed) {
+  //         dispatch(DeletePatient({ id: patientId }))
+  //           .unwrap()
+  //           .then(() => {
+  //               dispatch(
+  // GetAllPatients({
+  //   page,
+  //   limit: rowsPerPage,
+  //   search: searchTerm,
+  // }))
+  //           })
+  //           .then((newData) => {
+  //             Swal.fire("Deleted!", "Patient has been deleted.", "success");
+  //             setRows(newData.payload);
+  //           })
+  //           .catch((err) => {
+  //             Swal.fire("Error!", err?.message || "An error occurred", "error");
+  //           });
+  //       } else if (result.dismiss === Swal.DismissReason.cancel) {
+  //         swalWithBootstrapButtons.fire({
+  //           title: "Cancelled",
+  //           icon: "error",
+  //         });
+  //       }
+  //     });
+  // };
   const handleChange = (event, id) => {
     const { value } = event.target;
     setSeekerStatus(value);

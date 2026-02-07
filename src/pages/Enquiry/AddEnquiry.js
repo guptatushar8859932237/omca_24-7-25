@@ -28,9 +28,8 @@ export default function AddEnquiry() {
     country: Yup.string().required("Country is required"),
     treatingIn: Yup.string().required("Treating In is required"),
     address: Yup.string().required("Address is required"),
-    patient_id_proof: Yup.array()
-      .min(1, "Patient Id Proof is required")
-      .required("Patient Id Proof is required"),
+    // patient_id_proof: Yup.array()
+    //   .min(1, "Patient Id Proof is required"),
     patient_relation_name: Yup.string().when("showAttendant", {
       is: true,
       then: (schema) => schema.required("Attendant name is required"),
@@ -579,7 +578,7 @@ export default function AddEnquiry() {
                               data-bs-toggle="tooltip"
                               title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
                             >
-                              * (i)
+                               (i)
                             </span>
                           </label>
                           <input
@@ -865,7 +864,7 @@ export default function AddEnquiry() {
                           <div className="col-md-4">
                             <div className="field-set">
                               <label>
-                                Relationship with Patient
+                              Attendant  Relationship with Patient
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
