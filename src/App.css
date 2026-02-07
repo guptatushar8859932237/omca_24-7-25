@@ -7072,16 +7072,17 @@ input:checked + .slider:before {
 /* ------------------------------surbhi(05-2-26)-------------------------------- */
 .patientreat {
   margin: 0px;
-  border: 1px solid #eaeaea;
+  border: 0px;
   box-shadow: unset;
   height: 100%;
 }
 .service-list {
-  background-color: #fafafa !important;
+  background-color: unset !important;
   border-bottom: 1px solid #eaeaea !important;
   display: flex;
   gap: 10px;
   align-items: center;
+      padding: 10px 0px 20px !important;
 }
 .service-list h6 {
   font-size: 14px;
@@ -7100,7 +7101,7 @@ input:checked + .slider:before {
   border-bottom: 0 !important;
 }
 .patientreat .card-body {
-  padding: 0px 5px;
+  padding: 0px;
   overflow-x: hidden;
   overflow-y: auto;
   height: 180px;
@@ -7144,4 +7145,11 @@ input:checked + .slider:before {
 }
 .free-list {
   padding-left: 25px;
+}
+.trment-list li {
+  padding: 10px 10px 0px 0px;
+  list-style: none;
+}
+.trment-list {
+  padding-left: 0px;
 }

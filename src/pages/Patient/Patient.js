@@ -649,7 +649,7 @@ export default function Patient() {
           </div>
           <div className="main_content">
             <div className="row">
-              <div className="action-icon d-flex justify-content-end p-3">
+              <div className="action-icon d-flex justify-content-end mb-3">
                 {localStorage.getItem("Role") === "Admin" ? (
                   showActions === true ? (
                     <button
