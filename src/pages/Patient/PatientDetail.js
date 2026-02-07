@@ -1667,8 +1667,8 @@ function PatientDetail() {
                                                       )}
                                                     </td>
                                                     <td className="action-icon">
-                                                      <i className="fa-solid fa-pen-to-square"></i>
-                                                      <i className="fa-solid fa-trash"></i>
+                                                      {/* <i className="fa-solid fa-pen-to-square"></i>
+                                                      <i className="fa-solid fa-trash"></i> */}
                                                     </td>
                                                   </tr>
                                                 ))}
@@ -1686,7 +1686,7 @@ function PatientDetail() {
                                       <div className="card patientreat">
                                         <div className="card-header service-list action-icon">
                                           <h6>Free Services</h6>
-                                          <i className="fa-solid fa-pen-to-square"></i>
+                                          {/* <i className="fa-solid fa-pen-to-square"></i> */}
                                         </div>
                                         <div className="card-body">
                                           <ul className="free-list">
