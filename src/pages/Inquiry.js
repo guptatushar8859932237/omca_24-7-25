@@ -560,7 +560,7 @@ useEffect(() => {
                                   : page * rowsPerPage + i + 1}
                               </TableCell>
                               <TableCell>{info.enquiryId}</TableCell>
-                              <TableCell>{info.name}</TableCell>
+                              <TableCell style={{cursor:"pointer"}}  onClick={(e) => ViewDetail(e, info.enquiryId)}>{info.name}</TableCell>
                               <TableCell>{info.email}</TableCell>
                               <TableCell>{info.country}</TableCell>
                               <TableCell>{info.emergency_contact}</TableCell>

@@ -9,6 +9,18 @@ import { GetAllCountries2 } from "../../reducer/Countries";
 import { Autocomplete, TextField } from "@mui/material";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 import uploadImage from "../../img/image (6).png";
+const allowedTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/jpg",
+  "image/webp",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+];
+
 export default function AddEnquiry() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,8 +40,6 @@ export default function AddEnquiry() {
     country: Yup.string().required("Country is required"),
     treatingIn: Yup.string().required("Treating In is required"),
     address: Yup.string().required("Address is required"),
-    // patient_id_proof: Yup.array()
-    //   .min(1, "Patient Id Proof is required"),
     patient_relation_name: Yup.string().when("showAttendant", {
       is: true,
       then: (schema) => schema.required("Attendant name is required"),
@@ -576,46 +586,49 @@ export default function AddEnquiry() {
                               className="text-danger"
                               data-bs-placement="right"
                               data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf pdf) Max size: 2 MB per file"
                             >
-                               (i)
+                              (i)
                             </span>
                           </label>
                           <input
                             className="form-control"
                             type="file"
                             name="patient_id_proof"
-                            accept="image/*"
                             multiple
+                            accept={allowedTypes.join(",")}
                             onChange={(e) => {
-                              const files = Array.from(e.currentTarget.files);
+                              const files = Array.from(e.target.files);
                               const validFiles = [];
+
                               for (const file of files) {
-                                if (!file.type.startsWith("image/")) {
+                                if (!allowedTypes.includes(file.type)) {
                                   Swal.fire(
-                                    "Only image files are allowed!",
-                                    "",
+                                    "Invalid file type!",
+                                    "Only image, PDF, Word & Excel files are allowed",
                                     "warning",
                                   );
                                   e.target.value = "";
                                   return;
                                 }
+
                                 if (file.size > 2 * 1024 * 1024) {
                                   Swal.fire(
-                                    "Each image must be less than 2 MB!",
-                                    "",
+                                    "File too large!",
+                                    "Each file must be less than 2 MB",
                                     "warning",
                                   );
                                   e.target.value = "";
                                   return;
                                 }
+
                                 validFiles.push(file);
                               }
-                              if (validFiles.length > 0) {
-                                setFieldValue("patient_id_proof", validFiles);
-                              }
+
+                              setFieldValue("patient_id_proof", validFiles);
                             }}
                           />
+
                           <ErrorMessage
                             name="patient_id_proof"
                             component="div"
@@ -640,7 +653,6 @@ export default function AddEnquiry() {
                           <input
                             className="form-control"
                             type="file"
-                            multiple
                             name="patient_Profile"
                             accept="image/*"
                             onChange={(e) => {
@@ -864,7 +876,7 @@ export default function AddEnquiry() {
                           <div className="col-md-4">
                             <div className="field-set">
                               <label>
-                              Attendant  Relationship with Patient
+                                Attendant Relationship with Patient
                                 <span className="text-danger">*</span>
                               </label>
                               <Field
@@ -1015,7 +1027,7 @@ export default function AddEnquiry() {
                                   }
                                 }}
                               /> */}
-                              <input
+                              {/* <input
                                 className="form-control"
                                 type="file"
                                 name="patient_relation_id"
@@ -1054,7 +1066,44 @@ export default function AddEnquiry() {
                                     validFiles,
                                   );
                                 }}
-                              />
+                              /> */}
+                              <input
+                            className="form-control"
+                            type="file"
+                            name="patient_relation_id"
+                            multiple
+                            accept={allowedTypes.join(",")}
+                            onChange={(e) => {
+                              const files = Array.from(e.target.files);
+                              const validFiles = [];
+
+                              for (const file of files) {
+                                if (!allowedTypes.includes(file.type)) {
+                                  Swal.fire(
+                                    "Invalid file type!",
+                                    "Only image, PDF, Word & Excel files are allowed",
+                                    "warning",
+                                  );
+                                  e.target.value = "";
+                                  return;
+                                }
+
+                                if (file.size > 2 * 1024 * 1024) {
+                                  Swal.fire(
+                                    "File too large!",
+                                    "Each file must be less than 2 MB",
+                                    "warning",
+                                  );
+                                  e.target.value = "";
+                                  return;
+                                }
+
+                                validFiles.push(file);
+                              }
+
+                              setFieldValue("patient_relation_id", validFiles);
+                            }}
+                          />
                               <ErrorMessage
                                 name="patient_relation_id"
                                 component="div"

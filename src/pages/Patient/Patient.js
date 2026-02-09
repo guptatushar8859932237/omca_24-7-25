@@ -35,7 +35,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import { usePDF } from "react-to-pdf";
-import Loader from "../../components/Loader"
+import Loader from "../../components/Loader";
 export default function Patient() {
   const role = localStorage.getItem("Role");
   const navigate = useNavigate();
@@ -90,7 +90,7 @@ export default function Patient() {
         page,
         limit: rowsPerPage,
         search: searchTerm,
-      })
+      }),
     );
   }, [dispatch, page, rowsPerPage, searchTerm]);
   const handleSearch = (e) => {
@@ -127,50 +127,50 @@ export default function Patient() {
     });
   };
   const handledelet = (e, patientId) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const swalWithBootstrapButtons = Swal.mixin({
-    customClass: {
-      confirmButton: "btn btn-success",
-      cancelButton: "btn btn-danger",
-    },
-    buttonsStyling: false,
-  });
-
-  swalWithBootstrapButtons
-    .fire({
-      title: "Are you sure?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
-      reverseButtons: true,
-    })
-    .then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await dispatch(DeletePatient({ id: patientId })).unwrap();
-
-          await dispatch(
-            GetAllPatients({
-              page,
-              limit: rowsPerPage,
-              search: searchTerm,
-            })
-          );
-
-          Swal.fire("Deleted!", "Patient has been deleted.", "success");
-        } catch (err) {
-          Swal.fire("Error!", err?.message || "An error occurred", "error");
-        }
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        swalWithBootstrapButtons.fire({
-          title: "Cancelled",
-          icon: "info",
-        });
-      }
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: false,
     });
-};
+
+    swalWithBootstrapButtons
+      .fire({
+        title: "Are you sure?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await dispatch(DeletePatient({ id: patientId })).unwrap();
+
+            await dispatch(
+              GetAllPatients({
+                page,
+                limit: rowsPerPage,
+                search: searchTerm,
+              }),
+            );
+
+            Swal.fire("Deleted!", "Patient has been deleted.", "success");
+          } catch (err) {
+            Swal.fire("Error!", err?.message || "An error occurred", "error");
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire({
+            title: "Cancelled",
+            icon: "info",
+          });
+        }
+      });
+  };
 
   // const handledelet = (e, patientId) => {
   //   e.preventDefault();
@@ -228,14 +228,13 @@ export default function Patient() {
         StatusPatient({ id: id, status: Number(seekerStatus) }),
       ).unwrap();
       Swal.fire("Success!", "Patient details updated successfully.", "success");
-    dispatch(
-  GetAllPatients({
-    page,
-    limit: rowsPerPage,
-    search: searchTerm,
-  })
-);
-
+      dispatch(
+        GetAllPatients({
+          page,
+          limit: rowsPerPage,
+          search: searchTerm,
+        }),
+      );
     } catch (err) {
       Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
@@ -272,7 +271,7 @@ export default function Patient() {
           "error",
         );
       })
-      .finally(() => { });
+      .finally(() => {});
   };
   const handleFilter = (event) => {
     if (event.target.value === "") {
@@ -386,26 +385,26 @@ export default function Patient() {
         },
       );
       if (response.status === 200 || response.status === 201) {
-      dispatch(
-  GetAllPatients({
-    page,
-    limit: rowsPerPage,
-    search: searchTerm,
-  })
-);
+        dispatch(
+          GetAllPatients({
+            page,
+            limit: rowsPerPage,
+            search: searchTerm,
+          }),
+        );
 
         Swal.fire(
           "Success!",
           "patient status updated successfully!",
           "success",
         );
-       dispatch(
-  GetAllPatients({
-    page,
-    limit: rowsPerPage,
-    search: searchTerm,
-  })
-);
+        dispatch(
+          GetAllPatients({
+            page,
+            limit: rowsPerPage,
+            search: searchTerm,
+          }),
+        );
 
         try {
         } catch (refreshError) {
@@ -445,26 +444,26 @@ export default function Patient() {
         },
       );
       if (response.status === 200 || response.status === 201) {
-      dispatch(
-  GetAllPatients({
-    page,
-    limit: rowsPerPage,
-    search: searchTerm,
-  })
-);
+        dispatch(
+          GetAllPatients({
+            page,
+            limit: rowsPerPage,
+            search: searchTerm,
+          }),
+        );
 
         Swal.fire(
           "Success!",
           "patient status updated successfully!",
           "success",
         );
-       dispatch(
-  GetAllPatients({
-    page,
-    limit: rowsPerPage,
-    search: searchTerm,
-  })
-);
+        dispatch(
+          GetAllPatients({
+            page,
+            limit: rowsPerPage,
+            search: searchTerm,
+          }),
+        );
 
         try {
         } catch (refreshError) {
@@ -488,14 +487,13 @@ export default function Patient() {
   };
   const handleclickondata = () => {
     setShowActions(true);
-  dispatch(
-  GetAllPatients({
-    page,
-    limit: rowsPerPage,
-    search: searchTerm,
-  })
-);
-
+    dispatch(
+      GetAllPatients({
+        page,
+        limit: rowsPerPage,
+        search: searchTerm,
+      }),
+    );
   };
   const handleclickpostdatadesltes = async () => {
     setShowActions(false);
@@ -669,7 +667,6 @@ export default function Patient() {
                           ),
                         }}
                       />
-
                     </div>
                   </div>
                   <button onClick={handleSampleFile} className="add-button ">
@@ -717,7 +714,6 @@ export default function Patient() {
                 ) : null}
               </div>
               <div className="col-md-12">
-
                 <div className="table-responsive" ref={targetRef}>
                   <TableContainer
                     component={Paper}
@@ -759,169 +755,206 @@ export default function Patient() {
                           )}
                         </TableRow>
                       </TableHead>
-                      {loading ? <Loader /> : <TableBody>
-                        {rows.length === 0 ? (
-                          <TableRow>
-                            <TableCell colSpan={15} align="center">
-                              No data found
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          rows.map((info, i) => (
-                            <TableRow key={info.patientId}>
-                              <TableCell>
-                                {(page - 1) * rowsPerPage + i + 1}
+                      {loading ? (
+                        <Loader />
+                      ) : (
+                        <TableBody>
+                          {rows.length === 0 ? (
+                            <TableRow>
+                              <TableCell colSpan={15} align="center">
+                                No data found
                               </TableCell>
-                              <TableCell>
-                                {info.patientNumber || info.patientId}
-                              </TableCell>
-                              <TableCell style={{ cursor: "pointer" }} onClick={(e) =>
-                                PatientDetail(
-                                  e,
-                                  info.patientId,
-                                  info.enquiryId,
-                                )
-                              }>{info.patient_name}</TableCell>
-                              <TableCell>
-                                {info.emergency_contact ||
-                                  info.emergency_contact_no}
-                              </TableCell>
-                              <TableCell>
-                                {new Date(info.createdAt).toLocaleDateString(
-                                  "en-GB",
+                            </TableRow>
+                          ) : (
+                            rows.map((info, i) => (
+                              <TableRow key={info.patientId}>
+                                <TableCell>
+                                  {(page - 1) * rowsPerPage + i + 1}
+                                </TableCell>
+                                {showActions === false ? (
+                                  <>
+                                    <TableCell>
+                                      {info?.deletedBy?.name}
+                                    </TableCell>
+                                    <TableCell>
+                                      {info?.deletedBy?.email}
+                                    </TableCell>
+                                    <TableCell>
+                                      {new Date(
+                                        info.deletedAt,
+                                      ).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                      })}
+                                    </TableCell>
+                                    <TableCell>
+                                      {new Date(
+                                        info?.deletedAt,
+                                      ).toLocaleDateString("en-GB")}
+                                    </TableCell>
+                                  </>
+                                ) : (
+                                  ""
                                 )}
-                              </TableCell>
-                              <TableCell>{info.email}</TableCell>
-                              <TableCell>{info.country}</TableCell>
-                              <TableCell>
-                                {info.patient_disease
-                                  ?.map((d) => d.disease_name)
-                                  .join(", ")}
-                              </TableCell>
-                              <TableCell>
-                                <FormControl
-                                  sx={{ m: 1, minWidth: 120 }}
-                                  size="small"
-                                  className="cont-main"
+                                <TableCell>
+                                  {info.patientNumber || info.patientId}
+                                </TableCell>
+                                <TableCell
+                                  style={{ cursor: "pointer" }}
+                                  onClick={(e) =>
+                                    PatientDetail(
+                                      e,
+                                      info.patientId,
+                                      info.enquiryId,
+                                    )
+                                  }
                                 >
-                                  <Select
-                                    value={info.patient_type_new}
-                                    onChange={(e) =>
-                                      handleChangtype(e, info.patientId)
-                                    }
-                                    displayEmpty
-                                    inputProps={{
-                                      "aria-label": "Without label",
-                                    }}
-                                    className="status-direct"
-                                  >
-                                    <MenuItem value="Private">Private</MenuItem>
-                                    <MenuItem value="Foundation">
-                                      Foundation
-                                    </MenuItem>
-                                    <MenuItem value="Insurance">
-                                      Insurance
-                                    </MenuItem>
-                                    <MenuItem value="Insurance + Private">
-                                      Insurance + Private
-                                    </MenuItem>
-                                  </Select>
-                                </FormControl>
-                              </TableCell>
-                              {showActions === true ? (
-                                <>
-                                  <TableCell>
-                                    <FormControl
-                                      sx={{ m: 1, minWidth: 120 }}
-                                      size="small"
-                                      className="cont-main"
-                                    >
-                                      <Select
-                                        value={info.p_status}
-                                        onChange={(e) =>
-                                          handleChangefffff(e, info.patientId)
-                                        }
-                                        displayEmpty
-                                        inputProps={{
-                                          "aria-label": "Without label",
-                                        }}
-                                        className="status-direct"
+                                  {info.patient_name}
+                                </TableCell>
+                                <TableCell>
+                                  {info.emergency_contact ||
+                                    info.emergency_contact_no}
+                                </TableCell>
+                                <TableCell>
+                                  {new Date(info.createdAt).toLocaleDateString(
+                                    "en-GB",
+                                  )}
+                                </TableCell>
+                                <TableCell>{info.email}</TableCell>
+                                <TableCell>{info.country}</TableCell>
+                                <TableCell>
+                                  {info.patient_disease
+                                    ?.map((d) => d.disease_name)
+                                    .join(", ")}
+                                </TableCell>
+
+                                {showActions === true ? (
+                                  <>
+                                    <TableCell>
+                                      <FormControl
+                                        sx={{ m: 1, minWidth: 120 }}
+                                        size="small"
+                                        className="cont-main"
                                       >
-                                        {/* <MenuItem value="Foundation">
+                                        <Select
+                                          value={info.patient_type_new}
+                                          onChange={(e) =>
+                                            handleChangtype(e, info.patientId)
+                                          }
+                                          displayEmpty
+                                          inputProps={{
+                                            "aria-label": "Without label",
+                                          }}
+                                          className="status-direct"
+                                        >
+                                          <MenuItem value="Private">
+                                            Private
+                                          </MenuItem>
+                                          <MenuItem value="Foundation">
+                                            Foundation
+                                          </MenuItem>
+                                          <MenuItem value="Insurance">
+                                            Insurance
+                                          </MenuItem>
+                                          <MenuItem value="Insurance + Private">
+                                            Insurance + Private
+                                          </MenuItem>
+                                        </Select>
+                                      </FormControl>
+                                    </TableCell>
+                                    <TableCell>
+                                      <FormControl
+                                        sx={{ m: 1, minWidth: 120 }}
+                                        size="small"
+                                        className="cont-main"
+                                      >
+                                        <Select
+                                          value={info.p_status}
+                                          onChange={(e) =>
+                                            handleChangefffff(e, info.patientId)
+                                          }
+                                          displayEmpty
+                                          inputProps={{
+                                            "aria-label": "Without label",
+                                          }}
+                                          className="status-direct"
+                                        >
+                                          {/* <MenuItem value="Foundation">
                                               Foundation
                                             </MenuItem>
                                             <MenuItem value="Private">
                                               Private
                                             </MenuItem>  */}
-                                        <MenuItem value="Travelled">
-                                          {" "}
-                                          Travelled
-                                        </MenuItem>
-                                        <MenuItem value="Confirmed">
-                                          Confirmed
-                                        </MenuItem>
-                                        <MenuItem value="Pending">
-                                          Pending
-                                        </MenuItem>
-                                        <MenuItem value="On Hold">
-                                          On Hold
-                                        </MenuItem>
-                                        <MenuItem value="Treatment Completed">
-                                          Treatment Completed
-                                        </MenuItem>
-                                        <MenuItem value="Cancelled">
-                                          Cancelled
-                                        </MenuItem>
-                                        <MenuItem value="Local Case">
-                                          Local Case
-                                        </MenuItem>
-                                        <MenuItem value="Follow Up">
-                                          Follow Up
-                                        </MenuItem>
-                                        <MenuItem value="Passed Away">
-                                          Passed Away
-                                        </MenuItem>
-                                      </Select>
-                                    </FormControl>
-                                  </TableCell>
-                                  <TableCell className="action-icon">
-                                    <VisibilityIcon
-                                      className="eye-icon"
-                                      onClick={(e) =>
-                                        PatientDetail(
-                                          e,
-                                          info.patientId,
-                                          info.enquiryId,
-                                        )
-                                      }
-                                    />
-                                    <i
-                                      className="fa-solid fa-pen-to-square"
-                                      onClick={(e) =>
-                                        EditButton(e, info.patientId)
-                                      }
-                                    ></i>
-                                    {localStorage.getItem("Role") ===
-                                      "Admin" ? (
+                                          <MenuItem value="Travelled">
+                                            {" "}
+                                            Travelled
+                                          </MenuItem>
+                                          <MenuItem value="Confirmed">
+                                            Confirmed
+                                          </MenuItem>
+                                          <MenuItem value="Pending">
+                                            Pending
+                                          </MenuItem>
+                                          <MenuItem value="On Hold">
+                                            On Hold
+                                          </MenuItem>
+                                          <MenuItem value="Treatment Completed">
+                                            Treatment Completed
+                                          </MenuItem>
+                                          <MenuItem value="Cancelled">
+                                            Cancelled
+                                          </MenuItem>
+                                          <MenuItem value="Local Case">
+                                            Local Case
+                                          </MenuItem>
+                                          <MenuItem value="Follow Up">
+                                            Follow Up
+                                          </MenuItem>
+                                          <MenuItem value="Passed Away">
+                                            Passed Away
+                                          </MenuItem>
+                                        </Select>
+                                      </FormControl>
+                                    </TableCell>
+                                    <TableCell className="action-icon">
+                                      <VisibilityIcon
+                                        className="eye-icon"
+                                        onClick={(e) =>
+                                          PatientDetail(
+                                            e,
+                                            info.patientId,
+                                            info.enquiryId,
+                                          )
+                                        }
+                                      />
                                       <i
-                                        className="fa-solid fa-trash"
-                                        onClick={(e) => {
-                                          handledelet(e, info.patientId);
-                                        }}
+                                        className="fa-solid fa-pen-to-square"
+                                        onClick={(e) =>
+                                          EditButton(e, info.patientId)
+                                        }
                                       ></i>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </TableCell>
-                                </>
-                              ) : (
-                                ""
-                              )}
-                            </TableRow>
-                          ))
-                        )}
-                      </TableBody>}
-
+                                      {localStorage.getItem("Role") ===
+                                      "Admin" ? (
+                                        <i
+                                          className="fa-solid fa-trash"
+                                          onClick={(e) => {
+                                            handledelet(e, info.patientId);
+                                          }}
+                                        ></i>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </TableCell>
+                                  </>
+                                ) : (
+                                  ""
+                                )}
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      )}
                     </Table>
                     {!pdfRowLimit && (
                       <Stack spacing={2}>

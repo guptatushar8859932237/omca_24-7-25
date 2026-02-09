@@ -7,10 +7,22 @@ import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
 import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
-import { image, imageUrl } from "../../Basurl/Baseurl";
+import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
 import axios from "axios";
+
+
+const getFileType = (file) => {
+  const ext = file.split(".").pop().toLowerCase();
+
+  if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
+  if (ext === "pdf") return "pdf";
+  if (["doc", "docx"].includes(ext)) return "word";
+  if (["xls", "xlsx"].includes(ext)) return "excel";
+  return "other";
+};
+
 export default function EditEnquiry() {
   const dispatch = useDispatch();
   const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
@@ -157,8 +169,7 @@ const handleDeletePatientIdProof = (index) => {
   }).then(async (res) => {
     if (res.isConfirmed) {
       try {
-        await axios.delete(
-          "http://192.168.1.68:5201/api/deletePatientIdProofByIndex",
+        await axios.delete(`${baseurl}deletePatientIdProofByIndex`,
           {
             data: {
               enquiryId: editenquiry.enquiryId,
@@ -247,8 +258,7 @@ const handleDeleteAttendantIdProof = async (index) => {
   }).then(async (res) => {
     if (res.isConfirmed) {
       try {
-        await axios.delete(
-          "http://192.168.1.68:5201/api/deletePatientRelationImageByIndex",
+        await axios.delete(`${baseurl}deletePatientRelationImageByIndex`,
           {
             data: {
               enquiryId: editenquiry.enquiryId,
@@ -661,7 +671,7 @@ const handleDeleteAttendantIdProof = async (index) => {
                             ) : (
                               <img src={avtar} alt="default" />
                             )} */}
-                            {Array.isArray(editenquiry.patient_id_proof) &&
+                            {/* {Array.isArray(editenquiry.patient_id_proof) &&
                             editenquiry.patient_id_proof.length > 0 ? (
                               editenquiry.patient_id_proof.map((img, index) => (
                                 <div className="image-wrapper" key={index}>
@@ -682,7 +692,50 @@ const handleDeleteAttendantIdProof = async (index) => {
                               ))
                             ) : (
                               <img src={avtar} alt="default" />
-                            )}
+                            )} */}
+                            {Array.isArray(editenquiry.patient_id_proof) &&
+editenquiry.patient_id_proof.length > 0 ? (
+  editenquiry.patient_id_proof.map((file, index) => {
+    const type = getFileType(file);
+    const fileUrl = `${imageUrl}${file}`;
+
+    return (
+      <div className="file-preview position-relative" key={index}>
+        {/* DELETE ICON – ALWAYS VISIBLE */}
+        <span
+          className="delete-icon"
+          onClick={() => handleDeletePatientIdProof(index)}
+        >
+          ✕
+        </span>
+
+        {/* FILE PREVIEW */}
+        {type === "image" ? (
+          <img
+            src={fileUrl}
+            alt="patient-proof"
+            onError={(e) => (e.target.src = avtar)}
+          />
+        ) : (
+          <a
+            href={fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="doc-link"
+          >
+            {type === "pdf" && "📄 PDF Document"}
+            {type === "word" && "📝 Word Document"}
+            {type === "excel" && "📊 Excel Sheet"}
+            {type === "other" && "📁 File"}
+          </a>
+        )}
+      </div>
+    );
+  })
+) : (
+  <img src={avtar} alt="default" />
+)}
+
                           </div>
 
                           <ErrorMessage
@@ -711,7 +764,6 @@ const handleDeleteAttendantIdProof = async (index) => {
                               type="file"
                               name="patient_Profile"
                               accept="image/*,application/pdf"
-                              multiple
                               onChange={(e) =>
                                 setFieldValue(
                                   "patient_Profile",
@@ -978,37 +1030,49 @@ const handleDeleteAttendantIdProof = async (index) => {
                                 ) : (
                                   <img src={avtar} alt="default" />
                                 )} */}
-                                {Array.isArray(
-                                  editenquiry.patient_relation_id,
-                                ) &&
-                                editenquiry.patient_relation_id.length > 0 ? (
-                                  editenquiry.patient_relation_id.map(
-                                    (img, index) => (
-                                      <div
-                                        className="image-wrapper"
-                                        key={index}
-                                      >
-                                        <span
-                                          className="delete-icon"
-                                          onClick={() =>
-                                            handleDeleteAttendantIdProof(index)
-                                          }
-                                        >
-                                          ✕
-                                        </span>
-                                        <img
-                                          src={`${imageUrl}${img}`}
-                                          alt={`attendant-id-${index}`}
-                                          onError={(e) =>
-                                            (e.target.src = avtar)
-                                          }
-                                        />
-                                      </div>
-                                    ),
-                                  )
-                                ) : (
-                                  <img src={avtar} alt="default" />
-                                )}
+                             {Array.isArray(editenquiry.patient_relation_id) &&
+editenquiry.patient_relation_id.length > 0 ? (
+  editenquiry.patient_relation_id.map((file, index) => {
+    const type = getFileType(file);
+    const fileUrl = `${imageUrl}${file}`;
+
+    return (
+      <div className="file-preview position-relative" key={index}>
+        {/* DELETE ICON – ALWAYS VISIBLE */}
+        <span
+          className="delete-icon"
+          onClick={() => handleDeleteAttendantIdProof(index)}
+        >
+          ✕
+        </span>
+
+        {/* FILE PREVIEW */}
+        {type === "image" ? (
+          <img
+            src={fileUrl}
+            alt="attendant-proof"
+            onError={(e) => (e.target.src = avtar)}
+          />
+        ) : (
+          <a
+            href={fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="doc-link"
+          >
+            {type === "pdf" && "📄 PDF Document"}
+            {type === "word" && "📝 Word Document"}
+            {type === "excel" && "📊 Excel Sheet"}
+            {type === "other" && "📁 File"}
+          </a>
+        )}
+      </div>
+    );
+  })
+) : (
+  <img src={avtar} alt="default" />
+)}
+
                               </div>
                               <ErrorMessage
                                 name="patient_relation_id"

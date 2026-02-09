@@ -4,6 +4,42 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import avtar from "../../img/avtarImg.jpg"
+// 🔹 file type check
+const getFileType = (file) => {
+  const ext = file.split(".").pop().toLowerCase();
+  if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
+  return "other";
+};
+
+// 🔹 reusable preview component
+const FilePreview = ({ file }) => {
+  const fileUrl = `${imageUrl}${file}`;
+  const type = getFileType(file);
+
+  if (type === "image") {
+    return (
+      <img
+        src={fileUrl}
+        alt="Document"
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = avtar;
+        }}
+      />
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className="btn btn-outline-primary btn-sm"
+      onClick={() => window.open(fileUrl, "_blank")}
+    >
+      View Document
+    </button>
+  );
+};
+
 export default function EnquiryDetail() {
   const location = useLocation();
   const [row, setRows] = useState("");
@@ -20,8 +56,6 @@ export default function EnquiryDetail() {
         if (response.data.success) {
           console.log(response.data.detail);
           setRows(response.data.detail);
-          // setJobTitles(response.data.details.map(job => job.jobTitle));
-          // setLocation(countries);
         } else {
           console.error("Failed to fetch job titles:", response.data.message);
         }
@@ -33,7 +67,6 @@ export default function EnquiryDetail() {
   useEffect(() => {
     fetchJobTitles();
   }, []);
-
   const handleclick = () => {
     window.history.back();
   };
@@ -212,27 +245,18 @@ export default function EnquiryDetail() {
                   <div className="col-md-4">
                     <div className="field-set">
                       <label>Patient ID proof<span className="text-danger"></span></label>
-                      <div className="engpatimg">
-                        {Array.isArray(row.patient_id_proof) && row.patient_id_proof.length > 0 ? (
-                          row.patient_id_proof.map((img, index) => (
-                            <img
-                              key={index}
-                              src={`${imageUrl}${img}`}
-                              alt="No Document"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = avtar;
-                              }}
-                            />
-                          ))
-                        ) : (
-                          <img
-                            src={avtar}
-                            alt="No Document"
+                     <div className="engpatimg">
+  {Array.isArray(row.patient_id_proof) && row.patient_id_proof.length > 0 ? (
+    row.patient_id_proof.map((file, index) => (
+      <div key={index} className="doc-box">
+        <FilePreview file={file} />
+      </div>
+    ))
+  ) : (
+    <img src={avtar} alt="No Document" />
+  )}
+</div>
 
-                          />
-                        )}
-                      </div>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -330,28 +354,18 @@ export default function EnquiryDetail() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant ID Proof<span className="text-danger"></span></label>
-                          <div className="engpatimg">
-                             {Array.isArray(row.patient_relation_id) && row.patient_relation_id.length > 0 ? (
-                          row.patient_relation_id.map((img, index) => (
-                            <img
-                              key={index}
-                              src={`${imageUrl}${img}`}
-                              alt="No Document"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = avtar;
-                              }}
-                            />
-                          ))
-                        ) : (
-                          <img
-                            src={avtar}
-                            alt="No Document"
+                       <div className="engpatimg">
+  {Array.isArray(row.patient_relation_id) && row.patient_relation_id.length > 0 ? (
+    row.patient_relation_id.map((file, index) => (
+      <div key={index} className="doc-box">
+        <FilePreview file={file} />
+      </div>
+    ))
+  ) : (
+    <img src={avtar} alt="No Document" />
+  )}
+</div>
 
-                          />
-                        )}
-                            {/* <img src={`${imageUrl}${row.patient_relation_id}`} alt="No Document" /> */}
-                          </div>
                         </div>
                       </div>
                       <div className="col-md-4">
