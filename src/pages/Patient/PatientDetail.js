@@ -32,6 +32,7 @@ import profile from "../../img/doctor-thumb-04.jpg";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { AddNewTretmentPayment } from "../../reducer/PatientTreatmentSlice";
+
 import { toast, ToastContainer } from "react-toastify";
 import avtar from "../../img/avtarImg.jpg";
 import {
@@ -43,7 +44,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { CopyAll, PictureAsPdf } from "@mui/icons-material";
+import { CopyAll, LineAxisOutlined, PictureAsPdf } from "@mui/icons-material";
 function PatientDetail() {
   const navigate = useNavigate();
   const [seekerStatus, setSeekerStatus] = React.useState({});
@@ -52,6 +53,11 @@ function PatientDetail() {
   const [vehicalnumber, setVehicalnumber] = useState("");
   const [drivername, setDrivername] = useState("");
   const [drivercontact, setDrivercontact] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+  // const [editData, setEditData] = useState(null);
+  const [editData, setEditData] = useState(null);
+  const [edited, setEdited] = useState(false);
+
   const location = useLocation();
   const dispatch = useDispatch();
   const { PatientTreatments, loading, error } = useSelector(
@@ -59,6 +65,7 @@ function PatientDetail() {
   );
   const [ispatient, setIspatient] = useState("");
   const [datedata, setDatedata] = useState("");
+  const [appointmentid, setAppointmentid] = useState("");
   const [tretment, setTretment] = useState([]);
   const [undadedservice, setUndadedservice] = useState([]);
   const [Service, setService] = useState([]);
@@ -70,6 +77,8 @@ function PatientDetail() {
   const [open2, setOpen2] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);
   const [notesModal, setNotesModal] = useState(false);
+  const [modalEditServiceOpen, setModalEditServiceOpen] = useState(false);
+  const [treatmentIDservice, setTreatmentIDservice] = useState(null);
   const [open10, setOpen10] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [open5, setOpen5] = React.useState(false);
@@ -99,6 +108,7 @@ function PatientDetail() {
   const [blogErr, setBlogErr] = useState(false);
   const [appointErr, setAppointErr] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
+  const [oeditappp, setOeditappp] = useState(false);
   const [kysErr, setKysErr] = useState(false);
   const [treatmentuser, setTreatmentuser] = useState([]);
   const [noteErr, setNoteErr] = useState(false);
@@ -143,7 +153,7 @@ function PatientDetail() {
     if (PatientTreatments) {
       setIspatient(PatientTreatments);
       console.log(PatientTreatments.treatments);
-      setTretment(PatientTreatments.treatments || []); // Ensure treatments is always an array
+      setTretment(PatientTreatments.treatments || []);
       setKyc(PatientTreatments.Kyc_details);
       setNotes(PatientTreatments.discussionNotes);
       setPayment_details(PatientTreatments.payment_details);
@@ -168,6 +178,7 @@ function PatientDetail() {
   };
   const handleClickOpen1 = (e, tretmentId, listhospital) => {
     console.log(e.target.value, treatmentId, listhospital);
+    setEdited(false);
     setOpen1(true);
     setTreatmentId(tretmentId);
     setIShospitalArray(listhospital);
@@ -248,7 +259,7 @@ function PatientDetail() {
         endTime: datedata.end_date,
       },
     };
-    console.log(servipostdata, "Service Data22");
+
     try {
       const response = await axios.post(
         `${baseurl}patient_extra_service/${data.treatment}`,
@@ -260,7 +271,7 @@ function PatientDetail() {
           },
         },
       );
-      console.log(response.data);
+
       if (response.data.success === true) {
         setOpenModal(false);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
@@ -268,11 +279,34 @@ function PatientDetail() {
       }
     } catch (error) {
       console.log(error);
+
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        "Something went wrong!";
+
+      Swal.fire({
+        title: "Error",
+        text: errorMessage,
+        icon: "error",
+      });
     }
   };
+
   useEffect(() => {
     gettreatment11();
   }, []);
+
+  const hadnlcecEditModal = (item, treatmentId) => {
+    console.log(item, treatmentId.treatment_id);
+    setTreatmentIDservice(treatmentId.treatment_id);
+    setModalEditServiceOpen(true);
+    setData(item);
+  };
+  const hadnlcecEcloseeModal = () => {
+    // console.log(item)
+    setModalEditServiceOpen(false);
+  };
 
   const gettreatment11 = async () => {
     try {
@@ -281,12 +315,6 @@ function PatientDetail() {
         "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
         response.data.data,
       );
-      // if(response.success===200){
-      //   console.log(response)
-      // }
-      // else{
-      //   console.log("something went wrong")
-      // }
     } catch (error) {
       console.log("getting error");
     }
@@ -376,14 +404,6 @@ function PatientDetail() {
     }
   };
 
-  // const handledeleteReport =async(item)=>{
-  //   try {
-  //       // const response = await axios.post(`${baseurl}deleteReport/${}`)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-
-  // }
   const handledeleteReport = async (item) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -426,25 +446,6 @@ function PatientDetail() {
     }
   };
 
-  //    const handledeleteReport = async (item) => {
-  //   try {
-  //     // console.log("Deleting report:", item);
-  //     const response = await axios.post(
-  //       `${baseurl}deleteReport/${item._id}`
-  //     );
-
-  //     if (response.data?.success) {
-  //       toast.success("Report deleted successfully");
-  //       gtdatareportsdata(); // 🔄 refresh list
-  //     } else {
-  //       toast.error("Failed to delete report");
-  //     }
-  //   } catch (error) {
-  //     console.error("Delete report error:", error);
-  //     toast.error("Something went wrong");
-  //   }
-  // };
-
   const handlesubmitAppoint = async (e) => {
     e.preventDefault();
     const isOffline = statuddropdown === "offline";
@@ -467,39 +468,23 @@ function PatientDetail() {
       setAppointErr((prev) => ({ ...prev, note: true }));
       hasError = true;
     }
-
     if (!date) {
       setAppointErr((prev) => ({ ...prev, date: true }));
       hasError = true;
     }
-
     if (!pickuptime) {
       setAppointErr((prev) => ({ ...prev, pickuptime: true }));
       hasError = true;
     }
-
     if (isOffline) {
       if (!drivername) {
         setAppointErr((prev) => ({ ...prev, drivername: true }));
         hasError = true;
       }
-
-      // if (!drivercontact) {
-      //   setAppointErr((prev) => ({ ...prev, drivercontact: true }));
-      //   hasError = true;
-      // }
-
-      // if (!vehicalnumber) {
-      //   setAppointErr((prev) => ({ ...prev, vehicalnumber: true }));
-      //   hasError = true;
-      // }
     }
-
-    // If any required field is missing, stop the submission
     if (hasError) {
       return;
     }
-
     try {
       const result = await dispatch(
         AppointmentForPatient({
@@ -756,83 +741,6 @@ function PatientDetail() {
     }
   };
 
-  //   const handleAddTritmentPayment = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const result = await dispatch(
-  //       AddNewTretmentPayment({
-  //         id: treatmentId,
-  //         paid_amount: data.paid_amount,
-  //         paymentMethod: data.paymentMethod,
-  //         payment_Date: data.payment_Date,
-  //       })
-  //     ).unwrap();
-
-  //     setOpen3(false);
-  //     Swal.fire("Payment Details Added Successfully!", "", "success");
-  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  //     setTreatmentId("");
-  //     setData("");
-
-  //   } catch (err) {
-  //     console.group("Submission Error");
-  //     console.log("Raw error:", err);
-
-  //     let errorMessage = "An error occurred";
-
-  //     // 👇 RTK rejectWithValue usually comes like this
-  //     if (typeof err === "string") {
-  //       errorMessage = err;
-  //     } else if (err?.message) {
-  //       errorMessage = err.message;
-  //     } else if (err?.error) {
-  //       errorMessage = err.error;
-  //     }
-
-  //     console.error("Parsed error message:", errorMessage);
-  //     Swal.fire("Error!", errorMessage, "error");
-  //   }
-  // };
-
-  // const handleAddTritmentPayment = async (e) => {
-  //   e.preventDefault();
-  //   const result = await dispatch(
-  //     AddNewTretmentPayment({
-  //       id: treatmentId,
-  //       paid_amount: data.paid_amount,
-  //       paymentMethod: data.paymentMethod,
-  //       payment_Date: data.payment_Date,
-  //     })
-  //   ).unwrap();
-  //   try {
-  //     setOpen3(false);
-  //     Swal.fire("Payment Details Added Successfully!", "", "success");
-  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  //     setTreatmentId("");
-  //     setData("");
-  //   } catch (err) {
-  //     console.group("Submission Error");
-  //     console.log("Raw error:", err);
-
-  //     let errorMessage = "An error occurred";
-
-  //     if (typeof err === "string") {
-  //       errorMessage = err;
-  //     } else if (err instanceof Error) {
-  //       errorMessage = err.message;
-  //     } else if (err?.response?.data?.message) {
-  //       errorMessage = err.response.data.message;
-  //     } else if (err?.message) {
-  //       errorMessage = err.message;
-  //     } else if (typeof err === "object") {
-  //       errorMessage = JSON.stringify(err);
-  //     }
-
-  //     console.error("Parsed error message:", errorMessage);
-  //     Swal.fire("Error!", errorMessage, "error");
-  //   }
-  // };
   const handleChange = async (event, id) => {
     console.log(event.target, id);
     const { value } = event.target;
@@ -998,153 +906,60 @@ function PatientDetail() {
     setImagefile(file); // store in state
   };
 
-const handleClickSubmit = async () => {
-  try {
-    const formData = new FormData();
-    formData.append("reportTitle", iniData.reportTitle);
-    formData.append("treatmentReport", imagefile);
-    formData.append("treatment_report_date", iniData.treatment_report_date);
-    formData.append("platform", 1);
+  const handleClickSubmit = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("reportTitle", iniData.reportTitle);
+      formData.append("treatmentReport", imagefile);
+      formData.append("treatment_report_date", iniData.treatment_report_date);
+      formData.append("platform", 1);
 
-    const response = await axios.post(
-      `${baseurl}addReports/${treatmentId}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await axios.post(
+        `${baseurl}addReports/${treatmentId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
+      );
+
+      if (response.data?.success) {
+        handleClose10();
+        gtdatareportsdata();
+
+        setTimeout(() => {
+          Swal.fire("Success", "Report Added Successfully!", "success");
+        }, 300);
+      } else {
+        handleClose10();
+
+        setTimeout(() => {
+          Swal.fire(
+            "Error",
+            response.data?.message || "Failed to add report",
+            "error",
+          );
+        }, 300);
       }
-    );
-
-    if (response.data?.success) {
-      handleClose10();
-      gtdatareportsdata();
-
-      setTimeout(() => {
-        Swal.fire("Success", "Report Added Successfully!", "success");
-      }, 300);
-    } else {
+    } catch (error) {
       handleClose10();
 
       setTimeout(() => {
-        Swal.fire(
-          "Error",
-          response.data?.message || "Failed to add report",
-          "error"
-        );
+        if (error.response) {
+          Swal.fire(
+            "Error",
+            error.response.data?.message || "Server error",
+            "error",
+          );
+        } else if (error.request) {
+          Swal.fire("Network Error", "Server not responding", "error");
+        } else {
+          Swal.fire("Error", error.message, "error");
+        }
       }, 300);
     }
-  } catch (error) {
-    handleClose10();
-
-    setTimeout(() => {
-      if (error.response) {
-        Swal.fire(
-          "Error",
-          error.response.data?.message || "Server error",
-          "error"
-        );
-      } else if (error.request) {
-        Swal.fire(
-          "Network Error",
-          "Server not responding",
-          "error"
-        );
-      } else {
-        Swal.fire(
-          "Error",
-          error.message,
-          "error"
-        );
-      }
-    }, 300);
-  }
-};
-
-
-  // const handleClickSubmit = async () => {
-  //   console.log("Treatment ID:", treatmentId);
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("reportTitle", iniData.reportTitle);
-  //     formData.append("treatmentReport", imagefile);
-  //     formData.append("treatment_report_date", iniData.treatment_report_date);
-  //     formData.append("platform", 1);
-
-  //     const response = await axios.post(
-  //       `${baseurl}addReports/${treatmentId}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       },
-  //     );
-
-  //     if (response.data.success === true) {
-  //       handleClose10();
-  //       gtdatareportsdata();
-  //       Swal.fire("Report Added Successfully!", "", "success");
-  //     }
-  //     console.log("Upload successful:", response.data);
-  //   } catch (error) {
-  //     console.error("Upload failed:", error);
-  //   }
-  // };
-
-//   const handleClickSubmit = async () => {
-//   try {
-//     const formData = new FormData();
-//     formData.append("reportTitle", iniData.reportTitle);
-//     formData.append("treatmentReport", imagefile);
-//     formData.append("treatment_report_date", iniData.treatment_report_date);
-//     formData.append("platform", 1);
-
-//     const response = await axios.post(
-//       `${baseurl}addReports/${treatmentId}`,
-//       formData,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem("token")}`,
-//         },
-//       }
-//     );
-
-//     if (response.data?.success) {
-//       handleClose10();
-//       gtdatareportsdata();
-//       Swal.fire("Success", "Report Added Successfully!", "success");
-//     } else {
-//       Swal.fire(
-//         "Error",
-//         response.data?.message || "Failed to add report",
-//         "error"
-//       );
-//     }
-//   } catch (error) {
-//     handleClose10()
-//     if (error.response) {
-//       Swal.fire(
-//         "Error",
-//         error.response.data?.message || "Server error",
-//         "error"
-//       );
-//     } else if (error.request) {
-//       Swal.fire(
-//         "Network Error",
-//         "Server not responding",
-//         "error"
-//       );
-//     } else {
-//       Swal.fire(
-//         "Error",
-//         error.message,
-//         "error"
-//       );
-//     }
-//   }
-// };
+  };
 
   const handleopenNotesModal = (id) => {
     console.log(notes);
@@ -1202,7 +1017,7 @@ const handleClickSubmit = async () => {
       );
 
       if (response.data.success === true) {
-        console.log(response.data.data,"ldsgkfffffffffffffffffffffffffffff")
+        console.log(response.data.data, "ldsgkfffffffffffffffffffffffffffff");
         setTreatmentData(response.data.data);
         setReportdataget(response.data.data);
       } else {
@@ -1249,24 +1064,498 @@ const handleClickSubmit = async () => {
       Swal.fire("Error", "Server error occurred", "error");
     }
   };
-  // const handledelete = async (info,item)=>{
-  //   console.log(info)
-  //   console.log(item)
-  // try {
-  //   const response = await axios.delete(`${baseurl}deleteTreatmentHospital/${info.treatment_id}/${item.hospital_id}`)
-  //   console.log(response)
-  //   if(response.data.success===true){
-  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  // Swal.fire("Success","Hospital Delete Successfully","Success")
+
+  const editServiceandlechange = (e) => {
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
+  };
+
+  // const handlesubmitdataserviceEdit =async()=>{
+  //   try {
+  //     const responce = await axios.put(`${baseurl}edit_patient_extra_service/Tx-73313/${treatmentIDservice}/${data.serviceId}`)
+
+  //   } catch (error) {
+  //     console.log("error",error)
   //   }
-  //   else{
+  // }
+  const handlesubmitdataserviceEdit = async () => {
+    try {
+      const response = await axios.put(
+        `${baseurl}edit_patient_extra_service/${treatmentIDservice}/${data.serviceId}`,
+        data, // (agar body bhejni hai)
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (response.data?.success) {
+        hadnlcecEcloseeModal();
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: response.data.message || "Service updated successfully",
+        });
+      } else {
+        Swal.fire({
+          icon: "warning",
+          title: "Warning",
+          text: response.data?.message || "Update failed",
+        });
+      }
+    } catch (error) {
+      console.log("error", error);
+
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong!";
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+      });
+    }
+  };
+  const handledeltePatientserveice = async (a, b, index) => {
+    console.log(a, b, index);
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete this service?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await axios.delete(
+        `${baseurl}delete_patient_extra_service/${b.treatment_id}/${index}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      if (response.data?.success) {
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        Swal.fire("Deleted!", "Service Deleted Successfully", "success");
+      }
+    } catch (error) {
+      Swal.fire(
+        "Error",
+        error?.response?.data?.message || "Unable to delete service",
+        "error",
+      );
+    }
+  };
+
+  // const handledeltePatientserveice =async(a,b,c)=>{
+  //   console.group(a,b,c-1)
+  //   try {
+  //     const response = await axios.delete(`${baseurl}delete_patient_extra_service/${b.treatment_id}/${c-1}`)
+  //   } catch (error) {
   //     console.log(error)
   //   }
-  // } catch (error) {
-  //   console.log(error)
-  // }
+  // }\\\
 
+  // const handleclickeditfunc =(item)=>{
+  //   console.log(item)
+  //   setOeditappp(true)
+  //   setData(item.driver_name)
+  //   setData(item.driver_name)
+  //   setData(item.driver_name)
+  //   setData(item.driver_name)
+  //   setData(item.driver_name)
+  //   setData(item.driver_name)
+  //   setData(item.driver_name)
+  //   setData(item.driver_name)
+  //   setData(item.driver_name)
+  //   setData(item.driver_name)
   // }
+  const handleclickeditfunc = (item) => {
+    console.log(item);
+    setAppointmentid(item.appointmentId);
+    setEdited(true);
+    setOpen1(true);
+    setEditData(item);
+    setStatuddropdown(item.mode);
+    setNote(item.disease_name || "");
+    setDate(item.appointment_Date || "");
+
+    // ✅ FULL OBJECT pass karo
+    setAppHospital({
+      hospital_id: item.hospital_id,
+      hospital_Name: item.hospital_Name,
+    });
+
+    if (item.mode === "offline") {
+      setPickuptime(item.pickup_time || "");
+      setDrivername(item.driver_name || "");
+      setDrivercontact(item.driver_contact || "");
+      setVehicalnumber(item.vehicle_no || "");
+    } else {
+      setPickuptime("");
+      setDrivername("");
+      setDrivercontact("");
+      setVehicalnumber("");
+    }
+  };
+
+  // const handleclickeditfunc = (item) => {
+  //   // setIsEdit(true);
+  //   console.log(item)
+  //   setOpen1(true)
+  //   setEditData(item);
+
+  //   setStatuddropdown(item.status); // online / offline
+  //   setNote(item.discussionNotes);
+  //   setDate(item.appointmentDate?.split("T")[0]);
+
+  //   if (item.status === "offline") {
+  //     setPickuptime(item.pickup_time);
+  //     setDrivername(item.driver_name);
+  //     setDrivercontact(item.driver_contact);
+  //     setVehicalnumber(item.vehicle_no);
+  //   }
+
+  //   setAppHospital(item.hospital_id); // if object
+  //   // setOpenModal(true);
+  // };
+  const handleClose1editapp = () => {
+    setOeditappp(false);
+  };
+
+  const handleclickeditdelete = async (item) => {
+    console.log(item.appointmentId);
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete this appointment?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await axios.delete(
+        `${baseurl}delete_appointment/${item.appointmentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      if (response.data?.success) {
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        Swal.fire(
+          "Deleted!",
+          response.data.message || "Appointment deleted successfully",
+          "success",
+        );
+
+        // 🔄 refresh list if needed
+        // dispatch(getAppointments());
+      }
+    } catch (error) {
+      console.log("error", error);
+
+      Swal.fire(
+        "Error",
+        error?.response?.data?.message || "Unable to delete appointment",
+        "error",
+      );
+    }
+  };
+
+  //   const handleExtraButton=async()=>{
+  //     const payload={
+  //   //       setAppointmentid(item.appointmentId)
+  //   //  setEdited(true)
+  //   // setOpen1(true);
+  //   // setEditData(item);
+  //   // setStatuddropdown(item.mode);
+  //   // setNote(item.disease_name || "");
+  //   // setDate(item.appointment_Date || "");
+
+  //   // // ✅ FULL OBJECT pass karo
+  //   // setAppHospital({
+  //   //   hospital_id: item.hospital_id,
+  //   //   hospital_Name: item.hospital_Name,
+  //   // });
+
+  //   // if (item.mode === "offline") {
+  //   //   setPickuptime(item.pickup_time || "");
+  //   //   setDrivername(item.driver_name || "");
+  //   //   setDrivercontact(item.driver_contact || "");
+  //   //   setVehicalnumber(item.vehicle_no || "");
+  //   // } else {
+  //   //   setPickuptime("");
+  //   //   setDrivername("");
+  //   //   setDrivercontact("");
+  //   //   setVehicalnumber("");
+  //   // }
+  // //  mode:mode,
+  //       hospitalId:appHospital.hospital_id,
+  //       note:note,
+  //       appointment_Date:date,
+  //       pickup_time:pickuptime,
+  //       driver_name:drivername,
+  //       driver_contact:drivercontact,
+  //       vehicle_no:vehicalnumber,
+  //     }
+  //      console.log(payload)
+  //     try {
+  //       const response = axios.put(`${baseurl}edit_appointment/${appointmentid}`,payload)
+  //         if(response.data.success){
+  //           console.log("edited")
+  //         }else{
+  //           console.log("editedssssssss")
+  //         }
+
+  //       setOpen1(false);
+  //       Swal.fire("Patient assigned to Appointment successfully!", "", "success");
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+
+  //       // Reset form fields
+  //       setTreatmentId("");
+  //       sethospitalharge("");
+  //       setHospitalId("");
+  //       setNote("");
+  //       setDate("");
+  //       setDrivercontact("");
+  //       setPickuptime("");
+  //       setDrivername("");
+  //       setVehicalnumber("");
+  //       setAppointErr(false);
+  //     } catch (err) {
+  //       Swal.fire("Error!", err?.message || "An error occurred", "error");
+  //     }
+  //   }
+  // const handleExtraButton = async () => {
+  //   try {
+  //     const payload = {
+  //       hospitalId: appHospital?.hospital_id,
+  //       note: note,
+  //       appointment_Date: date,
+  //       mode: statuddropdown,
+
+  //       ...(statuddropdown === "offline" && {
+  //         pickup_time: pickuptime,
+  //         driver_name: drivername,
+  //         driver_contact: drivercontact,
+  //         vehicle_no: vehicalnumber,
+  //       }),
+  //     };
+
+  //     console.log("Edit Payload:", payload);
+
+  //     const response = await axios.put(
+  //       `${baseurl}edit_appointment/${appointmentid}`, {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           },
+  //         },
+  //       payload
+  //     );
+
+  //     if (response?.data?.success) {
+  //       Swal.fire("Appointment updated successfully!", "", "success");
+
+  //       setOpen1(false);
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+
+  //       // reset form
+  //       setNote("");
+  //       setDate("");
+  //       setPickuptime("");
+  //       setDrivername("");
+  //       setDrivercontact("");
+  //       setVehicalnumber("");
+  //       setAppHospital(null);
+  //       setEdited(false);
+  //       setAppointErr(false);
+  //     } else {
+  //       Swal.fire("Update failed!", "", "error");
+  //     }
+  //   } catch (err) {
+  //     Swal.fire(
+  //       "Error!",
+  //       err?.response?.data?.message || err?.message || "Something went wrong",
+  //       "error"
+  //     );
+  //   }
+  // };
+  // const handleExtraButton = async () => {
+  //   try {
+  //     const payload = {
+  //       hospitalId: appHospital?.hospital_id,
+  //       note: note,
+  //       appointment_Date: date,
+  //       mode: statuddropdown,
+
+  //       ...(statuddropdown === "offline" && {
+  //         pickup_time: pickuptime,
+  //         driver_name: drivername,
+  //         driver_contact: drivercontact,
+  //         vehicle_no: vehicalnumber,
+  //       }),
+  //     };
+
+  //     console.log("Edit Payload:", payload);
+
+  //     const response = await axios.put(
+  //       `${baseurl}edit_appointment/${appointmentid}`,
+  //       payload, // ✅ data goes here
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+
+  //     if (response?.data?.success) {
+  //       Swal.fire("Appointment updated successfully!", "", "success");
+
+  //       setOpen1(false);
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+
+  //       // reset form
+  //       setNote("");
+  //       setDate("");
+  //       setPickuptime("");
+  //       setDrivername("");
+  //       setDrivercontact("");
+  //       setVehicalnumber("");
+  //       setAppHospital(null);
+  //       setEdited(false);
+  //       setAppointErr(false);
+  //     } else {
+  //       Swal.fire("Update failed!", "", "error");
+  //     }
+  //   } catch (err) {
+  //     Swal.fire(
+  //       "Error!",
+  //       err?.response?.data?.message || err?.message || "Something went wrong",
+  //       "error"
+  //     );
+  //   }
+  // };
+  const handleExtraButton = async () => {
+    try {
+      // 🔹 date ko YYYY-MM-DD format me convert
+      const formattedDate = date
+        ? new Date(date).toISOString().split("T")[0]
+        : "";
+
+      const payload = {
+        hospitalId: appHospital,
+        note: note,
+        appointment_Date: formattedDate, // ✅ formatted date
+        mode: statuddropdown,
+
+        ...(statuddropdown === "offline" && {
+          pickup_time: pickuptime,
+          driver_name: drivername,
+          driver_contact: drivercontact,
+          vehicle_no: vehicalnumber,
+        }),
+      };
+
+      console.log("Edit Payload:", payload);
+
+      const response = await axios.put(
+        `${baseurl}edit_appointment/${appointmentid}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      if (response?.data?.success) {
+        Swal.fire("Appointment updated successfully!", "", "success");
+
+        setOpen1(false);
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+
+        // reset form
+        setNote("");
+        setDate("");
+        setPickuptime("");
+        setDrivername("");
+        setDrivercontact("");
+        setVehicalnumber("");
+        setAppHospital(null);
+        setEdited(false);
+        setAppointErr(false);
+      } else {
+        Swal.fire("Update failed!", "", "error");
+      }
+    } catch (err) {
+      Swal.fire(
+        "Error!",
+        err?.response?.data?.message || err?.message || "Something went wrong",
+        "error",
+      );
+    }
+  };
+
+  const handleClicexportPayment = async (a, b) => {
+    console.log(a, b);
+
+    try {
+      const response = await axios.get(
+        `${baseurl}exportTreatmentExcel/${b}`,
+        // {
+        //   responseType: "blob", // ✅ important
+        //   headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //   },
+        // }
+      );
+
+      // create blob URL
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // create temp link
+      const link = document.createElement("a");
+      link.href = url;
+
+      // file name (you can customize)
+      link.setAttribute("download", "treatment-payments.xlsx");
+
+      document.body.appendChild(link);
+      link.click();
+
+      // cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      Swal.fire("Excel downloaded successfully!", "", "success");
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Error!", "Failed to download excel file", "error");
+    }
+  };
+  // console.log(ispatienthospitalId)
 
   return (
     <>
@@ -1358,1369 +1647,1240 @@ const handleClickSubmit = async () => {
               </div>
             </div>
           </div>
-          <div className="patient-tabs">
+          {/* <div className="patient-tabs">
             <ul className="nav nav-tabs nav-tabs-bottom">
               <li className="nav-item">
                 <a
                   className="nav-link active"
-                  href="#about-cont"
+                  href="#about-cont11"
                   data-toggle="tab"
                 >
-                  Treatment{" "}
+                  Plan Treatment{" "}
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#bottom-tab2" data-toggle="tab">
-                  Add Passport
-                </a>
-              </li>
-              {/* <li className="nav-item">
-                <a className="nav-link" href="#bottom-tab3" data-toggle="tab">
-                  Discussion Notes
-                </a>
-              </li> */}
-              <li className="nav-item">
-                <a className="nav-link" href="#bottom-tab4" data-toggle="tab">
-                  Payment Details
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#bottom-tab5" data-toggle="tab">
-                  Reports
+                <a className="nav-link" href="#bottom-tab223" data-toggle="tab">
+                  Treatment
                 </a>
               </li>
             </ul>
             <div className="tab-content">
-              <div className="tab-pane show active" id="about-cont">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>All Treatments</h6>
-                  </div>
-                  <div className="treat-buttons">
-                    <div className="mr-3">
-                      <button
-                        onClick={PatientDetailButton}
-                        className="add-button"
+              <div className="tab-pane show active" id="about-cont11">
+<div className="main-tab-hd">
+                        <div className="all-hd">
+                          <h6> Treatments Plan</h6>
+                        </div>
+                        <div className="treat-buttons">
+                          <div className="mr-3">
+                            <button
+                              onClick={PatientDetailButton}
+                              className="add-button"
+                            >
+                              <span>
+                                <i className="fa fa-plus"></i>
+                              </span>{" "}
+                              Add Treatment Plan
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                           <div className="row">
+                        <div className="col-md-12">
+                          {tretment?.length === 0 ? (
+                            "No Treatment  Added for this patients"
+                          ) : (
+                            <>
+                              {tretment?.map((info, index) => {
+                                console.log(info, "array data");
+                                return (
+                                  <div className="card-box">
+                                    <div className="treat-card">
+                                      <div className="treat-id">
+                                        <div>
+                                          <h3>
+                                            Treatment ID-
+                                            {info.treatment_id}{" "}
+                                          </h3>
+                                        </div>
+                                      </div>
+                                      <div className="d-flex">
+                                        
+                                        <button
+                                          
+                                          className="add-button1"
+                                        >
+                                          <span>
+                                            <i className="fa fa-plus"></i>
+                                          </span>{" "}
+                                          Add Passport
+                                        </button>
+                                        <button
+                                         
+                                          className="add-button1"
+                                        >
+                                          <span>
+                                            <i className="fa fa-plus"></i>
+                                          </span>{" "}
+                                     Discussion Notes
+                                        </button>
+                                        <button
+                                        
+                                          className="add-button1"
+                                        >
+                                          <span>
+                                            <i className="fa fa-plus"></i>
+                                          </span>{" "}
+                                          Add Notes
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </>
+                          )}
+                        </div>
+                      </div>  
+              </div>
+              <div className="tab-pane" id="bottom-tab223">
+              
+              </div>
+            </div>
+          </div> */}
+            <div className="patient-tabs">
+                  <ul className="nav nav-tabs nav-tabs-bottom">
+                    <li className="nav-item">
+                      <a
+                        className="nav-link active"
+                        href="#about-cont"
+                        data-toggle="tab"
                       >
-                        <span>
-                          <i className="fa fa-plus"></i>
-                        </span>{" "}
-                        Add Treatment
-                      </button>
-                    </div>
-                    <div className="">
-                      <button className="add-button" onClick={penModal}>
-                        <span>
-                          <i className="fa fa-plus"></i>
-                        </span>{" "}
-                        Add Services
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {tretment?.length === 0 ? (
-                      "No Treatment  Added for this patients"
-                    ) : (
-                      <>
-                        {tretment?.map((info, index) => {
-                          console.log(info, "array data");
-                          return (
-                            <div className="card-box">
-                              <div className="treat-card">
-                                <div className="treat-id">
-                                  <div>
-                                    <h3>Treatment ID-{info.treatment_id} </h3>
-                                  </div>
-                                </div>
-                                <div className="d-flex">
-                                  {/* <div> */}
-                                  <p
-                                    className="mx-2 my-2"
-                                    style={{
-                                      fontWeight: "500",
-                                      fontSize: "14px",
-                                    }}
-                                  >
-                                    {info.treatment_status}
-                                  </p>
-                                  {/* <FormControl
-                                      sx={{ m: 1, minWidth: 130 }}
-                                      size="small"
-                                      className="status-treat cont-main"
-                                    >
-                                      <Select
-                                        value={info.treatment_status}
-                                        onChange={(e) =>
-                                          handleChange(e, info.treatment_id)
-                                        }
-                                        displayEmpty
-                                        inputProps={{
-                                          "aria-label": "Without label",
-                                        }}
-                                        className="status-direct"
-                                      >
-                                        <MenuItem value="In Progress">
-                                          In Progress
-                                        </MenuItem>
-                                        <MenuItem value="Assigned">
-                                          Assigned
-                                        </MenuItem>
-                                        <MenuItem value="Admitted">
-                                          Admitted
-                                        </MenuItem>
-                                        <MenuItem value="Under Review">
-                                          Under Review
-                                        </MenuItem>
-                                        <MenuItem value="Under Surgery">
-                                          Under Surgery
-                                        </MenuItem>
-                                        <MenuItem value="Under Recovery">
-                                          Under Recovery
-                                        </MenuItem>
-                                        <MenuItem value="Discharged">
-                                          Discharged
-                                        </MenuItem>
-                                        <MenuItem value="Complete">
-                                          Completed
-                                        </MenuItem>
-                                        <MenuItem value="Cancelled">
-                                          Cancelled
-                                        </MenuItem>
-                                      </Select>
-                                    </FormControl> */}
-                                  {/* </div> */}
-                                  <button
-                                    onClick={(e) =>
-                                      handleClickOpen(e, info.treatment_id)
-                                    }
-                                    className="add-button1"
-                                  >
-                                    <span>
-                                      <i className="fa fa-plus"></i>
-                                    </span>{" "}
-                                    Add Hospital
-                                  </button>
-                                  <button
-                                    onClick={(e) =>
-                                      handleClickOpen1(
-                                        e,
-                                        info?.treatment_id,
-                                        info?.Hospital_details,
-                                      )
-                                    }
-                                    className="add-button1"
-                                  >
-                                    <span>
-                                      <i className="fa fa-plus"></i>
-                                    </span>{" "}
-                                    Add Appointment
-                                  </button>
-                                  <button
-                                    onClick={(e) =>
-                                      handleClickOpenNotes(
-                                        e,
-                                        info?.treatment_id,
-                                        info?.Hospital_details,
-                                      )
-                                    }
-                                    className="add-button1"
-                                  >
-                                    <span>
-                                      <i className="fa fa-plus"></i>
-                                    </span>{" "}
-                                    Add Notes
-                                  </button>
-                                </div>
-                              </div>
-                              <hr></hr>
-                              <div className="row gx-3 gy-3">
-                                <div className="col-md-4">
-                                  <div className="card patientreat">
-                                    <div className="card-header service-list">
-                                      <h6>Treatment</h6>
+                        Treatment{" "}
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className="nav-link"
+                        href="#bottom-tab2"
+                        data-toggle="tab"
+                      >
+                        Add Passport
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className="nav-link"
+                        href="#bottom-tab4"
+                        data-toggle="tab"
+                      >
+                        Payment Details
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className="nav-link"
+                        href="#bottom-tab5"
+                        data-toggle="tab"
+                      >
+                        Reports
+                      </a>
+                    </li>
+                  </ul>
+                  <div className="tab-content">
+                    <div className="tab-pane show active" id="about-cont">
+                      <div className="main-tab-hd">
+                        <div className="all-hd">
+                          <h6>All Treatments</h6>
+                        </div>
+                        <div className="treat-buttons">
+                          <div className="mr-3">
+                            <button
+                              onClick={PatientDetailButton}
+                              className="add-button"
+                            >
+                              <span>
+                                <i className="fa fa-plus"></i>
+                              </span>{" "}
+                              Add Treatment
+                            </button>
+                          </div>
+                          <div className="">
+                            <button className="add-button" onClick={penModal}>
+                              <span>
+                                <i className="fa fa-plus"></i>
+                              </span>{" "}
+                              Add Services
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-12">
+                          {tretment?.length === 0 ? (
+                            "No Treatment  Added for this patients"
+                          ) : (
+                            <>
+                              {tretment?.map((info, index) => {
+                                console.log(info, "array data");
+                                return (
+                                  <div className="card-box">
+                                    <div className="treat-card">
+                                      <div className="treat-id">
+                                        <div>
+                                          <h3>
+                                            Treatment ID-
+                                            {info.treatment_id}{" "}
+                                          </h3>
+                                        </div>
+                                      </div>
+                                      <div className="d-flex">
+                                        {/* <div> */}
+                                        <p
+                                          className="mx-2 my-2"
+                                          style={{
+                                            fontWeight: "500",
+                                            fontSize: "14px",
+                                          }}
+                                        >
+                                          {info.treatment_status}
+                                        </p>
+                                        <button
+                                          onClick={(e) =>
+                                            handleClickOpen(
+                                              e,
+                                              info.treatment_id,
+                                            )
+                                          }
+                                          className="add-button1"
+                                        >
+                                          <span>
+                                            <i className="fa fa-plus"></i>
+                                          </span>{" "}
+                                          Add Hospital
+                                        </button>
+                                        <button
+                                          onClick={(e) =>
+                                            handleClickOpen1(
+                                              e,
+                                              info?.treatment_id,
+                                              info?.Hospital_details,
+                                            )
+                                          }
+                                          className="add-button1"
+                                        >
+                                          <span>
+                                            <i className="fa fa-plus"></i>
+                                          </span>{" "}
+                                          Add Appointment
+                                        </button>
+                                        <button
+                                          onClick={(e) =>
+                                            handleClickOpenNotes(
+                                              e,
+                                              info?.treatment_id,
+                                              info?.Hospital_details,
+                                            )
+                                          }
+                                          className="add-button1"
+                                        >
+                                          <span>
+                                            <i className="fa fa-plus"></i>
+                                          </span>{" "}
+                                          Add Notes
+                                        </button>
+                                      </div>
                                     </div>
-                                    {/* <div className="card-body">
-                                          <div className="table-responsive table-no-card">
-                                            <table className="table-card w-100">
-                                              <tbody>
-                                                <tr>
-                                                  <td>Name:</td>
-                                                  <td>{info.treatment_name}</td>
-                                                </tr>
-                                                <tr>
-                                                  <td>Charge:</td>
-                                                  <td>
-                                                    {info.treatment_course_fee}{" "}
-                                                    {info.duration}
-                                                  </td>
-                                                </tr>
-                                                <tr>
-                                                  <td>Date:</td>
-                                                  <td>
-                                                    {new Date(
-                                                      info?.treatment_created_at
-                                                    ).toLocaleDateString(
-                                                      "en-GB"
-                                                    )}{" "}
-                                                    {info.duration}
-                                                  </td>
-                                                </tr>
-                                                <tr>
-                                                  <td>Time:</td>
-                                                  <td>
-                                                    {new Date(
-                                                      info?.treatment_created_at
-                                                    ).toLocaleTimeString([], {
-                                                      hour: "2-digit",
-                                                      minute: "2-digit",
-                                                      second: "2-digit",
-                                                    })}{" "}
-                                                    {info.duration}
-                                                  </td>
-                                                </tr>
-                                              </tbody>
-                                            </table>
+                                    <hr></hr>
+                                    <div className="row gx-3 gy-3">
+                                      <div className="col-md-4">
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list">
+                                            <h6>Treatment</h6>
                                           </div>
-                                        </div> */}
-                                    <div className="card-body">
-                                      <ul className="trment-list">
-                                        <li>
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="para-main-div">
-                                                <p>
-                                                  Name: {info.treatment_name}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="para-main-div">
-                                                <p>
-                                                  Charge:{" "}
-                                                  {info.treatment_course_fee}{" "}
-                                                  {info.duration}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="para-main-div">
-                                                <p>
-                                                  Date:{" "}
-                                                  {new Date(
-                                                    info?.treatment_created_at,
-                                                  ).toLocaleDateString("en-GB")}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="para-main-div">
-                                                <p>
-                                                  Time:{" "}
-                                                  {new Date(
-                                                    info?.treatment_created_at,
-                                                  ).toLocaleTimeString([], {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                    second: "2-digit",
-                                                  })}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-md-4">
-                                  <div className="card patientreat">
-                                    <div className="card-header service-list">
-                                      <h6>Hospital</h6>
-                                    </div>
-                                    <div className="card-body">
-                                      {/* <ul className="mb-2">
-                                            {info?.Hospital_details.map((item) => {
-                                              console.log(item);
-                                              return (
-                                                <>
-                                                  <li>
-                                                    <div className="row">
-                                                      <div className="col-sm-3">
-                                                        <div className="para-main-div">
-                                                          <h6>Name:</h6>
-                                                        </div>
-                                                      </div>
-                                                      <div className="col-sm-5">
-                                                        <div className="para-main-div d-flex">
-                                                          <p>{item.hospital_Name} </p>{item.hospital_Name ? <i
-                                                            className="fa-solid fa-trash"
-                                                            onClick={() => handledelete(info, item)}
-                                                          ></i> : ""}
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                    <div className="row">
-                                                      <div className="col-sm-3">
-                                                        <div className="para-main-div">
-                                                          <h6>Charge:</h6>
-                                                        </div>
-                                                      </div>
-                                                      <div className="col-sm-5">
-                                                        <div className="para-main-div">
-                                                          <p>{item.hospital_charge}</p>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                  </li>
-                                                </>
-                                              );
-                                            })}
-                                          </ul> */}
-                                      {/* <div className="table-responsive table-no-card">
-                                            <table className="table-card w-100">
-                                              <thead>
-                                                <tr>
-                                                  <th>Name</th>
-                                                  <th>Charge</th>
-                                                  <th></th>
-                                                </tr>
-                                              </thead>
-                                              <tbody>
-                                                {info?.Hospital_details.map((item, index) => (
-                                                  <tr key={index}>
-                                                    <td>{item.hospital_Name || "-"}</td>
-                                                    <td>{item.hospital_charge || "-"}</td>
-                                                    <td>
-                                                      {item.hospital_Name && (
-                                                        <i
-                                                          className="fa-solid fa-trash text-danger cursor-pointer"
-                                                          onClick={() => handledelete(info, item)}
-                                                        ></i>
-                                                      )}
-                                                    </td>
-                                                  </tr>
-                                                ))}
-                                              </tbody>
-                                            </table>
-                                          </div> */}
-                                      <ul className="trment-list">
-                                        {info?.Hospital_details.map(
-                                          (item, index) => (
-                                            <li key={index}>
-                                              <div className="row">
-                                                <div className="col-md-10">
-                                                  <div className="row">
-                                                    <div className="col-md-12">
-                                                      <div className="para-main-div">
-                                                        <p>
-                                                          Name:{" "}
-                                                          {item.hospital_Name ||
-                                                            "-"}
-                                                        </p>
-                                                      </div>
-                                                    </div>
-                                                    <div className="col-md-12">
-                                                      <div className="para-main-div">
-                                                        <p>
-                                                          Charge:{" "}
-                                                          {item.hospital_charge ||
-                                                            "-"}
-                                                        </p>
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                <div className="col-md-2 text-end">
-                                                  {item.hospital_Name && (
-                                                    <i
-                                                      className="fa-solid fa-trash text-danger cursor-pointer"
-                                                      onClick={() =>
-                                                        handledelete(info, item)
-                                                      }
-                                                    ></i>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            </li>
-                                          ),
-                                        )}
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-md-4">
-                                  <div className="card patientreat">
-                                    <div className="card-header service-list action-icon">
-                                      <h6>Free Services</h6>
-                                      {/* <i className="fa-solid fa-pen-to-square"></i> */}
-                                    </div>
-                                    <div className="card-body">
-                                      <ul className="free-list">
-                                        {info?.services?.map((item, index) => {
-                                          console.log(item);
-                                          if (item.service_type === "Free") {
-                                            return (
-                                              <li
-                                                key={
-                                                  item._id || item.serviceName
-                                                }
-                                              >
-                                                <div
-                                                  className="row"
-                                                  key={index}
-                                                >
+                                          <div className="card-body">
+                                            <ul className="trment-list">
+                                              <li>
+                                                <div className="row">
                                                   <div className="col-md-12">
                                                     <div className="para-main-div">
-                                                      <p>{item.serviceName} </p>
+                                                      <p>
+                                                        Name:{" "}
+                                                        {info.treatment_name}
+                                                      </p>
                                                     </div>
                                                   </div>
                                                 </div>
                                               </li>
-                                            );
-                                          }
-                                          return null;
-                                        })}
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-md-6">
-                                  <div className="card patientreat">
-                                    <div className="card-header service-list action-icon">
-                                      <h6>Notes</h6>
-                                    </div>
-                                    <div className="card-body">
-                                      <p>
-                                        Lorem Ipsum is simply dummy text of the
-                                        printing and typesetting industry. Lorem
-                                        Ipsum has been the industry's standard
-                                        dummy text ever since the 1500s, when an
-                                        unknown printer took a galley of type
-                                        and scrambled it to make a type specimen
-                                        book. It has survived not only five
-                                        centuries, but also the leap into
-                                        electronic typesetting, remaining
-                                        essentially unchanged. It was
-                                        popularised in the 1960s with the
-                                        release of Letraset sheets containing
-                                        Lorem Ipsum passages, and more recently
-                                        with desktop publishin
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-md-6">
-                                  <div className="card patientreat">
-                                    <div className="card-header service-list">
-                                      <h6>Extra Services</h6>
-                                    </div>
-                                    <div className="card-body">
-                                      {/* <ul className="mb-2">
-                                            {info?.services?.map((item) => {
-                                              if (!item.price) return null;
-                                              return (
-                                                <li key={item._id || item.service_type}>
-                                                  <div className="row">
-                                                    <div className="col-sm-3">
-                                                      <div className="para-main-div">
-                                                        <h6>Name:</h6>
-                                                      </div>
-                                                    </div>
-                                                    <div className="col-sm-5">
-                                                      <div className="para-main-div">
-                                                        <p>{item.serviceName}</p>
-                                                      </div>
+                                              <li>
+                                                <div className="row">
+                                                  <div className="col-md-12">
+                                                    <div className="para-main-div">
+                                                      <p>
+                                                        Charge:{" "}
+                                                        {
+                                                          info.treatment_course_fee
+                                                        }{" "}
+                                                        {info.duration}
+                                                      </p>
                                                     </div>
                                                   </div>
-                                                  <div className="row">
-                                                    <div className="col-sm-3">
-                                                      <div className="para-main-div">
-                                                        <h6>Price:</h6>
-                                                      </div>
-                                                    </div>
-                                                    <div className="col-sm-5">
-                                                      <div className="para-main-div">
-                                                        <p>
-                                                          {item.price} {"  "}{" "}
-                                                          {item.duration}
-                                                          <br />
-                                                          {new Date(
-                                                            item.startTime
-                                                          ).toLocaleDateString(
-                                                            "en-GB"
-                                                          )}{" "}
-                                                          to{" "}
-                                                          {new Date(
-                                                            item.endTime
-                                                          ).toLocaleDateString("en-GB")}
-                                                        </p>
-                                                      </div>
+                                                </div>
+                                              </li>
+                                              <li>
+                                                <div className="row">
+                                                  <div className="col-md-12">
+                                                    <div className="para-main-div">
+                                                      <p>
+                                                        Date:{" "}
+                                                        {new Date(
+                                                          info?.treatment_created_at,
+                                                        ).toLocaleDateString(
+                                                          "en-GB",
+                                                        )}
+                                                      </p>
                                                     </div>
                                                   </div>
-                                                </li>
-                                              );
-                                            })}
-                                          </ul> */}
-                                      <div className="table-responsive table-no-card">
-                                        <table className="table-card w-100">
-                                          <thead>
-                                            <tr>
-                                              <th>Service Name</th>
-                                              <th>Price</th>
-                                              <th>Duration</th>
-                                              <th>Valid From</th>
-                                              <th>Valid To</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {info?.services?.map((item) => {
-                                              if (!item.price) return null;
-                                              return (
-                                                <tr
-                                                  key={
-                                                    item._id ||
-                                                    item.service_type
-                                                  }
-                                                >
-                                                  <td>
-                                                    {item.serviceName || "-"}
-                                                  </td>
-                                                  <td>{item.price}</td>
-                                                  <td>
-                                                    {item.duration || "-"}
-                                                  </td>
-                                                  <td>
-                                                    {item.startTime
-                                                      ? new Date(
-                                                          item.startTime,
-                                                        ).toLocaleDateString(
-                                                          "en-GB",
-                                                        )
-                                                      : "-"}
-                                                  </td>
-                                                  <td>
-                                                    {item.endTime
-                                                      ? new Date(
-                                                          item.endTime,
-                                                        ).toLocaleDateString(
-                                                          "en-GB",
-                                                        )
-                                                      : "-"}
-                                                  </td>
-                                                </tr>
-                                              );
-                                            })}
-                                          </tbody>
-                                        </table>
+                                                </div>
+                                              </li>
+                                              <li>
+                                                <div className="row">
+                                                  <div className="col-md-12">
+                                                    <div className="para-main-div">
+                                                      <p>
+                                                        Time:{" "}
+                                                        {new Date(
+                                                          info?.treatment_created_at,
+                                                        ).toLocaleTimeString(
+                                                          [],
+                                                          {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                            second: "2-digit",
+                                                          },
+                                                        )}
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-md-12">
-                                  <div className="card patientreat">
-                                    <div className="card-header service-list">
-                                      <h6>Appointment</h6>
-                                    </div>
-                                    <div className="card-body">
-                                      {/* <ul className="mb-2">
-                                            {info.appointments_details?.map((item) => {
-                                              console.log(item);
-                                              return (
-                                                <>
-                                                  <li className="mb-3">
+                                      <div className="col-md-4">
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list">
+                                            <h6>Hospital</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <ul className="trment-list">
+                                              {info?.Hospital_details.map(
+                                                (item, index) => (
+                                                  <li key={index}>
                                                     <div className="row">
-                                                      <div className="col-sm-4">
-                                                        <div className="para-main-div">
-                                                          <h6>ID:</h6>
-                                                        </div>
-                                                      </div>
-                                                      <div className="col-sm-4">
-                                                        <div className="para-main-div">
-                                                          <p>{item.appointmentId}</p>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                    {item.mode !== "online" && (
-                                                      <div className="row">
-                                                        <div className="col-sm-4">
-                                                          <div className="para-main-div">
-                                                            <h6>Vehicle Number:</h6>
+                                                      <div className="col-md-10">
+                                                        <div className="row">
+                                                          <div className="col-md-12">
+                                                            <div className="para-main-div">
+                                                              <p>
+                                                                Name:{" "}
+                                                                {item.hospital_Name ||
+                                                                  "-"}
+                                                              </p>
+                                                            </div>
                                                           </div>
-                                                        </div>
-                                                        <div className="col-sm-4">
-                                                          <div className="para-main-div">
-                                                            <p>{item.vehicle_no}</p>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    )}
-                                                    {item.mode !== "online" && (
-                                                      <div className="row">
-                                                        <div className="col-sm-4">
-                                                          <div className="para-main-div">
-                                                            <h6>Driver Name:</h6>
-                                                          </div>
-                                                        </div>
-                                                        <div className="col-sm-4">
-                                                          <div className="para-main-div">
-                                                            <p>{item.driver_name}</p>
+                                                          <div className="col-md-12">
+                                                            <div className="para-main-div">
+                                                              <p>
+                                                                Charge:{" "}
+                                                                {item.hospital_charge ||
+                                                                  "-"}
+                                                              </p>
+                                                            </div>
                                                           </div>
                                                         </div>
                                                       </div>
-                                                    )}
-                                                    {item.mode !== "online" && (
-                                                      <div className="row">
-                                                        <div className="col-sm-4">
-                                                          <div className="para-main-div">
-                                                            <h6>Driver Contact:</h6>
-                                                          </div>
-                                                        </div>
-                                                        <div className="col-sm-4">
-                                                          <div className="para-main-div">
-                                                            <p>{item.driver_contact}</p>
-                                                          </div>
-                                                        </div>
-                                                      </div>)}
-                                                    <div className="row">
-                                                      {item.mode !== "online" && (
-                                                        <div className="col-sm-4">
-                                                          <div className="para-main-div">
-                                                            <h6>Pickup Time:</h6>
-                                                          </div>
-                                                        </div>
-                                                      )}
-                                                      <div className="col-sm-4">
-                                                        <div className="para-main-div">
-                                                          <p>{item.pickup_time}</p>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                    <div className="row">
-                                                      <div className="col-sm-4">
-                                                        <div className="para-main-div">
-                                                          <h6>Date:</h6>
-                                                        </div>
-                                                      </div>
-                                                      <div className="col-sm-4">
-                                                        <div className="para-main-div1">
-                                                          <p>{item.appointment_Date}</p>
-                                                          {item.status ===
-                                                            "Complete" ? (
-                                                            <p className="ms-2">{item.status === "Complete" ? "Completed" : item.status}</p>
-                                                          ) : (
-                                                            <FormControl
-                                                              sx={{
-                                                                m: 1,
-                                                                minWidth: 120,
-                                                              }}
-                                                              size="small"
-                                                              className="app-status"
-                                                            >
-                                                              <Select
-                                                                value={
-                                                                  item.status ===
-                                                                    "pending"
-                                                                    ? "1"
-                                                                    : item.status ===
-                                                                      "Follow-Up"
-                                                                      ? "2"
-                                                                      : item.status ===
-                                                                        "Completed"
-                                                                        ? "3"
-                                                                        : item.status ===
-                                                                          "Cancelled"
-                                                                          ? "4"
-                                                                          : "1"
-                                                                }
-                                                                onChange={(e) =>
-                                                                  handleChangeDetails(
-                                                                    e,
-                                                                    item.appointmentId
-                                                                  )
-                                                                }
-                                                                displayEmpty
-                                                                inputProps={{
-                                                                  "aria-label":
-                                                                    "Without label",
-                                                                }}
-                                                                className="status-direct1"
-                                                              >
-                                                                <MenuItem
-                                                                  value="1"
-                                                                  disabled
-                                                                >
-                                                                  Schedule
-                                                                </MenuItem>
-                                                                <MenuItem value="2">
-                                                                  Follow-Up
-                                                                </MenuItem>
-                                                                <MenuItem value="3">
-                                                                  Completed
-                                                                </MenuItem>
-                                                                <MenuItem value="4">
-                                                                  Cancelled
-                                                                </MenuItem>
-                                                              </Select>
-                                                            </FormControl>
-                                                          )}
-                                                        </div>
+                                                      <div className="col-md-2 text-end">
+                                                        {item.hospital_Name && (
+                                                          <i
+                                                            className="fa-solid fa-trash text-danger cursor-pointer"
+                                                            onClick={() =>
+                                                              handledelete(
+                                                                info,
+                                                                item,
+                                                              )
+                                                            }
+                                                          ></i>
+                                                        )}
                                                       </div>
                                                     </div>
                                                   </li>
-                                                </>
-                                              );
-                                            })}
-                                          </ul> */}
-                                      <div className="table-responsive table-no-card">
-                                        <table className="table-card w-100">
-                                          <thead>
-                                            <tr>
-                                              <th>ID</th>
-                                              <th>Vehicle No</th>
-                                              <th>Driver Name</th>
-                                              <th>Driver Contact</th>
-                                              <th>Pickup Time</th>
-                                              <th>Date</th>
-                                              <th>Status</th>
-                                              {/* <th>Action</th> */}
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {info.appointments_details?.map(
-                                              (item) => (
-                                                <tr key={item.appointmentId}>
-                                                  <td>{item.appointmentId}</td>
-                                                  <td>
-                                                    {item.mode !== "online"
-                                                      ? item.vehicle_no
-                                                      : "-"}
-                                                  </td>
-                                                  <td>
-                                                    {item.mode !== "online"
-                                                      ? item.driver_name
-                                                      : "-"}
-                                                  </td>
-                                                  <td>
-                                                    {item.mode !== "online"
-                                                      ? item.driver_contact
-                                                      : "-"}
-                                                  </td>
-                                                  <td>
-                                                    {item.mode !== "online"
-                                                      ? item.pickup_time
-                                                      : "-"}
-                                                  </td>
-                                                  <td>
-                                                    {item.appointment_Date}
-                                                  </td>
-                                                  <td>
-                                                    {item.status ===
-                                                    "Complete" ? (
-                                                      <span className="badge bg-primary">
-                                                        Completed
-                                                      </span>
-                                                    ) : (
-                                                      <span className="badge bg-primary">
-                                                        {item.status}
-                                                      </span>
-                                                      // <FormControl size="small" className="app-status">
-                                                      //   <Select
-                                                      //     value={
-                                                      //       item.status === "pending"
-                                                      //         ? "1"
-                                                      //         : item.status === "Follow-Up"
-                                                      //           ? "2"
-                                                      //           : item.status === "Completed"
-                                                      //             ? "3"
-                                                      //             : item.status === "Cancelled"
-                                                      //               ? "4"
-                                                      //               : "1"
-                                                      //     }
-                                                      //     onChange={(e) =>
-                                                      //       handleChangeDetails(e, item.appointmentId)
-                                                      //     }
-                                                      //     className="status-direct1"
-                                                      //   >
-                                                      //     <MenuItem value="1" disabled>
-                                                      //       Schedule
-                                                      //     </MenuItem>
-                                                      //     <MenuItem value="2">Follow-Up</MenuItem>
-                                                      //     <MenuItem value="3">Completed</MenuItem>
-                                                      //     <MenuItem value="4">Cancelled</MenuItem>
-                                                      //   </Select>
-                                                      // </FormControl>
-                                                    )}
-                                                  </td>
-                                                  {/* <td className="action-icon">
-                                                      <i className="fa-solid fa-pen-to-square"></i>
-                                                      <i className="fa-solid fa-trash"></i>
-                                                    </td> */}
-                                                </tr>
-                                              ),
-                                            )}
-                                          </tbody>
-                                        </table>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <hr></hr>
-                              <div className="row justify-content-end">
-                                <div className="col-md-12">
-                                  <div className="total-amount">
-                                    <h6 className="mb-0">Total Amount:</h6>
-                                    <p>{info.treatment_total_charge}</p>
-                                  </div>
-                                </div>
-                                <div className="col-md-12">
-                                  <div className="total-amount">
-                                    <h6 className="mb-0">Due Amount:</h6>
-                                    <p>{info.treatment_due_payment}</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="tab-pane" id="bottom-tab2">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>Passport Details</h6>
-                  </div>
-                  <button
-                    onClick={(e) => handleClickOpen2(e)}
-                    className="add-button"
-                  >
-                    <span>
-                      <i className="fa fa-plus"></i>
-                    </span>{" "}
-                    Add Passport
-                  </button>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {kys?.length === 0
-                      ? "No passport details found"
-                      : kys?.map((info, index) => (
-                          <>
-                            <div key={index} className="card-box">
-                              <div className="pass-detail">
-                                <div className="img-patient">
-                                  <h6>Patient Image</h6>
-                                  {info.photo ? (
-                                    <img
-                                      src={`${image}${info.photo}`}
-                                      alt="profile image"
-                                      className="rounded-circle shadow"
-                                      width="100"
-                                      height="100"
-                                    />
-                                  ) : (
-                                    <img
-                                      src={avtar}
-                                      alt="avatar"
-                                      className="rounded-circle shadow"
-                                      width="100"
-                                      height="100"
-                                    />
-                                  )}
-                                </div>
-                                <div className="id-proof">
-                                  <h6>Id Proof</h6>
-                                  {info.id_proof ? (
-                                    <a
-                                      href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="btn btn-outline-primary btn-sm"
-                                    >
-                                      View PDF
-                                    </a>
-                                  ) : (
-                                    <span className="text-muted">
-                                      Not Uploaded
-                                    </span>
-                                  )}
-                                  <div className="">
-                                    <h6>Passport</h6>
-                                    {info.passport ? (
-                                      <a
-                                        href={`https://sisccltd.com/omca_crm/${info.passport}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="view-pass"
-                                      >
-                                        View Passport
-                                      </a>
-                                    ) : (
-                                      <span className="text-muted">
-                                        Not Uploaded
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div key={index} className="card-box">
-                              <div className="pass-detail">
-                                <div className="img-patient">
-                                  <h6>Attende Image</h6>
-                                  {info.Attende_photo ? (
-                                    <img
-                                      src={`${image}${info.Attende_photo}`}
-                                      alt="no image"
-                                      className="rounded-circle shadow"
-                                      width="100"
-                                      height="100"
-                                    />
-                                  ) : (
-                                    <img
-                                      src={avtar}
-                                      alt="no image"
-                                      className="rounded-circle shadow"
-                                      width="100"
-                                      height="100"
-                                    />
-                                  )}
-                                </div>
-                                <div className="id-proof">
-                                  <h6>Attende id Proof </h6>
-                                  {info.Attende_id_proof ? (
-                                    <a
-                                      href={`https://sisccltd.com/omca_crm/${info.Attende_id_proof}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="btn btn-outline-primary btn-sm"
-                                    >
-                                      View PDF
-                                    </a>
-                                  ) : (
-                                    <span className="text-muted">
-                                      Not Uploaded
-                                    </span>
-                                  )}
-                                  <div className="">
-                                    <h6>Attende Passport</h6>
-                                    {info.Attende_passport ? (
-                                      <a
-                                        href={`https://sisccltd.com/omca_crm/${info.Attende_passport}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="view-pass"
-                                      >
-                                        View Passport
-                                      </a>
-                                    ) : (
-                                      <span className="text-muted">
-                                        Not Uploaded
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </>
-                        ))}
-                  </div>
-                </div>
-              </div>
-              <div className="tab-pane" id="bottom-tab3">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>Discussion Notes</h6>
-                  </div>
-                  <button
-                    onClick={(e) => handleClickOpen5(e)}
-                    className="add-button"
-                  >
-                    <span>
-                      <i className="fa fa-plus"></i>
-                    </span>{" "}
-                    Add Notes
-                  </button>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {notes?.length === 0 ? (
-                      "No notes for Patient"
-                    ) : (
-                      <>
-                        {notes?.map((info, index) => {
-                          console.log(info);
-                          return (
-                            <>
-                              <div className="card-box">
-                                <div className="note-view">
-                                  <h3 className="card-title">
-                                    Note-{index + 1}
-                                  </h3>
-                                </div>
-                                <div className="experience-box">
-                                  <ul className="experience-list">
-                                    <li>
-                                      <div className="experience-user">
-                                        <div className="before-circle"></div>
-                                      </div>
-                                      <div className="experience-content d-flex">
-                                        <div className="timeline-content">
-                                          <a href="#/" className="name">
-                                            {info.note}
-                                          </a>
-                                          <div>
-                                            {new Date(
-                                              info.date,
-                                            ).toLocaleDateString("en-GB")}
+                                                ),
+                                              )}
+                                            </ul>
                                           </div>
-                                          {/* <span className="time">treatment due payment-{info.treatment_due_payment}</span> */}
-                                        </div>
-                                        <div>
-                                          {" "}
-                                          <i
-                                            className="fa fa-edit text-primary "
-                                            onClick={() => {
-                                              handleopenNotesModal(info.id);
-                                            }}
-                                            style={{ cursor: "pointer" }}
-                                          ></i>
                                         </div>
                                       </div>
-                                    </li>
-                                  </ul>
-                                </div>
-                              </div>
-                            </>
-                          );
-                        })}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="tab-pane" id="bottom-tab4">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>Payment Details</h6>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {payment_details?.length === 0 ? (
-                      "No payment details for patients"
-                    ) : (
-                      <>
-                        {groupedPayments &&
-                          Object.entries(groupedPayments).map(
-                            ([treatmentId, payments], index) => (
-                              <div className="card-box" key={treatmentId}>
-                                <div className="treat-card">
-                                  <div className="treat-id">
-                                    <div>
-                                      <h3>Treatment ID-{treatmentId}</h3>
+                                      <div className="col-md-4">
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list action-icon">
+                                            <h6>Free Services</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <ul className="free-list">
+                                              {info?.services?.map(
+                                                (item, index) => {
+                                                  console.log(item);
+                                                  if (
+                                                    item.service_type === "Free"
+                                                  ) {
+                                                    return (
+                                                      <li
+                                                        key={
+                                                          item._id ||
+                                                          item.serviceName
+                                                        }
+                                                      >
+                                                        <div
+                                                          className="row"
+                                                          key={index}
+                                                        >
+                                                          <div className="col-md-12">
+                                                            <div className="para-main-div">
+                                                              <p>
+                                                                {
+                                                                  item.serviceName
+                                                                }{" "}
+                                                              </p>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </li>
+                                                    );
+                                                  }
+                                                  return null;
+                                                },
+                                              )}
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="col-md-6">
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list action-icon">
+                                            <h6>Notes</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <p>
+                                              Lorem Ipsum is simply dummy text
+                                              of the printing and typesetting
+                                              industry. Lorem Ipsum has been the
+                                              industry's standard dummy text
+                                              ever since the 1500s, when an
+                                              unknown printer took a galley of
+                                              type and scrambled it to make a
+                                              type specimen book. It has
+                                              survived not only five centuries,
+                                              but also the leap into electronic
+                                              typesetting, remaining essentially
+                                              unchanged. It was popularised in
+                                              the 1960s with the release of
+                                              Letraset sheets containing Lorem
+                                              Ipsum passages, and more recently
+                                              with desktop publishin
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="col-md-6">
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list">
+                                            <h6>Extra Services</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <div className="table-responsive table-no-card">
+                                              <table className="table-card w-100">
+                                                <thead>
+                                                  <tr>
+                                                    <th>Service Name</th>
+                                                    <th>Price</th>
+                                                    {/* <th>Duration</th> */}
+                                                    <th>Valid From</th>
+                                                    <th>Valid To</th>
+                                                    <th>Action</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {info?.services?.map(
+                                                    (item, index) => {
+                                                      if (!item.price)
+                                                        return null;
+                                                      return (
+                                                        <tr
+                                                          key={
+                                                            item._id ||
+                                                            item.service_type
+                                                          }
+                                                        >
+                                                          <td>
+                                                            {item.serviceName ||
+                                                              "-"}
+                                                          </td>
+                                                          <td>{item.price}</td>
+                                                          {/* <td>
+                                                    {item.duration || "-"}
+                                                  </td> */}
+                                                          <td>
+                                                            {item.startTime
+                                                              ? new Date(
+                                                                  item.startTime,
+                                                                ).toLocaleDateString(
+                                                                  "en-GB",
+                                                                )
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item.endTime
+                                                              ? new Date(
+                                                                  item.endTime,
+                                                                ).toLocaleDateString(
+                                                                  "en-GB",
+                                                                )
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            <TableCell className="action-icon">
+                                                              <i
+                                                                className="fa-solid fa-pen-to-square"
+                                                                onClick={() => {
+                                                                  hadnlcecEditModal(
+                                                                    item,
+                                                                    info,
+                                                                  );
+                                                                }}
+                                                              ></i>
+                                                              <i
+                                                                className="fa-solid fa-trash"
+                                                                onClick={() => {
+                                                                  handledeltePatientserveice(
+                                                                    item,
+                                                                    info,
+                                                                    index,
+                                                                  );
+                                                                }}
+                                                              ></i>
+                                                            </TableCell>
+                                                          </td>
+                                                        </tr>
+                                                      );
+                                                    },
+                                                  )}
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="col-md-12">
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list">
+                                            <h6>Appointment</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <div className="table-responsive table-no-card">
+                                              <table className="table-card w-100">
+                                                <thead>
+                                                  <tr>
+                                                    <th>ID</th>
+                                                    <th>Vehicle No</th>
+                                                    <th>Driver Name</th>
+                                                    <th>Driver Contact</th>
+                                                    <th>Pickup Time</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {info.appointments_details?.map(
+                                                    (item) => (
+                                                      <tr
+                                                        key={item.appointmentId}
+                                                      >
+                                                        <td>
+                                                          {item.appointmentId}
+                                                        </td>
+                                                        <td>
+                                                          {item.mode !==
+                                                          "online"
+                                                            ? item.vehicle_no
+                                                            : "-"}
+                                                        </td>
+                                                        <td>
+                                                          {item.mode !==
+                                                          "online"
+                                                            ? item.driver_name
+                                                            : "-"}
+                                                        </td>
+                                                        <td>
+                                                          {item.mode !==
+                                                          "online"
+                                                            ? item.driver_contact
+                                                            : "-"}
+                                                        </td>
+                                                        <td>
+                                                          {item.mode !==
+                                                          "online"
+                                                            ? item.pickup_time
+                                                            : "-"}
+                                                        </td>
+                                                        <td>
+                                                          {item.appointment_Date
+                                                            ? new Date(
+                                                                item.appointment_Date,
+                                                              )
+                                                                .toISOString()
+                                                                .slice(0, 10)
+                                                            : ""}
+                                                        </td>
+                                                        <td>
+                                                          {item.status ===
+                                                          "Complete" ? (
+                                                            <span className="badge bg-primary">
+                                                              Completed
+                                                            </span>
+                                                          ) : (
+                                                            <span className="badge bg-primary">
+                                                              {item.status}
+                                                            </span>
+                                                          )}
+                                                        </td>
+                                                        <td className="action-icon">
+                                                          <i
+                                                            className="fa-solid fa-pen-to-square"
+                                                            onClick={() => {
+                                                              handleclickeditfunc(
+                                                                item,
+                                                              );
+                                                            }}
+                                                          ></i>
+                                                          <i
+                                                            className="fa-solid fa-trash"
+                                                            onClick={() => {
+                                                              handleclickeditdelete(
+                                                                item,
+                                                              );
+                                                            }}
+                                                          ></i>
+                                                        </td>
+                                                      </tr>
+                                                    ),
+                                                  )}
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <hr></hr>
+                                    <div className="row justify-content-end">
+                                      <div className="col-md-12">
+                                        <div className="total-amount">
+                                          <h6 className="mb-0">
+                                            Total Amount:
+                                          </h6>
+                                          <p>{info.treatment_total_charge}</p>
+                                        </div>
+                                      </div>
+                                      <div className="col-md-12">
+                                        <div className="total-amount">
+                                          <h6 className="mb-0">Due Amount:</h6>
+                                          <p>{info.treatment_due_payment}</p>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
-                                  <div className="">
-                                    <button
-                                      onClick={(e) =>
-                                        handleClickOpen3(e, treatmentId)
-                                      }
-                                      className="add-button"
-                                    >
-                                      <span>
-                                        <i className="fa fa-plus"></i>
-                                      </span>{" "}
-                                      Add Amount
-                                    </button>
+                                );
+                              })}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="tab-pane" id="bottom-tab2">
+                      <div className="main-tab-hd">
+                        <div className="all-hd">
+                          <h6>Passport Details</h6>
+                        </div>
+                        <button
+                          onClick={(e) => handleClickOpen2(e)}
+                          className="add-button"
+                        >
+                          <span>
+                            <i className="fa fa-plus"></i>
+                          </span>{" "}
+                          Add Passport
+                        </button>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-12">
+                          {kys?.length === 0
+                            ? "No passport details found"
+                            : kys?.map((info, index) => (
+                                <>
+                                  <div key={index} className="card-box">
+                                    <div className="pass-detail">
+                                      <div className="img-patient">
+                                        <h6>Patient Image</h6>
+                                        {info.photo ? (
+                                          <img
+                                            src={`${image}${info.photo}`}
+                                            alt="profile image"
+                                            className="rounded-circle shadow"
+                                            width="100"
+                                            height="100"
+                                          />
+                                        ) : (
+                                          <img
+                                            src={avtar}
+                                            alt="avatar"
+                                            className="rounded-circle shadow"
+                                            width="100"
+                                            height="100"
+                                          />
+                                        )}
+                                      </div>
+                                      <div className="id-proof">
+                                        <h6>Id Proof</h6>
+                                        {info.id_proof ? (
+                                          <a
+                                            href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="btn btn-outline-primary btn-sm"
+                                          >
+                                            View PDF
+                                          </a>
+                                        ) : (
+                                          <span className="text-muted">
+                                            Not Uploaded
+                                          </span>
+                                        )}
+                                        <div className="">
+                                          <h6>Passport</h6>
+                                          {info.passport ? (
+                                            <a
+                                              href={`https://sisccltd.com/omca_crm/${info.passport}`}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="view-pass"
+                                            >
+                                              View Passport
+                                            </a>
+                                          ) : (
+                                            <span className="text-muted">
+                                              Not Uploaded
+                                            </span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                                <hr></hr>
-                                <div className="experience-box">
-                                  <ul className="experience-list">
-                                    {payments.map((info, idx) => {
-                                      console.log(info);
-                                      return (
-                                        <>
-                                          <li key={idx}>
+                                  <div key={index} className="card-box">
+                                    <div className="pass-detail">
+                                      <div className="img-patient">
+                                        <h6>Attende Image</h6>
+                                        {info.Attende_photo ? (
+                                          <img
+                                            src={`${image}${info.Attende_photo}`}
+                                            alt="no image"
+                                            className="rounded-circle shadow"
+                                            width="100"
+                                            height="100"
+                                          />
+                                        ) : (
+                                          <img
+                                            src={avtar}
+                                            alt="no image"
+                                            className="rounded-circle shadow"
+                                            width="100"
+                                            height="100"
+                                          />
+                                        )}
+                                      </div>
+                                      <div className="id-proof">
+                                        <h6>Attende id Proof </h6>
+                                        {info.Attende_id_proof ? (
+                                          <a
+                                            href={`https://sisccltd.com/omca_crm/${info.Attende_id_proof}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="btn btn-outline-primary btn-sm"
+                                          >
+                                            View PDF
+                                          </a>
+                                        ) : (
+                                          <span className="text-muted">
+                                            Not Uploaded
+                                          </span>
+                                        )}
+                                        <div className="">
+                                          <h6>Attende Passport</h6>
+                                          {info.Attende_passport ? (
+                                            <a
+                                              href={`https://sisccltd.com/omca_crm/${info.Attende_passport}`}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="view-pass"
+                                            >
+                                              View Passport
+                                            </a>
+                                          ) : (
+                                            <span className="text-muted">
+                                              Not Uploaded
+                                            </span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="tab-pane" id="bottom-tab3">
+                      <div className="main-tab-hd">
+                        <div className="all-hd">
+                          <h6>Discussion Notes</h6>
+                        </div>
+                        <button
+                          onClick={(e) => handleClickOpen5(e)}
+                          className="add-button"
+                        >
+                          <span>
+                            <i className="fa fa-plus"></i>
+                          </span>{" "}
+                          Add Notes
+                        </button>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-12">
+                          {notes?.length === 0 ? (
+                            "No notes for Patient"
+                          ) : (
+                            <>
+                              {notes?.map((info, index) => {
+                                console.log(info);
+                                return (
+                                  <>
+                                    <div className="card-box">
+                                      <div className="note-view">
+                                        <h3 className="card-title">
+                                          Note-{index + 1}
+                                        </h3>
+                                      </div>
+                                      <div className="experience-box">
+                                        <ul className="experience-list">
+                                          <li>
                                             <div className="experience-user">
                                               <div className="before-circle"></div>
                                             </div>
-                                            <div className="experience-content">
+                                            <div className="experience-content d-flex">
                                               <div className="timeline-content">
+                                                <a href="#/" className="name">
+                                                  {info.note}
+                                                </a>
                                                 <div>
-                                                  Payment Date -{" "}
-                                                  {moment(
-                                                    info.payment_Date,
-                                                  ).format("L")}
+                                                  {new Date(
+                                                    info.date,
+                                                  ).toLocaleDateString("en-GB")}
                                                 </div>
-                                                <div>
-                                                  Payment Method -{" "}
-                                                  {info.paymentMethod}
-                                                </div>
-                                                <div>
-                                                  Paid Amount -{" "}
-                                                  {info.paid_amount}
-                                                </div>
-                                                {/* <PictureAsPdf
-                                                 
-                                                /> */}
-                                                <button
-                                                  className="add-button"
-                                                  style={{ cursor: "pointer" }}
+                                                {/* <span className="time">treatment due payment-{info.treatment_due_payment}</span> */}
+                                              </div>
+                                              <div>
+                                                {" "}
+                                                <i
+                                                  className="fa fa-edit text-primary "
                                                   onClick={() => {
-                                                    navigate(
-                                                      "/Admin/Patient-Pdfdetails",
-                                                      {
-                                                        state: {
-                                                          data: info?.payment_id,
-                                                        },
-                                                      },
+                                                    handleopenNotesModal(
+                                                      info.id,
                                                     );
                                                   }}
-                                                >
-                                                  {" "}
-                                                  PDF Download
-                                                </button>
+                                                  style={{ cursor: "pointer" }}
+                                                ></i>
                                               </div>
                                             </div>
                                           </li>
-                                        </>
-                                      );
-                                    })}
-                                  </ul>
-                                </div>
-                              </div>
-                            ),
-                          )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="tab-pane" id="bottom-tab5">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>Reports</h6>
-                  </div>
-                </div>
-                {/* <div className="row">
-                  <div className="col-md-12">
-                    {payment_details?.length === 0 ? (
-                      "No Reports for patients "
-                    ) : (
-                      <>
-                        {groupedPayments &&
-                          Object.entries(groupedPayments).map(
-                            ([treatmentId, payments], index) => (
-                              <div className="card-box" key={treatmentId}>
-                                <div className="treat-card">
-                                  <div className="treat-id">
-                                    <div>
-                                      <h3>Treatment ID-{treatmentId}</h3>
+                                        </ul>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="">
-                                    <button
-                                      onClick={(e) =>
-                                        handleClickOpen10(e, treatmentId)
-                                      }
-                                      className="add-button"
-                                    >
-                                      <span>
-                                        <i className="fa fa-plus"></i>
-                                      </span>{" "}
-                                      Add Report
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            )
+                                  </>
+                                );
+                              })}
+                            </>
                           )}
-                        <div className="col-md-12">
-                          <div className="table-responsive">
-                            <TableContainer
-                              component={Paper}
-                              style={{ overflowX: "auto" }}
-                            >
-                              <Table
-                                stickyHeader
-                                aria-label="sticky table"
-                                className="table-no-card"
-                              >
-                                <TableHead>
-                                  <TableRow>
-                                    <TableCell>Tratment ID</TableCell>
-                                    <TableCell>Course Name </TableCell>
-                                    <TableCell>Report Title </TableCell>
-                                    {localStorage.getItem("Role") === "Admin" ? (
-                                      <TableCell>Reports</TableCell>) : ("")}
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {reportdataget &&
-                                    reportdataget.length > 0 &&
-                                    reportdataget.map((item, index) => {
-                                      return (
-                                        <>
-                                          <TableRow key={index}>
-                                            <TableCell>
-                                              {item.treatmentId}
-                                            </TableCell>
-                                            <TableCell>
-                                              {item.treatment_course_name}
-                                            </TableCell>
-                                            <TableCell>
-                                              {item.reportTitle}
-                                            </TableCell>
-                                            <TableCell>
-                                              {localStorage.getItem("Role") === "Admin" ? (
-                                                <a
-                                                  href={`${image}${item.treatmentReport}`}
-                                                >
-                                                  Download Report
-                                                </a>
-                                              ) : ("")}
-                                            </TableCell>
-                                          </TableRow>
-                                        </>
-                                      );
-                                    })}
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          </div>
                         </div>
-                      </>
-                    )}
-                  </div>
-                </div> */}
-                <div className="row">
-                  <div className="col-md-12">
-                    {treatmentData?.length === 0
-                      ? "No Reports for patients"
-                      : treatmentData.map((treatment) => (
-                          <div
-                            className="card-box mb-4"
-                            key={treatment.treatmentId}
-                          >
-                            {/* ===== Treatment Header ===== */}
-                            <div className="treat-card d-flex justify-content-between align-items-center">
-                              <div className="treat-id">
-                                <h3>Treatment ID - {treatment.treatmentId}</h3>
-                                <p>{treatment.treatment_course_name}</p>
-                              </div>
-
-                              {localStorage.getItem("Role") === "Admin" && (
-                                <button
-                                  onClick={(e) =>
-                                    handleClickOpen10(e, treatment.treatmentId)
-                                  }
-                                  className="add-button"
+                      </div>
+                    </div>
+                    <div className="tab-pane" id="bottom-tab4">
+                      <div className="main-tab-hd">
+                        <div className="all-hd">
+                          <h6>Payment Details</h6>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-12">
+                          {payment_details?.length === 0 ? (
+                            "No payment details for patients"
+                          ) : (
+                            <>
+                              {groupedPayments &&
+                                Object.entries(groupedPayments).map(
+                                  ([treatmentId, payments], index) => (
+                                    <div className="card-box" key={treatmentId}>
+                                      <div className="treat-card">
+                                        <div className="treat-id">
+                                          <div>
+                                            <h3>Treatment ID-{treatmentId}</h3>
+                                          </div>
+                                        </div>
+                                        <div className="">
+                                          <button
+                                            onClick={(e) =>
+                                              handleClicexportPayment(
+                                                e,
+                                                treatmentId,
+                                              )
+                                            }
+                                            className="add-button mx-2"
+                                          >
+                                            <span>
+                                              <i className="fa fa-plus"></i>
+                                            </span>{" "}
+                                            Export
+                                          </button>
+                                          <button
+                                            onClick={(e) =>
+                                              handleClickOpen3(e, treatmentId)
+                                            }
+                                            className="add-button"
+                                          >
+                                            <span>
+                                              <i className="fa fa-plus"></i>
+                                            </span>{" "}
+                                            Add Amount
+                                          </button>
+                                        </div>
+                                      </div>
+                                      <hr></hr>
+                                      <div className="experience-box">
+                                        <ul className="experience-list">
+                                          {payments.map((info, idx) => {
+                                            console.log(info);
+                                            return (
+                                              <>
+                                                <li key={idx}>
+                                                  <div className="experience-user">
+                                                    <div className="before-circle"></div>
+                                                  </div>
+                                                  <div>
+                                                    <h5></h5>
+                                                  </div>
+                                                  <div className="experience-content">
+                                                    <div className="timeline-content">
+                                                      <div>
+                                                        Payment Date -{" "}
+                                                        {moment(
+                                                          info.payment_Date,
+                                                        ).format("L")}
+                                                      </div>
+                                                      <div>
+                                                        Payment Method -{" "}
+                                                        {info.paymentMethod}
+                                                      </div>
+                                                      <div>
+                                                        Paid Amount -{" "}
+                                                        {info.paid_amount}
+                                                      </div>
+                                                      {/* <PictureAsPdf
+                                                 
+                                                /> */}
+                                                      <button
+                                                        className="add-button"
+                                                        style={{
+                                                          cursor: "pointer",
+                                                        }}
+                                                        onClick={() => {
+                                                          navigate(
+                                                            "/Admin/Patient-Pdfdetails",
+                                                            {
+                                                              state: {
+                                                                data: info?.payment_id,
+                                                              },
+                                                            },
+                                                          );
+                                                        }}
+                                                      >
+                                                        {" "}
+                                                        PDF Download
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                              </>
+                                            );
+                                          })}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  ),
+                                )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="tab-pane" id="bottom-tab5">
+                      <div className="main-tab-hd">
+                        <div className="all-hd">
+                          <h6>Reports</h6>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-12">
+                          {treatmentData?.length === 0
+                            ? "No Reports for patients"
+                            : treatmentData.map((treatment) => (
+                                <div
+                                  className="card-box mb-4"
+                                  key={treatment.treatmentId}
                                 >
-                                  <i className="fa fa-plus"></i> Add Report
-                                </button>
-                              )}
-                            </div>
+                                  {/* ===== Treatment Header ===== */}
+                                  <div className="treat-card d-flex justify-content-between align-items-center">
+                                    <div className="treat-id">
+                                      <h3>
+                                        Treatment ID - {treatment.treatmentId}
+                                      </h3>
+                                      <p>{treatment.treatment_course_name}</p>
+                                    </div>
 
-                            {/* ===== Reports Table ===== */}
-                            {treatment.reports &&
-                            treatment.reports.length > 0 ? (
-                              <div className="table-responsive mt-3">
-                                <TableContainer component={Paper}>
-                                  <Table className="table-no-card">
-                                    <TableHead>
-                                      <TableRow>
-                                        <TableCell>Treatment ID</TableCell>
-                                        <TableCell>Course Name</TableCell>
-                                        <TableCell>Report Title</TableCell>
-                                        <TableCell>Report Date</TableCell>
-                                        {localStorage.getItem("Role") ===
-                                          "Admin" && (
-                                          <>
-                                            <TableCell>Reports</TableCell>
-                                            <TableCell>Action</TableCell>
-                                          </>
-                                        )}
-                                      </TableRow>
-                                    </TableHead>
+                                    {localStorage.getItem("Role") ===
+                                      "Admin" && (
+                                      <button
+                                        onClick={(e) =>
+                                          handleClickOpen10(
+                                            e,
+                                            treatment.treatmentId,
+                                          )
+                                        }
+                                        className="add-button"
+                                      >
+                                        <i className="fa fa-plus"></i> Add
+                                        Report
+                                      </button>
+                                    )}
+                                  </div>
 
-                                    <TableBody>
-                                      {treatment.reports.map((item) => (
-                                        <TableRow key={item._id}>
-                                          <TableCell>
-                                            {item.treatmentId}
-                                          </TableCell>
-                                          <TableCell>
-                                            {item.treatment_course_name}
-                                          </TableCell>
-                                          <TableCell>
-                                            {item.reportTitle}
-                                          </TableCell>
-                                          <TableCell>
-                                            {new Date(item.treatment_report_date).toLocaleDateString("en-GB")}
-                                          </TableCell>
-
-                                          {localStorage.getItem("Role") ===
-                                            "Admin" && (
-                                            <>
+                                  {/* ===== Reports Table ===== */}
+                                  {treatment.reports &&
+                                  treatment.reports.length > 0 ? (
+                                    <div className="table-responsive mt-3">
+                                      <TableContainer component={Paper}>
+                                        <Table className="table-no-card">
+                                          <TableHead>
+                                            <TableRow>
                                               <TableCell>
-                                                <a
-                                                  href={`${image}${item.treatmentReport}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                >
-                                                  Download Report
-                                                </a>
+                                                Treatment ID
                                               </TableCell>
                                               <TableCell>
-                                                <i
-                                                  style={{ cursor: "pointer" }}
-                                                  className="fa-solid fa-trash text-danger"
-                                                  onClick={() =>
-                                                    handledeleteReport(item)
-                                                  }
-                                                ></i>
+                                                Report Title
                                               </TableCell>
-                                            </>
-                                          )}
-                                        </TableRow>
-                                      ))}
-                                    </TableBody>
-                                  </Table>
-                                </TableContainer>
-                              </div>
-                            ) : (
-                              <p className="mt-2 text-muted">
-                                No reports available
-                              </p>
-                            )}
-                          </div>
-                        ))}
+                                              <TableCell>Report Date</TableCell>
+                                              {localStorage.getItem("Role") ===
+                                                "Admin" && (
+                                                <>
+                                                  <TableCell>Reports</TableCell>
+                                                  <TableCell>Action</TableCell>
+                                                </>
+                                              )}
+                                            </TableRow>
+                                          </TableHead>
+
+                                          <TableBody>
+                                            {treatment.reports.map((item) => (
+                                              <TableRow key={item._id}>
+                                                <TableCell>
+                                                  {item.treatmentId}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {item.reportTitle}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {new Date(
+                                                    item.treatment_report_date,
+                                                  ).toLocaleDateString("en-GB")}
+                                                </TableCell>
+
+                                                {localStorage.getItem(
+                                                  "Role",
+                                                ) === "Admin" && (
+                                                  <>
+                                                    <TableCell>
+                                                      <a
+                                                        href={`${image}${item.treatmentReport}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                      >
+                                                        Download Report
+                                                      </a>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      <i
+                                                        style={{
+                                                          cursor: "pointer",
+                                                        }}
+                                                        className="fa-solid fa-trash text-danger"
+                                                        onClick={() =>
+                                                          handledeleteReport(
+                                                            item,
+                                                          )
+                                                        }
+                                                      ></i>
+                                                    </TableCell>
+                                                  </>
+                                                )}
+                                              </TableRow>
+                                            ))}
+                                          </TableBody>
+                                        </Table>
+                                      </TableContainer>
+                                    </div>
+                                  ) : (
+                                    <p className="mt-2 text-muted">
+                                      No reports available
+                                    </p>
+                                  )}
+                                </div>
+                              ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
+      {/* edit Modal */}
+
+      <React.Fragment>
+        <Dialog
+          fullWidth
+          maxWidth="sm"
+          open={modalEditServiceOpen}
+          onClose={hadnlcecEcloseeModal}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Edit Service</h6>
+            </div>
+            <div className="cross-icon" onClick={hadnlcecEcloseeModal}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
+                width: "100%",
+              }}
+              className="contact-form"
+            >
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <div className="field-set mb-0">
+                    <label>
+                      Service<span className="text-danger"></span>
+                    </label>
+                    <input
+                      className="form-control"
+                      onChange={editServiceandlechange}
+                      value={data.serviceName}
+                      disabled
+                      name="serviceId"
+                    />
+                  </div>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <div className="field-set mb-0">
+                    <label>
+                      Enter Price<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={data.price}
+                      name="price"
+                      onChange={editServiceandlechange}
+                      placeholder="Enter price"
+                    />
+                  </div>
+                </Box>
+              </Box>
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <div className="field-set mb-0">
+                    <div className="field-set mb-0">
+                      <label>
+                        Start Date<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        name="startTime"
+                        value={
+                          data.startTime ? data.startTime.split("T")[0] : ""
+                        }
+                        onChange={editServiceandlechange}
+                        placeholder="Enter price"
+                      />
+                    </div>
+                  </div>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <div className="field-set mb-0">
+                    <label>
+                      End Date<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      name="endTime"
+                      value={data.endTime ? data.endTime.split("T")[0] : ""}
+                      onChange={editServiceandlechange}
+                      placeholder="Enter price"
+                    />
+                  </div>
+                </Box>
+              </Box>
+
+              <DialogActions className="submit-main">
+                <Button
+                  type="button"
+                  onClick={handlesubmitdataserviceEdit}
+                  variant="contained"
+                >
+                  Submit
+                </Button>
+              </DialogActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
       <React.Fragment>
         <Dialog fullWidth maxWidth="sm" open={openModal} onClose={closeModal}>
           <div className="main-card-header">
@@ -2958,6 +3118,7 @@ const handleClickSubmit = async () => {
           </DialogContent>
         </Dialog>
       </React.Fragment>
+
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}
@@ -2967,7 +3128,7 @@ const handleClickSubmit = async () => {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>Add Appointment</h6>
+              <h6>{edited === true ? "Edit" : "Add"} Appointment</h6>
             </div>
             <div className="cross-icon" onClick={handleClose1}>
               <i class="fa-solid fa-xmark"></i>
@@ -3031,17 +3192,15 @@ const handleClickSubmit = async () => {
                     </label>
                     <Autocomplete
                       disablePortal
-                      options={
-                        ishospitalArray?.map((job) => job.hospital_Name) || []
-                      }
+                      options={ishospitalArray || []}
+                      getOptionLabel={(option) => option.hospital_Name || ""}
+                      value={appHospital}
                       onChange={(e, value) => {
-                        const selectedCourse = ishospitalArray?.find(
-                          (job) => job.hospital_Name === value,
-                        );
-                        const courseId = selectedCourse;
-
-                        setAppHospital(courseId);
+                        setAppHospital(value);
                       }}
+                      isOptionEqualToValue={(option, value) =>
+                        option?.hospital_id === value?.hospital_id
+                      }
                       renderInput={(params) => <TextField {...params} />}
                       sx={{
                         "& .MuiOutlinedInput-root": {
@@ -3172,7 +3331,19 @@ const handleClickSubmit = async () => {
                   ) : (
                     ""
                   )}
-                  {statuddropdown === "offline" ? (
+                  {/* {
+                    edited === true ?  <DialogActions className="submit-main">
+                      <Button
+                        type="submit"
+                        onClick={(e) => handlesubmitAppoint111(e)}
+                        variant="contained"
+                      >
+                       Edit Submit
+                      </Button>
+                    </DialogActions>:""
+                  } */}
+                  {/* {
+                    edited === true ? statuddropdown === "offline" ? (
                     <DialogActions className="submit-main">
                       <Button
                         type="submit"
@@ -3192,6 +3363,31 @@ const handleClickSubmit = async () => {
                         Submit
                       </Button>
                     </DialogActions>
+                  ):""
+                  } */}
+                  {!edited && (
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={(e) =>
+                        statuddropdown === "offline"
+                          ? handlesubmitAppoint(e)
+                          : handlesubmitAppoint111(e)
+                      }
+                    >
+                      Submit
+                    </Button>
+                  )}
+
+                  {edited && (
+                    <Button
+                      type="button" // 🔥 IMPORTANT
+                      variant="contained"
+                      color="primary"
+                      onClick={handleExtraButton}
+                    >
+                      Edit Appointment
+                    </Button>
                   )}
                 </form>
               </Box>
@@ -3419,6 +3615,7 @@ const handleClickSubmit = async () => {
                       value={data.paid_amount}
                     />
                   </div>
+                  {/* <div>{info.treatment_due_payment}</div> */}
                   <div className="field-set">
                     <label>
                       Payment Method<span className="text-danger">*</span>
@@ -3527,11 +3724,11 @@ const handleClickSubmit = async () => {
                   </div>
                   <div className="field-set">
                     <label>
-                      Treatment Report Date <span className="text-danger">*</span>
+                      Treatment Report Date{" "}
+                      <span className="text-danger">*</span>
                     </label>
                     <input
                       type="date"
-                      
                       placeholder="payment Method"
                       className="form-control"
                       name="treatment_report_date"

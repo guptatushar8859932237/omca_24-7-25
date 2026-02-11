@@ -61,6 +61,9 @@ phone_no: Yup.string()
     roleStatuses: Yup.array()
       .min(1, "Please select at least one status")
       .required("Status is required"),
+      accessCountries: Yup.array()
+  .min(1, "Please select at least one country for data access")
+  .required("Data access country is required"),
     profileImage: Yup.mixed()
       .required("Profile Image is required")
       .test("fileSize", "File size is too large (Max: 2MB)", (value) =>
@@ -111,6 +114,7 @@ phone_no: Yup.string()
                 country: "",
                 profileImage: null,
                 roleStatuses: [],
+                 accessCountries: [],
               }}
               validationSchema={basicSchema}
               onSubmit={async (values, { setSubmitting }) => {
@@ -312,7 +316,64 @@ phone_no: Yup.string()
                         />
                       </div>
                     </div>
+<div className="col-sm-6 dropdownCustom">
+  <label>
+    Data Access Country <span className="text-danger">*</span>
+  </label>
 
+  <FormControl fullWidth size="small">
+    <Select
+      multiple
+      value={values.accessCountries}
+      onChange={(event) => {
+        const value = event.target.value;
+
+        if (value.includes("All")) {
+          if (values.accessCountries.length === Countries.length) {
+            setFieldValue("accessCountries", []);
+          } else {
+            setFieldValue(
+              "accessCountries",
+              Countries.map((c) => c.name)
+            );
+          }
+        } else {
+          setFieldValue("accessCountries", value);
+        }
+      }}
+      renderValue={(selected) => selected.join(", ")}
+      className="form-control"
+    >
+      {/* Select All */}
+      <MenuItem value="All">
+        <Checkbox
+          checked={values.accessCountries.length === Countries.length}
+          indeterminate={
+            values.accessCountries.length > 0 &&
+            values.accessCountries.length < Countries.length
+          }
+        />
+        <ListItemText primary="Select All" />
+      </MenuItem>
+
+      {/* Country List */}
+      {Countries?.map((country) => (
+        <MenuItem key={country.name} value={country.name}>
+          <Checkbox
+            checked={values.accessCountries.indexOf(country.name) > -1}
+          />
+          <ListItemText primary={country.name} />
+        </MenuItem>
+      ))}
+    </Select>
+  </FormControl>
+
+  <ErrorMessage
+    name="accessCountries"
+    component="div"
+    style={{ color: "red" }}
+  />
+</div>
 
                     <div className="col-sm-6">
                       <div className="field-set gender-select">

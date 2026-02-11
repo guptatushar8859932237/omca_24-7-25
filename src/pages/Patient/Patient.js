@@ -739,7 +739,7 @@ export default function Patient() {
                           )}
                           <TableCell>Patient Id</TableCell>
                           <TableCell>Patient Name</TableCell>
-                          <TableCell>Emergency contact</TableCell>
+                          <TableCell>Contact Number</TableCell>
                           <TableCell>Date</TableCell>
                           <TableCell>Email</TableCell>
                           <TableCell>Country</TableCell>

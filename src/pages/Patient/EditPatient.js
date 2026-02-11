@@ -31,7 +31,7 @@ export default function EditPatient() {
     console.log("Patient data:", patient);
     if (location.state?.patientId) {
       const selectedUser = patient.find(
-        (item) => item.patientId === location.state.patientId
+        (item) => item.patientId === location.state.patientId,
       );
       console.log(selectedUser);
       setIspatient(selectedUser || null);
@@ -50,10 +50,12 @@ export default function EditPatient() {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    emergency_contact_no: Yup.string().matches(
-      /^[0-9]{8,15}$/,
-      "Emergency Contact Number be Digit and between 8-15 digits",
-    ).required("Contact number is required"),
+    emergency_contact_no: Yup.string()
+      .matches(
+        /^[0-9]{8,15}$/,
+        "Emergency Contact Number be Digit and between 8-15 digits",
+      )
+      .required("Contact number is required"),
     patient_relation_no: Yup.string().matches(
       /^[0-9]{8,15}$/,
       "Patient Relation Number be Digit and between 8-15 digits",
@@ -89,6 +91,7 @@ export default function EditPatient() {
                     age: ispatient?.age || "",
                     gender: ispatient?.gender || "",
                     email: ispatient?.email || "",
+                    treatingIn: ispatient?.treatingIn || "",
                     patientDisease:
                       ispatient?.patient_disease?.[0]?.disease_name || "",
                     created_at: ispatient?.createdAt
@@ -104,36 +107,35 @@ export default function EditPatient() {
                     // patient_relation_name: ispatient?.patient_relation_name || "",
                     has_relation: !!ispatient?.patient_relation_name,
 
-                  patient_relation_name:
-                    ispatient?.patient_relation_name || "",
-                  patient_relation: ispatient?.patient_relation || "",
-                  patient_relation_no:
-                    ispatient?.patient_relation_no || "",
+                    patient_relation_name:
+                      ispatient?.patient_relation_name || "",
+                    patient_relation: ispatient?.patient_relation || "",
+                    patient_relation_no: ispatient?.patient_relation_no || "",
                   }}
                   validationSchema={basicSchema}
                   onSubmit={async (values, { setSubmitting }) => {
                     console.log("Submitting values:", values);
                     try {
                       const result = await dispatch(
-                        EditPatientType({ id: ispatient.patientId, ...values })
+                        EditPatientType({ id: ispatient.patientId, ...values }),
                       ).unwrap();
                       Swal.fire(
                         "Success!",
                         "Patient details updated successfully.",
-                        "success"
+                        "success",
                       );
                       navigate("/Admin/patients");
                     } catch (err) {
                       Swal.fire(
                         "Error!",
                         err?.message || "An error occurred",
-                        "error"
+                        "error",
                       );
                     }
                     setSubmitting(false);
                   }}
                 >
-                  {({ isSubmitting,values }) => (
+                  {({ isSubmitting, values }) => (
                     <Form>
                       <div className="row">
                         <div className="col-sm-6">
@@ -253,7 +255,7 @@ export default function EditPatient() {
                                       onChange={(e) =>
                                         form.setFieldValue(
                                           "country",
-                                          e.target.value
+                                          e.target.value,
                                         )
                                       }
                                       input={
@@ -282,6 +284,57 @@ export default function EditPatient() {
                                   </FormControl>
                                   <ErrorMessage
                                     name="country"
+                                    component="div"
+                                    style={{ color: "red" }}
+                                  />
+                                </>
+                              )}
+                            </Field>
+                          </div>
+                        </div>
+                        <div className="col-sm-6">
+                          <div className="field-set">
+                            <label>
+                              Treating In<span className="text-danger">*</span>
+                            </label>
+                            <Field name="treatingIn">
+                              {({ field, form }) => (
+                                <>
+                                  <FormControl fullWidth size="small">
+                                    <Select
+                                      value={field.value}
+                                      onChange={(e) =>
+                                        form.setFieldValue(
+                                          "treatingIn",
+                                          e.target.value,
+                                        )
+                                      }
+                                      input={
+                                        <OutlinedInput placeholder="Select Country" />
+                                      }
+                                      className="select-country form-control"
+                                      displayEmpty
+                                      sx={{ height: 40 }}
+                                      MenuProps={{
+                                        PaperProps: {
+                                          style: {
+                                            maxHeight: 260, // Limit dropdown height
+                                          },
+                                        },
+                                      }}
+                                    >
+                                      <MenuItem value="">
+                                        <em>Select Country</em>
+                                      </MenuItem>
+                                      {Countries.map((con, index) => (
+                                        <MenuItem key={index} value={con.name}>
+                                          {con.name}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                  </FormControl>
+                                  <ErrorMessage
+                                    name="treatingIn"
                                     component="div"
                                     style={{ color: "red" }}
                                   />
@@ -357,7 +410,6 @@ export default function EditPatient() {
                           <label className="gen-label fw-normal">
                             Patient Id<span className="text-danger">*</span>
                           </label>
-
                           <Field
                             className="form-control "
                             type="text"
@@ -368,90 +420,89 @@ export default function EditPatient() {
                             component="div"
                             className="text-danger"
                           />
-
                         </div>
- <div className="col-sm-12 mt-3">
-                        <div className="form-check">
-                          <Field
-                            type="checkbox"
-                            name="has_relation"
-                            className="form-check-input"
-                            id="hasRelation"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="hasRelation"
-                          >
-                            Has Attendant / Patient Relation
-                          </label>
+                        <div className="col-sm-12 mt-3">
+                          <div className="form-check">
+                            <Field
+                              type="checkbox"
+                              name="has_relation"
+                              className="form-check-input"
+                              id="hasRelation"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="hasRelation"
+                            >
+                              Has Attendant / Patient Relation
+                            </label>
+                          </div>
                         </div>
-                      </div>
 
                         {/* <div className="treat-hd">
                           <h6>Attendant Details</h6>
                           <span className="line"></span>
                         </div> */}
- {values.has_relation && (
-                        <>
-                          <div className="treat-hd mt-3">
-                            <h6>Attendant Details</h6>
-                            <span className="line"></span>
-                          </div>
-
-                          <div className="col-sm-6">
-                            <div className="field-set">
-                              <label>
-                                Relation Name{" "}
-                                <span className="text-danger"></span>
-                              </label>
-                              <Field
-                                className="form-control"
-                                name="patient_relation_name"
-                              />
-                              <ErrorMessage
-                                name="patient_relation_name"
-                                component="div"
-                                className="text-danger"
-                              />
+                        {values.has_relation && (
+                          <>
+                            <div className="treat-hd mt-3">
+                              <h6>Attendant Details</h6>
+                              <span className="line"></span>
                             </div>
-                          </div>
 
-                          <div className="col-sm-6">
-                            <div className="field-set">
-                              <label>
-                                Relation <span className="text-danger"></span>
-                              </label>
-                              <Field
-                                className="form-control"
-                                name="patient_relation"
-                              />
-                              <ErrorMessage
-                                name="patient_relation"
-                                component="div"
-                                className="text-danger"
-                              />
+                            <div className="col-sm-6">
+                              <div className="field-set">
+                                <label>
+                                  Relation Name{" "}
+                                  <span className="text-danger"></span>
+                                </label>
+                                <Field
+                                  className="form-control"
+                                  name="patient_relation_name"
+                                />
+                                <ErrorMessage
+                                  name="patient_relation_name"
+                                  component="div"
+                                  className="text-danger"
+                                />
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="col-sm-6">
-                            <div className="field-set">
-                              <label>
-                                Relation Number{" "}
-                                <span className="text-danger"></span>
-                              </label>
-                              <Field
-                                className="form-control"
-                                name="patient_relation_no"
-                              />
-                              <ErrorMessage
-                                name="patient_relation_no"
-                                component="div"
-                                className="text-danger"
-                              />
+                            <div className="col-sm-6">
+                              <div className="field-set">
+                                <label>
+                                  Relation <span className="text-danger"></span>
+                                </label>
+                                <Field
+                                  className="form-control"
+                                  name="patient_relation"
+                                />
+                                <ErrorMessage
+                                  name="patient_relation"
+                                  component="div"
+                                  className="text-danger"
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      )}
+
+                            <div className="col-sm-6">
+                              <div className="field-set">
+                                <label>
+                                  Relation Number{" "}
+                                  <span className="text-danger"></span>
+                                </label>
+                                <Field
+                                  className="form-control"
+                                  name="patient_relation_no"
+                                />
+                                <ErrorMessage
+                                  name="patient_relation_no"
+                                  component="div"
+                                  className="text-danger"
+                                />
+                              </div>
+                            </div>
+                          </>
+                        )}
                         {/* <div className="col-sm-6">
                           <div className="field-set">
                             <label>
@@ -528,16 +579,16 @@ export default function EditPatient() {
                         </div>
                       </div> */}
 
-                      <div className="">
-                        <button
-                          type="submit"
-                          className="submit-btn"
-                          disabled={isSubmitting}
-                        >
-                          Submit
-                        </button>
+                        <div className="">
+                          <button
+                            type="submit"
+                            className="submit-btn"
+                            disabled={isSubmitting}
+                          >
+                            Submit
+                          </button>
+                        </div>
                       </div>
-                  </div>
                     </Form>
                   )}
                 </Formik>

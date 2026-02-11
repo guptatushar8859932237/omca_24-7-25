@@ -23,7 +23,7 @@ export default function EditStaff() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { staff } = useSelector((state) => state.staff);
-const { Countries } = useSelector((state) => state.Countries);
+  const { Countries } = useSelector((state) => state.Countries);
   const [editStaff, setEditStaff] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const statusOptions = [
@@ -39,7 +39,7 @@ const { Countries } = useSelector((state) => state.Countries);
   useEffect(() => {
     if (location.state?.staffID && staff.length > 0) {
       const selected = staff.find(
-        (item) => item._id === location.state.staffID
+        (item) => item._id === location.state.staffID,
       );
       console.log(selected);
       setEditStaff(selected);
@@ -51,19 +51,23 @@ const { Countries } = useSelector((state) => state.Countries);
     role: Yup.string()
       .oneOf(
         ["Manager", "Staff", "Finance", "Coordinator", "Receptionist"],
-        "Invalid role"
+        "Invalid role",
       )
       .required("Role is required"),
-   phone_no: Yup.string()
-     .required("Phone number is required")
-     .matches(/^[0-9]+$/, "Phone number must contain only digits")
-     .min(6, "Phone number must be at least 6 digits")
-     .max(15, "Phone number must not exceed 15 digits"),
+    phone_no: Yup.string()
+      .required("Phone number is required")
+      .matches(/^[0-9]+$/, "Phone number must contain only digits")
+      .min(6, "Phone number must be at least 6 digits")
+      .max(15, "Phone number must not exceed 15 digits"),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"])
       .required("Gender is required"),
     profileImage: Yup.mixed().required("Profile image is required"),
     country: Yup.string().required("Country is required"),
+    accessCountries: Yup.array().min(
+      1,
+      "At least one country must be selected",
+    ),
     dial_code: Yup.string().required("Dial code is required"),
   });
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -77,6 +81,10 @@ const { Countries } = useSelector((state) => state.Countries);
       formData.append("country", values.country);
       formData.append("dial_code", values.dial_code);
       formData.append("roleStatuses", values.roleStatuses);
+      formData.append(
+        "accessCountries",
+        JSON.stringify(values.accessCountries),
+      );
       if (values.profileImage instanceof File) {
         formData.append("profileImage", values.profileImage);
       }
@@ -92,7 +100,7 @@ const { Countries } = useSelector((state) => state.Countries);
       Swal.fire(
         "Error",
         error?.response?.data?.message || "Something went wrong",
-        "error"
+        "error",
       );
     } finally {
       setSubmitting(false);
@@ -122,6 +130,7 @@ const { Countries } = useSelector((state) => state.Countries);
               dial_code: editStaff.dial_code || "",
               profileImage: editStaff.profileImage || null,
               roleStatuses: editStaff.roleStatuses || null,
+              accessCountries: editStaff.accessCountries || [],
             }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
@@ -166,15 +175,15 @@ const { Countries } = useSelector((state) => state.Countries);
                                 value={field.value}
                                 onChange={(e) => {
                                   const selectedCountry = Countries.find(
-                                    (item) => item.name === e.target.value
+                                    (item) => item.name === e.target.value,
                                   );
                                   form.setFieldValue(
                                     "country",
-                                    selectedCountry.name
+                                    selectedCountry.name,
                                   );
                                   form.setFieldValue(
                                     "dial_code",
-                                    selectedCountry.dial_code
+                                    selectedCountry.dial_code,
                                   );
                                 }}
                                 input={
@@ -233,43 +242,112 @@ const { Countries } = useSelector((state) => state.Countries);
                     </div>
                   </div> */}
                   <div className="col-sm-6">
-  <div className="field-set">
-    <label>
-      Phone No <span className="text-danger">*</span>
-    </label>
+                    <div className="field-set">
+                      <label>
+                        Phone No <span className="text-danger">*</span>
+                      </label>
 
-    <div className="d-flex">
-      {/* Dial Code – 30% */}
-      <input
-        type="text"
-        className="form-control"
-        style={{ width: "10%" }}
-        value={values.dial_code}
-        disabled
-      />
+                      <div className="d-flex">
+                        {/* Dial Code – 30% */}
+                        <input
+                          type="text"
+                          className="form-control"
+                          style={{ width: "10%" }}
+                          value={values.dial_code}
+                          disabled
+                        />
 
-      {/* Phone Number – 70% */}
-      <input
-        type="text"
-        className="form-control"
-        style={{ width: "90%" }}
-        name="phone_no"
-        value={values.phone_no}
-        onChange={(e) => {
-          const val = e.target.value.replace(/[^0-9]/g, "");
-          setFieldValue("phone_no", val);
-        }}
-        placeholder="Enter phone number"
-      />
-    </div>
+                        {/* Phone Number – 70% */}
+                        <input
+                          type="text"
+                          className="form-control"
+                          style={{ width: "90%" }}
+                          name="phone_no"
+                          value={values.phone_no}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/[^0-9]/g, "");
+                            setFieldValue("phone_no", val);
+                          }}
+                          placeholder="Enter phone number"
+                        />
+                      </div>
 
-    <ErrorMessage
-      name="phone_no"
-      component="div"
-      className="text-danger"
-    />
-  </div>
-</div>
+                      <ErrorMessage
+                        name="phone_no"
+                        component="div"
+                        className="text-danger"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-sm-6">
+                    <label>
+                      Access Countries <span className="text-danger">*</span>
+                    </label>
+
+                    <FormControl fullWidth>
+                      <Select
+                        multiple
+                        name="accessCountries"
+                        value={values.accessCountries}
+                        onChange={(event) => {
+                          const value = event.target.value;
+
+                          // Select All logic
+                          if (value.includes("All")) {
+                            if (
+                              values.accessCountries.length === Countries.length
+                            ) {
+                              setFieldValue("accessCountries", []);
+                            } else {
+                              setFieldValue(
+                                "accessCountries",
+                                Countries.map((c) => c.name),
+                              );
+                            }
+                          } else {
+                            setFieldValue("accessCountries", value);
+                          }
+                        }}
+                        renderValue={(selected) => selected.join(", ")}
+                        className="form-control"
+                        MenuProps={{
+                          PaperProps: { style: { maxHeight: 300 } },
+                        }}
+                      >
+                        {/* Select All */}
+                        <MenuItem value="All">
+                          <Checkbox
+                            checked={
+                              values.accessCountries.length === Countries.length
+                            }
+                            indeterminate={
+                              values.accessCountries.length > 0 &&
+                              values.accessCountries.length < Countries.length
+                            }
+                          />
+                          <ListItemText primary="Select All" />
+                        </MenuItem>
+
+                        {/* Country list */}
+                        {Countries?.map((con) => (
+                          <MenuItem key={con._id} value={con.name}>
+                            <Checkbox
+                              checked={values.accessCountries.includes(
+                                con.name,
+                              )}
+                            />
+                            <ListItemText primary={con.name} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+
+                    <ErrorMessage
+                      name="accessCountries"
+                      component="div"
+                      className="text-danger"
+                    />
+                  </div>
 
                   <div className="col-sm-6">
                     <div className="field-set">
@@ -354,11 +432,9 @@ const { Countries } = useSelector((state) => state.Countries);
                       Give Permission<span className="text-danger">*</span>
                     </label>
                     <FormControl fullWidth>
-
                       <Select
                         multiple
                         value={values.roleStatuses}
-
                         name="roleStatuses"
                         onChange={(event) => {
                           const value = event.target.value;
@@ -379,9 +455,9 @@ const { Countries } = useSelector((state) => state.Countries);
                         renderValue={(selected) => selected.join(", ")}
                         MenuProps={{
                           PaperProps: {
-                            style: { maxHeight: 337 }
+                            style: { maxHeight: 337 },
                           },
-                          disableAutoFocusItem: true
+                          disableAutoFocusItem: true,
                         }}
                       >
                         <MenuItem value="All">
@@ -409,7 +485,6 @@ const { Countries } = useSelector((state) => state.Countries);
                         ))}
                       </Select>
                     </FormControl>
-
                   </div>
                 </div>
                 <button
