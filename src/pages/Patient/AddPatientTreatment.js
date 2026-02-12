@@ -9,7 +9,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { AddTretmentForPatient } from "../../reducer/PatientTreatmentSlice";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { baseurl,AdminBaseUrl, baseu11 } from "../../Basurl/Baseurl";
+import { baseurl, AdminBaseUrl, baseu11 } from "../../Basurl/Baseurl";
 import axios from "axios";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 const ITEM_HEIGHT = 48;
@@ -56,27 +56,48 @@ export default function AddPatientTreatment() {
   useEffect(() => {
     GetActiveService();
   }, []);
+  // const basicSchema = Yup.object().shape({
+  //   patientId: Yup.string().required("patientId is required"),
+  //   treatment_course_id: Yup.string().required("Treatment course  is required"),
+  //   services: Yup.array()
+  //     .of(Yup.string().required("Service ID is required"))
+  //     .min(1, "Select at least one service"),
+  //   totalCharge: Yup.string().required("Total Charge is required"),
+  //   // amount_paid: Yup.string().required("Amount Paid is required"),
+  //    amount_paid: Yup.number().required("Amount Paid is required").typeError("Amount Paid must be a number")
+  //   .required("Amount Paid is required")            // ✅ REQUIRED
+  //   .min(1, "Amount Paid must be greater than 0")   // ✅ no 0 or negative
+  //   .max(
+  //     Yup.ref("totalCharge"),
+  //     "Amount Paid cannot be greater than Total Charge"
+  //   ),
+  // });
   const basicSchema = Yup.object().shape({
     patientId: Yup.string().required("patientId is required"),
-    treatment_course_id: Yup.string().required("Treatment course  is required"),
-    services: Yup.array()
-      .of(Yup.string().required("Service ID is required"))
-      .min(1, "Select at least one service"),
-    totalCharge: Yup.string().required("Total Charge is required"),
-    // amount_paid: Yup.string().required("Amount Paid is required"),
-     amount_paid: Yup.number().required("Amount Paid is required").typeError("Amount Paid must be a number")
-    .required("Amount Paid is required")            // ✅ REQUIRED
-    .min(1, "Amount Paid must be greater than 0")   // ✅ no 0 or negative
-    .max(
-      Yup.ref("totalCharge"),
-      "Amount Paid cannot be greater than Total Charge"
-    ),   
+
+    treatment_course_id: Yup.string().required("Treatment course is required"),
+
+    services: Yup.array().min(1, "Select at least one service"),
+
+    totalCharge: Yup.number()
+      .typeError("Total Charge must be a number")
+      .required("Total Charge is required")
+      .min(1, "Total Charge must be greater than 0"),
+
+    amount_paid: Yup.number()
+      .typeError("Amount Paid must be a number")
+      .required("Amount Paid is required")
+      .min(1, "Amount Paid must be greater than 0")
+      .max(
+        Yup.ref("totalCharge"),
+        "Amount Paid cannot be greater than Total Charge",
+      ),
   });
 
   console.log(personName);
-  const handleback =()=>{
-    window.history.back()
-  }
+  const handleback = () => {
+    window.history.back();
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -84,7 +105,12 @@ export default function AddPatientTreatment() {
           <div className="row">
             <div className="col-md-12">
               <h4 className="page-title">
-                <span style={{cursor:"pointer"}} onClick={()=>{handleback()}}>
+                <span
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    handleback();
+                  }}
+                >
                   <i class="fi fi-sr-angle-double-small-left"></i>
                 </span>
                 Add Treatment
@@ -107,7 +133,7 @@ export default function AddPatientTreatment() {
                 console.log("Submitted Values:", values);
                 try {
                   const result = await dispatch(
-                    AddTretmentForPatient(values)
+                    AddTretmentForPatient(values),
                   ).unwrap();
                   Swal.fire("Treatment added successfully!", "", "success");
                   navigate("/Admin/Patient-Detail", {
@@ -118,7 +144,7 @@ export default function AddPatientTreatment() {
                   Swal.fire(
                     "Error!",
                     err?.message || "An error occurred",
-                    "error"
+                    "error",
                   );
                 }
                 setSubmitting(false);
@@ -144,54 +170,35 @@ export default function AddPatientTreatment() {
                         <label>
                           Treatment course<span className="text-danger">*</span>
                         </label>
-                       <Autocomplete
-                                                 disablePortal
-                                                 options={
-                                                   Treatment?.map((job) => job.course_name) || []
-                                                 }
-                                                 onChange={async (e, value) => {
-                                                   const selectedCourse = Treatment?.find(
-                                                     (job) => job.course_name === value
-                                                   );
-                                                   const courseId = selectedCourse
-                                                     ? selectedCourse.course_id
-                                                     : null;
-                                                   setFieldValue("treatment_course_id", courseId);
-                                                   if (courseId) {
-                                                     try {
-                                                       const response = await axios.get(
-                                                         `${baseurl}get_treatment_course_by_id/${courseId}`,
-                                                         {
-                                                           headers: {
-                                                             Authorization: `Bearer ${localStorage.getItem(
-                                                               "token"
-                                                             )}`,
-                                                             "Content-Type": "application/json",
-                                                           },
-                                                         }
-                                                       );
-                                                       const charge =
-                                                         response?.data.treatment_course.course_price;
-                                                       console.log(charge);
-                                                       setFieldValue("totalCharge", charge);
-                                                     } catch (error) {
-                                                       console.error(
-                                                         "Error fetching treatment details:",
-                                                         error
-                                                       );
-                                                     }
-                                                   }
-                                                 }}
-                                                 renderInput={(params) => <TextField {...params} />}
-                                                 sx={{
-                                                   "& .MuiOutlinedInput-root": {
-                                                     padding: "0px",
-                                                     "&:hover fieldset": {
-                                                       borderColor: "#ced4da",
-                                                     },
-                                                   },
-                                                 }}
-                                               />
+                        <Autocomplete
+                          disablePortal
+                          options={Treatment || []}
+                          getOptionLabel={(option) => option.name || ""}
+                          isOptionEqualToValue={(option, value) =>
+                            option.id === value.id
+                          }
+                          onChange={(e, value) => {
+                            setFieldValue(
+                              "treatment_course_id",
+                              value ? value.id : "",
+                            );
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              placeholder="Select Treatment Course"
+                            />
+                          )}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              padding: "0px",
+                              "&:hover fieldset": {
+                                borderColor: "#ced4da",
+                              },
+                            },
+                          }}
+                        />
+
                         <ErrorMessage
                           name="treatment_course_id"
                           component="div"
@@ -206,7 +213,7 @@ export default function AddPatientTreatment() {
                         </label>
                         <Field
                           className="form-control"
-                          type="type"
+                          type="number"
                           name="totalCharge"
                         />
                         <ErrorMessage
@@ -224,17 +231,17 @@ export default function AddPatientTreatment() {
                         <Autocomplete
                           multiple
                           options={Service.map(
-                            (service) => service.serviceName
-                          )} 
+                            (service) => service.serviceName,
+                          )}
                           onChange={(event, value) => {
                             const selectedIds = value.map(
                               (name) =>
                                 Service.find(
-                                  (service) => service.serviceName === name
-                                )?.serviceId
+                                  (service) => service.serviceName === name,
+                                )?.serviceId,
                             );
-                            setPersonName(value); 
-                            setFieldValue("services", selectedIds); 
+                            setPersonName(value);
+                            setFieldValue("services", selectedIds);
                           }}
                           renderInput={(params) => (
                             <TextField {...params} label="Select Services" />
@@ -304,7 +311,9 @@ export default function AddPatientTreatment() {
                           <option value="">Select a payment method</option>
                           <option value="Cash">Cash</option>
                           <option value="UPI">Online via UPI</option>
-                          <option value="Credit/Debit Card">Debit / Credit Card</option>
+                          <option value="Credit/Debit Card">
+                            Debit / Credit Card
+                          </option>
                         </Field>
                       </div>
                     </div>

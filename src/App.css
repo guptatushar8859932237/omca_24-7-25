@@ -116,6 +116,14 @@ textarea.form-control {
 .navbar-nav > li {
   float: left;
 }
+.truncated-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px; /* adjust width as needed */
+  cursor: pointer;
+}
+
 
 .form-group {
   margin-bottom: 20px;

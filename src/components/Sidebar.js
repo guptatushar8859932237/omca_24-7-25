@@ -35,12 +35,12 @@ export default function Sidebar() {
       icon: "fa-server",
       label: "Manage Services",
     },
-    {
-      path: "/Manage_Treatments",
-      actualPath: "/Admin/Treatments",
-      icon: "fa-stethoscope",
-      label: "Manage Treatments",
-    },
+    // {
+    //   path: "/Manage_Treatments",
+    //   actualPath: "/Admin/Treatments",
+    //   icon: "fa-stethoscope",
+    //   label: "Manage Treatments",
+    // },
     // { path: "/Manage_Hospitals", actualPath: "/Admin/Hospitals", icon: "fa-hospital-o", label: "Manage Hospitals" },
     {
       path: "/Manage_Countries",

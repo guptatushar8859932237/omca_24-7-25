@@ -718,23 +718,23 @@ export default function AddEnquiry() {
                                 <Autocomplete
                                   options={Treatment || []}
                                   getOptionLabel={(option) =>
-                                    option.course_name || ""
+                                    option.name || ""
                                   }
                                   value={
                                     Treatment?.find(
                                       (item) =>
                                         item.course_name ===
-                                        form.values.disease_name,
+                                        form.values.name,
                                     ) || null
                                   }
                                   onChange={(e, newValue) => {
                                     form.setFieldValue(
                                       "disease_name",
-                                      newValue ? newValue.course_name : "",
+                                      newValue ? newValue.name : "",
                                     );
                                     form.setFieldValue(
                                       "treatment_course_id",
-                                      newValue ? newValue.course_id : null,
+                                      newValue ? newValue.id : null,
                                     );
                                   }}
                                   renderInput={(params) => (

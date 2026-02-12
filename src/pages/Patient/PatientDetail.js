@@ -24,6 +24,7 @@ import {
 } from "../../Basurl/Baseurl";
 import { imageUrl } from "../../Basurl/Baseurl";
 import { AddKysDetail } from "../../reducer/PatientTreatmentSlice";
+import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -52,6 +53,7 @@ function PatientDetail() {
   const [pickuptime, setPickuptime] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
   const [drivername, setDrivername] = useState("");
+  const [notesID, setNotesID] = useState("");
   const [drivercontact, setDrivercontact] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   // const [editData, setEditData] = useState(null);
@@ -77,10 +79,12 @@ function PatientDetail() {
   const [open2, setOpen2] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);
   const [notesModal, setNotesModal] = useState(false);
+  const [editModalNotes, setEditModalNotes] = useState(false);
   const [modalEditServiceOpen, setModalEditServiceOpen] = useState(false);
   const [treatmentIDservice, setTreatmentIDservice] = useState(null);
   const [open10, setOpen10] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [treatmentPlanPopup, setTreatmentPlanPopup] = useState(false);
   const [open5, setOpen5] = React.useState(false);
   const [note, setNote] = useState("");
   const [date, setDate] = useState();
@@ -142,6 +146,10 @@ function PatientDetail() {
   };
   const ServiceData2 = useSelector((state) => state.Service.Service);
   const { hospital } = useSelector((state) => state.hospital);
+  const { Treatment } = useSelector((state) => state.Treatment);
+  useEffect(() => {
+    dispatch(GetAllTreatment());
+  }, [dispatch]);
   useEffect(() => {
     dispatch(GetAllHositalData());
     console.log(error, hospital);
@@ -177,7 +185,12 @@ function PatientDetail() {
     setOpen5(false);
   };
   const handleClickOpen1 = (e, tretmentId, listhospital) => {
-    console.log(e.target.value, treatmentId, listhospital);
+    console.log(
+      "Asdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsd",
+      e.target.value,
+      treatmentId,
+      listhospital,
+    );
     setEdited(false);
     setOpen1(true);
     setTreatmentId(tretmentId);
@@ -1184,7 +1197,7 @@ function PatientDetail() {
   //   setData(item.driver_name)
   // }
   const handleclickeditfunc = (item) => {
-    console.log(item);
+    console.log(item.appointment_Date);
     setAppointmentid(item.appointmentId);
     setEdited(true);
     setOpen1(true);
@@ -1556,7 +1569,180 @@ function PatientDetail() {
     }
   };
   // console.log(ispatienthospitalId)
+  // eedit  notes
+  const EditButton = (a, b) => {
+    console.log(a, b);
+    setTreatmentIDservice(b.treatment_id);
+    setEditModalNotes(true);
+    setNotesID(a._id);
+    setNote2(a.note);
+    setDate2(new Date(a.date).toISOString().split("T")[0]);
+  };
+  const handleCloseEditModal = () => {
+    setEditModalNotes(false);
+  };
 
+  const editNotes = async () => {
+    if (!note2 || !date2) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Fields",
+        text: "Please enter note and date",
+      });
+      return;
+    }
+
+    const payload = {
+      note: note2,
+      date: date2,
+    };
+    try {
+      const response = await axios.put(
+        `${baseurl}edit_treatment_note/${treatmentIDservice}/${notesID}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      if (response.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: "Note updated successfully",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        handleCloseEditModal();
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: response.data.message || "Update failed",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error.response?.data?.message ||
+          "Something went wrong. Please try again",
+      });
+      console.log(error);
+    }
+  };
+
+  const EditDelete = async (a, b) => {
+    const confirm = await Swal.fire({
+      title: "Delete Note?",
+      text: "This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Yes, Delete",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!confirm.isConfirmed) return;
+    console.log(a, b);
+    try {
+      const response = await axios.delete(
+        `${baseurl}delete_treatment_note/${b.treatment_id}/${a._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      if (response.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Note deleted successfully",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        handleCloseEditModal(); // or close delete modal if you have one
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: response.data.message || "Delete failed",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error.response?.data?.message ||
+          "Something went wrong. Please try again",
+      });
+      console.log(error);
+    }
+  };
+
+  const EditFreeDelete = async (a, b, c) => {
+    // a = unused (optional)
+    // b = treatment object
+    // c = extra service id
+
+    const confirmResult = await Swal.fire({
+      title: "Are you sure?",
+      text: "This extra service will be deleted permanently!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+    });
+
+    if (!confirmResult.isConfirmed) return;
+
+    try {
+      const response = await axios.delete(
+        `${baseurl}delete_patient_extra_service/${b.treatment_id}/${c}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      if (response.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Extra service deleted successfully",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        // 🔁 Refresh data (example)
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      } else {
+        Swal.fire("Error", response.data.message || "Delete failed", "error");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Something went wrong!", "error");
+    }
+  };
+  // ///////////////////////////////////////////////PlanTreatmentPopUp
+  const PlanTreatmentPopUp = () => {
+    setTreatmentPlanPopup(true);
+  };
+  const PlanTreatmentPopupClose = () => {
+    setTreatmentPlanPopup(false);
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -1647,107 +1833,51 @@ function PatientDetail() {
               </div>
             </div>
           </div>
-          {/* <div className="patient-tabs">
+          <div className="patient-tabs">
             <ul className="nav nav-tabs nav-tabs-bottom">
               <li className="nav-item">
                 <a
                   className="nav-link active"
-                  href="#about-cont11"
+                  href="#about-cont123"
                   data-toggle="tab"
                 >
-                  Plan Treatment{" "}
+                  Treatment Plan{" "}
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#bottom-tab223" data-toggle="tab">
+                <a
+                  className="nav-link"
+                  href="#bottom-tab2123"
+                  data-toggle="tab"
+                >
                   Treatment
                 </a>
               </li>
             </ul>
             <div className="tab-content">
-              <div className="tab-pane show active" id="about-cont11">
-<div className="main-tab-hd">
-                        <div className="all-hd">
-                          <h6> Treatments Plan</h6>
-                        </div>
-                        <div className="treat-buttons">
-                          <div className="mr-3">
-                            <button
-                              onClick={PatientDetailButton}
-                              className="add-button"
-                            >
-                              <span>
-                                <i className="fa fa-plus"></i>
-                              </span>{" "}
-                              Add Treatment Plan
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                           <div className="row">
-                        <div className="col-md-12">
-                          {tretment?.length === 0 ? (
-                            "No Treatment  Added for this patients"
-                          ) : (
-                            <>
-                              {tretment?.map((info, index) => {
-                                console.log(info, "array data");
-                                return (
-                                  <div className="card-box">
-                                    <div className="treat-card">
-                                      <div className="treat-id">
-                                        <div>
-                                          <h3>
-                                            Treatment ID-
-                                            {info.treatment_id}{" "}
-                                          </h3>
-                                        </div>
-                                      </div>
-                                      <div className="d-flex">
-                                        
-                                        <button
-                                          
-                                          className="add-button1"
-                                        >
-                                          <span>
-                                            <i className="fa fa-plus"></i>
-                                          </span>{" "}
-                                          Add Passport
-                                        </button>
-                                        <button
-                                         
-                                          className="add-button1"
-                                        >
-                                          <span>
-                                            <i className="fa fa-plus"></i>
-                                          </span>{" "}
-                                     Discussion Notes
-                                        </button>
-                                        <button
-                                        
-                                          className="add-button1"
-                                        >
-                                          <span>
-                                            <i className="fa fa-plus"></i>
-                                          </span>{" "}
-                                          Add Notes
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </>
-                          )}
-                        </div>
-                      </div>  
+              <div className="tab-pane show active" id="about-cont123">
+                <div className="main-tab-hd">
+                  <div className="all-hd">
+                    <h6>Treatments Plan</h6>
+                  </div>
+                  <div className="treat-buttons">
+                    <div className="mr-3">
+                      <button
+                        onClick={PlanTreatmentPopUp}
+                        className="add-button"
+                      >
+                        <span>
+                          <i className="fa fa-plus"></i>
+                        </span>{" "}
+                        Plan Treatment
+                      </button>
+                    </div>
+                    <br />
+                  </div>
+                </div>
               </div>
-              <div className="tab-pane" id="bottom-tab223">
-              
-              </div>
-            </div>
-          </div> */}
-            <div className="patient-tabs">
+              <div className="tab-pane" id="bottom-tab2123">
+                <div className="patient-tabs">
                   <ul className="nav nav-tabs nav-tabs-bottom">
                     <li className="nav-item">
                       <a
@@ -1834,7 +1964,6 @@ function PatientDetail() {
                                         </div>
                                       </div>
                                       <div className="d-flex">
-                                        {/* <div> */}
                                         <p
                                           className="mx-2 my-2"
                                           style={{
@@ -1905,7 +2034,7 @@ function PatientDetail() {
                                                     <div className="para-main-div">
                                                       <p>
                                                         Name:{" "}
-                                                        {info.treatment_name}
+                                                        {info?.treatment_name}
                                                       </p>
                                                     </div>
                                                   </div>
@@ -2046,12 +2175,30 @@ function PatientDetail() {
                                                           key={index}
                                                         >
                                                           <div className="col-md-12">
-                                                            <div className="para-main-div">
-                                                              <p>
-                                                                {
-                                                                  item.serviceName
-                                                                }{" "}
-                                                              </p>
+                                                            <div className="para-main-div d-flex">
+                                                              <div>
+                                                                <p>
+                                                                  {
+                                                                    item.serviceName
+                                                                  }{" "}
+                                                                </p>
+                                                              </div>
+                                                              <div>
+                                                                <i
+                                                                  className="fa-solid fa-trash mx-2 text-danger"
+                                                                  style={{
+                                                                    cursor:
+                                                                      "pointer",
+                                                                  }}
+                                                                  onClick={() =>
+                                                                    EditFreeDelete(
+                                                                      item,
+                                                                      info,
+                                                                      index,
+                                                                    )
+                                                                  }
+                                                                ></i>
+                                                              </div>
                                                             </div>
                                                           </div>
                                                         </div>
@@ -2071,24 +2218,71 @@ function PatientDetail() {
                                             <h6>Notes</h6>
                                           </div>
                                           <div className="card-body">
-                                            <p>
-                                              Lorem Ipsum is simply dummy text
-                                              of the printing and typesetting
-                                              industry. Lorem Ipsum has been the
-                                              industry's standard dummy text
-                                              ever since the 1500s, when an
-                                              unknown printer took a galley of
-                                              type and scrambled it to make a
-                                              type specimen book. It has
-                                              survived not only five centuries,
-                                              but also the leap into electronic
-                                              typesetting, remaining essentially
-                                              unchanged. It was popularised in
-                                              the 1960s with the release of
-                                              Letraset sheets containing Lorem
-                                              Ipsum passages, and more recently
-                                              with desktop publishin
-                                            </p>
+                                            {info?.treatmentNotes?.map(
+                                              (item, index) => {
+                                                return (
+                                                  <>
+                                                    {/* <p>{item?.note}</p>
+                                            <p>{new Date(item?.date).toLocaleDateString('en-GB')}</p> */}
+                                                    <div className="para-main-div d-flex">
+                                                      <div>
+                                                        <p>
+                                                          Note:{" "}
+                                                          {item.note || "-"}
+                                                        </p>
+                                                        <p>
+                                                          Date:{" "}
+                                                          {new Date(
+                                                            item?.date,
+                                                          ).toLocaleDateString(
+                                                            "en-GB",
+                                                          ) || "-"}
+                                                        </p>
+                                                      </div>
+                                                      <div>
+                                                        <TableCell className="action-icon">
+                                                          <i
+                                                            className="fa-solid fa-pen-to-square"
+                                                            onClick={(e) =>
+                                                              EditButton(
+                                                                item,
+                                                                info,
+                                                              )
+                                                            }
+                                                          ></i>
+
+                                                          <i
+                                                            className="fa-solid fa-trash"
+                                                            onClick={() =>
+                                                              EditDelete(
+                                                                item,
+                                                                info,
+                                                              )
+                                                            }
+                                                          ></i>
+                                                        </TableCell>
+                                                      </div>
+                                                    </div>
+                                                  </>
+                                                );
+                                              },
+                                            )}
+                                            {/* <p>
+                                        Lorem Ipsum is simply dummy text of the
+                                        printing and typesetting industry. Lorem
+                                        Ipsum has been the industry's standard
+                                        dummy text ever since the 1500s, when an
+                                        unknown printer took a galley of type
+                                        and scrambled it to make a type specimen
+                                        book. It has survived not only five
+                                        centuries, but also the leap into
+                                        electronic typesetting, remaining
+                                        essentially unchanged. It was
+                                        popularised in the 1960s with the
+                                        release of Letraset sheets containing
+                                        Lorem Ipsum passages, and more recently
+                                        with desktop publishin
+                                      </p> */}
                                           </div>
                                         </div>
                                       </div>
@@ -2497,7 +2691,6 @@ function PatientDetail() {
                                                     info.date,
                                                   ).toLocaleDateString("en-GB")}
                                                 </div>
-                                                {/* <span className="time">treatment due payment-{info.treatment_due_payment}</span> */}
                                               </div>
                                               <div>
                                                 {" "}
@@ -2769,10 +2962,201 @@ function PatientDetail() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="col-md-12">
+              {tretment?.length === 0 ? (
+                "No Treatment  Added for this patients"
+              ) : (
+                <>
+                  {tretment?.map((info, index) => {
+                    console.log(info, "array data");
+                    return (
+                      <div className="card-box">
+                        <div className="treat-card">
+                          <div className="treat-id">
+                            <div>
+                              <h3>
+                                Treatment ID-
+                                {info.treatment_id}{" "}
+                              </h3>
+                            </div>
+                          </div>
+                          <div className="d-flex">
+                            <p
+                              className="mx-2 my-2"
+                              style={{
+                                fontWeight: "500",
+                                fontSize: "14px",
+                              }}
+                            >
+                              {info.treatment_status}
+                            </p>
+                            <button
+                              onClick={(e) =>
+                                handleClickOpen(e, info.treatment_id)
+                              }
+                              className="add-button1"
+                            >
+                              <span>
+                                <i className="fa fa-plus"></i>
+                              </span>{" "}
+                              Add Hospital
+                            </button>
+                            <button
+                              onClick={(e) =>
+                                handleClickOpen1(
+                                  e,
+                                  info?.treatment_id,
+                                  info?.Hospital_details,
+                                )
+                              }
+                              className="add-button1"
+                            >
+                              <span>
+                                <i className="fa fa-plus"></i>
+                              </span>{" "}
+                              Add Appointment
+                            </button>
+                            <button
+                              onClick={(e) =>
+                                handleClickOpenNotes(
+                                  e,
+                                  info?.treatment_id,
+                                  info?.Hospital_details,
+                                )
+                              }
+                              className="add-button1"
+                            >
+                              <span>
+                                <i className="fa fa-plus"></i>
+                              </span>{" "}
+                              Add Notes
+                            </button>
+                          </div>
+                        </div>
+                        <hr></hr>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-      {/* edit Modal */}
 
+      {/*/////////////////////////////////////////////////////////// treatment Plan  */}
+      <React.Fragment>
+        <Dialog
+          fullWidth
+          maxWidth="sm"
+          open={treatmentPlanPopup}
+          onClose={PlanTreatmentPopupClose}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Plan Treatment</h6>
+            </div>
+            <div className="cross-icon" onClick={PlanTreatmentPopupClose}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
+                width: "100%",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <Box>
+                  <div className="field-set">
+                    <label>
+                      Treatment course<span className="text-danger">*</span>
+                    </label>
+                    <Autocomplete
+                      disablePortal
+                      options={Treatment || []}
+                      getOptionLabel={(option) => option.name || ""}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      onChange={(e, value) => {
+                        //   setFieldValue(
+                        //     "treatment_course_id",
+                        //     value ? value.id : "",
+                        //   );
+                        // }}
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder="Select Treatment Course"
+                        />
+                      )}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          padding: "0px",
+                          "&:hover fieldset": {
+                            borderColor: "#ced4da",
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+                </Box>
+                <Box>
+                  <div className="field-set">
+                    <label>
+                      Select Hospital<span className="text-danger">*</span>
+                    </label>
+                    <Autocomplete
+                      disablePortal
+                      options={dataHospital?.map((job) => job.name) || []} // Fallback to empty array
+                      onChange={(e, value) => {
+                        const selectedCourse = dataHospital?.find(
+                          (job) => job.name === value,
+                        );
+                        const courseId = selectedCourse;
+                        setHospitalId(courseId);
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} placeholder="Hospital" />
+                      )}
+                      size="small"
+                      style={{
+                        backgroundColor:
+                          "linear-gradient(181deg, #22c7b8 0%, #0ba6df 72%)",
+                        border: "0 !important",
+                        borderColor: "transparent",
+                      }}
+                    />
+                  </div>
+                </Box>
+             
+              </Box>
+
+              <DialogActions className="submit-main">
+                <Button
+                  type="button"
+                  onClick={handlesubmitdataserviceEdit}
+                  variant="contained"
+                >
+                  Submit
+                </Button>
+              </DialogActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+
+      {/* edit Modal */}
       <React.Fragment>
         <Dialog
           fullWidth
@@ -2919,7 +3303,7 @@ function PatientDetail() {
                       return (
                         <>
                           <option key={index} value={item.treatmentId}>
-                            {item.treatment_name}
+                            {item?.treatment_name}
                           </option>
                         </>
                       );
@@ -3242,9 +3626,12 @@ function PatientDetail() {
                       placeholder="Appointment Date"
                       className="form-control"
                       onChange={(e) => setDate(e.target.value)}
-                      value={date}
+                      value={
+                        date ? new Date(date).toISOString().split("T")[0] : ""
+                      }
                       min={new Date().toISOString().split("T")[0]}
                     />
+
                     <span style={{ color: "red" }}>
                       {appointErr && !note ? "*Please Enter Your date" : ""}
                     </span>
@@ -3302,11 +3689,6 @@ function PatientDetail() {
                           onChange={(e) => setDrivercontact(e.target.value)}
                           value={drivercontact}
                         />
-                        {/* <span style={{ color: "red" }}>
-                          {appointErr && !drivercontact
-                            ? "*Please Enter the Driver Name"
-                            : ""}
-                        </span> */}
                       </div>
                       <div className="field-set">
                         <label>
@@ -3321,50 +3703,11 @@ function PatientDetail() {
                           onChange={(e) => setVehicalnumber(e.target.value)}
                           value={vehicalnumber}
                         />
-                        {/* <span style={{ color: "red" }}>
-                          {appointErr && !vehicalnumber
-                            ? "*Please Enter the Driver Name"
-                            : ""}
-                        </span> */}
                       </div>
                     </>
                   ) : (
                     ""
                   )}
-                  {/* {
-                    edited === true ?  <DialogActions className="submit-main">
-                      <Button
-                        type="submit"
-                        onClick={(e) => handlesubmitAppoint111(e)}
-                        variant="contained"
-                      >
-                       Edit Submit
-                      </Button>
-                    </DialogActions>:""
-                  } */}
-                  {/* {
-                    edited === true ? statuddropdown === "offline" ? (
-                    <DialogActions className="submit-main">
-                      <Button
-                        type="submit"
-                        onClick={(e) => handlesubmitAppoint(e)}
-                        variant="contained"
-                      >
-                        Submit
-                      </Button>
-                    </DialogActions>
-                  ) : (
-                    <DialogActions className="submit-main">
-                      <Button
-                        type="submit"
-                        onClick={(e) => handlesubmitAppoint111(e)}
-                        variant="contained"
-                      >
-                        Submit
-                      </Button>
-                    </DialogActions>
-                  ):""
-                  } */}
                   {!edited && (
                     <Button
                       type="submit"
@@ -3566,6 +3909,70 @@ function PatientDetail() {
                   </DialogActions>
                 </form>
               </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <ToastContainer />
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={editModalNotes}
+          onClose={handleCloseEditModal}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Edit Notes</h6>
+            </div>
+            <div className="cross-icon" onClick={handleCloseEditModal}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              component="form"
+              className="contact-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                editNotes();
+              }}
+            >
+              <div className="field-set">
+                <label>
+                  Notes<span className="text-danger">*</span>
+                </label>
+                <textarea
+                  className="form-control"
+                  rows="4"
+                  placeholder="Note"
+                  onChange={(e) => setNote2(e.target.value)}
+                  value={note2}
+                />
+                <span style={{ color: "red" }}>
+                  {noteErr && !note2 ? "Please Enter Your note" : ""}
+                </span>
+              </div>
+              <div className="field-set">
+                <label>
+                  Date<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => setDate2(e.target.value)}
+                  value={date2}
+                  min={date2 || new Date().toISOString().split("T")[0]}
+                />
+                <span style={{ color: "red" }}>
+                  {noteErr && !date2 ? "Please Enter Your date" : ""}
+                </span>
+              </div>
+              <DialogActions className="submit-main">
+                <Button type="submit" variant="contained">
+                  Submit
+                </Button>
+              </DialogActions>
             </Box>
           </DialogContent>
         </Dialog>

@@ -1,16 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
-import {  baseurl } from "../Basurl/Baseurl"
+import {  AdminBaseUrl, baseurl } from "../Basurl/Baseurl"
 export const GetAllTreatment = createAsyncThunk('Treatment/GetAllTreatment', async () => {
     try {
-        const response = await axios.get(`${baseurl}get_all_treatment_courses`, {
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        });
+        const response = await axios.post(`${AdminBaseUrl}treatment_list`);
         console.log(response)
-        return response.data.treatment_courses;
+        return response.data.data;
     } catch (error) {
         console.error("Error fetching staff users:", error.response?.data || error.message);
         throw error; // Rethrow to propagate the error in createAsyncThunk

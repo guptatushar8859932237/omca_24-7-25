@@ -739,11 +739,11 @@ export default function Patient() {
                           )}
                           <TableCell>Patient Id</TableCell>
                           <TableCell>Patient Name</TableCell>
-                          <TableCell>Contact Number</TableCell>
-                          <TableCell>Date</TableCell>
-                          <TableCell>Email</TableCell>
-                          <TableCell>Country</TableCell>
+                          {/* <TableCell>Contact Number</TableCell> */}
                           <TableCell>Patient Disease</TableCell>
+                          {/* <TableCell>Date</TableCell> */}
+                          {/* <TableCell>Email</TableCell>
+                          <TableCell>Country</TableCell> */}
                           {showActions === true ? (
                             <>
                               <TableCell>Patient Type</TableCell>
@@ -800,7 +800,7 @@ export default function Patient() {
                                 <TableCell>
                                   {info.patientNumber || info.patientId}
                                 </TableCell>
-                                <TableCell
+                                {/* <TableCell
                                   style={{ cursor: "pointer" }}
                                   onClick={(e) =>
                                     PatientDetail(
@@ -811,23 +811,48 @@ export default function Patient() {
                                   }
                                 >
                                   {info.patient_name}
-                                </TableCell>
-                                <TableCell>
-                                  {info.emergency_contact ||
-                                    info.emergency_contact_no}
-                                </TableCell>
-                                <TableCell>
-                                  {new Date(info.createdAt).toLocaleDateString(
-                                    "en-GB",
-                                  )}
-                                </TableCell>
-                                <TableCell>{info.email}</TableCell>
-                                <TableCell>{info.country}</TableCell>
-                                <TableCell>
+                                </TableCell> */}
+                                <TableCell
+  style={{ cursor: "pointer" }}
+  onClick={(e) => PatientDetail(e, info.patientId, info.enquiryId)}
+  title={info.patient_name} // This will show full name on hover
+>
+  {info.patient_name.length > 15
+    ? info.patient_name.substring(0, 15) + "..."
+    : info.patient_name}
+</TableCell>
+
+                                 {/* <TableCell>
                                   {info.patient_disease
                                     ?.map((d) => d.disease_name)
                                     .join(", ")}
-                                </TableCell>
+                                </TableCell> */}
+                                <TableCell
+  style={{ cursor: "pointer" }}
+  title={info.patient_disease
+    ?.map((d) => d.disease_name)
+    .join(", ")} // full list on hover
+>
+  {(() => {
+    const diseases = info.patient_disease
+      ?.map((d) => d.disease_name)
+      .join(", ");
+    if (!diseases) return "";
+    return diseases.length > 15 ? diseases.substring(0, 15) + "..." : diseases;
+  })()}
+</TableCell>
+                                {/* <TableCell>
+                                  {info.emergency_contact ||
+                                    info.emergency_contact_no}
+                                </TableCell> */}
+                                {/* <TableCell>
+                                  {new Date(info.createdAt).toLocaleDateString(
+                                    "en-GB",
+                                  )}
+                                </TableCell> */}
+                                {/* <TableCell>{info.email}</TableCell>
+                                <TableCell>{info.country}</TableCell> */}
+                               
 
                                 {showActions === true ? (
                                   <>

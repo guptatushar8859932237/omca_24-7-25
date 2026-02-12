@@ -564,7 +564,12 @@ useEffect(() => {
                               <TableCell>{info.email}</TableCell>
                               <TableCell>{info.country}</TableCell>
                               <TableCell>{info.emergency_contact}</TableCell>
-                              <TableCell>{info.disease_name}</TableCell>
+                              {/* <TableCell title={info.disease_name}> */}
+                              <TableCell title={info.disease_name}>
+  {info.disease_name?.length > 10
+    ? info.disease_name.slice(0, 10) + "..."
+    : info.disease_name}
+</TableCell>
                               <TableCell>
                                 <FormControl
                                   sx={{ m: 1, minWidth: 120 }}
