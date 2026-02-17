@@ -1900,7 +1900,7 @@ startTime:	data.startTime
               </div>
               <div className="tab-pane" id="bottom-tab2123">
                 <div className="patient-tabs">
-                  <ul className="nav nav-tabs nav-tabs-bottom">
+                  {/* <ul className="nav nav-tabs nav-tabs-bottom">
                     <li className="nav-item">
                       <a
                         className="nav-link active"
@@ -1937,7 +1937,7 @@ startTime:	data.startTime
                         Reports
                       </a>
                     </li>
-                  </ul>
+                  </ul> */}
                   <div className="tab-content">
                     <div className="tab-pane show active" id="about-cont">
                       <div className="main-tab-hd">
@@ -1986,6 +1986,47 @@ startTime:	data.startTime
                                         </div>
                                       </div>
                                       <div className="d-flex">
+                                      <p
+                                          className="mx-2 my-2"
+                                          style={{
+                                            fontWeight: "500",
+                                            fontSize: "14px",
+                                          }}
+                                        >      <a
+                        className="nav-link  add-button1"
+                        href="#bottom-tab2"
+                        data-toggle="tab"
+                      >
+                        Add Passport
+                      </a></p> 
+                       <p
+                                          className="mx-2 my-2 add-button1"
+                                          style={{
+                                            fontWeight: "500",
+                                            fontSize: "14px",
+                                          }}
+                                        >   <a
+                        className="nav-link"
+                        href="#bottom-tab4"
+                        data-toggle="tab"
+                      >
+                        Payment Details
+                      </a></p>
+                      <p
+                                          className="mx-2 my-2 add-button1"
+                                          style={{
+                                            fontWeight: "500",
+                                            fontSize: "14px",
+                                          }}
+                                        >
+                       <a
+                        className="nav-link"
+                        href="#bottom-tab5"
+                        data-toggle="tab"
+                      >
+                        Reports
+                      </a></p>
+
                                         <p
                                           className="mx-2 my-2"
                                           style={{

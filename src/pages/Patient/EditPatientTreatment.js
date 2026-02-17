@@ -11,17 +11,8 @@ import { useLocation } from "react-router-dom";
 import { baseurl, AdminBaseUrl, baseu11 } from "../../Basurl/Baseurl";
 import axios from "axios";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
-import Treatments from "../Treatments/Treatments";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
 export default function EditPatientTreatment() {
   const location = useLocation();
   const [initialData, setInitialData] = useState(null);
@@ -70,7 +61,7 @@ export default function EditPatientTreatment() {
       .min(1, "Total Charge must be greater than 0"),
     amount_paid: Yup.number()
       .typeError("Amount Paid must be a number")
-      .required("Amount Paid is required")
+ 
       .min(1, "Amount Paid must be greater than 0")
       .max(
         Yup.ref("total_charge"),
@@ -162,7 +153,7 @@ export default function EditPatientTreatment() {
       Currency: values.Currency,
     };
     const response = await axios.put(
-      `${baseurl}update_treatment`, // ⚠️ confirm your endpoint
+      `${baseurl}edit_treatment/${location?.state?.data?.treatment_id}`, // ⚠️ confirm your endpoint
       payload,
       {
         headers: {
@@ -277,32 +268,6 @@ export default function EditPatientTreatment() {
                         <label>
                           Services<span className="text-danger">*</span>
                         </label>
-                        {/* <Autocomplete
-                          multiple
-                          options={Service || []}
-                          getOptionLabel={(option) => option.serviceName || ""}
-                          value={Service.filter((service) =>
-                            (initialData?.services || []).includes(
-                              service.serviceId,
-                            ),
-                          )}
-                          isOptionEqualToValue={(option, value) =>
-                            option.serviceId === value.serviceId
-                          }
-                          onChange={(event, value) => {
-                            const selectedIds = value.map(
-                              (item) => item.serviceId,
-                            );
-                            setFieldValue("services", selectedIds);
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select Services"
-                              error={!!error}
-                            />
-                          )}
-                        /> */}
                         <Autocomplete
                           multiple
                           options={Service || []}
