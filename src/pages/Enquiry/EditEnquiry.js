@@ -11,6 +11,7 @@ import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
 import axios from "axios";
+import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 
 
 const getFileType = (file) => {
@@ -35,6 +36,7 @@ export default function EditEnquiry() {
   useEffect(() => {
     dispatch(GetAllCountries2());
     dispatch(GetAllEnquiry());
+    dispatch(GetAllTreatment())
   }, [dispatch]);
 
   useEffect(() => {
@@ -80,21 +82,23 @@ export default function EditEnquiry() {
 
     country: Yup.string().required("Country is required"),
 
-    emergency_contact_no: Yup.string().matches(
-      /^[0-9]{8,15}$/,
-      "Invalid number",
-    ),
+    emergency_contact_no: Yup.string()
+  .matches(/^[0-9]+$/, "Only digits are allowed")
+  .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
 
-    patient_emergency_contact_no: Yup.string().matches(
-      /^[0-9]{8,15}$/,
-      "Invalid number",
-    ),
+    patient_emergency_contact_no: Yup.string()
+  .matches(/^[0-9]+$/, "Only digits are allowed")
+  .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
 
-    patient_relation_name: Yup.string().when("has_relation", {
-      is: true,
-      then: (schema) => schema.required("Attendant  name is required"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+    patient_relation_no: Yup.string().when("has_relation", {
+  is: true,
+  then: (schema) =>
+    schema
+      .matches(/^[0-9]+$/, "Only digits are allowed")
+      .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
+     
+  otherwise: (schema) => schema.notRequired(),
+}),
 
     patient_relation: Yup.string().when("has_relation", {
       is: true,
@@ -194,60 +198,6 @@ const handleDeletePatientIdProof = (index) => {
   });
 };
 
-
-  // const handleDeletePatientIdProof = async (index) => {
-  //   try {
-  //     await axios.delete(
-  //       "http://192.168.1.68:5201/api/deletePatientIdProofByIndex",
-  //       {
-  //         data: {
-  //           enquiryId: editenquiry.enquiryId,
-  //           index,
-  //         },
-  //       },
-  //     );
-
-  //     // update UI instantly
-  //     setEnquiry((prev) => ({
-  //       ...prev,
-  //       patient_id_proof: prev.patient_id_proof.filter((_, i) => i !== index),
-  //     }));
-  //   } catch (err) {
-  //     Swal.fire("Error", "Unable to delete image", "error");
-  //   }
-  // };
-
-//   const handleDeleteAttendantIdProof = async (index) => {
-//     Swal.fire({
-//   title: "Delete this image?",
-//   icon: "warning",
-//   showCancelButton: true,
-// }).then((res) => {
-//   if (res.isConfirmed) {
-//     handleDeletePatientIdProof(index);
-//   }
-// });
-//     try {
-//       await axios.delete(
-//         "http://192.168.1.68:5201/api/deletePatientRelationImageByIndex",
-//         {
-//           data: {
-//             enquiryId: editenquiry.enquiryId,
-//             index,
-//           },
-//         },
-//       );
-
-//       setEnquiry((prev) => ({
-//         ...prev,
-//         patient_relation_id: prev.patient_relation_id.filter(
-//           (_, i) => i !== index,
-//         ),
-//       }));
-//     } catch (err) {
-//       Swal.fire("Error", "Unable to delete image", "error");
-//     }
-//   };
 const handleDeleteAttendantIdProof = async (index) => {
   Swal.fire({
     title: "Delete this image?",
@@ -331,6 +281,7 @@ const handleDeleteAttendantIdProof = async (index) => {
                   address: editenquiry?.address || "",
                   passport_num: editenquiry?.passport_num || "",
                   patient_relation_no: editenquiry?.patient_relation_no || "",
+                   disease_id: editenquiry?.disease_id || "",
                   patient_relation_address:
                     editenquiry?.patient_relation_address || "",
                   patient_relation_id: editenquiry?.patient_relation_id || [],
@@ -463,7 +414,7 @@ const handleDeleteAttendantIdProof = async (index) => {
                         <div className="field-set">
                           <label>
                             {" "}
-                            Phone No / WhatsApp With Country Code
+                            Phone No / WhatsApp 
                             <span className="text-danger">*</span>
                           </label>
                           <div className="country-code">
@@ -478,7 +429,7 @@ const handleDeleteAttendantIdProof = async (index) => {
                             />
                           </div>
                           <ErrorMessage
-                            name="dial_code"
+                            name="emergency_contact_no"
                             component="div"
                             style={{ color: "red" }}
                           />
@@ -610,7 +561,7 @@ const handleDeleteAttendantIdProof = async (index) => {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Emergency Contact No With Country Code</label>
+                          <label>Emergency Contact No </label>
                           <div className="country-code">
                             <Field
                               className="form-control code-dial"
@@ -818,22 +769,26 @@ editenquiry.patient_id_proof.length > 0 ? (
                             <Autocomplete
                               options={Treatment || []}
                               getOptionLabel={(option) =>
-                                option.course_name || ""
+                                option.name || ""
                               }
                               value={
                                 Treatment?.find(
                                   (item) =>
-                                    item.course_name === values.disease_name,
+                                    item.name === values.disease_name,
                                 ) || null
                               }
                               onChange={(e, value) => {
                                 setFieldValue(
                                   "disease_name",
-                                  value?.course_name || "",
+                                  value?.name || "",
                                 );
                                 setFieldValue(
                                   "treatment_course_id",
                                   value?.course_id || null,
+                                );
+                                setFieldValue(
+                                  "disease_id",
+                                  value?.id || null,
                                 );
                               }}
                               renderInput={(params) => (
@@ -978,7 +933,13 @@ editenquiry.patient_id_proof.length > 0 ? (
                                   className="form-control code-in"
                                   name="patient_relation_no"
                                 />
+                               
                               </div>
+                                <ErrorMessage
+                                name="patient_relation_no"
+                                component="div"
+                                className="text-danger"
+                              />
                             </div>
                           </div>
                           <div className="col-md-4">

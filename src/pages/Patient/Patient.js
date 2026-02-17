@@ -118,11 +118,14 @@ export default function Patient() {
       },
     });
   };
-  const PatientDetail = (e, id, enq) => {
+  const PatientDetail = (e, id, enq,c,d) => {
+    console.log(e, id, enq,c,d)
     navigate("/Admin/Patient-Detail", {
       state: {
         patientId: id,
         enqId: enq,
+        testid: c,
+        tratmentlit: d,
       },
     });
   };
@@ -766,8 +769,11 @@ export default function Patient() {
                               </TableCell>
                             </TableRow>
                           ) : (
-                            rows.map((info, i) => (
-                              <TableRow key={info.patientId}>
+                            rows.map((info, i) => {
+                              console.log(info)
+                              return(
+                                <>
+                                 <TableRow key={info.patientId}>
                                 <TableCell>
                                   {(page - 1) * rowsPerPage + i + 1}
                                 </TableCell>
@@ -814,7 +820,7 @@ export default function Patient() {
                                 </TableCell> */}
                                 <TableCell
   style={{ cursor: "pointer" }}
-  onClick={(e) => PatientDetail(e, info.patientId, info.enquiryId)}
+  onClick={(e) => PatientDetail(e, info.patientId, info.enquiryId,info.id, info.patient_disease[0].treatment_id)}
   title={info.patient_name} // This will show full name on hover
 >
   {info.patient_name.length > 15
@@ -950,6 +956,8 @@ export default function Patient() {
                                             e,
                                             info.patientId,
                                             info.enquiryId,
+                                            info.id,
+                                            info.patient_disease[0].treatment_id
                                           )
                                         }
                                       />
@@ -976,7 +984,10 @@ export default function Patient() {
                                   ""
                                 )}
                               </TableRow>
-                            ))
+                                </>
+                              )
+                             
+})
                           )}
                         </TableBody>
                       )}

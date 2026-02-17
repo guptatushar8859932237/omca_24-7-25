@@ -6,7 +6,6 @@ import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { AddTretmentForPatient } from "../../reducer/PatientTreatmentSlice";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { baseurl, AdminBaseUrl, baseu11 } from "../../Basurl/Baseurl";
@@ -23,13 +22,12 @@ const MenuProps = {
     },
   },
 };
-export default function AddPatientTreatment() {
+export default function EditPatientTreatment() {
   const location = useLocation();
-  console.log(location?.state?.patient);
+  const [initialData, setInitialData] = useState(null);
+  console.log(location?.state?.data);
   const dispatch = useDispatch();
-
   const { Treatment, loading, error } = useSelector((state) => state.Treatment);
-  // const [Treatment,setTreatment]=useState([])
   const [Service, setService] = useState([]);
   const [personName, setPersonName] = React.useState([]);
   useEffect(() => {
@@ -56,64 +54,20 @@ export default function AddPatientTreatment() {
         console.error("Error fetching job titles:", error);
       });
   };
-
-  useEffect(()=>{
-    dispatch(GetAllTreatment())
-  },[dispatch])
+  useEffect(() => {
+    dispatch(GetAllTreatment());
+  }, [dispatch]);
   useEffect(() => {
     GetActiveService();
   }, []);
-  // const Apidata = () => {
-  //   axios
-  //     .get(`${baseurl}get_all_treatment_courses`, {
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       if (response.status === 200) {
-  //         setTreatment(response.data.treatment_courses);
-  //       } else {
-  //         console.error("Failed to fetch job titles:", response.data.message);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching job titles:", error);
-  //     });
-  // };
-  // useEffect(() => {
-  //   Apidata();
-  // }, []);
-  // const basicSchema = Yup.object().shape({
-  //   patientId: Yup.string().required("patientId is required"),
-  //   treatment_course_id: Yup.string().required("Treatment course  is required"),
-  //   services: Yup.array()
-  //     .of(Yup.string().required("Service ID is required"))
-  //     .min(1, "Select at least one service"),
-  //   total_charge: Yup.string().required("Total Charge is required"),
-  //   // amount_paid: Yup.string().required("Amount Paid is required"),
-  //    amount_paid: Yup.number().required("Amount Paid is required").typeError("Amount Paid must be a number")
-  //   .required("Amount Paid is required")            // ✅ REQUIRED
-  //   .min(1, "Amount Paid must be greater than 0")   // ✅ no 0 or negative
-  //   .max(
-  //     Yup.ref("total_charge"),
-  //     "Amount Paid cannot be greater than Total Charge"
-  //   ),
-  // });
   const basicSchema = Yup.object().shape({
     patientId: Yup.string().required("patientId is required"),
-
     treatment_course_id: Yup.string().required("Treatment course is required"),
-
     services: Yup.array().min(1, "Select at least one service"),
-
     total_charge: Yup.number()
       .typeError("Total Charge must be a number")
       .required("Total Charge is required")
       .min(1, "Total Charge must be greater than 0"),
-
     amount_paid: Yup.number()
       .typeError("Amount Paid must be a number")
       .required("Amount Paid is required")
@@ -123,10 +77,41 @@ export default function AddPatientTreatment() {
         "Amount Paid cannot be greater than Total Charge",
       ),
   });
-
   console.log(personName);
   const handleback = () => {
     window.history.back();
+  };
+  useEffect(() => {
+    if (location?.state?.data) {
+      getData();
+    }
+  }, [location?.state?.data]);
+  const getData = async () => {
+    try {
+      const response = await axios.get(
+        `${baseurl}get_treatment_by_id/${location?.state?.data.treatment_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      if (response.data.success) {
+        const data = response.data.data;
+        setInitialData({
+          patientId: data.patientId,
+          treatment_course_id: data.treatment_course_id,
+          treatment_course_name: data.treatment_course_name,
+          total_charge: data.totalCharge || "",
+          services: data.services?.map((item) => item.serviceId) || [],
+          amount_paid: data.payment_details?.[0]?.paid_amount || "",
+          paymentMethod: data.payment_details?.[0]?.paymentMethod || "",
+          Currency: "USD",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
@@ -143,45 +128,73 @@ export default function AddPatientTreatment() {
                 >
                   <i class="fi fi-sr-angle-double-small-left"></i>
                 </span>
-                Add Treatment
+                Edit Treatment
               </h4>
             </div>
           </div>
           <div className="main_content">
             <Formik
-              initialValues={{
-                patientId: location?.state?.patient || "",
-                treatment_course_id: "",
-                treatment_course_name: "",
-                total_charge: "",
-                services: "",
-                amount_paid: "",
-                paymentMethod: "",
-                Currency: "USD",
-              }}
-              validationSchema={basicSchema}
-              onSubmit={async (values, { setSubmitting }) => {
-                console.log("Submitted Values:", values);
-                try {
-                  const result = await dispatch(
-                    AddTretmentForPatient(values),
-                  ).unwrap();
-                  Swal.fire("Treatment added successfully!", "", "success");
-                  navigate("/Admin/Patient-Detail", {
-                    state: { patientId: location?.state?.patient },
-                  });
-                } catch (err) {
-                  console.error("Submission Error:", err);
-                  Swal.fire(
-                    "Error!",
-                    err?.message || "An error occurred",
-                    "error",
-                  );
+              initialValues={
+                initialData || {
+                  patientId: location?.state?.patientid || "",
+                  treatment_course_id: "",
+                  treatment_course_name: "",
+                  total_charge: "",
+                  services: [],
+                  amount_paid: "",
+                  paymentMethod: "",
+                  Currency: "USD",
                 }
-                setSubmitting(false);
-              }}
+              }
+              validationSchema={basicSchema}
+              enableReinitialize
+              onSubmit={async (values, { setSubmitting }) => {
+  try {
+    const payload = {
+      treatment_id: location?.state?.data?.treatment_id,
+      patientId: values.patientId,
+      treatment_course_id: values.treatment_course_id,
+      treatment_course_name: values.treatment_course_name,
+      totalCharge: values.total_charge,
+      services: values.services,
+      amount_paid: values.amount_paid,
+      paymentMethod: values.paymentMethod,
+      Currency: values.Currency,
+    };
+    const response = await axios.put(
+      `${baseurl}update_treatment`, // ⚠️ confirm your endpoint
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.data.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Treatment Updated Successfully",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      setTimeout(() => {
+        navigate(-1);
+      }, 1500);
+    } else {
+      Swal.fire("Error", response.data.message, "error");
+    }
+  } catch (error) {
+    console.log(error);
+    Swal.fire("Error", "Something went wrong", "error");
+  } finally {
+    setSubmitting(false);
+  }
+}}
+
             >
-              {({ isSubmitting, setFieldValue }) => (
+              {({ values, isSubmitting, setFieldValue }) => (
                 <Form>
                   <div className="row">
                     <div className="col-sm-6">
@@ -192,6 +205,7 @@ export default function AddPatientTreatment() {
                         <Field
                           className="form-control"
                           type="text"
+                          disabled
                           name="patientId"
                         />
                       </div>
@@ -203,10 +217,18 @@ export default function AddPatientTreatment() {
                         </label>
                         <Autocomplete
                           disablePortal
+                          disabled
                           options={Treatment || []}
                           getOptionLabel={(option) => option.name || ""}
+                          value={
+                            Treatment.find(
+                              (t) =>
+                                String(t.id) ===
+                                String(initialData?.treatment_course_id),
+                            ) || null
+                          }
                           isOptionEqualToValue={(option, value) =>
-                            option.id === value.id
+                            String(option.id) === String(value.id)
                           }
                           onChange={(e, value) => {
                             setFieldValue(
@@ -222,18 +244,10 @@ export default function AddPatientTreatment() {
                             <TextField
                               {...params}
                               placeholder="Select Treatment Course"
+                              error={!!error}
                             />
                           )}
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              padding: "0px",
-                              "&:hover fieldset": {
-                                borderColor: "#ced4da",
-                              },
-                            },
-                          }}
                         />
-
                         <ErrorMessage
                           name="treatment_course_id"
                           component="div"
@@ -263,34 +277,51 @@ export default function AddPatientTreatment() {
                         <label>
                           Services<span className="text-danger">*</span>
                         </label>
-                        <Autocomplete
+                        {/* <Autocomplete
                           multiple
-                          options={Service.map(
-                            (service) => service.serviceName,
+                          options={Service || []}
+                          getOptionLabel={(option) => option.serviceName || ""}
+                          value={Service.filter((service) =>
+                            (initialData?.services || []).includes(
+                              service.serviceId,
+                            ),
                           )}
+                          isOptionEqualToValue={(option, value) =>
+                            option.serviceId === value.serviceId
+                          }
                           onChange={(event, value) => {
                             const selectedIds = value.map(
-                              (name) =>
-                                Service.find(
-                                  (service) => service.serviceName === name,
-                                )?.serviceId,
+                              (item) => item.serviceId,
                             );
-                            setPersonName(value);
+                            setFieldValue("services", selectedIds);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Select Services"
+                              error={!!error}
+                            />
+                          )}
+                        /> */}
+                        <Autocomplete
+                          multiple
+                          options={Service || []}
+                          getOptionLabel={(option) => option.serviceName || ""}
+                          value={Service.filter((service) =>
+                            values.services.includes(service.serviceId),
+                          )}
+                          isOptionEqualToValue={(option, value) =>
+                            option.serviceId === value.serviceId
+                          }
+                          onChange={(event, value) => {
+                            const selectedIds = value.map(
+                              (item) => item.serviceId,
+                            );
                             setFieldValue("services", selectedIds);
                           }}
                           renderInput={(params) => (
                             <TextField {...params} label="Select Services" />
                           )}
-                          value={personName}
-                          size="small"
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              padding: "0px",
-                              "&:hover fieldset": {
-                                borderColor: "#ced4da",
-                              },
-                            },
-                          }}
                         />
                         <ErrorMessage
                           name="services"
@@ -299,69 +330,15 @@ export default function AddPatientTreatment() {
                         />
                       </div>
                     </div>
-                    <div className="col-sm-6">
-                      <div className="field-set">
-                        <label>
-                          Amount Paid<span className="text-danger">*</span>
-                        </label>
-                        <Field
-                          className="form-control"
-                          type="number"
-                          name="amount_paid"
-                        />
-                        <ErrorMessage
-                          name="amount_paid"
-                          component="div"
-                          style={{ color: "red" }}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="field-set">
-                        <label>
-                          Currency<span className="text-danger"></span>
-                        </label>
-                        <Field
-                          className="form-control"
-                          type="text"
-                          name="Currency"
-                        />
-                        <ErrorMessage
-                          name="Currency"
-                          component="div"
-                          style={{ color: "red" }}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="field-set">
-                        <label>
-                          Payment Method <span className="text-danger"></span>
-                        </label>
-                        <Field
-                          as="select"
-                          name="paymentMethod"
-                          className="form-control"
-                        >
-                          <option value="">Select a payment method</option>
-                          <option value="Cash">Cash</option>
-                          <option value="UPI">Online via UPI</option>
-                          <option value="Credit/Debit Card">
-                            Debit / Credit Card
-                          </option>
-                        </Field>
-                      </div>
-                    </div>
                   </div>
                   <div className="">
-                   <button
-  className="submit-btn"
-  type="submit"
-  disabled={isSubmitting}
->
-  {isSubmitting ? "Submitting..." : "Submit"}
-</button>
-
+                    <button
+                      className="submit-btn"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Submitting..." : "Submit"}
+                    </button>
                   </div>
                 </Form>
               )}

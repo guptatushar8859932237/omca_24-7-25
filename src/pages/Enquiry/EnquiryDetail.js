@@ -340,17 +340,39 @@ export default function EnquiryDetail() {
                           />
                         </div>
                       </div>
-                      <div className="col-md-4">
+                            <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Attendant Contact Number
+                        <span className="text-danger"></span>
+                      </label>
+                      <div className="country-code">
+                        <input
+                          class="form-control code-dial"
+                          type="text"
+                          value={row.phoneCode}
+                          readonly=""
+                        />
+                        <input
+                          class="form-control code-in"
+                          type="text"
+                          value={row.patient_relation_no}
+                          readonly=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                      {/* <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant Contact Number<span className="text-danger"></span></label>
-                          <input
+                          {/* <input
                             class="form-control"
                             type="text"
                             value={row.patient_relation_no}
                             readonly=""
-                          />
-                        </div>
-                      </div>
+                          /> */}
+                          
+                        {/* </div> */}
+                      {/* // </div>  */}
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant ID Proof<span className="text-danger"></span></label>

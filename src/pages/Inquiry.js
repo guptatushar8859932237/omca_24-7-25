@@ -97,19 +97,18 @@ export default function Inquiry() {
   //     setSearchApiData(Enquiry);
   //   }
   // }, [Enquiry]);
-useEffect(() => {
-  if (Array.isArray(Enquiry) && Enquiry.length > 0) {
-    const filtered = Enquiry.filter(
-      (item) => item.Enquiry_status !== "Confirmed"
-    );
-    setRows(filtered);
-    setSearchApiData(filtered);
-  } else {
-    setRows([]);
-    setSearchApiData([]);
-  }
-}, [Enquiry]);
-
+  useEffect(() => {
+    if (Array.isArray(Enquiry) && Enquiry.length > 0) {
+      const filtered = Enquiry.filter(
+        (item) => item.Enquiry_status !== "Confirmed",
+      );
+      setRows(filtered);
+      setSearchApiData(filtered);
+    } else {
+      setRows([]);
+      setSearchApiData([]);
+    }
+  }, [Enquiry]);
 
   console.log(searchApiData);
   const handleChangePage = (event, newPage) => {
@@ -133,6 +132,23 @@ useEffect(() => {
   const handleChange = async (event, id) => {
   const { value } = event.target;
 
+  // confirmation alert
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "Do you really want to update the status?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, update it!",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  });
+
+  // ❌ agar cancel kiya
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  // ✅ local state update
   setSeekerStatus((prev) => ({
     ...prev,
     [id]: value,
@@ -145,15 +161,37 @@ useEffect(() => {
 
     Swal.fire("Success!", "Status updated successfully!", "success");
 
-    // 🔥 REMOVE ROW LOCALLY
+    // 🔥 row remove locally
     setRows((prevRows) =>
       prevRows.filter((item) => item.enquiryId !== id)
     );
- dispatch(GetAllEnquiry());
+
+    dispatch(GetAllEnquiry());
   } catch (err) {
     Swal.fire("Error!", err?.message || "An error occurred", "error");
   }
 };
+
+  // const handleChange = async (event, id) => {
+  //   const { value } = event.target;
+
+  //   setSeekerStatus((prev) => ({
+  //     ...prev,
+  //     [id]: value,
+  //   }));
+
+  //   try {
+  //     await dispatch(EnquiryStatus({ id, status: Number(value) })).unwrap();
+
+  //     Swal.fire("Success!", "Status updated successfully!", "success");
+
+  //     // 🔥 REMOVE ROW LOCALLY
+  //     setRows((prevRows) => prevRows.filter((item) => item.enquiryId !== id));
+  //     dispatch(GetAllEnquiry());
+  //   } catch (err) {
+  //     Swal.fire("Error!", err?.message || "An error occurred", "error");
+  //   }
+  // };
 
   // const handleChange = async (event, id) => {
   //   const { value } = event.target;
@@ -200,7 +238,7 @@ useEffect(() => {
     } catch (err) {
       console.error(
         "Error downloading the sample file:",
-        err.response?.data?.message || err.message
+        err.response?.data?.message || err.message,
       );
 
       Swal.fire({
@@ -243,46 +281,45 @@ useEffect(() => {
     }
   };
   const handleFilter = (event) => {
-  const value = event.target.value.toLowerCase();
-  setFilterValue(event.target.value);
-  setPage(0); // ⭐ RESET PAGE
+    const value = event.target.value.toLowerCase();
+    setFilterValue(event.target.value);
+    setPage(0); // ⭐ RESET PAGE
 
-  if (value === "") {
+    if (value === "") {
+      setRows(searchApiData);
+      return;
+    }
+
+    const filterResult = searchApiData.filter((item) => {
+      const enquiryId = item.enquiryId?.toLowerCase() || "";
+      const email = item.email?.toLowerCase() || "";
+      const country = item.country?.toLowerCase() || "";
+      const name = item.name?.toLowerCase() || "";
+      const age = item.age?.toString().toLowerCase() || "";
+      const contact = item.emergency_contact?.toString().toLowerCase() || "";
+      const disease = item.disease_name?.toLowerCase() || "";
+
+      return (
+        enquiryId.includes(value) ||
+        email.includes(value) ||
+        country.includes(value) ||
+        name.includes(value) ||
+        age.includes(value) ||
+        contact.includes(value) ||
+        disease.includes(value)
+      );
+    });
+
+    setRows(filterResult);
+  };
+  const handleClearFilter = () => {
+    setFilterValue("");
     setRows(searchApiData);
-    return;
-  }
-
-  const filterResult = searchApiData.filter((item) => {
-    const enquiryId = item.enquiryId?.toLowerCase() || "";
-    const email = item.email?.toLowerCase() || "";
-    const country = item.country?.toLowerCase() || "";
-    const name = item.name?.toLowerCase() || "";
-    const age = item.age?.toString().toLowerCase() || "";
-    const contact =
-      item.emergency_contact?.toString().toLowerCase() || "";
-    const disease = item.disease_name?.toLowerCase() || "";
-
-    return (
-      enquiryId.includes(value) ||
-      email.includes(value) ||
-      country.includes(value) ||
-      name.includes(value) ||
-      age.includes(value) ||
-      contact.includes(value) ||
-      disease.includes(value)
-    );
-  });
-
-  setRows(filterResult);
-};
-const handleClearFilter = () => {
-  setFilterValue("");
-  setRows(searchApiData);
-  setPage(0); // ⭐ RESET PAGE
-};
-useEffect(() => {
-  setPage(0);
-}, [rows]);
+    setPage(0); // ⭐ RESET PAGE
+  };
+  useEffect(() => {
+    setPage(0);
+  }, [rows]);
   // const handleFilter = (event) => {
   //   if (event.target.value === "") {
   //     setRows(searchApiData);
@@ -328,7 +365,7 @@ useEffect(() => {
     if (!note) {
       setBlogErr((prevState) => ({ ...prevState, note: true }));
     }
-    if (!date) {  
+    if (!date) {
       setBlogErr((prevState) => ({ ...prevState, date: true }));
     }
     if (!note || !date) {
@@ -376,13 +413,13 @@ useEffect(() => {
       .then((result) => {
         if (result.isConfirmed) {
           dispatch(DeleteEnquiry({ id: e }))
-            .unwrap() 
+            .unwrap()
             .then(() => {
               return dispatch(GetAllEnquiry());
             })
             .then((newData) => {
               Swal.fire("Deleted!", "Patient has been deleted.", "success");
-              setRows(newData.payload); 
+              setRows(newData.payload);
             })
             .catch((err) => {
               Swal.fire("Error!", err?.message || "An error occurred", "error");
@@ -394,7 +431,7 @@ useEffect(() => {
           });
         }
       });
-  }
+  };
   const donloadpdf = async () => {
     const maxRows = rows.length || 1;
     Swal.fire({
@@ -416,7 +453,7 @@ useEffect(() => {
           Swal.fire(
             "Invalid entry",
             `Please enter a number between 1 and ${maxRows}`,
-            "error"
+            "error",
           );
           return;
         }
@@ -525,7 +562,7 @@ useEffect(() => {
                           <TableCell>Sr.No.</TableCell>
                           <TableCell>Enquiry IDs</TableCell>
                           <TableCell>Name</TableCell>
-                          <TableCell>Email</TableCell>
+                          {/* <TableCell>Email</TableCell> */}
                           <TableCell>Country</TableCell>
                           <TableCell>Contact</TableCell>
                           <TableCell>Disease name</TableCell>
@@ -539,14 +576,14 @@ useEffect(() => {
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
                               page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
+                              page * rowsPerPage + rowsPerPage,
                             )
                         ).length > 0 ? (
                           (pdfRowLimit
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
                                 page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
+                                page * rowsPerPage + rowsPerPage,
                               )
                           ).map((info, i) => (
                             <TableRow
@@ -560,16 +597,21 @@ useEffect(() => {
                                   : page * rowsPerPage + i + 1}
                               </TableCell>
                               <TableCell>{info.enquiryId}</TableCell>
-                              <TableCell style={{cursor:"pointer"}}  onClick={(e) => ViewDetail(e, info.enquiryId)}>{info.name}</TableCell>
-                              <TableCell>{info.email}</TableCell>
+                              <TableCell
+                                style={{ cursor: "pointer" }}
+                                onClick={(e) => ViewDetail(e, info.enquiryId)}
+                              >
+                                {info.name}
+                              </TableCell>
+                              {/* <TableCell>{info.email}</TableCell> */}
                               <TableCell>{info.country}</TableCell>
                               <TableCell>{info.emergency_contact}</TableCell>
                               {/* <TableCell title={info.disease_name}> */}
                               <TableCell title={info.disease_name}>
-  {info.disease_name?.length > 10
-    ? info.disease_name.slice(0, 10) + "..."
-    : info.disease_name}
-</TableCell>
+                                {info.disease_name?.length > 10
+                                  ? info.disease_name.slice(0, 10) + "..."
+                                  : info.disease_name}
+                              </TableCell>
                               <TableCell>
                                 <FormControl
                                   sx={{ m: 1, minWidth: 120 }}
@@ -581,14 +623,15 @@ useEffect(() => {
                                       seekerStatus[info.enquiryId]
                                         ? seekerStatus[info.enquiryId]
                                         : info.Enquiry_status === "Confirmed"
-                                        ? "1"
-                                        : info.Enquiry_status === "Hold"
-                                        ? "2"
-                                        : info.Enquiry_status === "Follow-Up"
-                                        ? "3"
-                                        : info.Enquiry_status === "Dead"
-                                        ? "4"
-                                        : ""
+                                          ? "1"
+                                          : info.Enquiry_status === "Hold"
+                                            ? "2"
+                                            : info.Enquiry_status ===
+                                                "Follow-Up"
+                                              ? "3"
+                                              : info.Enquiry_status === "Dead"
+                                                ? "4"
+                                                : ""
                                     }
                                     onChange={(e) =>
                                       handleChange(e, info.enquiryId)

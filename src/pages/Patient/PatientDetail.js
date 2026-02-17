@@ -26,14 +26,11 @@ import { imageUrl } from "../../Basurl/Baseurl";
 import { AddKysDetail } from "../../reducer/PatientTreatmentSlice";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
-import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import moment from "moment";
-import profile from "../../img/doctor-thumb-04.jpg";
-import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import { AddNewTretmentPayment } from "../../reducer/PatientTreatmentSlice";
-
+import { FaPen } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import avtar from "../../img/avtarImg.jpg";
 import {
@@ -45,18 +42,20 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { CopyAll, LineAxisOutlined, PictureAsPdf } from "@mui/icons-material";
 function PatientDetail() {
   const navigate = useNavigate();
   const [seekerStatus, setSeekerStatus] = React.useState({});
   const [treatmentData, setTreatmentData] = useState([]);
   const [pickuptime, setPickuptime] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
+  const [images, setImages] = useState([]);
+  const [treatemntData1, setTreatemntData1] = useState([]);
+  const [errors, setErrors] = useState({});
   const [drivername, setDrivername] = useState("");
   const [notesID, setNotesID] = useState("");
   const [drivercontact, setDrivercontact] = useState("");
-  const [isEdit, setIsEdit] = useState(false);
-  // const [editData, setEditData] = useState(null);
+  const [fieldValue, setFieldValue] = useState("");
+  const [value1, setValue1] = useState("");
   const [editData, setEditData] = useState(null);
   const [edited, setEdited] = useState(false);
 
@@ -94,6 +93,7 @@ function PatientDetail() {
   const [valuedata, setValuedata] = useState("");
   const [treatmentId, setTreatmentId] = useState("");
   const [hospitalcharge, sethospitalharge] = useState("");
+  const [hospitlID, setHospitlID] = useState([]);
   const [ishospitalArray, setIShospitalArray] = useState([]);
   const [note2, setNote2] = useState("");
   const [date2, setDate2] = useState();
@@ -113,7 +113,6 @@ function PatientDetail() {
   const [appointErr, setAppointErr] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
   const [oeditappp, setOeditappp] = useState(false);
-  const [kysErr, setKysErr] = useState(false);
   const [treatmentuser, setTreatmentuser] = useState([]);
   const [noteErr, setNoteErr] = useState(false);
   const [data, setData] = useState({
@@ -124,6 +123,10 @@ function PatientDetail() {
   useEffect(() => {
     gtdatareportsdata();
     getextraservice();
+  }, []);
+
+  useEffect(() => {
+    getTreatmentPlan();
   }, []);
   const getextraservice = async () => {
     try {
@@ -272,7 +275,6 @@ function PatientDetail() {
         endTime: datedata.end_date,
       },
     };
-
     try {
       const response = await axios.post(
         `${baseurl}patient_extra_service/${data.treatment}`,
@@ -284,7 +286,6 @@ function PatientDetail() {
           },
         },
       );
-
       if (response.data.success === true) {
         setOpenModal(false);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
@@ -292,12 +293,10 @@ function PatientDetail() {
       }
     } catch (error) {
       console.log(error);
-
       const errorMessage =
         error?.response?.data?.message ||
         error?.response?.data?.error ||
         "Something went wrong!";
-
       Swal.fire({
         title: "Error",
         text: errorMessage,
@@ -305,11 +304,9 @@ function PatientDetail() {
       });
     }
   };
-
   useEffect(() => {
     gettreatment11();
   }, []);
-
   const hadnlcecEditModal = (item, treatmentId) => {
     console.log(item, treatmentId.treatment_id);
     setTreatmentIDservice(treatmentId.treatment_id);
@@ -317,10 +314,8 @@ function PatientDetail() {
     setData(item);
   };
   const hadnlcecEcloseeModal = () => {
-    // console.log(item)
     setModalEditServiceOpen(false);
   };
-
   const gettreatment11 = async () => {
     try {
       const response = await axios.post(`${baseurl}treatment_list`);
@@ -347,8 +342,6 @@ function PatientDetail() {
           },
         },
       );
-
-      console.log(response.data);
       setTreatmentuser(response.data.patient_treatments, "treatment data");
     } catch (error) {
       console.error("Error fetching treatment data", error);
@@ -357,20 +350,13 @@ function PatientDetail() {
   const handlesubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
-
     setIsSubmitting(true);
-
-    // Reset errors
     setBlogErr({ hospitalcharge: false });
-
-    // Frontend validation
     if (!hospitalcharge) {
       setBlogErr((prev) => ({ ...prev, hospitalcharge: true }));
       setIsSubmitting(false);
       return;
     }
-
-    // -------- API CALL START --------
     const result = await dispatch(
       AddHospitalForPatient({
         id: location.state.patientId,
@@ -379,28 +365,19 @@ function PatientDetail() {
         hospital_charge: hospitalcharge,
       }),
     );
-
-    // ❌ If API failed (400 or any error)
     if (AddHospitalForPatient.rejected.match(result)) {
       const allErrors = result.payload; // array of backend errors
-
-      // First close popup
       setOpen(false);
-
-      // Show Swal and reopen popup after OK
       Swal.fire({
         title: "Error Occurred",
         html: allErrors.join("<br>"),
         icon: "error",
       }).then(() => {
-        // Reopen the popup after user clicks OK
         setOpen(true);
       });
-
       setIsSubmitting(false);
       return;
     }
-    // -------- API CALL SUCCESS --------
     try {
       setOpen(false);
       Swal.fire("Patient assigned to Hospital successfully!", "", "success");
@@ -416,7 +393,6 @@ function PatientDetail() {
       setIsSubmitting(false);
     }
   };
-
   const handledeleteReport = async (item) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -425,7 +401,6 @@ function PatientDetail() {
       },
       buttonsStyling: false,
     });
-
     const result = await swalWithBootstrapButtons.fire({
       title: "Are you sure?",
       icon: "warning",
@@ -434,13 +409,11 @@ function PatientDetail() {
       cancelButtonText: "No, cancel!",
       reverseButtons: true,
     });
-
     if (result.isConfirmed) {
       try {
         const response = await axios.delete(
           `${baseurl}deleteReport/${item._id}`,
         );
-
         if (response.data?.success) {
           Swal.fire("Deleted!", "Report has been deleted.", "success");
           gtdatareportsdata(); // 🔄 refresh list
@@ -458,7 +431,6 @@ function PatientDetail() {
       });
     }
   };
-
   const handlesubmitAppoint = async (e) => {
     e.preventDefault();
     const isOffline = statuddropdown === "offline";
@@ -513,12 +485,9 @@ function PatientDetail() {
           driver_contact: drivercontact,
         }),
       ).unwrap();
-
       setOpen1(false);
       Swal.fire("Patient assigned to Appointment successfully!", "", "success");
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-
-      // Reset form fields
       setTreatmentId("");
       sethospitalharge("");
       setHospitalId("");
@@ -535,17 +504,13 @@ function PatientDetail() {
   };
   const handlesubmitAppoint111 = async (e) => {
     e.preventDefault();
-
     const isOffline = statuddropdown === "offline";
-
     setAppointErr({
       note: false,
       date: false,
       appHospital: false,
     });
-
     let hasError = false;
-
     if (!appHospital) {
       setAppointErr((prev) => ({ ...prev, appHospital: true }));
       hasError = true;
@@ -849,13 +814,6 @@ function PatientDetail() {
       console.error("Error fetching services:", error);
     }
   };
-  // useEffect(() => {
-  //   dispatch(GetAllServices());
-  // }, [dispatch]);
-  // useEffect(() => {
-  //   console.log(ServiceData2);
-  //   setServiceData(ServiceData2);
-  // }, [ServiceData2]);
   console.log(ServiceData2, loading, error);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -1042,13 +1000,20 @@ function PatientDetail() {
   };
 
   const handledelete = async (info, item) => {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: false,
+    });
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "This hospital will be permanently deleted!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      cancelButtonColor: "#c01e1e",
       confirmButtonText: "Yes, delete it!",
     });
 
@@ -1083,19 +1048,23 @@ function PatientDetail() {
     setData({ ...data, [name]: value });
   };
 
-  // const handlesubmitdataserviceEdit =async()=>{
-  //   try {
-  //     const responce = await axios.put(`${baseurl}edit_patient_extra_service/Tx-73313/${treatmentIDservice}/${data.serviceId}`)
-
-  //   } catch (error) {
-  //     console.log("error",error)
-  //   }
-  // }
   const handlesubmitdataserviceEdit = async () => {
+    console.log("Type:", typeof data.price);
+    const payload = {
+      _id	:data._id,
+duration:	data.duration,
+endTime	:data.endTime,
+price	:Number(data.price),
+service_type:	data.service_type,
+serviceId:data.serviceId,
+serviceName:	data.serviceName,
+startTime:	data.startTime
+    }
+    console.log(data)
     try {
       const response = await axios.put(
         `${baseurl}edit_patient_extra_service/${treatmentIDservice}/${data.serviceId}`,
-        data, // (agar body bhejni hai)
+        payload, // (agar body bhejni hai)
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -1126,17 +1095,28 @@ function PatientDetail() {
         error?.response?.data?.message ||
         error?.message ||
         "Something went wrong!";
-
       Swal.fire({
         icon: "error",
         title: "Error",
         text: errorMessage,
+        didOpen: () => {
+          const swalContainer = document.querySelector(".swal2-container");
+          if (swalContainer) {
+            swalContainer.style.zIndex = "1500"; // MUI Dialog se zyada
+          }
+        },
       });
     }
   };
   const handledeltePatientserveice = async (a, b, index) => {
     console.log(a, b, index);
-
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: false,
+    });
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "Do you really want to delete this service?",
@@ -1145,7 +1125,7 @@ function PatientDetail() {
       confirmButtonText: "Yes, delete it",
       cancelButtonText: "Cancel",
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      cancelButtonColor: "#e05413",
     });
 
     if (!result.isConfirmed) return;
@@ -1172,30 +1152,6 @@ function PatientDetail() {
       );
     }
   };
-
-  // const handledeltePatientserveice =async(a,b,c)=>{
-  //   console.group(a,b,c-1)
-  //   try {
-  //     const response = await axios.delete(`${baseurl}delete_patient_extra_service/${b.treatment_id}/${c-1}`)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }\\\
-
-  // const handleclickeditfunc =(item)=>{
-  //   console.log(item)
-  //   setOeditappp(true)
-  //   setData(item.driver_name)
-  //   setData(item.driver_name)
-  //   setData(item.driver_name)
-  //   setData(item.driver_name)
-  //   setData(item.driver_name)
-  //   setData(item.driver_name)
-  //   setData(item.driver_name)
-  //   setData(item.driver_name)
-  //   setData(item.driver_name)
-  //   setData(item.driver_name)
-  // }
   const handleclickeditfunc = (item) => {
     console.log(item.appointment_Date);
     setAppointmentid(item.appointmentId);
@@ -1205,13 +1161,10 @@ function PatientDetail() {
     setStatuddropdown(item.mode);
     setNote(item.disease_name || "");
     setDate(item.appointment_Date || "");
-
-    // ✅ FULL OBJECT pass karo
     setAppHospital({
       hospital_id: item.hospital_id,
       hospital_Name: item.hospital_Name,
     });
-
     if (item.mode === "offline") {
       setPickuptime(item.pickup_time || "");
       setDrivername(item.driver_name || "");
@@ -1224,34 +1177,11 @@ function PatientDetail() {
       setVehicalnumber("");
     }
   };
-
-  // const handleclickeditfunc = (item) => {
-  //   // setIsEdit(true);
-  //   console.log(item)
-  //   setOpen1(true)
-  //   setEditData(item);
-
-  //   setStatuddropdown(item.status); // online / offline
-  //   setNote(item.discussionNotes);
-  //   setDate(item.appointmentDate?.split("T")[0]);
-
-  //   if (item.status === "offline") {
-  //     setPickuptime(item.pickup_time);
-  //     setDrivername(item.driver_name);
-  //     setDrivercontact(item.driver_contact);
-  //     setVehicalnumber(item.vehicle_no);
-  //   }
-
-  //   setAppHospital(item.hospital_id); // if object
-  //   // setOpenModal(true);
-  // };
   const handleClose1editapp = () => {
     setOeditappp(false);
   };
-
   const handleclickeditdelete = async (item) => {
     console.log(item.appointmentId);
-
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "Do you really want to delete this appointment?",
@@ -1260,7 +1190,7 @@ function PatientDetail() {
       confirmButtonText: "Yes, delete it",
       cancelButtonText: "Cancel",
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      cancelButtonColor: "#e4480b",
     });
 
     if (!result.isConfirmed) return;
@@ -1282,9 +1212,6 @@ function PatientDetail() {
           response.data.message || "Appointment deleted successfully",
           "success",
         );
-
-        // 🔄 refresh list if needed
-        // dispatch(getAppointments());
       }
     } catch (error) {
       console.log("error", error);
@@ -1297,179 +1224,6 @@ function PatientDetail() {
     }
   };
 
-  //   const handleExtraButton=async()=>{
-  //     const payload={
-  //   //       setAppointmentid(item.appointmentId)
-  //   //  setEdited(true)
-  //   // setOpen1(true);
-  //   // setEditData(item);
-  //   // setStatuddropdown(item.mode);
-  //   // setNote(item.disease_name || "");
-  //   // setDate(item.appointment_Date || "");
-
-  //   // // ✅ FULL OBJECT pass karo
-  //   // setAppHospital({
-  //   //   hospital_id: item.hospital_id,
-  //   //   hospital_Name: item.hospital_Name,
-  //   // });
-
-  //   // if (item.mode === "offline") {
-  //   //   setPickuptime(item.pickup_time || "");
-  //   //   setDrivername(item.driver_name || "");
-  //   //   setDrivercontact(item.driver_contact || "");
-  //   //   setVehicalnumber(item.vehicle_no || "");
-  //   // } else {
-  //   //   setPickuptime("");
-  //   //   setDrivername("");
-  //   //   setDrivercontact("");
-  //   //   setVehicalnumber("");
-  //   // }
-  // //  mode:mode,
-  //       hospitalId:appHospital.hospital_id,
-  //       note:note,
-  //       appointment_Date:date,
-  //       pickup_time:pickuptime,
-  //       driver_name:drivername,
-  //       driver_contact:drivercontact,
-  //       vehicle_no:vehicalnumber,
-  //     }
-  //      console.log(payload)
-  //     try {
-  //       const response = axios.put(`${baseurl}edit_appointment/${appointmentid}`,payload)
-  //         if(response.data.success){
-  //           console.log("edited")
-  //         }else{
-  //           console.log("editedssssssss")
-  //         }
-
-  //       setOpen1(false);
-  //       Swal.fire("Patient assigned to Appointment successfully!", "", "success");
-  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-
-  //       // Reset form fields
-  //       setTreatmentId("");
-  //       sethospitalharge("");
-  //       setHospitalId("");
-  //       setNote("");
-  //       setDate("");
-  //       setDrivercontact("");
-  //       setPickuptime("");
-  //       setDrivername("");
-  //       setVehicalnumber("");
-  //       setAppointErr(false);
-  //     } catch (err) {
-  //       Swal.fire("Error!", err?.message || "An error occurred", "error");
-  //     }
-  //   }
-  // const handleExtraButton = async () => {
-  //   try {
-  //     const payload = {
-  //       hospitalId: appHospital?.hospital_id,
-  //       note: note,
-  //       appointment_Date: date,
-  //       mode: statuddropdown,
-
-  //       ...(statuddropdown === "offline" && {
-  //         pickup_time: pickuptime,
-  //         driver_name: drivername,
-  //         driver_contact: drivercontact,
-  //         vehicle_no: vehicalnumber,
-  //       }),
-  //     };
-
-  //     console.log("Edit Payload:", payload);
-
-  //     const response = await axios.put(
-  //       `${baseurl}edit_appointment/${appointmentid}`, {
-  //           headers: {
-  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //           },
-  //         },
-  //       payload
-  //     );
-
-  //     if (response?.data?.success) {
-  //       Swal.fire("Appointment updated successfully!", "", "success");
-
-  //       setOpen1(false);
-  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-
-  //       // reset form
-  //       setNote("");
-  //       setDate("");
-  //       setPickuptime("");
-  //       setDrivername("");
-  //       setDrivercontact("");
-  //       setVehicalnumber("");
-  //       setAppHospital(null);
-  //       setEdited(false);
-  //       setAppointErr(false);
-  //     } else {
-  //       Swal.fire("Update failed!", "", "error");
-  //     }
-  //   } catch (err) {
-  //     Swal.fire(
-  //       "Error!",
-  //       err?.response?.data?.message || err?.message || "Something went wrong",
-  //       "error"
-  //     );
-  //   }
-  // };
-  // const handleExtraButton = async () => {
-  //   try {
-  //     const payload = {
-  //       hospitalId: appHospital?.hospital_id,
-  //       note: note,
-  //       appointment_Date: date,
-  //       mode: statuddropdown,
-
-  //       ...(statuddropdown === "offline" && {
-  //         pickup_time: pickuptime,
-  //         driver_name: drivername,
-  //         driver_contact: drivercontact,
-  //         vehicle_no: vehicalnumber,
-  //       }),
-  //     };
-
-  //     console.log("Edit Payload:", payload);
-
-  //     const response = await axios.put(
-  //       `${baseurl}edit_appointment/${appointmentid}`,
-  //       payload, // ✅ data goes here
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (response?.data?.success) {
-  //       Swal.fire("Appointment updated successfully!", "", "success");
-
-  //       setOpen1(false);
-  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-
-  //       // reset form
-  //       setNote("");
-  //       setDate("");
-  //       setPickuptime("");
-  //       setDrivername("");
-  //       setDrivercontact("");
-  //       setVehicalnumber("");
-  //       setAppHospital(null);
-  //       setEdited(false);
-  //       setAppointErr(false);
-  //     } else {
-  //       Swal.fire("Update failed!", "", "error");
-  //     }
-  //   } catch (err) {
-  //     Swal.fire(
-  //       "Error!",
-  //       err?.response?.data?.message || err?.message || "Something went wrong",
-  //       "error"
-  //     );
-  //   }
-  // };
   const handleExtraButton = async () => {
     try {
       // 🔹 date ko YYYY-MM-DD format me convert
@@ -1530,46 +1284,38 @@ function PatientDetail() {
       );
     }
   };
-
   const handleClicexportPayment = async (a, b) => {
-    console.log(a, b);
-
     try {
-      const response = await axios.get(
-        `${baseurl}exportTreatmentExcel/${b}`,
-        // {
-        //   responseType: "blob", // ✅ important
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //   },
-        // }
-      );
+      const response = await axios.get(`${baseurl}exportTreatmentExcel/${b}`, {
+        responseType: "blob", // ✅ VERY IMPORTANT
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-      // create blob URL
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      // create blob
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
 
-      // create temp link
+      const url = window.URL.createObjectURL(blob);
+
       const link = document.createElement("a");
       link.href = url;
-
-      // file name (you can customize)
-      link.setAttribute("download", "treatment-payments.xlsx");
+      link.download = "treatment-payments.xlsx";
 
       document.body.appendChild(link);
       link.click();
 
-      // cleanup
       link.remove();
       window.URL.revokeObjectURL(url);
 
-      Swal.fire("Excel downloaded successfully!", "", "success");
+      Swal.fire("Success", "Excel downloaded successfully!", "success");
     } catch (error) {
       console.log(error);
-      Swal.fire("Error!", "Failed to download excel file", "error");
+      Swal.fire("Error", "Failed to download excel file", "error");
     }
   };
-  // console.log(ispatienthospitalId)
-  // eedit  notes
   const EditButton = (a, b) => {
     console.log(a, b);
     setTreatmentIDservice(b.treatment_id);
@@ -1640,10 +1386,11 @@ function PatientDetail() {
   const EditDelete = async (a, b) => {
     const confirm = await Swal.fire({
       title: "Delete Note?",
-      text: "This action cannot be undone!",
+      text: "Are You sure to delete this notes!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
+      cancelButtonColor: "#c01e1e",
       confirmButtonText: "Yes, Delete",
       cancelButtonText: "Cancel",
     });
@@ -1691,17 +1438,13 @@ function PatientDetail() {
   };
 
   const EditFreeDelete = async (a, b, c) => {
-    // a = unused (optional)
-    // b = treatment object
-    // c = extra service id
-
     const confirmResult = await Swal.fire({
       title: "Are you sure?",
       text: "This extra service will be deleted permanently!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      cancelButtonColor: "#c4300b",
       confirmButtonText: "Yes, delete it",
     });
 
@@ -1743,6 +1486,173 @@ function PatientDetail() {
   const PlanTreatmentPopupClose = () => {
     setTreatmentPlanPopup(false);
   };
+
+  const handleChangeDetails123 = (selectedCourse) => {
+    if (!selectedCourse) return;
+
+    const dataStore = selectedCourse.id;
+    setHospitalFunction(dataStore);
+  };
+
+  const setHospitalFunction = async (dataStore) => {
+    console.log(dataStore);
+    const payload = {
+      treatment_id: dataStore,
+    };
+    try {
+      const response = await axios.post(
+        `${AdminBaseUrl}treatment_hospital_list`,
+        payload,
+      );
+      if (response.data.success) {
+        setHospitlID(response.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!fieldValue) {
+      newErrors.treatment = "Treatment is required";
+    }
+
+    if (!hospitalId || hospitalId.length === 0) {
+      newErrors.hospitals = "Please select at least one hospital";
+    }
+
+    if (!images || images.length === 0) {
+      newErrors.reports = "Please upload at least one report";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const uploadmultipleRecord = async () => {
+    if (!validateForm()) return;
+    const swalOnTop = Swal.mixin({
+      customClass: {
+        popup: "swal-on-top",
+      },
+      buttonsStyling: true,
+    });
+    const formData = new FormData();
+    formData.append("patientObjectId", location.state.testid);
+    formData.append("patientId", location.state.patientId);
+    formData.append("treatment", JSON.stringify(fieldValue));
+    formData.append("hospitals", JSON.stringify(hospitalId));
+    formData.append("notes", value1 || "");
+    images.forEach((file) => {
+      formData.append("reports", file);
+    });
+
+    try {
+      const response = await axios.post(
+        `${baseurl}addTreatmentPlan`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } },
+      );
+
+      if (response?.data?.success) {
+        getTreatmentPlan();
+        setTreatmentPlanPopup(false);
+        await swalOnTop.fire({
+          icon: "success",
+          title: "Success",
+          text: response.data.message || "Treatment plan added successfully",
+          confirmButtonText: "OK",
+        });
+        PlanTreatmentPopupClose();
+        setFieldValue(null);
+        setHospitalId([]);
+        setValue1("");
+        setImages([]);
+      } else {
+        await swalOnTop.fire(
+          "Error",
+          response?.data?.message || "Something went wrong",
+          "error",
+        );
+      }
+    } catch (error) {
+      const errorMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Server error occurred";
+
+      await swalOnTop.fire("Error", errorMsg, "error");
+    }
+  };
+
+  const getTreatmentPlan = async () => {
+    const payload = {
+      patientId: location.state.patientId,
+    };
+    try {
+      const response = await axios.post(
+        `${baseurl}getTreatmentPlans?patientId=${location.state.patientId}`,
+      );
+      console.log(response.data);
+      if (response.data.success) {
+        setTreatemntData1(response.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleclickApprove = (hospitalids, b) => {
+    console.log(hospitalids, b);
+  };
+  const approveReject = async (info, hospitalId, status) => {
+    const payload = { status };
+    try {
+      const response = await axios.put(
+        `${baseurl}updateHospitalStatus/${info._id}/${hospitalId}`,
+        payload,
+      );
+      if (response?.data?.success) {
+        await Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: response.data.message || `Hospital ${status} successfully`,
+          confirmButtonText: "OK",
+        });
+        getTreatmentPlan();
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      } else {
+        await Swal.fire(
+          "Error",
+          response?.data?.message || "Status update failed",
+          "error",
+        );
+      }
+    } catch (error) {
+      const errorMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Server error occurred";
+
+      await Swal.fire("Error", errorMsg, "error");
+    }
+  };
+
+  const handleclickEdAppointment = (a) => {
+    console.log(a);
+    navigate("/Admin/Edit-patient-treatment", {
+      state: { data: a, patientid: location.state.patientId },
+    });
+  };
+
+  const EditButtoneditprofile = () => {
+    navigate("/Admin/edit-patient", {
+      state: {
+        patientId: location.state.patientId,
+      },
+    });
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -1781,6 +1691,14 @@ function PatientDetail() {
                           class="form-control d-none"
                           name="profile_pic"
                         />
+                        <label htmlFor="profileUpload" className="edit-icon">
+                          <FaPen
+                            size={12}
+                            onClick={(e) =>
+                              EditButtoneditprofile(ispatient?.patientId)
+                            }
+                          />
+                        </label>
                       </div>
                     </form>
                     <div class="part-txt">
@@ -1841,7 +1759,7 @@ function PatientDetail() {
                   href="#about-cont123"
                   data-toggle="tab"
                 >
-                  Treatment Plan{" "}
+                  Treatment Plans{" "}
                 </a>
               </li>
               <li className="nav-item">
@@ -1850,7 +1768,7 @@ function PatientDetail() {
                   href="#bottom-tab2123"
                   data-toggle="tab"
                 >
-                  Treatment
+                  Treatments
                 </a>
               </li>
             </ul>
@@ -1858,7 +1776,7 @@ function PatientDetail() {
               <div className="tab-pane show active" id="about-cont123">
                 <div className="main-tab-hd">
                   <div className="all-hd">
-                    <h6>Treatments Plan</h6>
+                    {/* <h6>Treatments Plan</h6> */}
                   </div>
                   <div className="treat-buttons">
                     <div className="mr-3">
@@ -1869,11 +1787,115 @@ function PatientDetail() {
                         <span>
                           <i className="fa fa-plus"></i>
                         </span>{" "}
-                        Plan Treatment
+                        Add Treatment Plan
                       </button>
                     </div>
                     <br />
                   </div>
+                </div>
+                <div className="col-md-12">
+                  {treatemntData1?.length === 0 ? (
+                    "No Treatment Plan Added for this patients"
+                  ) : (
+                    <>
+                      {treatemntData1?.map((info, index) => {
+                        console.log(info, "array data");
+                        return (
+                          <div className="card-box">
+                            {/* <div className="treat-card">
+                              <div className="treat-id"> */}
+                                {/* <div>
+                                  <h3>
+                                    Treatment Name -{" "}
+                                    {info?.treatment?.name}{" "}
+                                  </h3>
+                                </div>
+                              </div>
+                            </div> */}
+                            {/* <hr></hr> */}
+                            <div className="d-flex">
+                                 <div className="col-2">
+                                <div> <h5>
+                                    Treatment Name {" "}
+                                  
+                                  </h5>  {info?.treatment?.name}{" "}</div>
+                              </div>
+                              <div className="col-6">
+                                <h5>Hospital</h5>
+                                <div className="col-12">
+                                  {info?.hospitals.map((item) => {
+                                    return (
+                                      <>
+                                        <div className="d-flex">
+                                          <div className="col-6">
+                                         <li> {item.name}</li>
+                                          </div>
+
+                                          <div className="col-4">
+                                            {info.isAnyHospitalApproved ===
+                                            true ? (
+                                              ""
+                                            ) : (
+                                              <div className="col-4">
+                                                <button
+                                                  className="add-button mx-3"
+                                                  onClick={() =>
+                                                    approveReject(
+                                                      info,
+                                                      item.id,
+                                                      "Approved",
+                                                    )
+                                                  }
+                                                >
+                                                  Approve
+                                                </button>
+                                              </div>
+                                            )}
+                                          </div>
+                                        </div>
+                                        <h5
+                                          style={{
+                                            color:
+                                              item.status === "Approved"
+                                                ? "green"
+                                                : "inherit",
+                                          }}
+                                        >
+                                          {item.status}
+                                        </h5>
+
+                                        <br />
+                                      </>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                              <div className="col-2">
+                                <h5>Reports</h5>
+                                <div>
+                                  {info?.reports?.map((report, index) => (
+                                    <div key={index}>
+                                      <a
+                                        href={`${image}${report.fileName}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        View Doc
+                                      </a>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="col-4">
+                                <h5>Notes</h5>
+                                <div>{info?.notes}</div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
                 </div>
               </div>
               <div className="tab-pane" id="bottom-tab2123">
@@ -2024,7 +2046,24 @@ function PatientDetail() {
                                       <div className="col-md-4">
                                         <div className="card patientreat">
                                           <div className="card-header service-list">
-                                            <h6>Treatment</h6>
+                                            <div className="d-flex">
+                                              <div>
+                                                <h6>Treatment</h6>
+                                              </div>
+                                              <div>
+                                                <h6
+                                                  className="mx-2"
+                                                  style={{ cursor: "pointer" }}
+                                                  onClick={() => {
+                                                    handleclickEdAppointment(
+                                                      info,
+                                                    );
+                                                  }}
+                                                >
+                                                  <i className="fa-solid fa-pen-to-square"></i>
+                                                </h6>
+                                              </div>
+                                            </div>
                                           </div>
                                           <div className="card-body">
                                             <ul className="trment-list">
@@ -2104,54 +2143,61 @@ function PatientDetail() {
                                           <div className="card-body">
                                             <ul className="trment-list">
                                               {info?.Hospital_details.map(
-                                                (item, index) => (
-                                                  <li key={index}>
-                                                    <div className="row">
-                                                      <div className="col-md-10">
+                                                (item, index) => {
+                                                  console.log(item);
+                                                  return (
+                                                    <>
+                                                      <li key={index}>
                                                         <div className="row">
-                                                          <div className="col-md-12">
-                                                            <div className="para-main-div">
-                                                              <p>
-                                                                Name:{" "}
-                                                                {item.hospital_Name ||
-                                                                  "-"}
-                                                              </p>
+                                                          <div className="col-md-10">
+                                                            <div className="row">
+                                                              <div className="col-md-12">
+                                                                <div className="para-main-div">
+                                                                  <p>
+                                                                    Name:{" "}
+                                                                    {item.hospital_Name ||
+                                                                      "-"}
+                                                                  </p>
+                                                                </div>
+                                                              </div>
+                                                              <div className="col-md-12">
+                                                                <div className="para-main-div">
+                                                                  <p>
+                                                                    Charge:{" "}
+                                                                    {
+                                                                      item.hospital_charge
+                                                                    }
+                                                                  </p>
+                                                                </div>
+                                                              </div>
                                                             </div>
                                                           </div>
-                                                          <div className="col-md-12">
-                                                            <div className="para-main-div">
-                                                              <p>
-                                                                Charge:{" "}
-                                                                {item.hospital_charge ||
-                                                                  "-"}
-                                                              </p>
-                                                            </div>
+                                                          <div className="col-md-2 text-end">
+                                                            {item.hospital_Name && (
+                                                              <i
+                                                                className="fa-solid fa-trash text-danger cursor-pointer"
+                                                                onClick={() =>
+                                                                  handledelete(
+                                                                    info,
+                                                                    item,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                            )}
                                                           </div>
                                                         </div>
-                                                      </div>
-                                                      <div className="col-md-2 text-end">
-                                                        {item.hospital_Name && (
-                                                          <i
-                                                            className="fa-solid fa-trash text-danger cursor-pointer"
-                                                            onClick={() =>
-                                                              handledelete(
-                                                                info,
-                                                                item,
-                                                              )
-                                                            }
-                                                          ></i>
-                                                        )}
-                                                      </div>
-                                                    </div>
-                                                  </li>
-                                                ),
+                                                      </li>
+                                                    </>
+                                                  );
+                                                },
                                               )}
                                             </ul>
                                           </div>
                                         </div>
                                       </div>
                                       <div className="col-md-4">
-                                        <div className="card patientreat">
+                                        {info?.services?.length>0    ?
+                                            <div className="card patientreat">
                                           <div className="card-header service-list action-icon">
                                             <h6>Free Services</h6>
                                           </div>
@@ -2210,10 +2256,12 @@ function PatientDetail() {
                                               )}
                                             </ul>
                                           </div>
-                                        </div>
+                                        </div>:""}
+                                
                                       </div>
                                       <div className="col-md-6">
-                                        <div className="card patientreat">
+                                         {
+                                          info?.treatmentNotes?.length>0?  <div className="card patientreat">
                                           <div className="card-header service-list action-icon">
                                             <h6>Notes</h6>
                                           </div>
@@ -2267,27 +2315,16 @@ function PatientDetail() {
                                                 );
                                               },
                                             )}
-                                            {/* <p>
-                                        Lorem Ipsum is simply dummy text of the
-                                        printing and typesetting industry. Lorem
-                                        Ipsum has been the industry's standard
-                                        dummy text ever since the 1500s, when an
-                                        unknown printer took a galley of type
-                                        and scrambled it to make a type specimen
-                                        book. It has survived not only five
-                                        centuries, but also the leap into
-                                        electronic typesetting, remaining
-                                        essentially unchanged. It was
-                                        popularised in the 1960s with the
-                                        release of Letraset sheets containing
-                                        Lorem Ipsum passages, and more recently
-                                        with desktop publishin
-                                      </p> */}
                                           </div>
-                                        </div>
+                                        </div>:""
+                                        }
+                                      
                                       </div>
                                       <div className="col-md-6">
-                                        <div className="card patientreat">
+                                       
+                                     {
+                                          info?.services?.length>0?
+                                            <div className="card patientreat">
                                           <div className="card-header service-list">
                                             <h6>Extra Services</h6>
                                           </div>
@@ -2373,9 +2410,14 @@ function PatientDetail() {
                                               </table>
                                             </div>
                                           </div>
-                                        </div>
+                                        </div>:""
+                                       }
+                                      
                                       </div>
                                       <div className="col-md-12">
+                                        {
+                                          info?.appointments_details?.length>0?
+                                        
                                         <div className="card patientreat">
                                           <div className="card-header service-list">
                                             <h6>Appointment</h6>
@@ -2474,7 +2516,7 @@ function PatientDetail() {
                                               </table>
                                             </div>
                                           </div>
-                                        </div>
+                                        </div>:""}
                                       </div>
                                     </div>
                                     <hr></hr>
@@ -2964,88 +3006,9 @@ function PatientDetail() {
                 </div>
               </div>
             </div>
-            <div className="col-md-12">
-              {tretment?.length === 0 ? (
-                "No Treatment  Added for this patients"
-              ) : (
-                <>
-                  {tretment?.map((info, index) => {
-                    console.log(info, "array data");
-                    return (
-                      <div className="card-box">
-                        <div className="treat-card">
-                          <div className="treat-id">
-                            <div>
-                              <h3>
-                                Treatment ID-
-                                {info.treatment_id}{" "}
-                              </h3>
-                            </div>
-                          </div>
-                          <div className="d-flex">
-                            <p
-                              className="mx-2 my-2"
-                              style={{
-                                fontWeight: "500",
-                                fontSize: "14px",
-                              }}
-                            >
-                              {info.treatment_status}
-                            </p>
-                            <button
-                              onClick={(e) =>
-                                handleClickOpen(e, info.treatment_id)
-                              }
-                              className="add-button1"
-                            >
-                              <span>
-                                <i className="fa fa-plus"></i>
-                              </span>{" "}
-                              Add Hospital
-                            </button>
-                            <button
-                              onClick={(e) =>
-                                handleClickOpen1(
-                                  e,
-                                  info?.treatment_id,
-                                  info?.Hospital_details,
-                                )
-                              }
-                              className="add-button1"
-                            >
-                              <span>
-                                <i className="fa fa-plus"></i>
-                              </span>{" "}
-                              Add Appointment
-                            </button>
-                            <button
-                              onClick={(e) =>
-                                handleClickOpenNotes(
-                                  e,
-                                  info?.treatment_id,
-                                  info?.Hospital_details,
-                                )
-                              }
-                              className="add-button1"
-                            >
-                              <span>
-                                <i className="fa fa-plus"></i>
-                              </span>{" "}
-                              Add Notes
-                            </button>
-                          </div>
-                        </div>
-                        <hr></hr>
-                      </div>
-                    );
-                  })}
-                </>
-              )}
-            </div>
           </div>
         </div>
       </div>
-
       {/*/////////////////////////////////////////////////////////// treatment Plan  */}
       <React.Fragment>
         <Dialog
@@ -3081,33 +3044,21 @@ function PatientDetail() {
                       Treatment course<span className="text-danger">*</span>
                     </label>
                     <Autocomplete
-                      disablePortal
                       options={Treatment || []}
                       getOptionLabel={(option) => option.name || ""}
-                      isOptionEqualToValue={(option, value) =>
-                        option.id === value.id
-                      }
-                      onChange={(e, value) => {
-                        //   setFieldValue(
-                        //     "treatment_course_id",
-                        //     value ? value.id : "",
-                        //   );
-                        // }}
+                      onChange={(e, newValue) => {
+                        setFieldValue(newValue);
+                        handleChangeDetails123(newValue);
+                        setErrors((prev) => ({ ...prev, treatment: "" }));
                       }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           placeholder="Select Treatment Course"
+                          error={!!errors.treatment}
+                          helperText={errors.treatment}
                         />
                       )}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          padding: "0px",
-                          "&:hover fieldset": {
-                            borderColor: "#ced4da",
-                          },
-                        },
-                      }}
                     />
                   </div>
                 </Box>
@@ -3117,35 +3068,64 @@ function PatientDetail() {
                       Select Hospital<span className="text-danger">*</span>
                     </label>
                     <Autocomplete
-                      disablePortal
-                      options={dataHospital?.map((job) => job.name) || []} // Fallback to empty array
-                      onChange={(e, value) => {
-                        const selectedCourse = dataHospital?.find(
-                          (job) => job.name === value,
-                        );
-                        const courseId = selectedCourse;
-                        setHospitalId(courseId);
+                      multiple
+                      options={hospitlID || []}
+                      getOptionLabel={(option) => option.name}
+                      onChange={(e, values) => {
+                        setHospitalId(values);
+                        setErrors((prev) => ({ ...prev, hospitals: "" }));
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} placeholder="Hospital" />
+                        <TextField
+                          {...params}
+                          placeholder="Hospital"
+                          error={!!errors.hospitals}
+                          // helperText={errors.hospitals}
+                        />
                       )}
-                      size="small"
-                      style={{
-                        backgroundColor:
-                          "linear-gradient(181deg, #22c7b8 0%, #0ba6df 72%)",
-                        border: "0 !important",
-                        borderColor: "transparent",
+                    />
+                  </div>
+                  {errors.hospitals && (
+                    <small className="text-danger">{errors.hospitals}</small>
+                  )}
+                </Box>
+                <Box>
+                  <div className="field-set">
+                    <label>
+                      Select Reports<span className="text-danger"></span>
+                    </label>
+                    <input
+                      type="file"
+                      multiple
+                      className="form-control"
+                      onChange={(e) => {
+                        setImages(Array.from(e.target.files));
+                        setErrors((prev) => ({ ...prev, reports: "" }));
+                      }}
+                    />
+                  </div>
+                  {errors.reports && (
+                    <small className="text-danger">{errors.reports}</small>
+                  )}
+                </Box>
+                <Box>
+                  <div className="field-set mb-0">
+                    <label>
+                      Notes<span className="text-danger"></span>
+                    </label>
+                    <input
+                      className="form-control"
+                      onChange={(e) => {
+                        setValue1(e.target.value);
                       }}
                     />
                   </div>
                 </Box>
-             
               </Box>
-
               <DialogActions className="submit-main">
                 <Button
                   type="button"
-                  onClick={handlesubmitdataserviceEdit}
+                  onClick={uploadmultipleRecord}
                   variant="contained"
                 >
                   Submit
@@ -3155,8 +3135,6 @@ function PatientDetail() {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-
-      {/* edit Modal */}
       <React.Fragment>
         <Dialog
           fullWidth
@@ -3205,7 +3183,7 @@ function PatientDetail() {
                       Enter Price<span className="text-danger">*</span>
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       className="form-control"
                       value={data.price}
                       name="price"
@@ -3832,8 +3810,6 @@ function PatientDetail() {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-      {/* add-password-modal-end */}
-      {/* add-notes-modal-start */}
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}

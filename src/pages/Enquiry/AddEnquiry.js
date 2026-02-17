@@ -36,7 +36,9 @@ export default function AddEnquiry() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const basicSchema = Yup.object().shape({
     name: Yup.string().min(2).max(50).required("Name is required"),
-    disease_name: Yup.string().required("Disease name is required"),
+   disease_name: Yup.object()
+  .nullable()
+  .required("Disease name is required"),
     country: Yup.string().required("Country is required"),
     treatingIn: Yup.string().required("Treating In is required"),
     address: Yup.string().required("Address is required"),
@@ -55,6 +57,8 @@ export default function AddEnquiry() {
       then: (schema) => schema.required("Attendant Relationship is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
+      disease_name: Yup.string()
+    .required("Treatment name is required"),
     //   patient_relation_address: Yup.string().when("showAttendant", {
     //   is: true,
     //   then: (schema) => schema.required("Attendant address is required"),
@@ -153,7 +157,8 @@ export default function AddEnquiry() {
                   country: "",
                   address: "",
                   Referral_Name: "",
-                  disease_name: "",
+             disease_name: "",             
+  disease_id: "", 
                   patient_relation_name: "",
                   patient_relation: "",
                   town: "",
@@ -171,6 +176,8 @@ export default function AddEnquiry() {
                 validationSchema={basicSchema}
                 onSubmit={async (values, { setSubmitting }) => {
                   const formData = new FormData();
+//                   formData.append("disease_name", values.disease_name);
+// formData.append("disease_id", values.disease_id);
                   for (const key in values) {
                     if (
                       key !== "patient_id_proof" &&
@@ -712,55 +719,150 @@ export default function AddEnquiry() {
                             Treatment Name{" "}
                             <span className="text-danger">*</span>
                           </label>
-                          <Field name="disease_name">
-                            {({ form, meta }) => (
-                              <>
-                                <Autocomplete
-                                  options={Treatment || []}
-                                  getOptionLabel={(option) =>
-                                    option.name || ""
-                                  }
-                                  value={
-                                    Treatment?.find(
-                                      (item) =>
-                                        item.course_name ===
-                                        form.values.name,
-                                    ) || null
-                                  }
-                                  onChange={(e, newValue) => {
-                                    form.setFieldValue(
-                                      "disease_name",
-                                      newValue ? newValue.name : "",
-                                    );
-                                    form.setFieldValue(
-                                      "treatment_course_id",
-                                      newValue ? newValue.id : null,
-                                    );
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      size="small"
-                                      placeholder="Select Disease"
-                                      error={
-                                        meta.touched && Boolean(meta.error)
-                                      }
-                                    />
-                                  )}
-                                  sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                      padding: "0px",
-                                    },
-                                  }}
-                                />
-                                {meta.touched && meta.error && (
-                                  <div className="text-danger">
-                                    {meta.error}
-                                  </div>
-                                )}
-                              </>
-                            )}
-                          </Field>
+{/* <Field name="disease_name">
+  {({ form, meta }) => (
+    <>
+      <Autocomplete
+        options={Treatment || []}
+        getOptionLabel={(option) => option?.name || ""}
+
+        value={
+          Treatment.find(
+            (item) =>
+              item._id === form.values.treatment_course_id
+          ) || null
+        }
+
+        isOptionEqualToValue={(option, value) =>
+          option._id === value?._id
+        }
+
+        onChange={(e, newValue) => {
+          form.setFieldValue(
+            "disease_name",
+            newValue ? newValue.name : ""
+          );
+          form.setFieldValue(
+            "disease_id",
+            newValue ? newValue.id : ""
+          );
+        }}
+
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            size="small"
+            placeholder="Select Treatment Plan"
+            error={meta.touched && Boolean(meta.error)}
+          />
+        )}
+
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            padding: "0px",
+          },
+        }}
+      />
+
+      {meta.touched && meta.error && (
+        <div className="text-danger">{meta.error}</div>
+      )}
+    </>
+  )}
+</Field> */}
+<Field name="disease_name">
+  {({ form, meta }) => (
+    <>
+      <Autocomplete
+        options={Treatment || []}
+        getOptionLabel={(option) => option?.name || ""}
+
+        value={form.values.disease || null}
+
+        isOptionEqualToValue={(option, value) =>
+          option.id === value?.id
+        }
+
+        onChange={(e, newValue) => {
+          form.setFieldValue("disease", newValue);
+          form.setFieldValue("disease_name", newValue?.name || "");
+          form.setFieldValue("disease_id", newValue?.id || "");
+        }}
+
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            size="small"
+            placeholder="Select Treatment Plan"
+            error={meta.touched && Boolean(meta.error)}
+          />
+        )}
+
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            padding: "0px",
+          },
+        }}
+      />
+
+    {meta.touched && meta.error && (
+        <div className="text-danger">{meta.error}</div>
+      )}
+    </>
+  )}
+</Field>
+
+
+
+                          {/* <Field name="disease_name">
+  {({ form, meta }) => (
+    <>
+      <Autocomplete
+        options={Treatment || []}
+        getOptionLabel={(option) => option?.name || ""}
+        value={form.values.disease_name} // ✅ FULL OBJECT
+        isOptionEqualToValue={(option, value) =>
+          option.id === value?.course_id
+        }
+        onChange={(e, newValue) => {
+          form.setFieldValue("disease_name", newValue); // ✅ OBJECT SET
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            size="small"
+            placeholder="Select Treatment"
+            error={meta.touched && Boolean(meta.error)}
+          />
+        )}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            padding: "0px",
+          },
+        }}
+      />
+
+      {meta.touched && meta.error && (
+        <div className="text-danger">{meta.error}</div>
+      )}
+    </>
+  )}
+</Field> */}
+{/* <Autocomplete
+  options={Treatment || []}
+  getOptionLabel={(option) => option.course_name || ""}
+  value={
+    Treatment?.find(
+      (item) => item._id === values.disease_name?._id
+    ) || null
+  }
+  onChange={(e, newValue) => {
+    setFieldValue("disease_name", newValue); // ✅ FULL OBJECT
+  }}
+  renderInput={(params) => (
+    <TextField {...params} label="Disease Name" size="small" />
+  )}
+/> */}
                         </div>
                       </div>
                       <div className="col-md-4">

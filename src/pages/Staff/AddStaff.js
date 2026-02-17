@@ -36,45 +36,106 @@ export default function AddStaff() {
   console.log(error);
   const navigate = useNavigate();
   const basicSchema = Yup.object().shape({
-    name: Yup.string()
-      .required("Name is required")
-      .min(2, "Name must be at least 2 characters")
-      .max(50, "Name cannot exceed 50 characters"),
-    country: Yup.string().required("Country is Required"),
-    role: Yup.string()
-      .required("Role is required")
-      .min(2, "Role must be at least 2 characters")
-      .max(50, "Role cannot exceed 50 characters"),
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    password: Yup.string().required("Password is Required"),
-  dial_code: Yup.string().required(),
-phone_no: Yup.string()
-  .required("Phone number is required")
-  .matches(/^[0-9]+$/, "Phone number must contain only digits")
-  .min(6, "Phone number must be at least 6 digits")
-  .max(15, "Phone number must not exceed 15 digits"),
-    gender: Yup.string()
-      .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
-      .required("Gender is required"),
-    roleStatuses: Yup.array()
-      .min(1, "Please select at least one status")
-      .required("Status is required"),
-      accessCountries: Yup.array()
-  .min(1, "Please select at least one country for data access")
-  .required("Data access country is required"),
-    profileImage: Yup.mixed()
-      .required("Profile Image is required")
-      .test("fileSize", "File size is too large (Max: 2MB)", (value) =>
-        value ? value.size <= 2 * 1024 * 1024 : true
-      )
-      .test("fileType", "Unsupported file format", (value) =>
-        value
-          ? ["image/jpeg", "image/png", "application/pdf"].includes(value.type)
-          : true
-      ),
-  });
+  name: Yup.string()
+    .trim()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name cannot exceed 50 characters")
+    .required("Name is required"),
+
+  email: Yup.string()
+    .trim()
+    .email("Invalid email format")
+    .required("Email is required"),
+
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+
+  role: Yup.string()
+    .required("Role is required"),
+
+  gender: Yup.string()
+    .oneOf(["Male", "Female", "Others"], "Invalid gender")
+    .required("Gender is required"),
+
+  country: Yup.string()
+    .required("Country is required"),
+
+  dial_code: Yup.string()
+    .required("Dial code is required"),
+
+  phone_no: Yup.string()
+    .matches(/^[0-9]+$/, "Phone number must contain only digits")
+    .min(6, "Phone number must be at least 6 digits")
+    .max(15, "Phone number must not exceed 15 digits")
+    .required("Phone number is required"),
+
+  roleStatuses: Yup.array()
+    .of(Yup.string())
+    .min(1, "Select at least one permission")
+    .required("Permission is required"),
+
+  accessCountries: Yup.array()
+    .of(Yup.string())
+    .min(1, "Select at least one country for data access")
+    .required("Data access country is required"),
+
+  profileImage: Yup.mixed()
+    .required("Profile image is required")
+    .test(
+      "fileSize",
+      "File size must be less than 2MB",
+      (value) => value && value.size <= 2 * 1024 * 1024
+    )
+    .test(
+      "fileType",
+      "Only JPG, PNG or PDF files are allowed",
+      (value) =>
+        value &&
+        ["image/jpeg", "image/png", "application/pdf"].includes(value.type)
+    ),
+});
+
+//   const basicSchema = Yup.object().shape({
+//     name: Yup.string()
+//       .required("Name is required")
+//       .min(2, "Name must be at least 2 characters")
+//       .max(50, "Name cannot exceed 50 characters"),
+//     country: Yup.string().required("Country is Required"),
+//     role: Yup.string()
+//       .required("Role is required")
+//       .min(2, "Role must be at least 2 characters")
+//       .max(50, "Role cannot exceed 50 characters"),
+//     email: Yup.string()
+//       .email("Invalid email format")
+//       .required("Email is required"),
+//     password: Yup.string().required("Password is Required"),
+//   dial_code: Yup.string().required(),
+// phone_no: Yup.string()
+//   .required("Phone number is required")
+//   .matches(/^[0-9]+$/, "Phone number must contain only digits")
+//   .min(6, "Phone number must be at least 6 digits")
+//   .max(15, "Phone number must not exceed 15 digits"),
+//     gender: Yup.string()
+//       .oneOf(["Male", "Female", "Others"], "Invalid gender selection")
+//       .required("Gender is required"),
+//     roleStatuses: Yup.array()
+//       .min(1, "Please select at least one status")
+//       .required("Status is required"),
+//       accessCountries: Yup.array()
+//   .min(1, "Please select at least one country for data access")
+//   .required("Data access country is required"),
+//     profileImage: Yup.mixed()
+//       .required("Profile Image is required")
+//       .test("fileSize", "File size is too large (Max: 2MB)", (value) =>
+//         value ? value.size <= 2 * 1024 * 1024 : true
+//       )
+//       .test("fileType", "Unsupported file format", (value) =>
+//         value
+//           ? ["image/jpeg", "image/png", "application/pdf"].includes(value.type)
+//           : true
+//       ),
+//   });
   useEffect(() => {
     dispatch(GetAllCountries2());
   }, [dispatch]);
@@ -228,6 +289,11 @@ phone_no: Yup.string()
 </FormControl>
 </>)}
 </Field>
+<ErrorMessage
+  name="country"
+  component="div"
+  style={{ color: "red" }}
+/>
 </div>
 </div>
                     {/* <div className="col-sm-6">
@@ -463,7 +529,7 @@ phone_no: Yup.string()
                     </div>
                     <div className="col-sm-6 dropdownCustom">
                       <label>
-                        Give Permission<span className="text-danger">*</span>
+                        Give Permission<span className="text-danger"></span>
                       </label>
                       <FormControl fullWidth>
                         <Select

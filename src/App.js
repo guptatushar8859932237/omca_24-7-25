@@ -56,6 +56,7 @@ import Currency from "./pages/Currency/Currency";
 import Addcurrency from "./pages/Currency/Addcurrency";
 import EditCurrency from "./pages/Currency/EditCurrency";
 import GerGeneralEnquiry from "./pages/Genera Enquiry/GerGeneralEnquiry";
+import EditPatientTreatment from "./pages/Patient/EditPatientTreatment";
 function App() {
   console.log("22/04/25");
   return (
@@ -215,6 +216,11 @@ function App() {
                 Patient-Detail
                 path="/Admin/add-patient-treatment"
                 element={<AddPatientTreatment />}
+              />
+              <Route
+                Patient-Detail
+                path="/Admin/Edit-patient-treatment"
+                element={<EditPatientTreatment />}
               />
               <Route
                 index
