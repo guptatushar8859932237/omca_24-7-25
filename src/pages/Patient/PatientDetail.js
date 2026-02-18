@@ -56,10 +56,10 @@ function PatientDetail() {
   const [drivercontact, setDrivercontact] = useState("");
   const [fieldValue, setFieldValue] = useState("");
   const [value1, setValue1] = useState("");
-  const [passportDetails,setPassportDetails] = useState({});
+  const [passportDetails, setPassportDetails] = useState({});
   const [editData, setEditData] = useState(null);
   const [edited, setEdited] = useState(false);
-  const [attendId,setAttendId]=useState('')
+  const [attendId, setAttendId] = useState("");
 
   const location = useLocation();
   const dispatch = useDispatch();
@@ -588,20 +588,23 @@ function PatientDetail() {
   };
   const handleKysDetail = async (e) => {
     e.preventDefault();
-    const formData = new FormData()
-    formData.append('attendant_passport',filesData.Attende_passport)
-    formData.append('attendant_image',filesData.Attende_photo)
+    const formData = new FormData();
+    formData.append("attendant_passport", filesData.Attende_passport);
+    formData.append("attendant_image", filesData.Attende_photo);
     try {
-        const response = await axios.post(`${baseurl}addAttendeeDetails/${attendId}`,formData)
-    if(response.data.success){
+      const response = await axios.post(
+        `${baseurl}addAttendeeDetails/${attendId}`,
+        formData,
+      );
+      if (response.data.success) {
         setOpen2(false);
-      Swal.fire("Passport Details Added Successfully!", "", "success");
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
-    }
+        Swal.fire("Passport Details Added Successfully!", "", "success");
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      }
     } catch (error) {
-       Swal.fire("Error!", error?.message || "An error occurred", "error");
+      Swal.fire("Error!", error?.message || "An error occurred", "error");
     }
-  
+
     // const result = await dispatch(
     //   AddKysDetail({
     //     id: location.state.patientId,
@@ -1343,7 +1346,6 @@ function PatientDetail() {
   const handleCloseEditModal = () => {
     setEditModalNotes(false);
   };
-
   const editNotes = async () => {
     if (!note2 || !date2) {
       Swal.fire({
@@ -1353,7 +1355,6 @@ function PatientDetail() {
       });
       return;
     }
-
     const payload = {
       note: note2,
       date: date2,
@@ -1368,7 +1369,6 @@ function PatientDetail() {
           },
         },
       );
-
       if (response.data.success) {
         Swal.fire({
           icon: "success",
@@ -1377,7 +1377,6 @@ function PatientDetail() {
           timer: 1500,
           showConfirmButton: false,
         });
-
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         handleCloseEditModal();
       } else {
@@ -1398,7 +1397,6 @@ function PatientDetail() {
       console.log(error);
     }
   };
-
   const EditDelete = async (a, b) => {
     const confirm = await Swal.fire({
       title: "Delete Note?",
@@ -1410,7 +1408,6 @@ function PatientDetail() {
       confirmButtonText: "Yes, Delete",
       cancelButtonText: "Cancel",
     });
-
     if (!confirm.isConfirmed) return;
     console.log(a, b);
     try {
@@ -1422,7 +1419,6 @@ function PatientDetail() {
           },
         },
       );
-
       if (response.data.success) {
         Swal.fire({
           icon: "success",
@@ -1689,18 +1685,18 @@ function PatientDetail() {
     setPayment_details(FilterDataPayment);
   };
 
- const  handleclickAttandpDetails =async(id)=>{
-  setAttendId(id)
-  console.log(id)
-  try {
-    const response = await axios.get(`${baseurl}getAttendeeDetails/${id}`)
-    if(response.data.success){
-     setPassportDetails(response.data.data)
+  const handleclickAttandpDetails = async (id) => {
+    setAttendId(id);
+    console.log(id);
+    try {
+      const response = await axios.get(`${baseurl}getAttendeeDetails/${id}`);
+      if (response.data.success) {
+        setPassportDetails(response.data.data);
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error)
-  }
- }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -2035,33 +2031,21 @@ function PatientDetail() {
                                           {info.treatment_id}{" "}
                                         </h3>
                                       </div>
-                                    </div>
-                                    <div className="d-flex">
-                                      <p
-                                        className="mx-2 my-2"
-                                        style={{
-                                          fontWeight: "500",
-                                          fontSize: "14px",
-                                        }}
-                                      >
+                                      <ul className="nav nav-tabs treat-tabs">
                                         <a
-                                          className="nav-link add-button1"
+                                          className="nav-link active"
                                           href="#bottom-tab2"
                                           data-toggle="tab"
-                                          onClick={()=>{handleclickAttandpDetails(info.treatment_id)}}
+                                          onClick={() => {
+                                            handleclickAttandpDetails(
+                                              info.treatment_id,
+                                            );
+                                          }}
                                         >
                                           Add Attende Details
                                         </a>
-                                      </p>
-                                      <p
-                                        className="mx-2 my-2"
-                                        style={{
-                                          fontWeight: "500",
-                                          fontSize: "14px",
-                                        }}
-                                      >
                                         <a
-                                          className="nav-link add-button1"
+                                          className="nav-link"
                                           href="#bottom-tab4"
                                           data-toggle="tab"
                                           onClick={() => {
@@ -2072,16 +2056,9 @@ function PatientDetail() {
                                         >
                                           Payment Details
                                         </a>
-                                      </p>
-                                      <p
-                                        className="mx-2 my-2"
-                                        style={{
-                                          fontWeight: "500",
-                                          fontSize: "14px",
-                                        }}
-                                      >
+
                                         <a
-                                          className="nav-link add-button1"
+                                          className="nav-link"
                                           href="#bottom-tab5"
                                           data-toggle="tab"
                                           onClick={() => {
@@ -2092,9 +2069,11 @@ function PatientDetail() {
                                         >
                                           Reports
                                         </a>
-                                      </p>
+                                      </ul>
+                                    </div>
+                                    <div className="d-flex">
                                       <p
-                                        className="mx-2 my-2"
+                                        className="mx-3 my-1"
                                         style={{
                                           fontWeight: "500",
                                           fontSize: "14px",
@@ -2145,6 +2124,7 @@ function PatientDetail() {
                                       </button>
                                     </div>
                                   </div>
+
                                   <hr></hr>
                                   <div className="row gx-3 gy-3">
                                     <div className="col-md-4">
@@ -2693,8 +2673,9 @@ function PatientDetail() {
                               className="nav-link add-button1"
                               href="#bottom-tab4"
                               data-toggle="tab"
-                              onClick={()=>{handleAddTritmentPayment(attendId)}}
-
+                              onClick={() => {
+                                handleAddTritmentPayment(attendId);
+                              }}
                             >
                               Payment Details
                             </a>
@@ -2710,7 +2691,9 @@ function PatientDetail() {
                               className="nav-link add-button1"
                               href="#bottom-tab5"
                               data-toggle="tab"
-                              onClick={()=>{handleclicksetData(attendId)}}
+                              onClick={() => {
+                                handleclicksetData(attendId);
+                              }}
                             >
                               Reports
                             </a>
@@ -2756,20 +2739,20 @@ function PatientDetail() {
                                           height="100"
                                         />
                                       )} */}
-                                       {passportDetails.attendant_photo ? (
-                                          <a
-                                            href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_photo}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="view-pass"
-                                          >
-                                            View Photo
-                                          </a>
-                                        ) : (
-                                          <span className="text-muted">
-                                            Not Uploaded
-                                          </span>
-                                        )}
+                                      {passportDetails.attendant_photo ? (
+                                        <a
+                                          href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_photo}`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="view-pass"
+                                        >
+                                          View Photo
+                                        </a>
+                                      ) : (
+                                        <span className="text-muted">
+                                          Not Uploaded
+                                        </span>
+                                      )}
                                     </div>
                                     <div className="id-proof">
                                       {/* <h6>Attende id Proof </h6> */}
