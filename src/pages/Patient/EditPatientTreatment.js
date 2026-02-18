@@ -61,7 +61,7 @@ export default function EditPatientTreatment() {
       .min(1, "Total Charge must be greater than 0"),
     amount_paid: Yup.number()
       .typeError("Amount Paid must be a number")
- 
+
       .min(1, "Amount Paid must be greater than 0")
       .max(
         Yup.ref("total_charge"),
@@ -140,50 +140,49 @@ export default function EditPatientTreatment() {
               validationSchema={basicSchema}
               enableReinitialize
               onSubmit={async (values, { setSubmitting }) => {
-  try {
-    const payload = {
-      treatment_id: location?.state?.data?.treatment_id,
-      patientId: values.patientId,
-      treatment_course_id: values.treatment_course_id,
-      treatment_course_name: values.treatment_course_name,
-      totalCharge: values.total_charge,
-      services: values.services,
-      amount_paid: values.amount_paid,
-      paymentMethod: values.paymentMethod,
-      Currency: values.Currency,
-    };
-    const response = await axios.put(
-      `${baseurl}edit_treatment/${location?.state?.data?.treatment_id}`, // ⚠️ confirm your endpoint
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.data.success) {
-      Swal.fire({
-        icon: "success",
-        title: "Treatment Updated Successfully",
-        timer: 1500,
-        showConfirmButton: false,
-      });
+                try {
+                  const payload = {
+                    treatment_id: location?.state?.data?.treatment_id,
+                    patientId: values.patientId,
+                    treatment_course_id: values.treatment_course_id,
+                    treatment_course_name: values.treatment_course_name,
+                    totalCharge: values.total_charge,
+                    services: values.services,
+                    amount_paid: values.amount_paid,
+                    paymentMethod: values.paymentMethod,
+                    Currency: values.Currency,
+                  };
+                  const response = await axios.put(
+                    `${baseurl}edit_treatment/${location?.state?.data?.treatment_id}`, // ⚠️ confirm your endpoint
+                    payload,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json",
+                      },
+                    },
+                  );
+                  if (response.data.success) {
+                    Swal.fire({
+                      icon: "success",
+                      title: "Treatment Updated Successfully",
+                      timer: 1500,
+                      showConfirmButton: false,
+                    });
 
-      setTimeout(() => {
-        navigate(-1);
-      }, 1500);
-    } else {
-      Swal.fire("Error", response.data.message, "error");
-    }
-  } catch (error) {
-    console.log(error);
-    Swal.fire("Error", "Something went wrong", "error");
-  } finally {
-    setSubmitting(false);
-  }
-}}
-
+                    setTimeout(() => {
+                      navigate(-1);
+                    }, 1500);
+                  } else {
+                    Swal.fire("Error", response.data.message, "error");
+                  }
+                } catch (error) {
+                  console.log(error);
+                  Swal.fire("Error", "Something went wrong", "error");
+                } finally {
+                  setSubmitting(false);
+                }
+              }}
             >
               {({ values, isSubmitting, setFieldValue }) => (
                 <Form>
@@ -273,7 +272,9 @@ export default function EditPatientTreatment() {
                           options={Service || []}
                           getOptionLabel={(option) => option.serviceName || ""}
                           value={Service.filter((service) =>
-                            values.services.includes(service.serviceId),
+                            values.services
+                              .map(String)
+                              .includes(String(service.serviceId)),
                           )}
                           isOptionEqualToValue={(option, value) =>
                             option.serviceId === value.serviceId

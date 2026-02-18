@@ -1051,16 +1051,16 @@ function PatientDetail() {
   const handlesubmitdataserviceEdit = async () => {
     console.log("Type:", typeof data.price);
     const payload = {
-      _id	:data._id,
-duration:	data.duration,
-endTime	:data.endTime,
-price	:Number(data.price),
-service_type:	data.service_type,
-serviceId:data.serviceId,
-serviceName:	data.serviceName,
-startTime:	data.startTime
-    }
-    console.log(data)
+      _id: data._id,
+      duration: data.duration,
+      endTime: data.endTime,
+      price: Number(data.price),
+      service_type: data.service_type,
+      serviceId: data.serviceId,
+      serviceName: data.serviceName,
+      startTime: data.startTime,
+    };
+    console.log(data);
     try {
       const response = await axios.put(
         `${baseurl}edit_patient_extra_service/${treatmentIDservice}/${data.serviceId}`,
@@ -1653,6 +1653,25 @@ startTime:	data.startTime
       },
     });
   };
+
+  const handleclicksetData = (id) => {
+    console.log(id);
+    // console.log(treatemntData1)
+    console.log(treatmentData);
+    const filterData = treatmentData.filter((item) => item.treatmentId === id);
+    setTreatmentData(filterData);
+  };
+
+  const handlepatientTreatment =(id)=>{
+    console.log(id)
+    console.log(payment_details)
+    // console.log(payment)
+    const FilterDataPayment = payment_details.filter((item)=>(
+      item.treatment_id===id
+    ))
+    console.log(FilterDataPayment)
+    setPayment_details(FilterDataPayment)
+  }
   return (
     <>
       <div className="page-wrapper">
@@ -1709,6 +1728,49 @@ startTime:	data.startTime
                           ? ispatient?.patientNumber
                           : ispatient?.patientId}
                       </p>
+                      <div className="d-flex">
+  <p className="mx-2">
+                        <button
+                          type="button"
+                          className="add-button"
+                          onClick={() => {
+                            const file = kys[0].id_proof;
+
+                            if (file) {
+                              window.open(
+                                `https://sisccltd.com/omca_crm/${file}`,
+                                "_blank",
+                              );
+                            } else {
+                              alert("Document not available");
+                            }
+                          }}
+                        >
+                          View Patient ID
+                        </button>
+                      </p>
+                      <p>
+                        <button
+                          type="button"
+                          className="add-button"
+                          onClick={() => {
+                            const file = kys[0].passport;
+
+                            if (file) {
+                              window.open(
+                                `https://sisccltd.com/omca_crm/${file}`,
+                                "_blank",
+                              );
+                            } else {
+                              alert("Document not available");
+                            }
+                          }}
+                        >
+                          View Passport
+                        </button>
+                      </p>
+                      </div>
+                    
                     </div>
                   </div>
                 </div>
@@ -1752,57 +1814,59 @@ startTime:	data.startTime
             </div>
           </div>
           <div className="patient-tabs">
-            <ul className="nav nav-tabs nav-tabs-bottom">
-              <li className="nav-item">
-                <a
-                  className="nav-link active"
-                  href="#about-cont123"
-                  data-toggle="tab"
-                >
-                  Treatment Plans{" "}
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  href="#bottom-tab2123"
-                  data-toggle="tab"
-                >
-                  Treatments
-                </a>
-              </li>
-            </ul>
-            <div className="tab-content">
-              <div className="tab-pane show active" id="about-cont123">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    {/* <h6>Treatments Plan</h6> */}
-                  </div>
-                  <div className="treat-buttons">
-                    <div className="mr-3">
-                      <button
-                        onClick={PlanTreatmentPopUp}
-                        className="add-button"
-                      >
-                        <span>
-                          <i className="fa fa-plus"></i>
-                        </span>{" "}
-                        Add Treatment Plan
-                      </button>
+            <div className="tab-pane" id="bottom-tab2123">
+              <div className="patient-tabs">
+                <ul className="nav nav-tabs nav-tabs-bottom">
+                  <li className="nav-item">
+                    <a
+                      className="nav-link active"
+                      href="#about-cont123"
+                      data-toggle="tab"
+                    >
+                      Treatment Plans{" "}
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a
+                      className="nav-link"
+                      href="#about-cont"
+                      data-toggle="tab"
+                    >
+                      Treatment{" "}
+                    </a>
+                  </li>
+                </ul>
+                <div className="tab-content">
+                  <div className="tab-pane show active" id="about-cont123">
+                    <div className="main-tab-hd">
+                      <div className="all-hd">
+                        {/* <h6>Treatments Plan</h6> */}
+                      </div>
+                      <div className="treat-buttons">
+                        <div className="mr-3">
+                          <button
+                            onClick={PlanTreatmentPopUp}
+                            className="add-button"
+                          >
+                            <span>
+                              <i className="fa fa-plus"></i>
+                            </span>{" "}
+                            Add Treatment Plan
+                          </button>
+                        </div>
+                        <br />
+                      </div>
                     </div>
-                    <br />
-                  </div>
-                </div>
-                <div className="col-md-12">
-                  {treatemntData1?.length === 0 ? (
-                    "No Treatment Plan Added for this patients"
-                  ) : (
-                    <>
-                      {treatemntData1?.map((info, index) => {
-                        console.log(info, "array data");
-                        return (
-                          <div className="card-box">
-                            {/* <div className="treat-card">
+                    <div className="col-md-12">
+                      {treatemntData1?.length === 0 ? (
+                        "No Treatment Plan Added for this patients"
+                      ) : (
+                        <>
+                          {treatemntData1?.map((info, index) => {
+                            console.log(info, "array data");
+                            return (
+                              <div className="card-box">
+                                {/* <div className="treat-card">
                               <div className="treat-id"> */}
                                 {/* <div>
                                   <h3>
@@ -1812,433 +1876,397 @@ startTime:	data.startTime
                                 </div>
                               </div>
                             </div> */}
-                            {/* <hr></hr> */}
-                            <div className="d-flex">
-                                 <div className="col-2">
-                                <div> <h5>
-                                    Treatment Name {" "}
-                                  
-                                  </h5>  {info?.treatment?.name}{" "}</div>
-                              </div>
-                              <div className="col-6">
-                                <h5>Hospital</h5>
-                                <div className="col-12">
-                                  {info?.hospitals.map((item) => {
-                                    return (
-                                      <>
-                                        <div className="d-flex">
-                                          <div className="col-6">
-                                         <li> {item.name}</li>
-                                          </div>
-
-                                          <div className="col-4">
-                                            {info.isAnyHospitalApproved ===
-                                            true ? (
-                                              ""
-                                            ) : (
-                                              <div className="col-4">
-                                                <button
-                                                  className="add-button mx-3"
-                                                  onClick={() =>
-                                                    approveReject(
-                                                      info,
-                                                      item.id,
-                                                      "Approved",
-                                                    )
-                                                  }
-                                                >
-                                                  Approve
-                                                </button>
-                                              </div>
-                                            )}
-                                          </div>
-                                        </div>
-                                        <h5
-                                          style={{
-                                            color:
-                                              item.status === "Approved"
-                                                ? "green"
-                                                : "inherit",
-                                          }}
-                                        >
-                                          {item.status}
-                                        </h5>
-
-                                        <br />
-                                      </>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                              <div className="col-2">
-                                <h5>Reports</h5>
-                                <div>
-                                  {info?.reports?.map((report, index) => (
-                                    <div key={index}>
-                                      <a
-                                        href={`${image}${report.fileName}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                        View Doc
-                                      </a>
+                                {/* <hr></hr> */}
+                                <div className="d-flex">
+                                  <div className="col-2">
+                                    <div>
+                                      {" "}
+                                      <h5>Treatment Name </h5>{" "}
+                                      {info?.treatment?.name}{" "}
                                     </div>
-                                  ))}
-                                </div>
-                              </div>
-                              <div className="col-4">
-                                <h5>Notes</h5>
-                                <div>{info?.notes}</div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className="tab-pane" id="bottom-tab2123">
-                <div className="patient-tabs">
-                  {/* <ul className="nav nav-tabs nav-tabs-bottom">
-                    <li className="nav-item">
-                      <a
-                        className="nav-link active"
-                        href="#about-cont"
-                        data-toggle="tab"
-                      >
-                        Treatment{" "}
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a
-                        className="nav-link"
-                        href="#bottom-tab2"
-                        data-toggle="tab"
-                      >
-                        Add Passport
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a
-                        className="nav-link"
-                        href="#bottom-tab4"
-                        data-toggle="tab"
-                      >
-                        Payment Details
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a
-                        className="nav-link"
-                        href="#bottom-tab5"
-                        data-toggle="tab"
-                      >
-                        Reports
-                      </a>
-                    </li>
-                  </ul> */}
-                  <div className="tab-content">
-                    <div className="tab-pane show active" id="about-cont">
-                      <div className="main-tab-hd">
-                        <div className="all-hd">
-                          <h6>All Treatments</h6>
-                        </div>
-                        <div className="treat-buttons">
-                          <div className="mr-3">
-                            <button
-                              onClick={PatientDetailButton}
-                              className="add-button"
-                            >
-                              <span>
-                                <i className="fa fa-plus"></i>
-                              </span>{" "}
-                              Add Treatment
-                            </button>
-                          </div>
-                          <div className="">
-                            <button className="add-button" onClick={penModal}>
-                              <span>
-                                <i className="fa fa-plus"></i>
-                              </span>{" "}
-                              Add Services
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-12">
-                          {tretment?.length === 0 ? (
-                            "No Treatment  Added for this patients"
-                          ) : (
-                            <>
-                              {tretment?.map((info, index) => {
-                                console.log(info, "array data");
-                                return (
-                                  <div className="card-box">
-                                    <div className="treat-card">
-                                      <div className="treat-id">
-                                        <div>
-                                          <h3>
-                                            Treatment ID-
-                                            {info.treatment_id}{" "}
-                                          </h3>
-                                        </div>
-                                      </div>
-                                      <div className="d-flex">
-                                      <p
-                                          className="mx-2 my-2"
-                                          style={{
-                                            fontWeight: "500",
-                                            fontSize: "14px",
-                                          }}
-                                        >      <a
-                        className="nav-link  add-button1"
-                        href="#bottom-tab2"
-                        data-toggle="tab"
-                      >
-                        Add Passport
-                      </a></p> 
-                       <p
-                                          className="mx-2 my-2 add-button1"
-                                          style={{
-                                            fontWeight: "500",
-                                            fontSize: "14px",
-                                          }}
-                                        >   <a
-                        className="nav-link"
-                        href="#bottom-tab4"
-                        data-toggle="tab"
-                      >
-                        Payment Details
-                      </a></p>
-                      <p
-                                          className="mx-2 my-2 add-button1"
-                                          style={{
-                                            fontWeight: "500",
-                                            fontSize: "14px",
-                                          }}
-                                        >
-                       <a
-                        className="nav-link"
-                        href="#bottom-tab5"
-                        data-toggle="tab"
-                      >
-                        Reports
-                      </a></p>
-
-                                        <p
-                                          className="mx-2 my-2"
-                                          style={{
-                                            fontWeight: "500",
-                                            fontSize: "14px",
-                                          }}
-                                        >
-                                          {info.treatment_status}
-                                        </p>
-                                        <button
-                                          onClick={(e) =>
-                                            handleClickOpen(
-                                              e,
-                                              info.treatment_id,
-                                            )
-                                          }
-                                          className="add-button1"
-                                        >
-                                          <span>
-                                            <i className="fa fa-plus"></i>
-                                          </span>{" "}
-                                          Add Hospital
-                                        </button>
-                                        <button
-                                          onClick={(e) =>
-                                            handleClickOpen1(
-                                              e,
-                                              info?.treatment_id,
-                                              info?.Hospital_details,
-                                            )
-                                          }
-                                          className="add-button1"
-                                        >
-                                          <span>
-                                            <i className="fa fa-plus"></i>
-                                          </span>{" "}
-                                          Add Appointment
-                                        </button>
-                                        <button
-                                          onClick={(e) =>
-                                            handleClickOpenNotes(
-                                              e,
-                                              info?.treatment_id,
-                                              info?.Hospital_details,
-                                            )
-                                          }
-                                          className="add-button1"
-                                        >
-                                          <span>
-                                            <i className="fa fa-plus"></i>
-                                          </span>{" "}
-                                          Add Notes
-                                        </button>
-                                      </div>
-                                    </div>
-                                    <hr></hr>
-                                    <div className="row gx-3 gy-3">
-                                      <div className="col-md-4">
-                                        <div className="card patientreat">
-                                          <div className="card-header service-list">
+                                  </div>
+                                  <div className="col-6">
+                                    <h5>Hospital</h5>
+                                    <div className="col-12">
+                                      {info?.hospitals.map((item) => {
+                                        return (
+                                          <>
                                             <div className="d-flex">
-                                              <div>
-                                                <h6>Treatment</h6>
+                                              <div className="col-6">
+                                                <li> {item.name}</li>
                                               </div>
-                                              <div>
-                                                <h6
-                                                  className="mx-2"
-                                                  style={{ cursor: "pointer" }}
-                                                  onClick={() => {
-                                                    handleclickEdAppointment(
-                                                      info,
-                                                    );
-                                                  }}
-                                                >
-                                                  <i className="fa-solid fa-pen-to-square"></i>
-                                                </h6>
+
+                                              <div className="col-4">
+                                                {info.isAnyHospitalApproved ===
+                                                true ? (
+                                                  ""
+                                                ) : (
+                                                  <div className="col-4">
+                                                    <button
+                                                      className="add-button mx-3"
+                                                      onClick={() =>
+                                                        approveReject(
+                                                          info,
+                                                          item.id,
+                                                          "Approved",
+                                                        )
+                                                      }
+                                                    >
+                                                      Approve
+                                                    </button>
+                                                  </div>
+                                                )}
                                               </div>
                                             </div>
-                                          </div>
-                                          <div className="card-body">
-                                            <ul className="trment-list">
-                                              <li>
-                                                <div className="row">
-                                                  <div className="col-md-12">
-                                                    <div className="para-main-div">
-                                                      <p>
-                                                        Name:{" "}
-                                                        {info?.treatment_name}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </li>
-                                              <li>
-                                                <div className="row">
-                                                  <div className="col-md-12">
-                                                    <div className="para-main-div">
-                                                      <p>
-                                                        Charge:{" "}
-                                                        {
-                                                          info.treatment_course_fee
-                                                        }{" "}
-                                                        {info.duration}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </li>
-                                              <li>
-                                                <div className="row">
-                                                  <div className="col-md-12">
-                                                    <div className="para-main-div">
-                                                      <p>
-                                                        Date:{" "}
-                                                        {new Date(
-                                                          info?.treatment_created_at,
-                                                        ).toLocaleDateString(
-                                                          "en-GB",
-                                                        )}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </li>
-                                              <li>
-                                                <div className="row">
-                                                  <div className="col-md-12">
-                                                    <div className="para-main-div">
-                                                      <p>
-                                                        Time:{" "}
-                                                        {new Date(
-                                                          info?.treatment_created_at,
-                                                        ).toLocaleTimeString(
-                                                          [],
-                                                          {
-                                                            hour: "2-digit",
-                                                            minute: "2-digit",
-                                                            second: "2-digit",
-                                                          },
-                                                        )}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </li>
-                                            </ul>
+                                            <h5
+                                              style={{
+                                                color:
+                                                  item.status === "Approved"
+                                                    ? "green"
+                                                    : "inherit",
+                                              }}
+                                            >
+                                              {item.status}
+                                            </h5>
+
+                                            <br />
+                                          </>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                  <div className="col-2">
+                                    <h5>Reports</h5>
+                                    <div>
+                                      {info?.reports?.map((report, index) => (
+                                        <div key={index}>
+                                          <a
+                                            href={`${image}${report.fileName}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                          >
+                                            View Doc
+                                          </a>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <div className="col-4">
+                                    <h5>Notes</h5>
+                                    <div>{info?.notes}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="tab-pane show" id="about-cont">
+                    <div className="main-tab-hd">
+                      <div className="all-hd">
+                        <h6>All Treatments</h6>
+                      </div>
+                      <div className="treat-buttons">
+                        <div className="mr-3">
+                          <button
+                            onClick={PatientDetailButton}
+                            className="add-button"
+                          >
+                            <span>
+                              <i className="fa fa-plus"></i>
+                            </span>{" "}
+                            Add Treatment
+                          </button>
+                        </div>
+                        <div className="">
+                          <button className="add-button" onClick={penModal}>
+                            <span>
+                              <i className="fa fa-plus"></i>
+                            </span>{" "}
+                            Add Services
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        {tretment?.length === 0 ? (
+                          "No Treatment  Added for this patients"
+                        ) : (
+                          <>
+                            {tretment?.map((info, index) => {
+                              console.log(info, "array data");
+                              return (
+                                <div className="card-box">
+                                  <div className="treat-card">
+                                    <div className="treat-id">
+                                      <div>
+                                        <h3>
+                                          Treatment ID-
+                                          {info.treatment_id}{" "}
+                                        </h3>
+                                      </div>
+                                    </div>
+                                    <div className="d-flex">
+                                      <p
+                                        className="mx-2 my-2"
+                                        style={{
+                                          fontWeight: "500",
+                                          fontSize: "14px",
+                                        }}
+                                      >
+                                        <a
+                                          className="nav-link add-button1"
+                                          href="#bottom-tab2"
+                                          data-toggle="tab"
+                                        >
+                                          Add Attende Details
+                                        </a>
+                                      </p>
+                                      <p
+                                        className="mx-2 my-2"
+                                        style={{
+                                          fontWeight: "500",
+                                          fontSize: "14px",
+                                        }}
+                                      >
+                                        <a
+                                          className="nav-link add-button1"
+                                          href="#bottom-tab4"
+                                          data-toggle="tab"
+                                          onClick={()=>{handlepatientTreatment(info.treatment_id)}}
+                                        >
+                                          Payment Details
+                                        </a>
+                                      </p>
+                                      <p
+                                        className="mx-2 my-2"
+                                        style={{
+                                          fontWeight: "500",
+                                          fontSize: "14px",
+                                        }}
+                                      >
+                                        <a
+                                          className="nav-link add-button1"
+                                          href="#bottom-tab5"
+                                          data-toggle="tab"
+                                          onClick={() => {
+                                            handleclicksetData(
+                                              info.treatment_id,
+                                            );
+                                          }}
+                                        >
+                                          Reports
+                                        </a>
+                                      </p>
+                                      <p
+                                        className="mx-2 my-2"
+                                        style={{
+                                          fontWeight: "500",
+                                          fontSize: "14px",
+                                        }}
+                                      >
+                                        {info.treatment_status}
+                                      </p>
+                                      <button
+                                        onClick={(e) =>
+                                          handleClickOpen(e, info.treatment_id)
+                                        }
+                                        className="add-button1"
+                                      >
+                                        <span>
+                                          <i className="fa fa-plus"></i>
+                                        </span>{" "}
+                                        Add Hospital
+                                      </button>
+                                      <button
+                                        onClick={(e) =>
+                                          handleClickOpen1(
+                                            e,
+                                            info?.treatment_id,
+                                            info?.Hospital_details,
+                                          )
+                                        }
+                                        className="add-button1"
+                                      >
+                                        <span>
+                                          <i className="fa fa-plus"></i>
+                                        </span>{" "}
+                                        Add Appointment
+                                      </button>
+                                      <button
+                                        onClick={(e) =>
+                                          handleClickOpenNotes(
+                                            e,
+                                            info?.treatment_id,
+                                            info?.Hospital_details,
+                                          )
+                                        }
+                                        className="add-button1"
+                                      >
+                                        <span>
+                                          <i className="fa fa-plus"></i>
+                                        </span>{" "}
+                                        Add Notes
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <hr></hr>
+                                  <div className="row gx-3 gy-3">
+                                    <div className="col-md-4">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list">
+                                          <div className="d-flex">
+                                            <div>
+                                              <h6>Treatment</h6>
+                                            </div>
+                                            <div>
+                                              <h6
+                                                className="mx-2"
+                                                style={{ cursor: "pointer" }}
+                                                onClick={() => {
+                                                  handleclickEdAppointment(
+                                                    info,
+                                                  );
+                                                }}
+                                              >
+                                                <i className="fa-solid fa-pen-to-square"></i>
+                                              </h6>
+                                            </div>
                                           </div>
                                         </div>
+                                        <div className="card-body">
+                                          <ul className="trment-list">
+                                            <li>
+                                              <div className="row">
+                                                <div className="col-md-12">
+                                                  <div className="para-main-div">
+                                                    <p>
+                                                      Name:{" "}
+                                                      {info?.treatment_name}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </li>
+                                            <li>
+                                              <div className="row">
+                                                <div className="col-md-12">
+                                                  <div className="para-main-div">
+                                                    <p>
+                                                      Charge:{" "}
+                                                      {
+                                                        info.treatment_course_fee
+                                                      }{" "}
+                                                      {info.duration}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </li>
+                                            <li>
+                                              <div className="row">
+                                                <div className="col-md-12">
+                                                  <div className="para-main-div">
+                                                    <p>
+                                                      Date:{" "}
+                                                      {new Date(
+                                                        info?.treatment_created_at,
+                                                      ).toLocaleDateString(
+                                                        "en-GB",
+                                                      )}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </li>
+                                            <li>
+                                              <div className="row">
+                                                <div className="col-md-12">
+                                                  <div className="para-main-div">
+                                                    <p>
+                                                      Time:{" "}
+                                                      {new Date(
+                                                        info?.treatment_created_at,
+                                                      ).toLocaleTimeString([], {
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                        second: "2-digit",
+                                                      })}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </li>
+                                          </ul>
+                                        </div>
                                       </div>
-                                      <div className="col-md-4">
-                                        <div className="card patientreat">
-                                          <div className="card-header service-list">
-                                            <h6>Hospital</h6>
-                                          </div>
-                                          <div className="card-body">
-                                            <ul className="trment-list">
-                                              {info?.Hospital_details.map(
-                                                (item, index) => {
-                                                  console.log(item);
-                                                  return (
-                                                    <>
-                                                      <li key={index}>
-                                                        <div className="row">
-                                                          <div className="col-md-10">
-                                                            <div className="row">
-                                                              <div className="col-md-12">
-                                                                <div className="para-main-div">
-                                                                  <p>
-                                                                    Name:{" "}
-                                                                    {item.hospital_Name ||
-                                                                      "-"}
-                                                                  </p>
-                                                                </div>
+                                    </div>
+                                    <div className="col-md-4">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list">
+                                          <h6>Hospital</h6>
+                                        </div>
+                                        <div className="card-body">
+                                          <ul className="trment-list">
+                                            {info?.Hospital_details.map(
+                                              (item, index) => {
+                                                console.log(item);
+                                                return (
+                                                  <>
+                                                    <li key={index}>
+                                                      <div className="row">
+                                                        <div className="col-md-10">
+                                                          <div className="row">
+                                                            <div className="col-md-12">
+                                                              <div className="para-main-div">
+                                                                <p>
+                                                                  Name:{" "}
+                                                                  {item.hospital_Name ||
+                                                                    "-"}
+                                                                </p>
                                                               </div>
-                                                              <div className="col-md-12">
-                                                                <div className="para-main-div">
-                                                                  <p>
-                                                                    Charge:{" "}
-                                                                    {
-                                                                      item.hospital_charge
-                                                                    }
-                                                                  </p>
-                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-12">
+                                                              <div className="para-main-div">
+                                                                <p>
+                                                                  Charge:{" "}
+                                                                  {
+                                                                    item.hospital_charge
+                                                                  }
+                                                                </p>
                                                               </div>
                                                             </div>
                                                           </div>
-                                                          <div className="col-md-2 text-end">
-                                                            {item.hospital_Name && (
-                                                              <i
-                                                                className="fa-solid fa-trash text-danger cursor-pointer"
-                                                                onClick={() =>
-                                                                  handledelete(
-                                                                    info,
-                                                                    item,
-                                                                  )
-                                                                }
-                                                              ></i>
-                                                            )}
-                                                          </div>
                                                         </div>
-                                                      </li>
-                                                    </>
-                                                  );
-                                                },
-                                              )}
-                                            </ul>
-                                          </div>
+                                                        <div className="col-md-2 text-end">
+                                                          {item.hospital_Name && (
+                                                            <i
+                                                              className="fa-solid fa-trash text-danger cursor-pointer"
+                                                              onClick={() =>
+                                                                handledelete(
+                                                                  info,
+                                                                  item,
+                                                                )
+                                                              }
+                                                            ></i>
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                    </li>
+                                                  </>
+                                                );
+                                              },
+                                            )}
+                                          </ul>
                                         </div>
                                       </div>
-                                      <div className="col-md-4">
-                                        {info?.services?.length>0    ?
-                                            <div className="card patientreat">
+                                    </div>
+                                    <div className="col-md-4">
+                                      {info?.services?.length > 0 ? (
+                                        <div className="card patientreat">
                                           <div className="card-header service-list action-icon">
                                             <h6>Free Services</h6>
                                           </div>
@@ -2297,12 +2325,14 @@ startTime:	data.startTime
                                               )}
                                             </ul>
                                           </div>
-                                        </div>:""}
-                                
-                                      </div>
-                                      <div className="col-md-6">
-                                         {
-                                          info?.treatmentNotes?.length>0?  <div className="card patientreat">
+                                        </div>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </div>
+                                    <div className="col-md-6">
+                                      {info?.treatmentNotes?.length > 0 ? (
+                                        <div className="card patientreat">
                                           <div className="card-header service-list action-icon">
                                             <h6>Notes</h6>
                                           </div>
@@ -2357,15 +2387,14 @@ startTime:	data.startTime
                                               },
                                             )}
                                           </div>
-                                        </div>:""
-                                        }
-                                      
-                                      </div>
-                                      <div className="col-md-6">
-                                       
-                                     {
-                                          info?.services?.length>0?
-                                            <div className="card patientreat">
+                                        </div>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </div>
+                                    <div className="col-md-6">
+                                      {info?.services?.length > 0 ? (
+                                        <div className="card patientreat">
                                           <div className="card-header service-list">
                                             <h6>Extra Services</h6>
                                           </div>
@@ -2451,14 +2480,14 @@ startTime:	data.startTime
                                               </table>
                                             </div>
                                           </div>
-                                        </div>:""
-                                       }
-                                      
-                                      </div>
-                                      <div className="col-md-12">
-                                        {
-                                          info?.appointments_details?.length>0?
-                                        
+                                        </div>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </div>
+                                    <div className="col-md-12">
+                                      {info?.appointments_details?.length >
+                                      0 ? (
                                         <div className="card patientreat">
                                           <div className="card-header service-list">
                                             <h6>Appointment</h6>
@@ -2557,490 +2586,676 @@ startTime:	data.startTime
                                               </table>
                                             </div>
                                           </div>
-                                        </div>:""}
+                                        </div>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </div>
+                                  </div>
+                                  <hr></hr>
+                                  <div className="row justify-content-end">
+                                    <div className="col-md-12">
+                                      <div className="total-amount">
+                                        <h6 className="mb-0">Total Amount:</h6>
+                                        <p>{info.treatment_total_charge}</p>
                                       </div>
                                     </div>
-                                    <hr></hr>
-                                    <div className="row justify-content-end">
-                                      <div className="col-md-12">
-                                        <div className="total-amount">
-                                          <h6 className="mb-0">
-                                            Total Amount:
-                                          </h6>
-                                          <p>{info.treatment_total_charge}</p>
-                                        </div>
-                                      </div>
-                                      <div className="col-md-12">
-                                        <div className="total-amount">
-                                          <h6 className="mb-0">Due Amount:</h6>
-                                          <p>{info.treatment_due_payment}</p>
-                                        </div>
+                                    <div className="col-md-12">
+                                      <div className="total-amount">
+                                        <h6 className="mb-0">Due Amount:</h6>
+                                        <p>{info.treatment_due_payment}</p>
                                       </div>
                                     </div>
                                   </div>
-                                );
-                              })}
-                            </>
-                          )}
+                                </div>
+                              );
+                            })}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="tab-pane" id="bottom-tab2">
+                    <div className="main-tab-hd">
+                      <div className="all-hd">
+                        <h6>Passport Details</h6>
+                      </div>
+
+                      <div className="d-flex">
+                        <div className="d-flex">
+                          <p
+                            className="mx-2 my-2"
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                            }}
+                          >
+                            <a
+                              className="nav-link add-button1"
+                              href="#about-cont"
+                              data-toggle="tab"
+                            >
+                           Treatment
+                            </a>
+                          </p>
+                          <p
+                            className="mx-2 my-2"
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                            }}
+                          >
+                            <a
+                              className="nav-link add-button1"
+                              href="#bottom-tab2"
+                              data-toggle="tab"
+                            >
+                             Add Attende Details
+                            </a>
+                          </p>
+                          <p
+                            className="mx-2 my-2"
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                            }}
+                          >
+                            <a
+                              className="nav-link add-button1"
+                              href="#bottom-tab4"
+                              data-toggle="tab"
+                            >
+                              Payment Details
+                            </a>
+                          </p>
+                          <p
+                            className="mx-2 my-2"
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                            }}
+                          >
+                            <a
+                              className="nav-link add-button1"
+                              href="#bottom-tab5"
+                              data-toggle="tab"
+                            >
+                              Reports
+                            </a>
+                          </p>
+                        </div>
+                        <div>
+                          <button
+                            onClick={(e) => handleClickOpen2(e)}
+                            className="add-button"
+                          >
+                            <span>
+                              <i className="fa fa-plus"></i>
+                            </span>{" "}
+                           Add Attende Details
+                          </button>
                         </div>
                       </div>
                     </div>
-                    <div className="tab-pane" id="bottom-tab2">
-                      <div className="main-tab-hd">
-                        <div className="all-hd">
-                          <h6>Passport Details</h6>
-                        </div>
-                        <button
-                          onClick={(e) => handleClickOpen2(e)}
-                          className="add-button"
-                        >
-                          <span>
-                            <i className="fa fa-plus"></i>
-                          </span>{" "}
-                          Add Passport
-                        </button>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-12">
-                          {kys?.length === 0
-                            ? "No passport details found"
-                            : kys?.map((info, index) => (
-                                <>
-                                  <div key={index} className="card-box">
-                                    <div className="pass-detail">
-                                      <div className="img-patient">
-                                        <h6>Patient Image</h6>
-                                        {info.photo ? (
-                                          <img
-                                            src={`${image}${info.photo}`}
-                                            alt="profile image"
-                                            className="rounded-circle shadow"
-                                            width="100"
-                                            height="100"
-                                          />
-                                        ) : (
-                                          <img
-                                            src={avtar}
-                                            alt="avatar"
-                                            className="rounded-circle shadow"
-                                            width="100"
-                                            height="100"
-                                          />
-                                        )}
-                                      </div>
-                                      <div className="id-proof">
-                                        <h6>Id Proof</h6>
-                                        {info.id_proof ? (
+                    <div className="row">
+                      <div className="col-md-12">
+                        {kys?.length === 0
+                          ? "No passport details found"
+                          : kys?.map((info, index) => (
+                              <>
+                                <div key={index} className="card-box">
+                                  <div className="pass-detail">
+                                    <div className="img-patient">
+                                      <h6>Patient Image</h6>
+                                      {info.photo ? (
+                                        <img
+                                          src={`${image}${info.photo}`}
+                                          alt="profile image"
+                                          className="rounded-circle shadow"
+                                          width="100"
+                                          height="100"
+                                        />
+                                      ) : (
+                                        <img
+                                          src={avtar}
+                                          alt="avatar"
+                                          className="rounded-circle shadow"
+                                          width="100"
+                                          height="100"
+                                        />
+                                      )}
+                                    </div>
+                                    <div className="id-proof">
+                                      <h6>Id Proof</h6>
+                                      {info.id_proof ? (
+                                        <a
+                                          href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="btn btn-outline-primary btn-sm"
+                                        >
+                                          View PDF
+                                        </a>
+                                      ) : (
+                                        <span className="text-muted">
+                                          Not Uploaded
+                                        </span>
+                                      )}
+                                      <div className="">
+                                        <h6>Passport</h6>
+                                        {info.passport ? (
                                           <a
-                                            href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
+                                            href={`https://sisccltd.com/omca_crm/${info.passport}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="btn btn-outline-primary btn-sm"
+                                            className="view-pass"
                                           >
-                                            View PDF
+                                            View Passport
                                           </a>
                                         ) : (
                                           <span className="text-muted">
                                             Not Uploaded
                                           </span>
                                         )}
-                                        <div className="">
-                                          <h6>Passport</h6>
-                                          {info.passport ? (
-                                            <a
-                                              href={`https://sisccltd.com/omca_crm/${info.passport}`}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="view-pass"
-                                            >
-                                              View Passport
-                                            </a>
-                                          ) : (
-                                            <span className="text-muted">
-                                              Not Uploaded
-                                            </span>
-                                          )}
-                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <div key={index} className="card-box">
-                                    <div className="pass-detail">
-                                      <div className="img-patient">
-                                        <h6>Attende Image</h6>
-                                        {info.Attende_photo ? (
-                                          <img
-                                            src={`${image}${info.Attende_photo}`}
-                                            alt="no image"
-                                            className="rounded-circle shadow"
-                                            width="100"
-                                            height="100"
-                                          />
-                                        ) : (
-                                          <img
-                                            src={avtar}
-                                            alt="no image"
-                                            className="rounded-circle shadow"
-                                            width="100"
-                                            height="100"
-                                          />
-                                        )}
-                                      </div>
-                                      <div className="id-proof">
-                                        <h6>Attende id Proof </h6>
-                                        {info.Attende_id_proof ? (
+                                </div>
+                                <div key={index} className="card-box">
+                                  <div className="pass-detail">
+                                    <div className="img-patient">
+                                      <h6>Attende Image</h6>
+                                      {info.Attende_photo ? (
+                                        <img
+                                          src={`${image}${info.Attende_photo}`}
+                                          alt="no image"
+                                          className="rounded-circle shadow"
+                                          width="100"
+                                          height="100"
+                                        />
+                                      ) : (
+                                        <img
+                                          src={avtar}
+                                          alt="no image"
+                                          className="rounded-circle shadow"
+                                          width="100"
+                                          height="100"
+                                        />
+                                      )}
+                                    </div>
+                                    <div className="id-proof">
+                                      <h6>Attende id Proof </h6>
+                                      {info.Attende_id_proof ? (
+                                        <a
+                                          href={`https://sisccltd.com/omca_crm/${info.Attende_id_proof}`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="btn btn-outline-primary btn-sm"
+                                        >
+                                          View PDF
+                                        </a>
+                                      ) : (
+                                        <span className="text-muted">
+                                          Not Uploaded
+                                        </span>
+                                      )}
+                                      <div className="">
+                                        <h6>Attende Passport</h6>
+                                        {info.Attende_passport ? (
                                           <a
-                                            href={`https://sisccltd.com/omca_crm/${info.Attende_id_proof}`}
+                                            href={`https://sisccltd.com/omca_crm/${info.Attende_passport}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="btn btn-outline-primary btn-sm"
+                                            className="view-pass"
                                           >
-                                            View PDF
+                                            View Passport
                                           </a>
                                         ) : (
                                           <span className="text-muted">
                                             Not Uploaded
                                           </span>
                                         )}
-                                        <div className="">
-                                          <h6>Attende Passport</h6>
-                                          {info.Attende_passport ? (
-                                            <a
-                                              href={`https://sisccltd.com/omca_crm/${info.Attende_passport}`}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="view-pass"
-                                            >
-                                              View Passport
-                                            </a>
-                                          ) : (
-                                            <span className="text-muted">
-                                              Not Uploaded
-                                            </span>
-                                          )}
-                                        </div>
                                       </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="tab-pane" id="bottom-tab3">
+                    <div className="main-tab-hd">
+                      <div className="all-hd">
+                        <h6>Discussion Notes</h6>
+                      </div>
+                      <button
+                        onClick={(e) => handleClickOpen5(e)}
+                        className="add-button"
+                      >
+                        <span>
+                          <i className="fa fa-plus"></i>
+                        </span>{" "}
+                        Add Notes
+                      </button>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        {notes?.length === 0 ? (
+                          "No notes for Patient"
+                        ) : (
+                          <>
+                            {notes?.map((info, index) => {
+                              console.log(info);
+                              return (
+                                <>
+                                  <div className="card-box">
+                                    <div className="note-view">
+                                      <h3 className="card-title">
+                                        Note-{index + 1}
+                                      </h3>
+                                    </div>
+                                    <div className="experience-box">
+                                      <ul className="experience-list">
+                                        <li>
+                                          <div className="experience-user">
+                                            <div className="before-circle"></div>
+                                          </div>
+                                          <div className="experience-content d-flex">
+                                            <div className="timeline-content">
+                                              <a href="#/" className="name">
+                                                {info.note}
+                                              </a>
+                                              <div>
+                                                {new Date(
+                                                  info.date,
+                                                ).toLocaleDateString("en-GB")}
+                                              </div>
+                                            </div>
+                                            <div>
+                                              {" "}
+                                              <i
+                                                className="fa fa-edit text-primary "
+                                                onClick={() => {
+                                                  handleopenNotesModal(info.id);
+                                                }}
+                                                style={{ cursor: "pointer" }}
+                                              ></i>
+                                            </div>
+                                          </div>
+                                        </li>
+                                      </ul>
                                     </div>
                                   </div>
                                 </>
-                              ))}
-                        </div>
+                              );
+                            })}
+                          </>
+                        )}
                       </div>
                     </div>
-                    <div className="tab-pane" id="bottom-tab3">
-                      <div className="main-tab-hd">
-                        <div className="all-hd">
-                          <h6>Discussion Notes</h6>
-                        </div>
-                        <button
-                          onClick={(e) => handleClickOpen5(e)}
-                          className="add-button"
-                        >
-                          <span>
-                            <i className="fa fa-plus"></i>
-                          </span>{" "}
-                          Add Notes
-                        </button>
+                  </div>
+                  <div className="tab-pane" id="bottom-tab4">
+                    <div className="main-tab-hd">
+                      <div className="all-hd">
+                        <h6>Payment Details</h6>
                       </div>
-                      <div className="row">
-                        <div className="col-md-12">
-                          {notes?.length === 0 ? (
-                            "No notes for Patient"
-                          ) : (
-                            <>
-                              {notes?.map((info, index) => {
-                                console.log(info);
-                                return (
-                                  <>
-                                    <div className="card-box">
-                                      <div className="note-view">
-                                        <h3 className="card-title">
-                                          Note-{index + 1}
-                                        </h3>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        {payment_details?.length === 0 ? (
+                          "No payment details for patients"
+                        ) : (
+                          <>
+                            {groupedPayments &&
+                              Object.entries(groupedPayments).map(
+                                ([treatmentId, payments], index) => (
+                                  <div className="card-box" key={treatmentId}>
+                                    <div className="treat-card">
+                                      <div className="treat-id">
+                                        <div>
+                                          <h3>Treatment ID-{treatmentId}</h3>
+                                        </div>
                                       </div>
-                                      <div className="experience-box">
-                                        <ul className="experience-list">
-                                          <li>
-                                            <div className="experience-user">
-                                              <div className="before-circle"></div>
-                                            </div>
-                                            <div className="experience-content d-flex">
-                                              <div className="timeline-content">
-                                                <a href="#/" className="name">
-                                                  {info.note}
-                                                </a>
-                                                <div>
-                                                  {new Date(
-                                                    info.date,
-                                                  ).toLocaleDateString("en-GB")}
-                                                </div>
-                                              </div>
-                                              <div>
-                                                {" "}
-                                                <i
-                                                  className="fa fa-edit text-primary "
-                                                  onClick={() => {
-                                                    handleopenNotesModal(
-                                                      info.id,
-                                                    );
-                                                  }}
-                                                  style={{ cursor: "pointer" }}
-                                                ></i>
-                                              </div>
-                                            </div>
-                                          </li>
-                                        </ul>
+                                      <div className="d-flex">
+                                            <p
+                            className="mx-2 my-2"
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                            }}
+                          >
+                            <a
+                              className="nav-link add-button1"
+                              href="#about-cont"
+                              data-toggle="tab"
+                            >
+                           Treatment
+                            </a>
+                          </p>
+                                        <p
+                                          className="mx-2 my-2"
+                                          style={{
+                                            fontWeight: "500",
+                                            fontSize: "14px",
+                                          }}
+                                        >
+                                          <a
+                                            className="nav-link add-button1"
+                                            href="#bottom-tab2"
+                                            data-toggle="tab"
+                                          >
+                                          Add Attende Details
+                                          </a>
+                                        </p>
+                                        <p
+                                          className="mx-2 my-2"
+                                          style={{
+                                            fontWeight: "500",
+                                            fontSize: "14px",
+                                          }}
+                                        >
+                                          <a
+                                            className="nav-link add-button1"
+                                            href="#bottom-tab4"
+                                            data-toggle="tab"
+                                          >
+                                            Payment Details
+                                          </a>
+                                        </p>
+                                        <p
+                                          className="mx-2 my-2"
+                                          style={{
+                                            fontWeight: "500",
+                                            fontSize: "14px",
+                                          }}
+                                        >
+                                          <a
+                                            className="nav-link add-button1"
+                                            href="#bottom-tab5"
+                                            data-toggle="tab"
+                                            onClick={()=>{handleclicksetData(treatmentId)}}
+                                          >
+                                            Reports
+                                          </a>
+                                        </p>
+                                      </div>
+                                      <div className="">
+                                        <button
+                                          onClick={(e) =>
+                                            handleClicexportPayment(
+                                              e,
+                                              treatmentId,
+                                            )
+                                          }
+                                          className="add-button mx-2"
+                                        >
+                                          <span>
+                                            <i className="fa fa-plus"></i>
+                                          </span>{" "}
+                                          Export
+                                        </button>
+                                        <button
+                                          onClick={(e) =>
+                                            handleClickOpen3(e, treatmentId)
+                                          }
+                                          className="add-button"
+                                        >
+                                          <span>
+                                            <i className="fa fa-plus"></i>
+                                          </span>{" "}
+                                          Add Amount
+                                        </button>
                                       </div>
                                     </div>
-                                  </>
-                                );
-                              })}
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="tab-pane" id="bottom-tab4">
-                      <div className="main-tab-hd">
-                        <div className="all-hd">
-                          <h6>Payment Details</h6>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-12">
-                          {payment_details?.length === 0 ? (
-                            "No payment details for patients"
-                          ) : (
-                            <>
-                              {groupedPayments &&
-                                Object.entries(groupedPayments).map(
-                                  ([treatmentId, payments], index) => (
-                                    <div className="card-box" key={treatmentId}>
-                                      <div className="treat-card">
-                                        <div className="treat-id">
-                                          <div>
-                                            <h3>Treatment ID-{treatmentId}</h3>
-                                          </div>
-                                        </div>
-                                        <div className="">
-                                          <button
-                                            onClick={(e) =>
-                                              handleClicexportPayment(
-                                                e,
-                                                treatmentId,
-                                              )
-                                            }
-                                            className="add-button mx-2"
-                                          >
-                                            <span>
-                                              <i className="fa fa-plus"></i>
-                                            </span>{" "}
-                                            Export
-                                          </button>
-                                          <button
-                                            onClick={(e) =>
-                                              handleClickOpen3(e, treatmentId)
-                                            }
-                                            className="add-button"
-                                          >
-                                            <span>
-                                              <i className="fa fa-plus"></i>
-                                            </span>{" "}
-                                            Add Amount
-                                          </button>
-                                        </div>
-                                      </div>
-                                      <hr></hr>
-                                      <div className="experience-box">
-                                        <ul className="experience-list">
-                                          {payments.map((info, idx) => {
-                                            console.log(info);
-                                            return (
-                                              <>
-                                                <li key={idx}>
-                                                  <div className="experience-user">
-                                                    <div className="before-circle"></div>
-                                                  </div>
-                                                  <div>
-                                                    <h5></h5>
-                                                  </div>
-                                                  <div className="experience-content">
-                                                    <div className="timeline-content">
-                                                      <div>
-                                                        Payment Date -{" "}
-                                                        {moment(
-                                                          info.payment_Date,
-                                                        ).format("L")}
-                                                      </div>
-                                                      <div>
-                                                        Payment Method -{" "}
-                                                        {info.paymentMethod}
-                                                      </div>
-                                                      <div>
-                                                        Paid Amount -{" "}
-                                                        {info.paid_amount}
-                                                      </div>
-                                                      {/* <PictureAsPdf
+                                    <hr></hr>
+                                    <div className="experience-box">
+                                      <ul className="experience-list">
+                                        {payments.map((info, idx) => {
+                                          console.log(info);
+                                          return (
+                                            <>
+                                              <li key={idx}>
+                                                <div className="experience-user">
+                                                  <div className="before-circle"></div>
+                                                </div>
+                                                <div>
+                                                  <h5></h5>
+                                                </div>
+                                                <div className="experience-content">
+                                                  <div className="timeline-content">
+                                                    <div>
+                                                      Payment Date -{" "}
+                                                      {moment(
+                                                        info.payment_Date,
+                                                      ).format("L")}
+                                                    </div>
+                                                    <div>
+                                                      Payment Method -{" "}
+                                                      {info.paymentMethod}
+                                                    </div>
+                                                    <div>
+                                                      Paid Amount -{" "}
+                                                      {info.paid_amount}
+                                                    </div>
+                                                    {/* <PictureAsPdf
                                                  
                                                 /> */}
-                                                      <button
-                                                        className="add-button"
-                                                        style={{
-                                                          cursor: "pointer",
-                                                        }}
-                                                        onClick={() => {
-                                                          navigate(
-                                                            "/Admin/Patient-Pdfdetails",
-                                                            {
-                                                              state: {
-                                                                data: info?.payment_id,
-                                                              },
+                                                    <button
+                                                      className="add-button"
+                                                      style={{
+                                                        cursor: "pointer",
+                                                      }}
+                                                      onClick={() => {
+                                                        navigate(
+                                                          "/Admin/Patient-Pdfdetails",
+                                                          {
+                                                            state: {
+                                                              data: info?.payment_id,
                                                             },
-                                                          );
-                                                        }}
-                                                      >
-                                                        {" "}
-                                                        PDF Download
-                                                      </button>
-                                                    </div>
+                                                          },
+                                                        );
+                                                      }}
+                                                    >
+                                                      {" "}
+                                                      PDF Download
+                                                    </button>
                                                   </div>
-                                                </li>
-                                              </>
-                                            );
-                                          })}
-                                        </ul>
-                                      </div>
+                                                </div>
+                                              </li>
+                                            </>
+                                          );
+                                        })}
+                                      </ul>
                                     </div>
-                                  ),
-                                )}
-                            </>
-                          )}
-                        </div>
+                                  </div>
+                                ),
+                              )}
+                          </>
+                        )}
                       </div>
                     </div>
-                    <div className="tab-pane" id="bottom-tab5">
-                      <div className="main-tab-hd">
-                        <div className="all-hd">
-                          <h6>Reports</h6>
-                        </div>
+                  </div>
+                  <div className="tab-pane" id="bottom-tab5">
+                    <div className="main-tab-hd">
+                      <div className="all-hd">
+                        <h6>Reports</h6>
                       </div>
-                      <div className="row">
-                        <div className="col-md-12">
-                          {treatmentData?.length === 0
-                            ? "No Reports for patients"
-                            : treatmentData.map((treatment) => (
-                                <div
-                                  className="card-box mb-4"
-                                  key={treatment.treatmentId}
-                                >
-                                  {/* ===== Treatment Header ===== */}
-                                  <div className="treat-card d-flex justify-content-between align-items-center">
-                                    <div className="treat-id">
-                                      <h3>
-                                        Treatment ID - {treatment.treatmentId}
-                                      </h3>
-                                      <p>{treatment.treatment_course_name}</p>
-                                    </div>
-
-                                    {localStorage.getItem("Role") ===
-                                      "Admin" && (
-                                      <button
-                                        onClick={(e) =>
-                                          handleClickOpen10(
-                                            e,
-                                            treatment.treatmentId,
-                                          )
-                                        }
-                                        className="add-button"
-                                      >
-                                        <i className="fa fa-plus"></i> Add
-                                        Report
-                                      </button>
-                                    )}
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        {treatmentData?.length === 0
+                          ? "No Reports for patients"
+                          : treatmentData.map((treatment) => (
+                              <div
+                                className="card-box mb-4"
+                                key={treatment.treatmentId}
+                              >
+                                {/* ===== Treatment Header ===== */}
+                                <div className="treat-card d-flex justify-content-between align-items-center">
+                                  <div className="treat-id">
+                                    <h3>
+                                      Treatment ID - {treatment.treatmentId}
+                                    </h3>
+                                    <p>{treatment.treatment_course_name}</p>
                                   </div>
+                                  <div className="d-flex">
+                                            <p
+                            className="mx-2 my-2"
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                            }}
+                          >
+                            <a
+                              className="nav-link add-button1"
+                              href="#about-cont"
+                              data-toggle="tab"
+                            >
+                           Treatment
+                            </a>
+                          </p>
+                                    <p
+                                      className="mx-2 my-2"
+                                      style={{
+                                        fontWeight: "500",
+                                        fontSize: "14px",
+                                      }}
+                                    >
+                                      <a
+                                        className="nav-link add-button1"
+                                        href="#bottom-tab2"
+                                        data-toggle="tab"
+                                      >
+                                        Add Attende Details
+                                      </a>
+                                    </p>
+                                    <p
+                                      className="mx-2 my-2"
+                                      style={{
+                                        fontWeight: "500",
+                                        fontSize: "14px",
+                                      }}
+                                    >
+                                      <a
+                                        className="nav-link add-button1"
+                                        href="#bottom-tab4"
+                                        data-toggle="tab"
+                                        onClick={()=>{handlepatientTreatment(treatment.treatmentId)}}
+                                      >
+                                        Payment Details
+                                      </a>
+                                    </p>
+                                    <p
+                                      className="mx-2 my-2"
+                                      style={{
+                                        fontWeight: "500",
+                                        fontSize: "14px",
+                                      }}
+                                    >
+                                      <a
+                                        className="nav-link add-button1"
+                                        href="#bottom-tab5"
+                                        data-toggle="tab"
+                                        onClick={() => {
+                                          handleclicksetData(
+                                            treatment.treatmentId,
+                                          );
+                                        }}
+                                      >
+                                        Reports
+                                      </a>
+                                    </p>
+                                  </div>
+                                  {localStorage.getItem("Role") === "Admin" && (
+                                    <button
+                                      onClick={(e) =>
+                                        handleClickOpen10(
+                                          e,
+                                          treatment.treatmentId,
+                                        )
+                                      }
+                                      className="add-button"
+                                    >
+                                      <i className="fa fa-plus"></i> Add Report
+                                    </button>
+                                  )}
+                                </div>
 
-                                  {/* ===== Reports Table ===== */}
-                                  {treatment.reports &&
-                                  treatment.reports.length > 0 ? (
-                                    <div className="table-responsive mt-3">
-                                      <TableContainer component={Paper}>
-                                        <Table className="table-no-card">
-                                          <TableHead>
-                                            <TableRow>
+                                {/* ===== Reports Table ===== */}
+                                {treatment.reports &&
+                                treatment.reports.length > 0 ? (
+                                  <div className="table-responsive mt-3">
+                                    <TableContainer component={Paper}>
+                                      <Table className="table-no-card">
+                                        <TableHead>
+                                          <TableRow>
+                                            <TableCell>Treatment ID</TableCell>
+                                            <TableCell>Report Title</TableCell>
+                                            <TableCell>Report Date</TableCell>
+                                            {localStorage.getItem("Role") ===
+                                              "Admin" && (
+                                              <>
+                                                <TableCell>Reports</TableCell>
+                                                <TableCell>Action</TableCell>
+                                              </>
+                                            )}
+                                          </TableRow>
+                                        </TableHead>
+
+                                        <TableBody>
+                                          {treatment.reports.map((item) => (
+                                            <TableRow key={item._id}>
                                               <TableCell>
-                                                Treatment ID
+                                                {item.treatmentId}
                                               </TableCell>
                                               <TableCell>
-                                                Report Title
+                                                {item.reportTitle}
                                               </TableCell>
-                                              <TableCell>Report Date</TableCell>
+                                              <TableCell>
+                                                {new Date(
+                                                  item.treatment_report_date,
+                                                ).toLocaleDateString("en-GB")}
+                                              </TableCell>
+
                                               {localStorage.getItem("Role") ===
                                                 "Admin" && (
                                                 <>
-                                                  <TableCell>Reports</TableCell>
-                                                  <TableCell>Action</TableCell>
+                                                  <TableCell>
+                                                    <a
+                                                      href={`${image}${item.treatmentReport}`}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                    >
+                                                      Download Report
+                                                    </a>
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    <i
+                                                      style={{
+                                                        cursor: "pointer",
+                                                      }}
+                                                      className="fa-solid fa-trash text-danger"
+                                                      onClick={() =>
+                                                        handledeleteReport(item)
+                                                      }
+                                                    ></i>
+                                                  </TableCell>
                                                 </>
                                               )}
                                             </TableRow>
-                                          </TableHead>
-
-                                          <TableBody>
-                                            {treatment.reports.map((item) => (
-                                              <TableRow key={item._id}>
-                                                <TableCell>
-                                                  {item.treatmentId}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {item.reportTitle}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {new Date(
-                                                    item.treatment_report_date,
-                                                  ).toLocaleDateString("en-GB")}
-                                                </TableCell>
-
-                                                {localStorage.getItem(
-                                                  "Role",
-                                                ) === "Admin" && (
-                                                  <>
-                                                    <TableCell>
-                                                      <a
-                                                        href={`${image}${item.treatmentReport}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                      >
-                                                        Download Report
-                                                      </a>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                      <i
-                                                        style={{
-                                                          cursor: "pointer",
-                                                        }}
-                                                        className="fa-solid fa-trash text-danger"
-                                                        onClick={() =>
-                                                          handledeleteReport(
-                                                            item,
-                                                          )
-                                                        }
-                                                      ></i>
-                                                    </TableCell>
-                                                  </>
-                                                )}
-                                              </TableRow>
-                                            ))}
-                                          </TableBody>
-                                        </Table>
-                                      </TableContainer>
-                                    </div>
-                                  ) : (
-                                    <p className="mt-2 text-muted">
-                                      No reports available
-                                    </p>
-                                  )}
-                                </div>
-                              ))}
-                        </div>
+                                          ))}
+                                        </TableBody>
+                                      </Table>
+                                    </TableContainer>
+                                  </div>
+                                ) : (
+                                  <p className="mt-2 text-muted">
+                                    No reports available
+                                  </p>
+                                )}
+                              </div>
+                            ))}
                       </div>
                     </div>
                   </div>
@@ -3766,7 +3981,7 @@ startTime:	data.startTime
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>Add Passport</h6>
+              <h6>Add Attende Details</h6>
             </div>
             <div className="cross-icon" onClick={handleClose2}>
               <i class="fa-solid fa-xmark"></i>
