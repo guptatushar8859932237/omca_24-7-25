@@ -2620,7 +2620,6 @@ function PatientDetail() {
                       <div className="all-hd">
                         <h6>Passport Details</h6>
                       </div>
-
                       <div className="d-flex">
                         <div className="d-flex">
                           <p
@@ -2703,7 +2702,7 @@ function PatientDetail() {
                           ? "No passport details found"
                           : kys?.map((info, index) => (
                               <>
-                                <div key={index} className="card-box">
+                                {/* <div key={index} className="card-box">
                                   <div className="pass-detail">
                                     <div className="img-patient">
                                       <h6>Patient Image</h6>
@@ -2760,7 +2759,7 @@ function PatientDetail() {
                                       </div>
                                     </div>
                                   </div>
-                                </div>
+                                </div> */}
                                 <div key={index} className="card-box">
                                   <div className="pass-detail">
                                     <div className="img-patient">
