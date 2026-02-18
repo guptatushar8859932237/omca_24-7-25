@@ -357,6 +357,9 @@ export default function EditStaff() {
                         {/* <option value="Admin">Admin</option> */}
                         <option value="Manager">Manager</option>
                         <option value="Receptionist">Receptionist</option>
+                        <option value="Doctor">Doctor</option>
+                        <option value="Nurse">Nurse</option>
+                        <option value="Physiotherapist">Physiotherapist</option>
                         <option value="Finance">Finance</option>
                         <option value="Coordinator">Coordinator</option>
                       </Field>

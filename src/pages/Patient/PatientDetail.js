@@ -56,8 +56,10 @@ function PatientDetail() {
   const [drivercontact, setDrivercontact] = useState("");
   const [fieldValue, setFieldValue] = useState("");
   const [value1, setValue1] = useState("");
+  const [passportDetails,setPassportDetails] = useState({});
   const [editData, setEditData] = useState(null);
   const [edited, setEdited] = useState(false);
+  const [attendId,setAttendId]=useState('')
 
   const location = useLocation();
   const dispatch = useDispatch();
@@ -416,7 +418,7 @@ function PatientDetail() {
         );
         if (response.data?.success) {
           Swal.fire("Deleted!", "Report has been deleted.", "success");
-          gtdatareportsdata(); // 🔄 refresh list
+          gtdatareportsdata();
         } else {
           toast.error("Failed to delete report");
         }
@@ -586,23 +588,37 @@ function PatientDetail() {
   };
   const handleKysDetail = async (e) => {
     e.preventDefault();
-    const result = await dispatch(
-      AddKysDetail({
-        id: location.state.patientId,
-        passport: filesData.passport,
-        photo: filesData.photo,
-        Attende_passport: filesData.Attende_passport,
-        Attende_photo: filesData.Attende_photo,
-      }),
-    ).unwrap();
-    console.log(filesData);
+    const formData = new FormData()
+    formData.append('attendant_passport',filesData.Attende_passport)
+    formData.append('attendant_image',filesData.Attende_photo)
     try {
-      setOpen2(false);
+        const response = await axios.post(`${baseurl}addAttendeeDetails/${attendId}`,formData)
+    if(response.data.success){
+        setOpen2(false);
       Swal.fire("Passport Details Added Successfully!", "", "success");
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-    } catch (err) {
-      Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
+    } catch (error) {
+       Swal.fire("Error!", error?.message || "An error occurred", "error");
+    }
+  
+    // const result = await dispatch(
+    //   AddKysDetail({
+    //     id: location.state.patientId,
+    //     passport: filesData.passport,
+    //     photo: filesData.photo,
+    //     Attende_passport: filesData.Attende_passport,
+    //     Attende_photo: filesData.Attende_photo,
+    //   }),
+    // ).unwrap();
+    // // console.log(filesData);
+    // try {
+    //   setOpen2(false);
+    //   Swal.fire("Passport Details Added Successfully!", "", "success");
+    //   dispatch(GetPatientTreatments({ id: location.state.patientId }));
+    // } catch (err) {
+    //   Swal.fire("Error!", err?.message || "An error occurred", "error");
+    // }
   };
   const handleOnChangeCheckbox = (event, id) => {
     const selectedService = Service.find((info) => info.serviceId === id);
@@ -1662,16 +1678,29 @@ function PatientDetail() {
     setTreatmentData(filterData);
   };
 
-  const handlepatientTreatment =(id)=>{
-    console.log(id)
-    console.log(payment_details)
+  const handlepatientTreatment = (id) => {
+    console.log(id);
+    console.log(payment_details);
     // console.log(payment)
-    const FilterDataPayment = payment_details.filter((item)=>(
-      item.treatment_id===id
-    ))
-    console.log(FilterDataPayment)
-    setPayment_details(FilterDataPayment)
+    const FilterDataPayment = payment_details.filter(
+      (item) => item.treatment_id === id,
+    );
+    console.log(FilterDataPayment);
+    setPayment_details(FilterDataPayment);
+  };
+
+ const  handleclickAttandpDetails =async(id)=>{
+  setAttendId(id)
+  console.log(id)
+  try {
+    const response = await axios.get(`${baseurl}getAttendeeDetails/${id}`)
+    if(response.data.success){
+     setPassportDetails(response.data.data)
+    }
+  } catch (error) {
+    console.log(error)
   }
+ }
   return (
     <>
       <div className="page-wrapper">
@@ -1729,48 +1758,47 @@ function PatientDetail() {
                           : ispatient?.patientId}
                       </p>
                       <div className="d-flex">
-  <p className="mx-2">
-                        <button
-                          type="button"
-                          className="add-button"
-                          onClick={() => {
-                            const file = kys[0].id_proof;
+                        <p className="mx-2">
+                          <button
+                            type="button"
+                            className="add-button"
+                            onClick={() => {
+                              const file = kys[0].id_proof;
 
-                            if (file) {
-                              window.open(
-                                `https://sisccltd.com/omca_crm/${file}`,
-                                "_blank",
-                              );
-                            } else {
-                              alert("Document not available");
-                            }
-                          }}
-                        >
-                          View Patient ID
-                        </button>
-                      </p>
-                      <p>
-                        <button
-                          type="button"
-                          className="add-button"
-                          onClick={() => {
-                            const file = kys[0].passport;
+                              if (file) {
+                                window.open(
+                                  `https://sisccltd.com/omca_crm/${file}`,
+                                  "_blank",
+                                );
+                              } else {
+                                alert("Document not available");
+                              }
+                            }}
+                          >
+                            View Patient ID
+                          </button>
+                        </p>
+                        <p>
+                          <button
+                            type="button"
+                            className="add-button"
+                            onClick={() => {
+                              const file = kys[0].passport;
 
-                            if (file) {
-                              window.open(
-                                `https://sisccltd.com/omca_crm/${file}`,
-                                "_blank",
-                              );
-                            } else {
-                              alert("Document not available");
-                            }
-                          }}
-                        >
-                          View Passport
-                        </button>
-                      </p>
+                              if (file) {
+                                window.open(
+                                  `https://sisccltd.com/omca_crm/${file}`,
+                                  "_blank",
+                                );
+                              } else {
+                                alert("Document not available");
+                              }
+                            }}
+                          >
+                            View Passport
+                          </button>
+                        </p>
                       </div>
-                    
                     </div>
                   </div>
                 </div>
@@ -1928,7 +1956,6 @@ function PatientDetail() {
                                             >
                                               {item.status}
                                             </h5>
-
                                             <br />
                                           </>
                                         );
@@ -2021,6 +2048,7 @@ function PatientDetail() {
                                           className="nav-link add-button1"
                                           href="#bottom-tab2"
                                           data-toggle="tab"
+                                          onClick={()=>{handleclickAttandpDetails(info.treatment_id)}}
                                         >
                                           Add Attende Details
                                         </a>
@@ -2036,7 +2064,11 @@ function PatientDetail() {
                                           className="nav-link add-button1"
                                           href="#bottom-tab4"
                                           data-toggle="tab"
-                                          onClick={()=>{handlepatientTreatment(info.treatment_id)}}
+                                          onClick={() => {
+                                            handlepatientTreatment(
+                                              info.treatment_id,
+                                            );
+                                          }}
                                         >
                                           Payment Details
                                         </a>
@@ -2341,8 +2373,6 @@ function PatientDetail() {
                                               (item, index) => {
                                                 return (
                                                   <>
-                                                    {/* <p>{item?.note}</p>
-                                            <p>{new Date(item?.date).toLocaleDateString('en-GB')}</p> */}
                                                     <div className="para-main-div d-flex">
                                                       <div>
                                                         <p>
@@ -2634,10 +2664,10 @@ function PatientDetail() {
                               href="#about-cont"
                               data-toggle="tab"
                             >
-                           Treatment
+                              Treatment
                             </a>
                           </p>
-                          <p
+                          {/* <p
                             className="mx-2 my-2"
                             style={{
                               fontWeight: "500",
@@ -2649,9 +2679,9 @@ function PatientDetail() {
                               href="#bottom-tab2"
                               data-toggle="tab"
                             >
-                             Add Attende Details
+                              Add Attende Details
                             </a>
-                          </p>
+                          </p> */}
                           <p
                             className="mx-2 my-2"
                             style={{
@@ -2663,6 +2693,8 @@ function PatientDetail() {
                               className="nav-link add-button1"
                               href="#bottom-tab4"
                               data-toggle="tab"
+                              onClick={()=>{handleAddTritmentPayment(attendId)}}
+
                             >
                               Payment Details
                             </a>
@@ -2678,6 +2710,7 @@ function PatientDetail() {
                               className="nav-link add-button1"
                               href="#bottom-tab5"
                               data-toggle="tab"
+                              onClick={()=>{handleclicksetData(attendId)}}
                             >
                               Reports
                             </a>
@@ -2691,7 +2724,7 @@ function PatientDetail() {
                             <span>
                               <i className="fa fa-plus"></i>
                             </span>{" "}
-                           Add Attende Details
+                            Add Attende Details
                           </button>
                         </div>
                       </div>
@@ -2702,14 +2735,14 @@ function PatientDetail() {
                           ? "No passport details found"
                           : kys?.map((info, index) => (
                               <>
-                                {/* <div key={index} className="card-box">
+                                <div key={index} className="card-box">
                                   <div className="pass-detail">
                                     <div className="img-patient">
-                                      <h6>Patient Image</h6>
-                                      {info.photo ? (
+                                      <h6>Attende Image</h6>
+                                      {/* {passportDetails.attendant_photo ? (
                                         <img
-                                          src={`${image}${info.photo}`}
-                                          alt="profile image"
+                                          src={`${image}${info.attendant_photo}`}
+                                          alt="no image"
                                           className="rounded-circle shadow"
                                           width="100"
                                           height="100"
@@ -2717,76 +2750,32 @@ function PatientDetail() {
                                       ) : (
                                         <img
                                           src={avtar}
-                                          alt="avatar"
+                                          alt="no image"
                                           className="rounded-circle shadow"
                                           width="100"
                                           height="100"
                                         />
-                                      )}
-                                    </div>
-                                    <div className="id-proof">
-                                      <h6>Id Proof</h6>
-                                      {info.id_proof ? (
-                                        <a
-                                          href={`https://sisccltd.com/omca_crm/${info.id_proof}`}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="btn btn-outline-primary btn-sm"
-                                        >
-                                          View PDF
-                                        </a>
-                                      ) : (
-                                        <span className="text-muted">
-                                          Not Uploaded
-                                        </span>
-                                      )}
-                                      <div className="">
-                                        <h6>Passport</h6>
-                                        {info.passport ? (
+                                      )} */}
+                                       {passportDetails.attendant_photo ? (
                                           <a
-                                            href={`https://sisccltd.com/omca_crm/${info.passport}`}
+                                            href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_photo}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="view-pass"
                                           >
-                                            View Passport
+                                            View Photo
                                           </a>
                                         ) : (
                                           <span className="text-muted">
                                             Not Uploaded
                                           </span>
                                         )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div> */}
-                                <div key={index} className="card-box">
-                                  <div className="pass-detail">
-                                    <div className="img-patient">
-                                      <h6>Attende Image</h6>
-                                      {info.Attende_photo ? (
-                                        <img
-                                          src={`${image}${info.Attende_photo}`}
-                                          alt="no image"
-                                          className="rounded-circle shadow"
-                                          width="100"
-                                          height="100"
-                                        />
-                                      ) : (
-                                        <img
-                                          src={avtar}
-                                          alt="no image"
-                                          className="rounded-circle shadow"
-                                          width="100"
-                                          height="100"
-                                        />
-                                      )}
                                     </div>
                                     <div className="id-proof">
-                                      <h6>Attende id Proof </h6>
-                                      {info.Attende_id_proof ? (
+                                      {/* <h6>Attende id Proof </h6> */}
+                                      {/* {passportDetails.attendant_passport ? (
                                         <a
-                                          href={`https://sisccltd.com/omca_crm/${info.Attende_id_proof}`}
+                                          href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_passport}`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="btn btn-outline-primary btn-sm"
@@ -2797,12 +2786,12 @@ function PatientDetail() {
                                         <span className="text-muted">
                                           Not Uploaded
                                         </span>
-                                      )}
+                                      )} */}
                                       <div className="">
                                         <h6>Attende Passport</h6>
-                                        {info.Attende_passport ? (
+                                        {passportDetails.attendant_passport ? (
                                           <a
-                                            href={`https://sisccltd.com/omca_crm/${info.Attende_passport}`}
+                                            href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_passport}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="view-pass"
@@ -2917,21 +2906,21 @@ function PatientDetail() {
                                         </div>
                                       </div>
                                       <div className="d-flex">
-                                            <p
-                            className="mx-2 my-2"
-                            style={{
-                              fontWeight: "500",
-                              fontSize: "14px",
-                            }}
-                          >
-                            <a
-                              className="nav-link add-button1"
-                              href="#about-cont"
-                              data-toggle="tab"
-                            >
-                           Treatment
-                            </a>
-                          </p>
+                                        <p
+                                          className="mx-2 my-2"
+                                          style={{
+                                            fontWeight: "500",
+                                            fontSize: "14px",
+                                          }}
+                                        >
+                                          <a
+                                            className="nav-link add-button1"
+                                            href="#about-cont"
+                                            data-toggle="tab"
+                                          >
+                                            Treatment
+                                          </a>
+                                        </p>
                                         <p
                                           className="mx-2 my-2"
                                           style={{
@@ -2944,10 +2933,10 @@ function PatientDetail() {
                                             href="#bottom-tab2"
                                             data-toggle="tab"
                                           >
-                                          Add Attende Details
+                                            Add Attende Details
                                           </a>
                                         </p>
-                                        <p
+                                        {/* <p
                                           className="mx-2 my-2"
                                           style={{
                                             fontWeight: "500",
@@ -2961,7 +2950,7 @@ function PatientDetail() {
                                           >
                                             Payment Details
                                           </a>
-                                        </p>
+                                        </p> */}
                                         <p
                                           className="mx-2 my-2"
                                           style={{
@@ -2973,7 +2962,9 @@ function PatientDetail() {
                                             className="nav-link add-button1"
                                             href="#bottom-tab5"
                                             data-toggle="tab"
-                                            onClick={()=>{handleclicksetData(treatmentId)}}
+                                            onClick={() => {
+                                              handleclicksetData(treatmentId);
+                                            }}
                                           >
                                             Reports
                                           </a>
@@ -3099,21 +3090,21 @@ function PatientDetail() {
                                     <p>{treatment.treatment_course_name}</p>
                                   </div>
                                   <div className="d-flex">
-                                            <p
-                            className="mx-2 my-2"
-                            style={{
-                              fontWeight: "500",
-                              fontSize: "14px",
-                            }}
-                          >
-                            <a
-                              className="nav-link add-button1"
-                              href="#about-cont"
-                              data-toggle="tab"
-                            >
-                           Treatment
-                            </a>
-                          </p>
+                                    <p
+                                      className="mx-2 my-2"
+                                      style={{
+                                        fontWeight: "500",
+                                        fontSize: "14px",
+                                      }}
+                                    >
+                                      <a
+                                        className="nav-link add-button1"
+                                        href="#about-cont"
+                                        data-toggle="tab"
+                                      >
+                                        Treatment
+                                      </a>
+                                    </p>
                                     <p
                                       className="mx-2 my-2"
                                       style={{
@@ -3140,12 +3131,16 @@ function PatientDetail() {
                                         className="nav-link add-button1"
                                         href="#bottom-tab4"
                                         data-toggle="tab"
-                                        onClick={()=>{handlepatientTreatment(treatment.treatmentId)}}
+                                        onClick={() => {
+                                          handlepatientTreatment(
+                                            treatment.treatmentId,
+                                          );
+                                        }}
                                       >
                                         Payment Details
                                       </a>
                                     </p>
-                                    <p
+                                    {/* <p
                                       className="mx-2 my-2"
                                       style={{
                                         fontWeight: "500",
@@ -3164,7 +3159,7 @@ function PatientDetail() {
                                       >
                                         Reports
                                       </a>
-                                    </p>
+                                    </p> */}
                                   </div>
                                   {localStorage.getItem("Role") === "Admin" && (
                                     <button
@@ -3180,7 +3175,6 @@ function PatientDetail() {
                                     </button>
                                   )}
                                 </div>
-
                                 {/* ===== Reports Table ===== */}
                                 {treatment.reports &&
                                 treatment.reports.length > 0 ? (
@@ -3999,7 +3993,7 @@ function PatientDetail() {
             >
               <Box>
                 <form id="contact-form" className="contact-form">
-                  <div className="field-set">
+                  {/* <div className="field-set">
                     <label>
                       Passport<span className="text-danger">*</span>
                     </label>
@@ -4023,8 +4017,7 @@ function PatientDetail() {
                         onChange={(e) => onChangeFile(e, "photo")}
                       />
                     </div>
-                  </div>
-
+                  </div> */}
                   <div className="field-set">
                     <label>
                       Attende Passport<span className="text-danger">*</span>

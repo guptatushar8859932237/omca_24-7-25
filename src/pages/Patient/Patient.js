@@ -745,8 +745,8 @@ export default function Patient() {
                           {/* <TableCell>Contact Number</TableCell> */}
                           <TableCell>Patient Disease</TableCell>
                           {/* <TableCell>Date</TableCell> */}
-                          {/* <TableCell>Email</TableCell>
-                          <TableCell>Country</TableCell> */}
+                          {/* <TableCell>Email</TableCell>*/}
+                          <TableCell>Country</TableCell> 
                           {showActions === true ? (
                             <>
                               <TableCell>Patient Type</TableCell>
@@ -856,8 +856,8 @@ export default function Patient() {
                                     "en-GB",
                                   )}
                                 </TableCell> */}
-                                {/* <TableCell>{info.email}</TableCell>
-                                <TableCell>{info.country}</TableCell> */}
+                                {/* <TableCell>{info.email}</TableCell> */}
+                                <TableCell>{info.country}</TableCell>
                                
 
                                 {showActions === true ? (
