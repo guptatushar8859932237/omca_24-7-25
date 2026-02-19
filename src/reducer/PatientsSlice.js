@@ -61,22 +61,57 @@ export const AddAllPatients = createAsyncThunk(
   })
 
   
+// export const EditPatientType = createAsyncThunk(
+//   "patient/EditPatient",
+//   async (userData, { rejectWithValue }) => {
+//     console.log(userData)
+//     try {
+//       const response = await axios.put(`${baseurl}update_patient/${userData.id}`, userData.data, {
+//         headers: {
+//           "Authorization": `Bearer ${localStorage.getItem("token")}`,
+//           "Content-Type": "application/json",
+
+//         },
+//       });
+//       return response.data; // Success response
+//     } catch (err) {
+//       console.error("Error editing staff user:", err.response?.data?.message);
+//       return rejectWithValue(
+//         err.response?.data || { message: "An unknown error occurred" }
+//       );
+//     }
+//   }
+// );
 export const EditPatientType = createAsyncThunk(
   "patient/EditPatient",
-  async (object, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${baseurl}update_patient/${object.id}`, object, {
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
+      if (!payload) {
+        throw new Error("Payload is undefined");
+      }
 
-        },
-      });
-      return response.data; // Success response
+      const { id, data } = payload;
+
+      if (!id) {
+        throw new Error("Patient ID is missing");
+      }
+
+      const response = await axios.put(
+        `${baseurl}update_patient/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data;
     } catch (err) {
-      console.error("Error editing staff user:", err.response?.data?.message);
+      console.error("Edit error:", err);
       return rejectWithValue(
-        err.response?.data || { message: "An unknown error occurred" }
+        err.response?.data || { message: err.message }
       );
     }
   }

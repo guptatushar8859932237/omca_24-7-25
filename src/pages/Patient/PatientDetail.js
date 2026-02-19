@@ -1306,29 +1306,22 @@ function PatientDetail() {
   const handleClicexportPayment = async (a, b) => {
     try {
       const response = await axios.get(`${baseurl}exportTreatmentExcel/${b}`, {
-        responseType: "blob", // ✅ VERY IMPORTANT
+        responseType: "blob", 
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
-      // create blob
       const blob = new Blob([response.data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-
       const url = window.URL.createObjectURL(blob);
-
       const link = document.createElement("a");
       link.href = url;
       link.download = "treatment-payments.xlsx";
-
       document.body.appendChild(link);
       link.click();
-
       link.remove();
       window.URL.revokeObjectURL(url);
-
       Swal.fire("Success", "Excel downloaded successfully!", "success");
     } catch (error) {
       console.log(error);
@@ -3360,7 +3353,7 @@ function PatientDetail() {
                   onClick={uploadmultipleRecord}
                   variant="contained"
                 >
-                  Submit
+                  Send
                 </Button>
               </DialogActions>
             </Box>
