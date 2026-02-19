@@ -702,7 +702,10 @@ function PatientDetail() {
   };
   const handleAddTritmentPayment = async (e) => {
     e.preventDefault();
-
+ if (!treatmentId) {
+    Swal.fire("Error", "Treatment ID missing", "error");
+    return;
+  }
     try {
       await dispatch(
         AddNewTretmentPayment({
@@ -2585,7 +2588,7 @@ function PatientDetail() {
                                 <div className="treat-id">
                                   <div>
                                     <h3 className="mb-0">
-                                      Treatment ID-{treatmentId}
+                                      Treatment ID-{attendId}
                                     </h3>
                                   </div>
                                 </div>
