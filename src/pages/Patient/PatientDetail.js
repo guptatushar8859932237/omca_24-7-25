@@ -54,6 +54,7 @@ function PatientDetail() {
   const [notesID, setNotesID] = useState("");
   const [drivercontact, setDrivercontact] = useState("");
   const [fieldValue, setFieldValue] = useState("");
+  const [treatmentNamePassport, setTreatmentNamePassport] = useState("");
   const [value1, setValue1] = useState("");
   const [passportDetails, setPassportDetails] = useState({});
   const [editData, setEditData] = useState(null);
@@ -89,12 +90,14 @@ function PatientDetail() {
   const [open2, setOpen2] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);
   const [notesModal, setNotesModal] = useState(false);
+  const [dataImperial, setDataImperial] = useState(false);
   const [open32, setOpen32] = useState(false);
   const [editModalNotes, setEditModalNotes] = useState(false);
   const [modalEditServiceOpen, setModalEditServiceOpen] = useState(false);
   const [treatmentIDservice, setTreatmentIDservice] = useState(null);
   const [open10, setOpen10] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [noteHospital2, setNoteHospital2] = useState("");
   const [treatmentPlanPopup, setTreatmentPlanPopup] = useState(false);
   const [open5, setOpen5] = React.useState(false);
   const [note, setNote] = useState("");
@@ -117,6 +120,7 @@ function PatientDetail() {
   const [notes, setNotes] = useState([]);
   const [dataHospital, setDataHospital] = useState([]);
   const [imagefile, setImagefile] = useState(null);
+  const [treatmentIDa, setTreatmentIDa] = useState(null);
   const [enqId, setEnqId] = useState("");
   const [nodaestInput, setNodaestInput] = useState("");
   const [gettreatmentserID, setGettreatmentserID] = useState("");
@@ -230,14 +234,14 @@ function PatientDetail() {
     setTreatmentId(tretmentId);
   };
   const handleClickOpenPerforma = (e, tretmentId) => {
-    console.log(e,tretmentId)
+    console.log(e, tretmentId);
     setOpen32(true);
     setTreatmentId(tretmentId);
   };
 
-  const handleclosePerforma =()=>{
-    setOpen32(false)
-  }
+  const handleclosePerforma = () => {
+    setOpen32(false);
+  };
   const handleClickOpen10 = (e, tretmentId) => {
     console.log(tretmentId);
     setTreatmentId(tretmentId);
@@ -933,7 +937,7 @@ function PatientDetail() {
     }
   };
   const groupedPayments = payment_details?.reduce((acc, info) => {
-    console.log(info)
+    console.log(info);
     if (!acc[info.treatment_id]) {
       acc[info.treatment_id] = [];
     }
@@ -941,10 +945,10 @@ function PatientDetail() {
     return acc;
   }, {});
   console.log("cccccccccccccccccccccccccccccccccccccccccccc", groupedPayments);
-  const penModal = (a,b) => {
-    console.log(a,b)
-    getapicall(b)
-    setGettreatmentserID(b)
+  const penModal = (a, b) => {
+    console.log(a, b);
+    getapicall(b);
+    setGettreatmentserID(b);
     setOpenModal(true);
   };
   const closeModal = () => {
@@ -1015,11 +1019,7 @@ function PatientDetail() {
     const file = e.target.files[0];
     if (!file) return;
 
-    const allowedTypes = [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-    ];
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
     if (!allowedTypes.includes(file.type)) {
       Swal.fire("Only JPG, PNG, files are allowed.");
@@ -1756,86 +1756,82 @@ function PatientDetail() {
   //     console.log(error)
   //   }
   // }
-const handleAddTritmentPaymenttestsubmit = async () => {
-  try {
-    if (!dataPerforma) {
-      Swal.fire({
-        icon: "warning",
-        title: "No File Selected",
-        text: "Please select a Performa Invoice file first.",
-      });
-      return;
-    }
+  const handleAddTritmentPaymenttestsubmit = async () => {
+    try {
+      if (!dataPerforma) {
+        Swal.fire({
+          icon: "warning",
+          title: "No File Selected",
+          text: "Please select a Performa Invoice file first.",
+        });
+        return;
+      }
 
-    const formData = new FormData();
-    formData.append("perfomainvoice", dataPerforma);
+      const formData = new FormData();
+      formData.append("perfomainvoice", dataPerforma);
 
-    const response = await axios.post(
-      `${baseurl}performainvoice`,
-      formData,
-      {
+      const response = await axios.post(`${baseurl}performainvoice`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
+      });
+      if (response.data.success) {
+        setOpen32(false);
+        Swal.fire({
+          icon: "success",
+          title: "Uploaded Successfully!",
+          text: response?.data?.message || "Performa Invoice uploaded.",
+        });
       }
-    );
-    if(response.data.success){
-      setOpen32(false)
-          Swal.fire({
-      icon: "success",
-      title: "Uploaded Successfully!",
-      text: response?.data?.message || "Performa Invoice uploaded.",
-    });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Upload Failed!",
+        text:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      });
     }
-  } catch (error) {
-    console.log(error);
-    Swal.fire({
-      icon: "error",
-      title: "Upload Failed!",
-      text:
-        error?.response?.data?.message ||
-        "Something went wrong. Please try again.",
-    });
-  }
-};
-  const  AddpaymentOnchnage123 = (e) => {
-  const file = e.target.files[0];
+  };
+  const AddpaymentOnchnage123 = (e) => {
+    const file = e.target.files[0];
 
-  if (!file) return;
+    if (!file) return;
 
-  // Allowed types
-  const allowedTypes = [
-    "application/pdf",
-    "image/jpeg",
-    "image/png",
-    "image/jpg",
-    "image/webp"
-  ];
+    // Allowed types
+    const allowedTypes = [
+      "application/pdf",
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/webp",
+    ];
 
-  // File type validation
-  if (!allowedTypes.includes(file.type)) {
-    alert("Only PDF or Image files are allowed!");
-    e.target.value = null;
-    return;
-  }
+    // File type validation
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only PDF or Image files are allowed!");
+      e.target.value = null;
+      return;
+    }
 
-  // File size validation (5MB max)
-  const maxSize = 5 * 1024 * 1024;
+    // File size validation (5MB max)
+    const maxSize = 5 * 1024 * 1024;
 
-  if (file.size > maxSize) {
-    alert("File size must be less than 5MB");
-    e.target.value = null;
-    return;
-  }
+    if (file.size > maxSize) {
+      alert("File size must be less than 5MB");
+      e.target.value = null;
+      return;
+    }
 
-  console.log("Valid file:", file);
+    console.log("Valid file:", file);
 
-  // Agar state me store karna ho:
-  setDataPerforma((prev) => ({
-    ...prev,
-    perfomainvoice: file
-  }));
-};
+    // Agar state me store karna ho:
+    setDataPerforma((prev) => ({
+      ...prev,
+      perfomainvoice: file,
+    }));
+  };
 
   const getTreatmentPlan = async () => {
     const payload = {
@@ -1897,111 +1893,110 @@ const handleAddTritmentPaymenttestsubmit = async () => {
   };
 
   const EditButtoneditprofile = (id) => {
-    console.log(id)
-    setEditPatientProfile(true)
+    console.log(id);
+    setEditPatientProfile(true);
 
+    //  await dispatch(
+    //           EditPatientType({
+    //             id: ispatient.patientId,
+    //             data: formData,
+    //           }),
+    //         ).unwrap();
 
-                  //  await dispatch(
-                  //           EditPatientType({
-                  //             id: ispatient.patientId,
-                  //             data: formData,
-                  //           }),
-                  //         ).unwrap();
-    
-                  //         Swal.fire(
-                  //           "Success!",
-                  //           "Patient updated successfully",
-                  //           "success",
-                  //         );
-                  //         navigate("/Admin/patients");
-   
+    //         Swal.fire(
+    //           "Success!",
+    //           "Patient updated successfully",
+    //           "success",
+    //         );
+    //         navigate("/Admin/patients");
   };
 
-const EditButtoneditprofileClose=()=>{
-   setEditPatientProfile(false)
-} 
+  const EditButtoneditprofileClose = () => {
+    setEditPatientProfile(false);
+  };
 
-// const handleupdateProfile =async()=>{
-//   const formData = new FormData()
-//   formData.append("patient_Profile",imagefile)
-//   try {
-//     const response = await axios.put(`${baseurl}update_patient/${location.state.patientId}`,formData, {
-//           headers: {
-//             Authorization: `Bearer ${localStorage.getItem("token")}`,
-//             "Content-Type": "multipart/form-data",
-//           },
-//         })
-//         if(response.data.success){
-//           console.log(response.data)
-//           setImagefile(null)
-//         }
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
+  // const handleupdateProfile =async()=>{
+  //   const formData = new FormData()
+  //   formData.append("patient_Profile",imagefile)
+  //   try {
+  //     const response = await axios.put(`${baseurl}update_patient/${location.state.patientId}`,formData, {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         })
+  //         if(response.data.success){
+  //           console.log(response.data)
+  //           setImagefile(null)
+  //         }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
-const handleupdateProfile = async () => {
-  if (!imagefile) {
-    Swal.fire({
-      icon: "warning",
-      title: "No Image Selected",
-      text: "Please select an image first.",
-    });
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("patient_Profile", imagefile);
-
-  try {
-    const response = await axios.put(
-      `${baseurl}update_patient/${location?.state?.patientId}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          // ❌ Content-Type manually set karne ki zarurat nahi hoti
-          // Browser automatically set karega with boundary
-        },
-      }
-    );
-
-    if (response?.data?.success) {
+  const handleupdateProfile = async () => {
+    if (!imagefile) {
       Swal.fire({
-        icon: "success",
-        title: "Profile Updated!",
-        text: "Patient profile updated successfully.",
-        timer: 2000,
-        showConfirmButton: false,
+        icon: "warning",
+        title: "No Image Selected",
+        text: "Please select an image first.",
       });
-EditButtoneditprofileClose()
-   dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      setImagefile(null);
-    } else {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("patient_Profile", imagefile);
+
+    try {
+      const response = await axios.put(
+        `${baseurl}update_patient/${location?.state?.patientId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            // ❌ Content-Type manually set karne ki zarurat nahi hoti
+            // Browser automatically set karega with boundary
+          },
+        },
+      );
+
+      if (response?.data?.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Profile Updated!",
+          text: "Patient profile updated successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        EditButtoneditprofileClose();
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        setImagefile(null);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: response?.data?.message || "Something went wrong",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+
       Swal.fire({
         icon: "error",
-        title: "Update Failed",
-        text: response?.data?.message || "Something went wrong",
+        title: "Server Error",
+        text: error?.response?.data?.message || "Something went wrong",
       });
     }
-  } catch (error) {
-    console.log(error);
-
-    Swal.fire({
-      icon: "error",
-      title: "Server Error",
-      text: error?.response?.data?.message || "Something went wrong",
-    });
-  }
-};
+  };
 
   const handleclickAttandpDetails = async (id) => {
     setAttendId(id);
     console.log(id);
     try {
       const response = await axios.get(`${baseurl}getAttendeeDetails/${id}`);
+      setTreatmentNamePassport(response.data);
       if (response.data.success) {
-        console.log(response.data.data)
+        console.log(response.data.data);
         setPassportDetails(response.data.data);
       }
     } catch (error) {
@@ -2012,14 +2007,67 @@ EditButtoneditprofileClose()
   // const handkekeypreees =(e)=>{
   //   if(e.charcode)
   // }
-const handkekeypreees = (e) => {
-  const charCode = e.charCode;
+  const handkekeypreees = (e) => {
+    const charCode = e.charCode;
 
-  // 48–57 are ASCII codes for 0–9
-  if (charCode < 48 || charCode > 57) {
-    e.preventDefault();
+    // 48–57 are ASCII codes for 0–9
+    if (charCode < 48 || charCode > 57) {
+      e.preventDefault();
+    }
+  };
+
+  const handledeedit =(a,b)=>{
+    console.log(a,b)
+    setTreatmentIDa(a)
+    setDataImperial(true)
+  }
+
+  const dataIwemperial =()=>{
+    setDataImperial(false)
+  }
+const handleNothospitalchargeesdata = async () => {
+  const payload ={
+    hospital_charge:noteHospital2
+  }
+  try {
+    const response = await axios.put(
+      `${baseurl}updateHospitalCharge/${treatmentIDa?.treatment_id}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (response.data.success) {
+      // dispatch(getTreatmentPlan)
+       setDataImperial(false)
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      Swal.fire({
+        icon: "success",
+        title: "Updated!",
+        text: "Hospital charge updated successfully.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: error.response?.data?.message || "Something went wrong!",
+    });
   }
 };
+  // const handleNothospitalchargeesdata = async()=>{
+  //   try {
+  //     const response = await axios(`${baseurl}updateHospitalCharge/${treatmentIDa.treatment_id}`)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
   return (
     <>
       <div className="page-wrapper">
@@ -2062,7 +2110,7 @@ const handkekeypreees = (e) => {
                           <FaPen
                             size={12}
                             onClick={(e) =>
-                              EditButtoneditprofile( location.state.patientId)
+                              EditButtoneditprofile(location.state.patientId)
                             }
                           />
                         </label>
@@ -2190,7 +2238,7 @@ const handkekeypreees = (e) => {
                         <i className="fa fa-plus"></i>
                       </span>{" "}
                       Add Treatment Plan
-                    </button>    
+                    </button>
                   </div>
                 </div>
                 <div className="row gx-3 gy-3">
@@ -2217,12 +2265,14 @@ const handkekeypreees = (e) => {
                                             <span className="hospital-name">
                                               {item.name}
                                             </span>
-                                           {info.isAnyHospitalApproved !==
-                                            false && (  <span
-                                              className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                            >
-                                              {item.status}
-                                            </span>)}
+                                            {info.isAnyHospitalApproved !==
+                                              false && (
+                                              <span
+                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                              >
+                                                {item.status}
+                                              </span>
+                                            )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
@@ -2303,8 +2353,7 @@ const handkekeypreees = (e) => {
                             Add Treatment
                           </button>
                         </div>
-                        <div className="">
-                        </div>
+                        <div className=""></div>
                       </div>
                     </div>
                     <div className="row">
@@ -2323,12 +2372,16 @@ const handkekeypreees = (e) => {
                                         <div className="d-flex">
                                           <h5>
                                             Treatment Name-
-                                            <p  onClick={() => {
-                                              setActiveTab("treatment");
-                                              setSelectedTreatmentId(
-                                                info.treatment_id,
-                                              );
-                                            }}>{info.treatment_name}{" "}</p>
+                                            <p
+                                              onClick={() => {
+                                                setActiveTab("treatment");
+                                                setSelectedTreatmentId(
+                                                  info.treatment_id,
+                                                );
+                                              }}
+                                            >
+                                              {info.treatment_name}{" "}
+                                            </p>
                                           </h5>
                                         </div>
                                         <p
@@ -2399,7 +2452,9 @@ const handkekeypreees = (e) => {
                                               handleclickAttandpDetails(
                                                 info.treatment_id,
                                               );
-                                              setTreatMentNAem(info.treatment_status)
+                                              setTreatMentNAem(
+                                                info.treatment_status,
+                                              );
                                             }}
                                           >
                                             Add Attendant
@@ -2417,7 +2472,9 @@ const handkekeypreees = (e) => {
                                               // handlepatientTreatment(
                                               //   info.treatment_id,
                                               // );
-                                              setTreatMentNAem(info.treatment_status)
+                                              setTreatMentNAem(
+                                                info.treatment_status,
+                                              );
                                             }}
                                           >
                                             Payment Details
@@ -2432,7 +2489,9 @@ const handkekeypreees = (e) => {
                                               setSelectedTreatmentId(
                                                 info.treatment_id,
                                               );
-                                               setTreatMentNAem(info.treatment_status)
+                                              setTreatMentNAem(
+                                                info.treatment_status,
+                                              );
                                               // handleclicksetData(
                                               //   info.treatment_id,
                                               // );
@@ -2484,12 +2543,17 @@ const handkekeypreees = (e) => {
                                         </span>{" "}
                                         Add Notes
                                       </button>
-                                        <button className="add-button1" onClick={()=>{penModal(info,info.treatment_id)}}>
-                            <span>
-                              <i className="fa fa-plus"></i>
-                            </span>{" "}
-                            Add Services
-                          </button>
+                                      <button
+                                        className="add-button1"
+                                        onClick={() => {
+                                          penModal(info, info.treatment_id);
+                                        }}
+                                      >
+                                        <span>
+                                          <i className="fa fa-plus"></i>
+                                        </span>{" "}
+                                        Add Services
+                                      </button>
                                     </div>
                                   </div>
                                   <hr></hr>
@@ -2587,7 +2651,7 @@ const handkekeypreees = (e) => {
                                     <div className="col-md-4">
                                       <div className="card patientreat">
                                         <div className="card-header service-list">
-                                          <h6>Hospital</h6>
+                                          <h6>Hospital   </h6>
                                         </div>
                                         <div className="card-body">
                                           <ul className="trment-list">
@@ -2609,7 +2673,7 @@ const handkekeypreees = (e) => {
                                                                 </p>
                                                               </div>
                                                             </div>
-                                                            <div className="col-md-12">
+                                                            <div className="col-8">
                                                               <div className="para-main-div">
                                                                 <p>
                                                                   Charge:{" "}
@@ -2619,10 +2683,8 @@ const handkekeypreees = (e) => {
                                                                 </p>
                                                               </div>
                                                             </div>
-                                                          </div>
-                                                        </div>
-                                                        <div className="col-md-2 text-end">
-                                                          {item.hospital_Name && (
+                                                            
+                                                            {item.hospital_Name && (
                                                             <i
                                                               className="fa-solid fa-trash text-danger cursor-pointer"
                                                               onClick={() =>
@@ -2633,6 +2695,26 @@ const handkekeypreees = (e) => {
                                                               }
                                                             ></i>
                                                           )}
+                                                           {item.hospital_Name && (
+                                                            <i
+                                                              className="fa-solid fa-edit cursor-pointer"
+                                                              onClick={() =>
+                                                                handledeedit(
+                                                                  info,
+                                                                  item,
+                                                                )
+                                                              }
+                                                            ></i>
+                                                          )}
+                                                          </div>
+                                                        </div>
+                                                        <div className="d-flex">
+                                                            <div className="col-md-2 text-end">
+                                                         
+                                                        </div> 
+                                                         <div className="col-md-2 text-end">
+                                                         
+                                                        </div>      
                                                         </div>
                                                       </div>
                                                     </li>
@@ -2654,7 +2736,7 @@ const handkekeypreees = (e) => {
                                             <ul className="free-list">
                                               {info?.services?.map(
                                                 (item, index) => {
-                                                  console.log(item);
+                                                  // console.log(item);
                                                   if (
                                                     item.service_type === "Free"
                                                   ) {
@@ -3121,7 +3203,7 @@ const handkekeypreees = (e) => {
                                           height="100"
                                         />
                                       )} */}
-                                    {/* {passportDetails.attendant_photo ? (
+                    {/* {passportDetails.attendant_photo ? (
                                       <a
                                         href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_photo}`}
                                         target="_blank"
@@ -3159,96 +3241,92 @@ const handkekeypreees = (e) => {
                               </div>
                             </>
                           ))}
-                    </div> */} 
+                    </div> */}
                     <div className="col-md-12">
-                      <div  className="card-box">
-                                <div className="treat-card">
-                                  <div className="sectabmain">
-                                    <div className="treat-id">
-                                      <div>
-                                        <h3 className="mb-0">
-                                          {/* Treatment ID-{attendId} */}
-                                        </h3>
-                                      </div>
-                                    </div>
-                                    <div className="d-flex">
-                                      <ul className="nav nav-tabs treat-tabs">
-                                        <li className="nav-item">
-                                          <button
-                                            className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                            onClick={() => {
-                                              setActiveTab("treatment");
-                                            }}
-                                          >
-                                            Treatment
-                                          </button>
-                                        </li>
+                      <div className="card-box">
+                        <div className="treat-card">
+                          <div className="sectabmain">
+                            <div className="treat-id">
+                              <div>
+                                <h3 className="mb-0">
+                                  Treatment Name-
+                                  {treatmentNamePassport?.treatmentName}
+                                </h3>
+                              </div>
+                            </div>
+                            <div className="d-flex">
+                              <ul className="nav nav-tabs treat-tabs">
+                                <li className="nav-item">
+                                  <button
+                                    className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                    onClick={() => {
+                                      setActiveTab("treatment");
+                                    }}
+                                  >
+                                    Treatment
+                                  </button>
+                                </li>
 
-                                        <li className="nav-item">
-                                          <button
-                                            className={`nav-link ${activeTab === "attendant" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                            onClick={() => {
-                                              setActiveTab("attendant");
-                                              // setSelectedTreatmentId(info.treatment_id);
-                                              handleclickAttandpDetails(
-                                                attendId,
-                                              );
-                                            }}
-                                          >
-                                            Add Attendant
-                                          </button>
-                                        </li>
+                                <li className="nav-item">
+                                  <button
+                                    className={`nav-link ${activeTab === "attendant" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                    onClick={() => {
+                                      setActiveTab("attendant");
+                                      // setSelectedTreatmentId(info.treatment_id);
+                                      handleclickAttandpDetails(attendId);
+                                    }}
+                                  >
+                                    Add Attendant
+                                  </button>
+                                </li>
 
-                                        <li className="nav-item">
-                                          <button
-                                            className={`nav-link ${activeTab === "payment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                            onClick={() => {
-                                              setActiveTab("payment");
-                                              // setSelectedTreatmentId(info.treatment_id);
-                                              // handlepatientTreatment(attendId);
-                                            }}
-                                          >
-                                            Payment Details
-                                          </button>
-                                        </li>
+                                <li className="nav-item">
+                                  <button
+                                    className={`nav-link ${activeTab === "payment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                    onClick={() => {
+                                      setActiveTab("payment");
+                                      // setSelectedTreatmentId(info.treatment_id);
+                                      // handlepatientTreatment(attendId);
+                                    }}
+                                  >
+                                    Payment Details
+                                  </button>
+                                </li>
 
-                                        <li className="nav-item">
-                                          <button
-                                            className={`nav-link ${activeTab === "reports" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                            onClick={() => {
-                                              setActiveTab("reports");
-                                              // setSelectedTreatmentId(info.treatment_id);
-                                              // handleclicksetData(attendId);
-                                            }}
-                                          >
-                                            Reports
-                                          </button>
-                                        </li>
-                                      </ul>
-                                    </div>
+                                <li className="nav-item">
+                                  <button
+                                    className={`nav-link ${activeTab === "reports" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                    onClick={() => {
+                                      setActiveTab("reports");
+                                      // setSelectedTreatmentId(info.treatment_id);
+                                      // handleclicksetData(attendId);
+                                    }}
+                                  >
+                                    Reports
+                                  </button>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        <hr></hr>
+                        {/* <div className="pass-detail">
+                                  <div className="img-patient d-flex">
+                                    <h6>Attandant Name-</h6>
+                                     <p>{passportDetails.attendant_fullname}</p>
                                   </div>
-                                </div>
-                                <hr></hr>
-                                <div className="pass-detail">
-                                  <div className="img-patient">
-                                    <h6>Attendant Image</h6>
-                                    {/* {passportDetails.attendant_photo ? (
-                                        <img
-                                          src={`${image}${info.attendant_photo}`}
-                                          alt="no image"
-                                          className="rounded-circle shadow"
-                                          width="100"
-                                          height="100"
-                                        />
-                                      ) : (
-                                        <img
-                                          src={avtar}
-                                          alt="no image"
-                                          className="rounded-circle shadow"
-                                          width="100"
-                                          height="100"
-                                        />
-                                      )} */}
+                                  <br/>
+                                  <div className="img-patient d-flex">
+                                    <h6>Attandant Relation-</h6>
+                                     <p>{passportDetails.attendant_relation}</p>
+                                  </div>
+                                  <br/>
+                                  <div className="img-patient d-flex">
+                                    <h6>Attandant Contact-</h6>
+                                     <p>{passportDetails.attendant_contact}</p>
+                                  </div>
+                                  <div><br/>
+                                   <h6>Attendant Passport</h6>
                                     {passportDetails?.attendant_photo ? (
                                       <a
                                         href={`https://sisccltd.com/omca_crm/${passportDetails[0]?.attendant_photo}`}
@@ -3283,8 +3361,61 @@ const handkekeypreees = (e) => {
                                       )}
                                     </div>
                                   </div>
-                                </div>
-                              </div>
+                                </div> */}
+                        <div className="img-patient d-flex">
+                          <h6 className="me-2">Attendant Name:</h6>
+                          <p className="mb-0">
+                            {passportDetails?.attendant_fullname || "N/A"}
+                          </p>
+                        </div>
+
+                        <div className="img-patient d-flex mt-2">
+                          <h6 className="me-2">Attendant Relation:</h6>
+                          <p className="mb-0">
+                            {passportDetails?.attendant_relation || "N/A"}
+                          </p>
+                        </div>
+
+                        <div className="img-patient d-flex mt-2">
+                          <h6 className="me-2">Attendant Contact:</h6>
+                          <p className="mb-0">
+                            {passportDetails?.attendant_contact || "N/A"}
+                          </p>
+                        </div>
+                        <div className="pass-detail">
+                          <div className="mt-3">
+                            <h6>Attendant Photo</h6>
+                            {passportDetails?.attendant_photo ? (
+                              <a
+                                href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_photo}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="view-pass"
+                              >
+                                View Photo
+                              </a>
+                            ) : (
+                              <span className="text-muted">Not Uploaded</span>
+                            )}
+                          </div>
+
+                          <div className="mt-3">
+                            <h6>Attendant Passport</h6>
+                            {passportDetails?.attendant_passport ? (
+                              <a
+                                href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_passport}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="view-pass"
+                              >
+                                View Passport
+                              </a>
+                            ) : (
+                              <span className="text-muted">Not Uploaded</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                       {/* { passportDetails?.map((info, index) => (
                             <>
                               
@@ -3305,200 +3436,203 @@ const handkekeypreees = (e) => {
                     <div className="col-md-12">
                       {Object.keys(groupedPayments).length === 0 ? (
                         <>
-                         <div className="card-box" >
-                        <div className="treat-card">
-                          <div className="sectabmain">
-                            <div className="treat-id">
-                              <div>
-                                <h3 className="mb-0">
-                                  Treatment ID-{selectedTreatmentId}
-                                </h3>
+                          <div className="card-box">
+                            <div className="treat-card">
+                              <div className="sectabmain">
+                                <div className="treat-id">
+                                  <div>
+                                    <h3 className="mb-0">
+                                      Treatment Name-{selectedTreatmentId}
+                                    </h3>
+                                  </div>
+                                </div>
+                                <div className="d-flex">
+                                  <ul className="nav nav-tabs treat-tabs">
+                                    <li className="nav-item">
+                                      <button
+                                        className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                        onClick={() => {
+                                          setActiveTab("treatment");
+                                        }}
+                                      >
+                                        Treatment
+                                      </button>
+                                    </li>
+
+                                    <li className="nav-item">
+                                      <button
+                                        className={`nav-link ${activeTab === "attendant" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                        onClick={() => {
+                                          setActiveTab("attendant");
+                                          handleclickAttandpDetails(
+                                            selectedTreatmentId,
+                                          );
+                                        }}
+                                      >
+                                        Add Attendant
+                                      </button>
+                                    </li>
+
+                                    <li className="nav-item">
+                                      <button
+                                        className={`nav-link ${activeTab === "payment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                        onClick={() => {
+                                          setActiveTab("payment");
+                                          // handlepatientTreatment(
+                                          //   selectedTreatmentId,
+                                          // );
+                                        }}
+                                      >
+                                        Payment Details
+                                      </button>
+                                    </li>
+
+                                    <li className="nav-item">
+                                      <button
+                                        className={`nav-link ${activeTab === "reports" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                        onClick={() => {
+                                          setActiveTab("reports");
+                                          // handleclicksetData(selectedTreatmentId);
+                                        }}
+                                      >
+                                        Reports
+                                      </button>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                              <div className="">
+                                <button
+                                  onClick={(e) =>
+                                    handleClicexportPayment(e, treatmentId)
+                                  }
+                                  className="add-button mx-2"
+                                >
+                                  <span>
+                                    <i className="fa fa-plus"></i>
+                                  </span>{" "}
+                                  Export
+                                </button>
+                                <button
+                                  onClick={(e) =>
+                                    handleClickOpen3(e, treatmentId)
+                                  }
+                                  className="add-button"
+                                >
+                                  <span>
+                                    <i className="fa fa-plus"></i>
+                                  </span>{" "}
+                                  Add Amount
+                                </button>
                               </div>
                             </div>
-                            <div className="d-flex">
-                              <ul className="nav nav-tabs treat-tabs">
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                    onClick={() => {
-                                      setActiveTab("treatment");
-                                    }}
-                                  >
-                                    Treatment
-                                  </button>
-                                </li>
-
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link ${activeTab === "attendant" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                    onClick={() => {
-                                      setActiveTab("attendant");
-                                      handleclickAttandpDetails(
-                                        selectedTreatmentId,
-                                      );
-                                    }}
-                                  >
-                                    Add Attendant
-                                  </button>
-                                </li>
-
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link ${activeTab === "payment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                    onClick={() => {
-                                      setActiveTab("payment");
-                                      // handlepatientTreatment(
-                                      //   selectedTreatmentId,
-                                      // );
-                                    }}
-                                  >
-                                    Payment Details
-                                  </button>
-                                </li>
-
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link ${activeTab === "reports" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                    onClick={() => {
-                                      setActiveTab("reports");
-                                      // handleclicksetData(selectedTreatmentId);
-                                    }}
-                                  >
-                                    Reports
-                                  </button>
-                                </li>
-                              </ul>
-                            </div>
                           </div>
-                          <div className="">
-                            <button
-                              onClick={(e) =>
-                                handleClicexportPayment(e, treatmentId)
-                              }
-                              className="add-button mx-2"
-                            >
-                              <span>
-                                <i className="fa fa-plus"></i>
-                              </span>{" "}
-                              Export
-                            </button>
-                            <button
-                              onClick={(e) => handleClickOpen3(e, treatmentId)}
-                              className="add-button"
-                            >
-                              <span>
-                                <i className="fa fa-plus"></i>
-                              </span>{" "}
-                              Add Amount
-                            </button>
-                            
-                          </div>
-                        </div>
-                        </div>
-                        <hr></hr>
+                          <hr></hr>
                         </>
                       ) : (
                         <>
                           {groupedPayments &&
                             Object.entries(groupedPayments).map(
                               ([treatmentId, payments], index) => {
-                                  const { treatment_course_name } = payments[0] || {};
-                                return(
-                                <>
-                                <div className="card-box" key={treatmentId}>
-                                  <div className="treat-card">
-                                    <div className="sectabmain">
-                                      <div className="treat-id">
-                                        <div>
-                                          <h3 className="mb-0">
-                                            Treatment ID-{treatment_course_name}
-                                          </h3>
+                                const { treatment_course_name } =
+                                  payments[0] || {};
+                                return (
+                                  <>
+                                    <div className="card-box" key={treatmentId}>
+                                      <div className="treat-card">
+                                        <div className="sectabmain">
+                                          <div className="treat-id">
+                                            <div>
+                                              <h3 className="mb-0">
+                                                Treatment Name-
+                                                {treatment_course_name}
+                                              </h3>
+                                            </div>
+                                          </div>
+                                          <div className="d-flex">
+                                            <ul className="nav nav-tabs treat-tabs">
+                                              <li className="nav-item">
+                                                <button
+                                                  className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                                  onClick={() => {
+                                                    setActiveTab("treatment");
+                                                  }}
+                                                >
+                                                  Treatment
+                                                </button>
+                                              </li>
+
+                                              <li className="nav-item">
+                                                <button
+                                                  className={`nav-link ${activeTab === "attendant" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                                  onClick={() => {
+                                                    setActiveTab("attendant");
+                                                    handleclickAttandpDetails(
+                                                      selectedTreatmentId,
+                                                    );
+                                                  }}
+                                                >
+                                                  Add Attendant
+                                                </button>
+                                              </li>
+
+                                              <li className="nav-item">
+                                                <button
+                                                  className={`nav-link ${activeTab === "payment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                                  onClick={() => {
+                                                    setActiveTab("payment");
+                                                    // handlepatientTreatment(
+                                                    //   selectedTreatmentId,
+                                                    // );
+                                                  }}
+                                                >
+                                                  Payment Details
+                                                </button>
+                                              </li>
+
+                                              <li className="nav-item">
+                                                <button
+                                                  className={`nav-link ${activeTab === "reports" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                                  onClick={() => {
+                                                    setActiveTab("reports");
+                                                    // handleclicksetData(
+                                                    //   selectedTreatmentId,
+                                                    // );
+                                                  }}
+                                                >
+                                                  Reports
+                                                </button>
+                                              </li>
+                                            </ul>
+                                          </div>
                                         </div>
-                                      </div>
-                                      <div className="d-flex">
-                                        <ul className="nav nav-tabs treat-tabs">
-                                          <li className="nav-item">
-                                            <button
-                                              className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                              onClick={() => {
-                                                setActiveTab("treatment");
-                                              }}
-                                            >
-                                              Treatment
-                                            </button>
-                                          </li>
-
-                                          <li className="nav-item">
-                                            <button
-                                              className={`nav-link ${activeTab === "attendant" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                              onClick={() => {
-                                                setActiveTab("attendant");
-                                                handleclickAttandpDetails(
-                                                  selectedTreatmentId,
-                                                );
-                                              }}
-                                            >
-                                              Add Attendant
-                                            </button>
-                                          </li>
-
-                                          <li className="nav-item">
-                                            <button
-                                              className={`nav-link ${activeTab === "payment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                              onClick={() => {
-                                                setActiveTab("payment");
-                                                // handlepatientTreatment(
-                                                //   selectedTreatmentId,
-                                                // );
-                                              }}
-                                            >
-                                              Payment Details
-                                            </button>
-                                          </li>
-
-                                          <li className="nav-item">
-                                            <button
-                                              className={`nav-link ${activeTab === "reports" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                              onClick={() => {
-                                                setActiveTab("reports");
-                                                // handleclicksetData(
-                                                //   selectedTreatmentId,
-                                                // );
-                                              }}
-                                            >
-                                              Reports
-                                            </button>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                    </div>
-                                    <div className="">
-                                      <button
-                                        onClick={(e) =>
-                                          handleClicexportPayment(
-                                            e,
-                                            treatmentId,
-                                          )
-                                        }
-                                        className="add-button mx-2"
-                                      >
-                                        <span>
-                                          <i className="fa fa-plus"></i>
-                                        </span>{" "}
-                                        Export
-                                      </button>
-                                      <button
-                                        onClick={(e) =>
-                                          handleClickOpen3(e, treatmentId)
-                                        }
-                                        className="add-button"
-                                      >
-                                        <span>
-                                          <i className="fa fa-plus"></i>
-                                        </span>{" "}
-                                        Add Amount
-                                      </button>
-                                      {/* <button
+                                        <div className="">
+                                          <button
+                                            onClick={(e) =>
+                                              handleClicexportPayment(
+                                                e,
+                                                treatmentId,
+                                              )
+                                            }
+                                            className="add-button mx-2"
+                                          >
+                                            <span>
+                                              <i className="fa fa-plus"></i>
+                                            </span>{" "}
+                                            Export
+                                          </button>
+                                          <button
+                                            onClick={(e) =>
+                                              handleClickOpen3(e, treatmentId)
+                                            }
+                                            className="add-button"
+                                          >
+                                            <span>
+                                              <i className="fa fa-plus"></i>
+                                            </span>{" "}
+                                            Add Amount
+                                          </button>
+                                          {/* <button
                               onClick={(e) => handleClickOpenPerforma(e, treatmentId)}
                               className="add-button mx-2"
                             >
@@ -3507,72 +3641,72 @@ const handkekeypreees = (e) => {
                               </span>{" "}
                               Add Performa Invoice
                             </button> */}
-                                    </div>
-                                  </div>
-                                  <hr></hr>
-                                  <div className="experience-box">
-                                    <ul className="experience-list">
-                                      {payments.map((info, idx) => {
-                                        console.log(info);
-                                        return (
-                                          <>
-                                            <li key={idx}>
-                                              <div className="experience-user">
-                                                <div className="before-circle"></div>
-                                              </div>
-                                              <div>
-                                                <h5></h5>
-                                              </div>
-                                              <div className="experience-content">
-                                                <div className="timeline-content">
-                                                  <div>
-                                                    Payment Date -{" "}
-                                                    {moment(
-                                                      info.payment_Date,
-                                                    ).format("L")}
+                                        </div>
+                                      </div>
+                                      <hr></hr>
+                                      <div className="experience-box">
+                                        <ul className="experience-list">
+                                          {payments.map((info, idx) => {
+                                            console.log(info);
+                                            return (
+                                              <>
+                                                <li key={idx}>
+                                                  <div className="experience-user">
+                                                    <div className="before-circle"></div>
                                                   </div>
                                                   <div>
-                                                    Payment Method -{" "}
-                                                    {info.paymentMethod}
+                                                    <h5></h5>
                                                   </div>
-                                                  <div>
-                                                    Paid Amount -{" "}
-                                                    {info.paid_amount}
-                                                  </div>
-                                                  {/* <PictureAsPdf
+                                                  <div className="experience-content">
+                                                    <div className="timeline-content">
+                                                      <div>
+                                                        Payment Date -{" "}
+                                                        {moment(
+                                                          info.payment_Date,
+                                                        ).format("L")}
+                                                      </div>
+                                                      <div>
+                                                        Payment Method -{" "}
+                                                        {info.paymentMethod}
+                                                      </div>
+                                                      <div>
+                                                        Paid Amount -{" "}
+                                                        {info.paid_amount}
+                                                      </div>
+                                                      {/* <PictureAsPdf
                                                  
                                                 /> */}
-                                                  <button
-                                                    className="add-button"
-                                                    style={{
-                                                      cursor: "pointer",
-                                                    }}
-                                                    onClick={() => {
-                                                      navigate(
-                                                        "/Admin/Patient-Pdfdetails",
-                                                        {
-                                                          state: {
-                                                            data: info?.payment_id,
-                                                          },
-                                                        },
-                                                      );
-                                                    }}
-                                                  >
-                                                    {" "}
-                                                    PDF Download
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </li>
-                                          </>
-                                        );
-                                      })}
-                                    </ul>
-                                  </div>
-                                </div>
-                                </>
-                              )
-},
+                                                      <button
+                                                        className="add-button"
+                                                        style={{
+                                                          cursor: "pointer",
+                                                        }}
+                                                        onClick={() => {
+                                                          navigate(
+                                                            "/Admin/Patient-Pdfdetails",
+                                                            {
+                                                              state: {
+                                                                data: info?.payment_id,
+                                                              },
+                                                            },
+                                                          );
+                                                        }}
+                                                      >
+                                                        {" "}
+                                                        PDF Download
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                              </>
+                                            );
+                                          })}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </>
+                                );
+                              },
                             )}
                         </>
                       )}
@@ -3590,164 +3724,167 @@ const handkekeypreees = (e) => {
                   <div className="row">
                     <div className="col-md-12">
                       {treatmentData.map((treatment) => {
-                        console.log(treatment)
+                        console.log(treatment);
                         return (
                           <>
-                          <div
-                          className="card-box mb-4"
-                          key={treatment.treatmentId}
-                        >
-                          {/* ===== Treatment Header ===== */}
-                          <div className="treat-card d-flex justify-content-between align-items-center">
-                            <div className="sectabmain">
-                              <div className="treat-id">
-                                <h3 className="mb-0">
-                                  Treatment ID - {treatment.treatment_course_name}{" "}
-                                </h3>
+                            <div
+                              className="card-box mb-4"
+                              key={treatment.treatmentId}
+                            >
+                              {/* ===== Treatment Header ===== */}
+                              <div className="treat-card d-flex justify-content-between align-items-center">
+                                <div className="sectabmain">
+                                  <div className="treat-id">
+                                    <h3 className="mb-0">
+                                      Treatment Name -{" "}
+                                      {treatment.treatment_course_name}{" "}
+                                    </h3>
+                                  </div>
+                                  <div className="d-flex">
+                                    <ul className="nav nav-tabs treat-tabs">
+                                      <li className="nav-item">
+                                        <button
+                                          className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                          onClick={() => {
+                                            setActiveTab("treatment");
+                                          }}
+                                        >
+                                          Treatment
+                                        </button>
+                                      </li>
+
+                                      <li className="nav-item">
+                                        <button
+                                          className={`nav-link ${activeTab === "attendant" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                          onClick={() => {
+                                            setActiveTab("attendant");
+                                            handleclickAttandpDetails(
+                                              selectedTreatmentId,
+                                            );
+                                          }}
+                                        >
+                                          Add Attendant
+                                        </button>
+                                      </li>
+
+                                      <li className="nav-item">
+                                        <button
+                                          className={`nav-link ${activeTab === "payment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                          onClick={() => {
+                                            setActiveTab("payment");
+                                            // handlepatientTreatment(
+                                            //   selectedTreatmentId,
+                                            // );
+                                          }}
+                                        >
+                                          Payment Details
+                                        </button>
+                                      </li>
+                                      <li className="nav-item">
+                                        <button
+                                          className={`nav-link ${activeTab === "reports" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                          onClick={() => {
+                                            setActiveTab("reports");
+                                            // setSelectedTreatmentId(selectedTreatmentId);
+                                            // handleclicksetData(selectedTreatmentId);
+                                          }}
+                                        >
+                                          Reports
+                                        </button>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                {localStorage.getItem("Role") === "Admin" && (
+                                  <button
+                                    onClick={(e) =>
+                                      handleClickOpen10(
+                                        e,
+                                        treatment.treatmentId,
+                                      )
+                                    }
+                                    className="add-button"
+                                  >
+                                    <i className="fa fa-plus"></i> Add Report
+                                  </button>
+                                )}
                               </div>
-                              <div className="d-flex">
-                                <ul className="nav nav-tabs treat-tabs">
-                                  <li className="nav-item">
-                                    <button
-                                      className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                      onClick={() => {
-                                        setActiveTab("treatment");
-                                      }}
-                                    >
-                                      Treatment
-                                    </button>
-                                  </li>
+                              {/* ===== Reports Table ===== */}
+                              {treatment.reports &&
+                              treatment.reports.length > 0 ? (
+                                <div className="table-responsive mt-3">
+                                  <TableContainer component={Paper}>
+                                    <Table className="table-no-card">
+                                      <TableHead>
+                                        <TableRow>
+                                          <TableCell>Treatment ID</TableCell>
+                                          <TableCell>Report Title</TableCell>
+                                          <TableCell>Report Date</TableCell>
+                                          {localStorage.getItem("Role") ===
+                                            "Admin" && (
+                                            <>
+                                              <TableCell>Reports</TableCell>
+                                              <TableCell>Action</TableCell>
+                                            </>
+                                          )}
+                                        </TableRow>
+                                      </TableHead>
 
-                                  <li className="nav-item">
-                                    <button
-                                      className={`nav-link ${activeTab === "attendant" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                      onClick={() => {
-                                        setActiveTab("attendant");
-                                        handleclickAttandpDetails(
-                                          selectedTreatmentId,
-                                        );
-                                      }}
-                                    >
-                                      Add Attendant
-                                    </button>
-                                  </li>
-
-                                  <li className="nav-item">
-                                    <button
-                                      className={`nav-link ${activeTab === "payment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                      onClick={() => {
-                                        setActiveTab("payment");
-                                        // handlepatientTreatment(
-                                        //   selectedTreatmentId,
-                                        // );
-                                      }}
-                                    >
-                                      Payment Details
-                                    </button>
-                                  </li>
-                                  <li className="nav-item">
-                                    <button
-                                      className={`nav-link ${activeTab === "reports" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
-                                      onClick={() => {
-                                        setActiveTab("reports");
-                                        // setSelectedTreatmentId(selectedTreatmentId);
-                                        // handleclicksetData(selectedTreatmentId);
-                                      }}
-                                    >
-                                      Reports
-                                    </button>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                            {localStorage.getItem("Role") === "Admin" && (
-                              <button
-                                onClick={(e) =>
-                                  handleClickOpen10(e, treatment.treatmentId)
-                                }
-                                className="add-button"
-                              >
-                                <i className="fa fa-plus"></i> Add Report
-                              </button>
-                            )}
-                          </div>
-                          {/* ===== Reports Table ===== */}
-                          {treatment.reports && treatment.reports.length > 0 ? (
-                            <div className="table-responsive mt-3">
-                              <TableContainer component={Paper}>
-                                <Table className="table-no-card">
-                                  <TableHead>
-                                    <TableRow>
-                                      <TableCell>Treatment ID</TableCell>
-                                      <TableCell>Report Title</TableCell>
-                                      <TableCell>Report Date</TableCell>
-                                      {localStorage.getItem("Role") ===
-                                        "Admin" && (
-                                        <>
-                                          <TableCell>Reports</TableCell>
-                                          <TableCell>Action</TableCell>
-                                        </>
-                                      )}
-                                    </TableRow>
-                                  </TableHead>
-
-                                  <TableBody>
-                                    {treatment.reports.map((item) => (
-                                      <TableRow key={item._id}>
-                                        <TableCell>
-                                          {item.treatmentId}
-                                        </TableCell>
-                                        <TableCell>
-                                          {item.reportTitle}
-                                        </TableCell>
-                                        <TableCell>
-                                          {new Date(
-                                            item.treatment_report_date,
-                                          ).toLocaleDateString("en-GB")}
-                                        </TableCell>
-
-                                        {localStorage.getItem("Role") ===
-                                          "Admin" && (
-                                          <>
+                                      <TableBody>
+                                        {treatment.reports.map((item) => (
+                                          <TableRow key={item._id}>
                                             <TableCell>
-                                              <a
-                                                href={`${image}${item.treatmentReport}`}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                              >
-                                                Download Report
-                                              </a>
+                                              {item.treatmentId}
                                             </TableCell>
                                             <TableCell>
-                                              <i
-                                                style={{
-                                                  cursor: "pointer",
-                                                }}
-                                                className="fa-solid fa-trash text-danger"
-                                                onClick={() =>
-                                                  handledeleteReport(item)
-                                                }
-                                              ></i>
+                                              {item.reportTitle}
                                             </TableCell>
-                                          </>
-                                        )}
-                                      </TableRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </TableContainer>
+                                            <TableCell>
+                                              {new Date(
+                                                item.treatment_report_date,
+                                              ).toLocaleDateString("en-GB")}
+                                            </TableCell>
+
+                                            {localStorage.getItem("Role") ===
+                                              "Admin" && (
+                                              <>
+                                                <TableCell>
+                                                  <a
+                                                    href={`${image}${item.treatmentReport}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                  >
+                                                    Download Report
+                                                  </a>
+                                                </TableCell>
+                                                <TableCell>
+                                                  <i
+                                                    style={{
+                                                      cursor: "pointer",
+                                                    }}
+                                                    className="fa-solid fa-trash text-danger"
+                                                    onClick={() =>
+                                                      handledeleteReport(item)
+                                                    }
+                                                  ></i>
+                                                </TableCell>
+                                              </>
+                                            )}
+                                          </TableRow>
+                                        ))}
+                                      </TableBody>
+                                    </Table>
+                                  </TableContainer>
+                                </div>
+                              ) : (
+                                <p className="mt-2 text-muted">
+                                  No reports available
+                                </p>
+                              )}
                             </div>
-                          ) : (
-                            <p className="mt-2 text-muted">
-                              No reports available
-                            </p>
-                          )}
-                        </div>
                           </>
-                        )
-                      }
-                        
-                      )}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -4550,7 +4687,9 @@ const handkekeypreees = (e) => {
                     <div className="upload-input">
                       <input
                         type="text"
-                        onKeyPress={(e)=>{handkekeypreees(e)}}
+                        onKeyPress={(e) => {
+                          handkekeypreees(e);
+                        }}
                         name="attendant_contact"
                         className="form-control"
                         value={filesData.attendant_contact}
@@ -4600,6 +4739,68 @@ const handkekeypreees = (e) => {
             </Box>
           </DialogContent>
         </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={dataImperial}
+          onClose={dataIwemperial}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Hospital Charge</h6>
+            </div>
+            <div className="cross-icon" onClick={dataIwemperial}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                     Enter Charge<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      id="w3review"
+                      name="setNoteHospital2"
+                      rows="4"
+                      cols="50"
+                      className="form-control"
+                      placeholder="Note"
+                      onKeyPress={(e)=>{handkekeypreees(e)}}
+                      onChange={(e) => setNoteHospital2(e.target.value)}
+                      value={noteHospital2}
+                    />
+                    
+                  </div>
+               
+                  <DialogActions className="submit-main">
+                    <Button
+                      // type="submit"
+                      variant="contained"
+                      onClick={()=>{handleNothospitalchargeesdata()}}
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <ToastContainer />
       </React.Fragment>
       <React.Fragment>
         <Dialog
@@ -4774,9 +4975,8 @@ const handkekeypreees = (e) => {
             >
               <Box>
                 <form id="contact-form" className="contact-form">
-                  
                   {/* <div>{info.treatment_due_payment}</div> */}
-                 
+
                   <div className="field-set">
                     <label>
                       Add Performa Invoice<span className="text-danger"></span>
@@ -4784,17 +4984,19 @@ const handkekeypreees = (e) => {
                     <input
                       type="file"
                       id="birthday"
-                     name="perfomainvoice"
+                      name="perfomainvoice"
                       placeholder="Appointment Date"
                       className="form-control"
-                       accept=".pdf,image/*"
-                     onChange={AddpaymentOnchnage123}
+                      accept=".pdf,image/*"
+                      onChange={AddpaymentOnchnage123}
                     />
                   </div>
                   <DialogActions className="submit-main">
                     <Button
                       // type="submit"
-                      onClick={()=>{handleAddTritmentPaymenttestsubmit()}}
+                      onClick={() => {
+                        handleAddTritmentPaymenttestsubmit();
+                      }}
                       // onClick={(e) => handleAddTritmentPayment(e)}
                       variant="contained"
                     >
@@ -4888,7 +5090,9 @@ const handkekeypreees = (e) => {
                   <DialogActions className="submit-main">
                     <Button
                       // type="submit"
-                      onClick={()=>{handleAddTritmentPayment()}}
+                      onClick={() => {
+                        handleAddTritmentPayment();
+                      }}
                       // onClick={(e) => handleAddTritmentPayment(e)}
                       variant="contained"
                     >
@@ -5017,14 +5221,14 @@ const handkekeypreees = (e) => {
                 <div id="contact-form" className="contact-form">
                   <div className="field-set">
                     <label>
-                      Profile  <span className="text-danger">*</span>
+                      Profile <span className="text-danger">*</span>
                     </label>
                     <input
                       type="file"
                       placeholder="payment Method"
                       className="form-control"
                       name="patient_Profile"
-                       accept="image/*"
+                      accept="image/*"
                       required
                       onChange={handleFileChange12}
                     />

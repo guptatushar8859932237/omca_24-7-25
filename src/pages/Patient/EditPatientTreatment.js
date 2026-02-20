@@ -93,7 +93,7 @@ export default function EditPatientTreatment() {
           patientId: data.patientId,
           treatment_course_id: data.treatment_course_id,
           treatment_course_name: data.treatment_course_name,
-          total_charge: data.totalCharge || "",
+          total_charge: data.treatment_course_fee || "",
           services: data.services?.map((item) => item.serviceId) || [],
           amount_paid: data.payment_details?.[0]?.paid_amount || "",
           paymentMethod: data.payment_details?.[0]?.paymentMethod || "",
