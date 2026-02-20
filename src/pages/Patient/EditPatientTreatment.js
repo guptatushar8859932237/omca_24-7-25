@@ -146,7 +146,7 @@ export default function EditPatientTreatment() {
                     patientId: values.patientId,
                     treatment_course_id: values.treatment_course_id,
                     treatment_course_name: values.treatment_course_name,
-                    totalCharge: values.total_charge,
+                    total_charge: values.total_charge,
                     services: values.services,
                     amount_paid: values.amount_paid,
                     paymentMethod: values.paymentMethod,

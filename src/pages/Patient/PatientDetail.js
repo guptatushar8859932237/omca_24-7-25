@@ -40,6 +40,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import EditPatientTreatment from "./EditPatientTreatment";
 function PatientDetail() {
   const navigate = useNavigate();
   const [seekerStatus, setSeekerStatus] = React.useState({});
@@ -56,7 +57,9 @@ function PatientDetail() {
   const [value1, setValue1] = useState("");
   const [passportDetails, setPassportDetails] = useState({});
   const [editData, setEditData] = useState(null);
+  const [dataPerforma, setDataPerforma] = useState(null);
   const [edited, setEdited] = useState(false);
+  const [treatMentNAem, setTreatMentNAem] = useState("");
   const [filesData, setFilesData] = useState({
     attendant_fullname: "",
     attendant_relation: "",
@@ -86,6 +89,7 @@ function PatientDetail() {
   const [open2, setOpen2] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);
   const [notesModal, setNotesModal] = useState(false);
+  const [open32, setOpen32] = useState(false);
   const [editModalNotes, setEditModalNotes] = useState(false);
   const [modalEditServiceOpen, setModalEditServiceOpen] = useState(false);
   const [treatmentIDservice, setTreatmentIDservice] = useState(null);
@@ -121,6 +125,7 @@ function PatientDetail() {
   const [selectedServices, setSelectedServices] = useState([]);
   const [chkservice, setChkservice] = useState([]);
   const [blogErr, setBlogErr] = useState(false);
+  const [editPatientProfile, setEditPatientProfile] = useState(false);
   const [appointErr, setAppointErr] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
   const [oeditappp, setOeditappp] = useState(false);
@@ -224,6 +229,15 @@ function PatientDetail() {
     setOpen3(true);
     setTreatmentId(tretmentId);
   };
+  const handleClickOpenPerforma = (e, tretmentId) => {
+    console.log(e,tretmentId)
+    setOpen32(true);
+    setTreatmentId(tretmentId);
+  };
+
+  const handleclosePerforma =()=>{
+    setOpen32(false)
+  }
   const handleClickOpen10 = (e, tretmentId) => {
     console.log(tretmentId);
     setTreatmentId(tretmentId);
@@ -638,12 +652,9 @@ function PatientDetail() {
       );
 
       if (response.data.success) {
-        setOpen2(false);
-
-        Swal.fire("Attendant  Details Added Successfully!", "", "success");
-
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
-
+        setOpen2(false);
+        Swal.fire("Attendant  Details Added Successfully!", "", "success");
         // Optional: Reset form
         setFilesData({
           attendant_fullname: "",
@@ -809,15 +820,15 @@ function PatientDetail() {
   const handleAddTritmentPayment = async (e) => {
     // e.preventDefault();
 
-    if (!treatmentId) {
-      Swal.fire("Error", "Treatment ID missing", "error");
-      return;
-    }
+    // if (!treatmentId) {
+    //   Swal.fire("Error", "Treatment ID missing", "error");
+    //   return;
+    // }
 
     try {
       await dispatch(
         AddNewTretmentPayment({
-          id: treatmentId,
+          id: treatmentId || selectedTreatmentId,
           paid_amount: data?.paid_amount,
           paymentMethod: data?.paymentMethod,
           payment_Date: data?.payment_Date,
@@ -922,6 +933,7 @@ function PatientDetail() {
     }
   };
   const groupedPayments = payment_details?.reduce((acc, info) => {
+    console.log(info)
     if (!acc[info.treatment_id]) {
       acc[info.treatment_id] = [];
     }
@@ -998,6 +1010,23 @@ function PatientDetail() {
   const handlefilechange = (e) => {
     const { name, value } = e.target;
     setIniData({ ...iniData, [name]: value });
+  };
+  const handleFileChange12 = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire("Only JPG, PNG, files are allowed.");
+      return;
+    }
+
+    setImagefile(file); // store in state
   };
   const handleFileChange1 = (e) => {
     const file = e.target.files[0];
@@ -1713,6 +1742,100 @@ function PatientDetail() {
       await swalOnTop.fire("Error", errorMsg, "error");
     }
   };
+  // const handleAddTritmentPaymenttestsubmit =async ()=>{
+  //   try {
+  //     console.log(dataPerforma)
+  //     const formData = new FormData()
+  //     const response = await axios.post(`${baseurl}performainvoice`,formData, {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       })
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+const handleAddTritmentPaymenttestsubmit = async () => {
+  try {
+    if (!dataPerforma) {
+      Swal.fire({
+        icon: "warning",
+        title: "No File Selected",
+        text: "Please select a Performa Invoice file first.",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("perfomainvoice", dataPerforma);
+
+    const response = await axios.post(
+      `${baseurl}performainvoice`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if(response.data.success){
+      setOpen32(false)
+          Swal.fire({
+      icon: "success",
+      title: "Uploaded Successfully!",
+      text: response?.data?.message || "Performa Invoice uploaded.",
+    });
+    }
+  } catch (error) {
+    console.log(error);
+    Swal.fire({
+      icon: "error",
+      title: "Upload Failed!",
+      text:
+        error?.response?.data?.message ||
+        "Something went wrong. Please try again.",
+    });
+  }
+};
+  const  AddpaymentOnchnage123 = (e) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  // Allowed types
+  const allowedTypes = [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "image/webp"
+  ];
+
+  // File type validation
+  if (!allowedTypes.includes(file.type)) {
+    alert("Only PDF or Image files are allowed!");
+    e.target.value = null;
+    return;
+  }
+
+  // File size validation (5MB max)
+  const maxSize = 5 * 1024 * 1024;
+
+  if (file.size > maxSize) {
+    alert("File size must be less than 5MB");
+    e.target.value = null;
+    return;
+  }
+
+  console.log("Valid file:", file);
+
+  // Agar state me store karna ho:
+  setDataPerforma((prev) => ({
+    ...prev,
+    perfomainvoice: file
+  }));
+};
 
   const getTreatmentPlan = async () => {
     const payload = {
@@ -1775,12 +1898,102 @@ function PatientDetail() {
 
   const EditButtoneditprofile = (id) => {
     console.log(id)
-    navigate("/Admin/edit-patient", {
-      state: {
-        patientId: id,
-      },
-    });
+    setEditPatientProfile(true)
+
+
+                  //  await dispatch(
+                  //           EditPatientType({
+                  //             id: ispatient.patientId,
+                  //             data: formData,
+                  //           }),
+                  //         ).unwrap();
+    
+                  //         Swal.fire(
+                  //           "Success!",
+                  //           "Patient updated successfully",
+                  //           "success",
+                  //         );
+                  //         navigate("/Admin/patients");
+   
   };
+
+const EditButtoneditprofileClose=()=>{
+   setEditPatientProfile(false)
+} 
+
+// const handleupdateProfile =async()=>{
+//   const formData = new FormData()
+//   formData.append("patient_Profile",imagefile)
+//   try {
+//     const response = await axios.put(`${baseurl}update_patient/${location.state.patientId}`,formData, {
+//           headers: {
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//             "Content-Type": "multipart/form-data",
+//           },
+//         })
+//         if(response.data.success){
+//           console.log(response.data)
+//           setImagefile(null)
+//         }
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+
+const handleupdateProfile = async () => {
+  if (!imagefile) {
+    Swal.fire({
+      icon: "warning",
+      title: "No Image Selected",
+      text: "Please select an image first.",
+    });
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("patient_Profile", imagefile);
+
+  try {
+    const response = await axios.put(
+      `${baseurl}update_patient/${location?.state?.patientId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          // ❌ Content-Type manually set karne ki zarurat nahi hoti
+          // Browser automatically set karega with boundary
+        },
+      }
+    );
+
+    if (response?.data?.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Profile Updated!",
+        text: "Patient profile updated successfully.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+EditButtoneditprofileClose()
+   dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      setImagefile(null);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: response?.data?.message || "Something went wrong",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+
+    Swal.fire({
+      icon: "error",
+      title: "Server Error",
+      text: error?.response?.data?.message || "Something went wrong",
+    });
+  }
+};
 
   const handleclickAttandpDetails = async (id) => {
     setAttendId(id);
@@ -1788,12 +2001,25 @@ function PatientDetail() {
     try {
       const response = await axios.get(`${baseurl}getAttendeeDetails/${id}`);
       if (response.data.success) {
+        console.log(response.data.data)
         setPassportDetails(response.data.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  // const handkekeypreees =(e)=>{
+  //   if(e.charcode)
+  // }
+const handkekeypreees = (e) => {
+  const charCode = e.charCode;
+
+  // 48–57 are ASCII codes for 0–9
+  if (charCode < 48 || charCode > 57) {
+    e.preventDefault();
+  }
+};
   return (
     <>
       <div className="page-wrapper">
@@ -1944,7 +2170,7 @@ function PatientDetail() {
                   className="nav-link active"
                   href="#about-cont123"
                   data-toggle="tab"
-                  onClick={()=>{setActiveTab(null)}}
+                  // onClick={()=>{setActiveTab(null)}}
                 >
                   Treatment Plans{" "}
                 </a>
@@ -2094,11 +2320,16 @@ function PatientDetail() {
                                   <div className="treat-card">
                                     <div className="sectabmain">
                                       <div className="treat-id">
-                                        <div>
-                                          <h3>
-                                            Treatment ID-
-                                            {info.treatment_id}{" "}
-                                          </h3>
+                                        <div className="d-flex">
+                                          <h5>
+                                            Treatment Name-
+                                            <p  onClick={() => {
+                                              setActiveTab("treatment");
+                                              setSelectedTreatmentId(
+                                                info.treatment_id,
+                                              );
+                                            }}>{info.treatment_name}{" "}</p>
+                                          </h5>
                                         </div>
                                         <p
                                           className="mb-0"
@@ -2144,7 +2375,7 @@ function PatientDetail() {
                                   </ul> */}
                                       <ul className="nav nav-tabs treat-tabs">
                                         <li className="nav-item">
-                                          <button
+                                          {/* <button
                                             className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
                                             onClick={() => {
                                               setActiveTab("treatment");
@@ -2154,7 +2385,7 @@ function PatientDetail() {
                                             }}
                                           >
                                             Treatment
-                                          </button>
+                                          </button> */}
                                         </li>
 
                                         <li className="nav-item">
@@ -2168,6 +2399,7 @@ function PatientDetail() {
                                               handleclickAttandpDetails(
                                                 info.treatment_id,
                                               );
+                                              setTreatMentNAem(info.treatment_status)
                                             }}
                                           >
                                             Add Attendant
@@ -2185,6 +2417,7 @@ function PatientDetail() {
                                               // handlepatientTreatment(
                                               //   info.treatment_id,
                                               // );
+                                              setTreatMentNAem(info.treatment_status)
                                             }}
                                           >
                                             Payment Details
@@ -2199,6 +2432,7 @@ function PatientDetail() {
                                               setSelectedTreatmentId(
                                                 info.treatment_id,
                                               );
+                                               setTreatMentNAem(info.treatment_status)
                                               // handleclicksetData(
                                               //   info.treatment_id,
                                               // );
@@ -2794,7 +3028,7 @@ function PatientDetail() {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-md-12">
+                    {/* <div className="col-md-12">
                       {kys?.length === 0
                         ? "No passport details found"
                         : kys?.map((info, index) => (
@@ -2809,35 +3043,13 @@ function PatientDetail() {
                                         </h3>
                                       </div>
                                     </div>
-
                                     <div className="d-flex">
-                                      {/* <ul className="nav nav-tabs treat-tabs">                                  
-                                
-                                <li className="nav-item">
-                                    <a className="nav-link" href="#about-cont" data-toggle="tab"> Treatment</a>
-                                  </li>
-                                  <li className="nav-item">
-                                  <a className="nav-link active" href="" data-toggle="tab"  > Add Attendant Details</a>
-                                </li>
-                                  <li className="nav-item">
-                                    <a className="nav-link" href="#bottom-tab4" data-toggle="tab" onClick={() => {
-                                      handleclickAttandpDetails(attendId);
-                                    }}>Payment Details</a>
-                                  </li>
-                                  <li className="nav-item">
-                                    <a className="nav-link" href="#bottom-tab5" data-toggle="tab" onClick={() => {
-                                      handleclicksetData(attendId);
-                                    }}>Reports</a>
-                                  </li>
-                                                              
-                                  </ul> */}
                                       <ul className="nav nav-tabs treat-tabs">
                                         <li className="nav-item">
                                           <button
                                             className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
                                             onClick={() => {
                                               setActiveTab("treatment");
-                                              // setSelectedTreatmentId(info.treatment_id);
                                             }}
                                           >
                                             Treatment
@@ -2909,7 +3121,7 @@ function PatientDetail() {
                                           height="100"
                                         />
                                       )} */}
-                                    {passportDetails.attendant_photo ? (
+                                    {/* {passportDetails.attendant_photo ? (
                                       <a
                                         href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_photo}`}
                                         target="_blank"
@@ -2925,21 +3137,6 @@ function PatientDetail() {
                                     )}
                                   </div>
                                   <div className="id-proof">
-                                    {/* <h6>Attende id Proof </h6> */}
-                                    {/* {passportDetails.attendant_passport ? (
-                                        <a
-                                          href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_passport}`}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="btn btn-outline-primary btn-sm"
-                                        >
-                                          View PDF
-                                        </a>
-                                      ) : (
-                                        <span className="text-muted">
-                                          Not Uploaded
-                                        </span>
-                                      )} */}
                                     <div className="">
                                       <h6>Attendant Passport</h6>
                                       {passportDetails.attendant_passport ? (
@@ -2962,6 +3159,137 @@ function PatientDetail() {
                               </div>
                             </>
                           ))}
+                    </div> */} 
+                    <div className="col-md-12">
+                      <div  className="card-box">
+                                <div className="treat-card">
+                                  <div className="sectabmain">
+                                    <div className="treat-id">
+                                      <div>
+                                        <h3 className="mb-0">
+                                          {/* Treatment ID-{attendId} */}
+                                        </h3>
+                                      </div>
+                                    </div>
+                                    <div className="d-flex">
+                                      <ul className="nav nav-tabs treat-tabs">
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeTab === "treatment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                            onClick={() => {
+                                              setActiveTab("treatment");
+                                            }}
+                                          >
+                                            Treatment
+                                          </button>
+                                        </li>
+
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeTab === "attendant" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                            onClick={() => {
+                                              setActiveTab("attendant");
+                                              // setSelectedTreatmentId(info.treatment_id);
+                                              handleclickAttandpDetails(
+                                                attendId,
+                                              );
+                                            }}
+                                          >
+                                            Add Attendant
+                                          </button>
+                                        </li>
+
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeTab === "payment" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                            onClick={() => {
+                                              setActiveTab("payment");
+                                              // setSelectedTreatmentId(info.treatment_id);
+                                              // handlepatientTreatment(attendId);
+                                            }}
+                                          >
+                                            Payment Details
+                                          </button>
+                                        </li>
+
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeTab === "reports" && selectedTreatmentId === selectedTreatmentId ? "active" : ""}`}
+                                            onClick={() => {
+                                              setActiveTab("reports");
+                                              // setSelectedTreatmentId(info.treatment_id);
+                                              // handleclicksetData(attendId);
+                                            }}
+                                          >
+                                            Reports
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <hr></hr>
+                                <div className="pass-detail">
+                                  <div className="img-patient">
+                                    <h6>Attendant Image</h6>
+                                    {/* {passportDetails.attendant_photo ? (
+                                        <img
+                                          src={`${image}${info.attendant_photo}`}
+                                          alt="no image"
+                                          className="rounded-circle shadow"
+                                          width="100"
+                                          height="100"
+                                        />
+                                      ) : (
+                                        <img
+                                          src={avtar}
+                                          alt="no image"
+                                          className="rounded-circle shadow"
+                                          width="100"
+                                          height="100"
+                                        />
+                                      )} */}
+                                    {passportDetails?.attendant_photo ? (
+                                      <a
+                                        href={`https://sisccltd.com/omca_crm/${passportDetails[0]?.attendant_photo}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="view-pass"
+                                      >
+                                        View Photo
+                                      </a>
+                                    ) : (
+                                      <span className="text-muted">
+                                        Not Uploaded
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="id-proof">
+                                    <div className="">
+                                      <h6>Attendant Passport</h6>
+                                      {passportDetails?.attendant_passport ? (
+                                        <a
+                                          href={`https://sisccltd.com/omca_crm/${passportDetails?.attendant_passport}`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="view-pass"
+                                        >
+                                          View Passport
+                                        </a>
+                                      ) : (
+                                        <span className="text-muted">
+                                          Not Uploaded
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                      {/* { passportDetails?.map((info, index) => (
+                            <>
+                              
+                            </>
+                          ))} */}
                     </div>
                   </div>
                 </div>
@@ -3063,6 +3391,7 @@ function PatientDetail() {
                               </span>{" "}
                               Add Amount
                             </button>
+                            
                           </div>
                         </div>
                         </div>
@@ -3072,14 +3401,17 @@ function PatientDetail() {
                         <>
                           {groupedPayments &&
                             Object.entries(groupedPayments).map(
-                              ([treatmentId, payments], index) => (
+                              ([treatmentId, payments], index) => {
+                                  const { treatment_course_name } = payments[0] || {};
+                                return(
+                                <>
                                 <div className="card-box" key={treatmentId}>
                                   <div className="treat-card">
                                     <div className="sectabmain">
                                       <div className="treat-id">
                                         <div>
                                           <h3 className="mb-0">
-                                            Treatment ID-{treatmentId}
+                                            Treatment ID-{treatment_course_name}
                                           </h3>
                                         </div>
                                       </div>
@@ -3166,6 +3498,15 @@ function PatientDetail() {
                                         </span>{" "}
                                         Add Amount
                                       </button>
+                                      {/* <button
+                              onClick={(e) => handleClickOpenPerforma(e, treatmentId)}
+                              className="add-button mx-2"
+                            >
+                              <span>
+                                <i className="fa fa-plus"></i>
+                              </span>{" "}
+                              Add Performa Invoice
+                            </button> */}
                                     </div>
                                   </div>
                                   <hr></hr>
@@ -3229,7 +3570,9 @@ function PatientDetail() {
                                     </ul>
                                   </div>
                                 </div>
-                              ),
+                                </>
+                              )
+},
                             )}
                         </>
                       )}
@@ -3246,8 +3589,11 @@ function PatientDetail() {
                   </div>
                   <div className="row">
                     <div className="col-md-12">
-                      {treatmentData.map((treatment) => (
-                        <div
+                      {treatmentData.map((treatment) => {
+                        console.log(treatment)
+                        return (
+                          <>
+                          <div
                           className="card-box mb-4"
                           key={treatment.treatmentId}
                         >
@@ -3256,7 +3602,7 @@ function PatientDetail() {
                             <div className="sectabmain">
                               <div className="treat-id">
                                 <h3 className="mb-0">
-                                  Treatment ID - {treatment.treatmentId}{" "}
+                                  Treatment ID - {treatment.treatment_course_name}{" "}
                                 </h3>
                               </div>
                               <div className="d-flex">
@@ -3397,7 +3743,11 @@ function PatientDetail() {
                             </p>
                           )}
                         </div>
-                      ))}
+                          </>
+                        )
+                      }
+                        
+                      )}
                     </div>
                   </div>
                 </div>
@@ -4200,6 +4550,7 @@ function PatientDetail() {
                     <div className="upload-input">
                       <input
                         type="text"
+                        onKeyPress={(e)=>{handkekeypreees(e)}}
                         name="attendant_contact"
                         className="form-control"
                         value={filesData.attendant_contact}
@@ -4399,6 +4750,67 @@ function PatientDetail() {
         <Dialog
           fullWidth={fullWidth}
           maxWidth={maxWidth}
+          open={open32}
+          onClose={handleclosePerforma}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Invoice</h6>
+            </div>
+            <div className="cross-icon" onClick={handleclosePerforma}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form" className="contact-form">
+                  
+                  {/* <div>{info.treatment_due_payment}</div> */}
+                 
+                  <div className="field-set">
+                    <label>
+                      Add Performa Invoice<span className="text-danger"></span>
+                    </label>
+                    <input
+                      type="file"
+                      id="birthday"
+                     name="perfomainvoice"
+                      placeholder="Appointment Date"
+                      className="form-control"
+                       accept=".pdf,image/*"
+                     onChange={AddpaymentOnchnage123}
+                    />
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      // type="submit"
+                      onClick={()=>{handleAddTritmentPaymenttestsubmit()}}
+                      // onClick={(e) => handleAddTritmentPayment(e)}
+                      variant="contained"
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
           open={open3}
           onClose={handleClose3}
         >
@@ -4440,7 +4852,7 @@ function PatientDetail() {
                   {/* <div>{info.treatment_due_payment}</div> */}
                   <div className="field-set">
                     <label>
-                      Payment Method<span className="text-danger">*</span>
+                      Payment Method<span className="text-danger"></span>
                     </label>
                     <select
                       placeholder="payment Method"
@@ -4460,7 +4872,7 @@ function PatientDetail() {
                   </div>
                   <div className="field-set">
                     <label>
-                      Payment Date<span className="text-danger">*</span>
+                      Payment Date<span className="text-danger"></span>
                     </label>
                     <input
                       type="date"
@@ -4475,8 +4887,9 @@ function PatientDetail() {
                   </div>
                   <DialogActions className="submit-main">
                     <Button
-                      type="submit"
-                      onClick={(e) => handleAddTritmentPayment(e)}
+                      // type="submit"
+                      onClick={()=>{handleAddTritmentPayment()}}
+                      // onClick={(e) => handleAddTritmentPayment(e)}
                       variant="contained"
                     >
                       Submit
@@ -4563,6 +4976,64 @@ function PatientDetail() {
                     <Button
                       // type="submit"
                       onClick={(e) => handleClickSubmit(e)}
+                      variant="contained"
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </div>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={editPatientProfile}
+          onClose={EditButtoneditprofileClose}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Upload Profile</h6>
+            </div>
+            <div className="cross-icon" onClick={EditButtoneditprofileClose}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <div id="contact-form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Profile  <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="file"
+                      placeholder="payment Method"
+                      className="form-control"
+                      name="patient_Profile"
+                       accept="image/*"
+                      required
+                      onChange={handleFileChange12}
+                    />
+                  </div>
+
+                  <DialogActions className="submit-main">
+                    <Button
+                      // type="submit"
+                      onClick={() => handleupdateProfile()}
                       variant="contained"
                     >
                       Submit
