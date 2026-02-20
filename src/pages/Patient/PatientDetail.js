@@ -2043,6 +2043,7 @@ const handleNothospitalchargeesdata = async () => {
     if (response.data.success) {
       // dispatch(getTreatmentPlan)
        setDataImperial(false)
+       setNoteHospital2("")
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
       Swal.fire({
         icon: "success",
@@ -2660,7 +2661,7 @@ const handleNothospitalchargeesdata = async () => {
                                                 console.log(item);
                                                 return (
                                                   <>
-                                                    <li key={index}>
+                                                    {/* <li key={index}>
                                                       <div className="row">
                                                         <div className="col-md-10">
                                                           <div className="row">
@@ -2684,7 +2685,13 @@ const handleNothospitalchargeesdata = async () => {
                                                               </div>
                                                             </div>
                                                             
-                                                            {item.hospital_Name && (
+                                                           
+                                                          
+                                                          </div>
+                                                        </div>
+                                                        <div className="d-flex">
+                                                            <div className="col-md-2 text-end">
+                                                          {item.hospital_Name && (
                                                             <i
                                                               className="fa-solid fa-trash text-danger cursor-pointer"
                                                               onClick={() =>
@@ -2695,9 +2702,11 @@ const handleNothospitalchargeesdata = async () => {
                                                               }
                                                             ></i>
                                                           )}
-                                                           {item.hospital_Name && (
+                                                        </div> 
+                                                         <div className="col-md-2 text-end">
+                                                          {item.hospital_Name && (
                                                             <i
-                                                              className="fa-solid fa-edit cursor-pointer"
+                                                              className="fa-solid fa-edit cursor-pointer" style={{color:"#002f54"}}
                                                               onClick={() =>
                                                                 handledeedit(
                                                                   info,
@@ -2706,18 +2715,49 @@ const handleNothospitalchargeesdata = async () => {
                                                               }
                                                             ></i>
                                                           )}
-                                                          </div>
-                                                        </div>
-                                                        <div className="d-flex">
-                                                            <div className="col-md-2 text-end">
-                                                         
-                                                        </div> 
-                                                         <div className="col-md-2 text-end">
-                                                         
                                                         </div>      
                                                         </div>
                                                       </div>
-                                                    </li>
+                                                    </li> */}
+                                                    <li key={index}>
+  <div className="row align-items-center">
+
+    {/* Left Content */}
+    <div className="col-md-10">
+      <div className="para-main-div">
+        <p className="mb-1">
+          <strong>Name:</strong> {item.hospital_Name || "-"}
+        </p>
+        <p className="mb-0">
+          <strong>Charge:</strong> {item.hospital_charge || "-"}
+        </p>
+      </div>
+    </div>
+
+    {/* Right Icons */}
+    <div className="col-md-2 text-end">
+      <div className="d-flex justify-content-end gap-3">
+
+        {item.hospital_Name && (
+          <i
+            className="fa-solid fa-edit cursor-pointer"
+            style={{ color: "#17b7cb" }}
+            onClick={() => handledeedit(info, item)}
+          ></i>
+        )}
+
+        {item.hospital_Name && (
+          <i
+            className="fa-solid fa-trash text-danger cursor-pointer"
+            onClick={() => handledelete(info, item)}
+          ></i>
+        )}
+
+      </div>
+    </div>
+
+  </div>
+</li>
                                                   </>
                                                 );
                                               },
