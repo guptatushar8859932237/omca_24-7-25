@@ -22,8 +22,6 @@ import {
   baseurl,
   image,
 } from "../../Basurl/Baseurl";
-import { imageUrl } from "../../Basurl/Baseurl";
-import { AddKysDetail } from "../../reducer/PatientTreatmentSlice";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
 import Select from "@mui/material/Select";
@@ -117,6 +115,7 @@ function PatientDetail() {
   const [imagefile, setImagefile] = useState(null);
   const [enqId, setEnqId] = useState("");
   const [nodaestInput, setNodaestInput] = useState("");
+  const [gettreatmentserID, setGettreatmentserID] = useState("");
   const [serviceData, setServiceData] = useState([]);
   const [payment_details, setPayment_details] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -289,7 +288,7 @@ function PatientDetail() {
     };
     try {
       const response = await axios.post(
-        `${baseurl}patient_extra_service/${data.treatment}`,
+        `${baseurl}patient_extra_service/${gettreatmentserID}`,
         servipostdata,
         {
           headers: {
@@ -930,7 +929,10 @@ function PatientDetail() {
     return acc;
   }, {});
   console.log("cccccccccccccccccccccccccccccccccccccccccccc", groupedPayments);
-  const penModal = () => {
+  const penModal = (a,b) => {
+    console.log(a,b)
+    getapicall(b)
+    setGettreatmentserID(b)
     setOpenModal(true);
   };
   const closeModal = () => {
@@ -1771,32 +1773,14 @@ function PatientDetail() {
     });
   };
 
-  const EditButtoneditprofile = () => {
+  const EditButtoneditprofile = (id) => {
+    console.log(id)
     navigate("/Admin/edit-patient", {
       state: {
-        patientId: location.state.patientId,
+        patientId: id,
       },
     });
   };
-
-  // const handleclicksetData = (id) => {
-  //   console.log(id);
-  //   // console.log(treatemntData1)
-  //   console.log(treatmentData);
-  //   const filterData = treatmentData.filter((item) => item.treatmentId === id);
-  //   setTreatmentData(filterData);
-  // };
-
-  // const handlepatientTreatment = (id) => {
-  //   console.log(id);
-  //   console.log(payment_details);
-  //   // console.log(payment)
-  //   const FilterDataPayment = payment_details.filter(
-  //     (item) => item.treatment_id === id,
-  //   );
-  //   console.log(FilterDataPayment);
-  //   setPayment_details(FilterDataPayment);
-  // };
 
   const handleclickAttandpDetails = async (id) => {
     setAttendId(id);
@@ -1852,7 +1836,7 @@ function PatientDetail() {
                           <FaPen
                             size={12}
                             onClick={(e) =>
-                              EditButtoneditprofile(ispatient?.patientId)
+                              EditButtoneditprofile( location.state.patientId)
                             }
                           />
                         </label>
@@ -2007,11 +1991,12 @@ function PatientDetail() {
                                             <span className="hospital-name">
                                               {item.name}
                                             </span>
-                                            <span
+                                           {info.isAnyHospitalApproved !==
+                                            false && (  <span
                                               className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
                                             >
                                               {item.status}
-                                            </span>
+                                            </span>)}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
@@ -2093,12 +2078,6 @@ function PatientDetail() {
                           </button>
                         </div>
                         <div className="">
-                          <button className="add-button" onClick={penModal}>
-                            <span>
-                              <i className="fa fa-plus"></i>
-                            </span>{" "}
-                            Add Services
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -2271,6 +2250,12 @@ function PatientDetail() {
                                         </span>{" "}
                                         Add Notes
                                       </button>
+                                        <button className="add-button1" onClick={()=>{penModal(info,info.treatment_id)}}>
+                            <span>
+                              <i className="fa fa-plus"></i>
+                            </span>{" "}
+                            Add Services
+                          </button>
                                     </div>
                                   </div>
                                   <hr></hr>
@@ -3677,7 +3662,7 @@ function PatientDetail() {
               }}
               className="contact-form"
             >
-              <Box>
+              {/* <Box>
                 <div className="field-set mb-0">
                   <label>
                     Select Treatment<span className="text-danger">*</span>
@@ -3700,7 +3685,7 @@ function PatientDetail() {
                     })}
                   </select>
                 </div>
-              </Box>
+              </Box> */}
               <Box sx={{ display: "flex", gap: 2 }}>
                 <Box sx={{ flex: 1 }}>
                   <div className="field-set mb-0">
