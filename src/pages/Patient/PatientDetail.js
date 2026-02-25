@@ -6587,7 +6587,7 @@ function PatientDetail() {
       confirmButtonText: "Yes, delete it",
       cancelButtonText: "Cancel",
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#e05413",
+      cancelButtonColor: "#c01e1e",
     });
 
     if (!result.isConfirmed) return;
