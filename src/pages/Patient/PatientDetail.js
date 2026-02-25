@@ -6475,7 +6475,7 @@ function PatientDetail() {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#c01e1e",
+      cancelButtonColor: "#6e7881",
       confirmButtonText: "Yes, delete it!",
     });
 
@@ -6587,7 +6587,7 @@ function PatientDetail() {
       confirmButtonText: "Yes, delete it",
       cancelButtonText: "Cancel",
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#c01e1e",
+      cancelButtonColor: "#6e7881",
     });
 
     if (!result.isConfirmed) return;
@@ -6652,7 +6652,7 @@ function PatientDetail() {
       confirmButtonText: "Yes, delete it",
       cancelButtonText: "Cancel",
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#e4480b",
+      cancelButtonColor: "#6e7881",
     });
 
     if (!result.isConfirmed) return;
@@ -6840,7 +6840,7 @@ function PatientDetail() {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#c01e1e",
+      cancelButtonColor: "#6e7881",
       confirmButtonText: "Yes, Delete",
       cancelButtonText: "Cancel",
     });
@@ -6892,7 +6892,7 @@ function PatientDetail() {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#c4300b",
+      cancelButtonColor: "#6e7881",
       confirmButtonText: "Yes, delete it",
     });
 
