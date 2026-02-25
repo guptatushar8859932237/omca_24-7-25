@@ -112,6 +112,7 @@ export default function Patient() {
     setPage(newPage);
   };
   const EditButton = (e, id) => {
+    console.log(id)
     navigate("/Admin/edit-patient", {
       state: {
         patientId: id,
