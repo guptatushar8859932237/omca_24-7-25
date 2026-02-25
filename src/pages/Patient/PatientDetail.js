@@ -22,8 +22,6 @@ import {
   baseurl,
   image,
 } from "../../Basurl/Baseurl";
-import { imageUrl } from "../../Basurl/Baseurl";
-import { AddKysDetail } from "../../reducer/PatientTreatmentSlice";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
 import Select from "@mui/material/Select";
@@ -42,6 +40,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import EditPatientTreatment from "./EditPatientTreatment";
 function PatientDetail() {
   const navigate = useNavigate();
   const [seekerStatus, setSeekerStatus] = React.useState({});
@@ -55,10 +54,21 @@ function PatientDetail() {
   const [notesID, setNotesID] = useState("");
   const [drivercontact, setDrivercontact] = useState("");
   const [fieldValue, setFieldValue] = useState("");
+  const [treatmentNamePassport, setTreatmentNamePassport] = useState("");
   const [value1, setValue1] = useState("");
   const [passportDetails, setPassportDetails] = useState({});
   const [editData, setEditData] = useState(null);
+  const [dataPerforma, setDataPerforma] = useState(null);
   const [edited, setEdited] = useState(false);
+  const [treatMentNAem, setTreatMentNAem] = useState("");
+  const [filesData, setFilesData] = useState({
+    attendant_fullname: "",
+    attendant_relation: "",
+    attendant_contact: "",
+    Attende_passport: null,
+    Attende_photo: null,
+  });
+
   const [attendId, setAttendId] = useState("");
 
   const location = useLocation();
@@ -80,11 +90,14 @@ function PatientDetail() {
   const [open2, setOpen2] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);
   const [notesModal, setNotesModal] = useState(false);
+  const [dataImperial, setDataImperial] = useState(false);
+  const [open32, setOpen32] = useState(false);
   const [editModalNotes, setEditModalNotes] = useState(false);
   const [modalEditServiceOpen, setModalEditServiceOpen] = useState(false);
   const [treatmentIDservice, setTreatmentIDservice] = useState(null);
   const [open10, setOpen10] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [noteHospital2, setNoteHospital2] = useState("");
   const [treatmentPlanPopup, setTreatmentPlanPopup] = useState(false);
   const [open5, setOpen5] = React.useState(false);
   const [note, setNote] = useState("");
@@ -98,6 +111,9 @@ function PatientDetail() {
   const [hospitlID, setHospitlID] = useState([]);
   const [ishospitalArray, setIShospitalArray] = useState([]);
   const [note2, setNote2] = useState("");
+  const [activeSubTab, setActiveSubTab] = useState("details");
+  const [selectedTreatmentId, setSelectedTreatmentId] = useState(null);
+  const [mainTab, setMainTab] = useState("treatment-plans");
   const [date2, setDate2] = useState();
   const [appHospital, setAppHospital] = useState("");
   const [kys, setKyc] = useState([]);
@@ -105,13 +121,16 @@ function PatientDetail() {
   const [notes, setNotes] = useState([]);
   const [dataHospital, setDataHospital] = useState([]);
   const [imagefile, setImagefile] = useState(null);
+  const [treatmentIDa, setTreatmentIDa] = useState(null);
   const [enqId, setEnqId] = useState("");
   const [nodaestInput, setNodaestInput] = useState("");
+  const [gettreatmentserID, setGettreatmentserID] = useState("");
   const [serviceData, setServiceData] = useState([]);
   const [payment_details, setPayment_details] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [chkservice, setChkservice] = useState([]);
   const [blogErr, setBlogErr] = useState(false);
+  const [editPatientProfile, setEditPatientProfile] = useState(false);
   const [appointErr, setAppointErr] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
   const [oeditappp, setOeditappp] = useState(false);
@@ -215,6 +234,15 @@ function PatientDetail() {
     setOpen3(true);
     setTreatmentId(tretmentId);
   };
+  const handleClickOpenPerforma = (e, tretmentId) => {
+    console.log(e, tretmentId);
+    setOpen32(true);
+    setTreatmentId(tretmentId);
+  };
+
+  const handleclosePerforma = () => {
+    setOpen32(false);
+  };
   const handleClickOpen10 = (e, tretmentId) => {
     console.log(tretmentId);
     setTreatmentId(tretmentId);
@@ -237,6 +265,8 @@ function PatientDetail() {
   const handleClose10 = () => {
     setOpen10(false);
   };
+
+
   const PatientDetailButton = (e, id) => {
     navigate("/Admin/add-patient-treatment", {
       state: {
@@ -279,7 +309,7 @@ function PatientDetail() {
     };
     try {
       const response = await axios.post(
-        `${baseurl}patient_extra_service/${data.treatment}`,
+        `${baseurl}patient_extra_service/${gettreatmentserID}`,
         servipostdata,
         {
           headers: {
@@ -556,7 +586,7 @@ function PatientDetail() {
       Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
   };
-  const [filesData, setFilesData] = useState({});
+  // const [filesData, setFilesData] = useState({});
   const getdataApi = async () => {
     try {
       const rresponse = await axios.post(`${AdminBaseUrl}hospital_list`);
@@ -571,58 +601,112 @@ function PatientDetail() {
   useEffect(() => {
     getdataApi();
   }, []);
-  const onChangeFile = (e, fieldName) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (fieldName === "photo" && fieldName === "Attende_photo") {
-      const isImage = file.type.startsWith("image/");
-      if (!isImage) {
-        alert("Please upload an image file only for photo.");
-        return;
-      }
-    }
-    setFilesData((prevState) => ({
-      ...prevState,
-      [fieldName]: file,
-    }));
-  };
+  // const onChangeFile = (e, fieldName) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+  //   if (fieldName === "photo" && fieldName === "Attende_photo") {
+  //     const isImage = file.type.startsWith("image/");
+  //     if (!isImage) {
+  //       alert("Please upload an image file only for photo.");
+  //       return;
+  //     }
+  //   }
+  //   setFilesData((prevState) => ({
+  //     ...prevState,
+  //     [fieldName]: file,
+  //   }));
+  // };
   const handleKysDetail = async (e) => {
     e.preventDefault();
+
+    const {
+      attendant_fullname,
+      attendant_relation,
+      attendant_contact,
+      Attende_passport,
+      Attende_photo,
+    } = filesData;
+
+    // ✅ Mandatory Validation
+    if (
+      !attendant_fullname?.trim() ||
+      !attendant_relation?.trim() ||
+      !attendant_contact?.trim() ||
+      !Attende_passport ||
+      !Attende_photo
+    ) {
+      Swal.fire("All fields are mandatory!", "", "warning");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("attendant_passport", filesData.Attende_passport);
-    formData.append("attendant_image", filesData.Attende_photo);
+
+    formData.append("attendant_fullname", attendant_fullname);
+    formData.append("attendant_relation", attendant_relation);
+    formData.append("attendant_contact", attendant_contact);
+    formData.append("attendant_passport", Attende_passport);
+    formData.append("attendant_image", Attende_photo);
+
     try {
       const response = await axios.post(
         `${baseurl}addAttendeeDetails/${attendId}`,
         formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
+
       if (response.data.success) {
-        setOpen2(false);
-        Swal.fire("Passport Details Added Successfully!", "", "success");
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        setOpen2(false);
+        Swal.fire("Attendant  Details Added Successfully!", "", "success");
+        // Optional: Reset form
+        setFilesData({
+          attendant_fullname: "",
+          attendant_relation: "",
+          attendant_contact: "",
+          Attende_passport: null,
+          Attende_photo: null,
+        });
       }
     } catch (error) {
-      Swal.fire("Error!", error?.message || "An error occurred", "error");
+      Swal.fire(
+        "Error!",
+        error?.response?.data?.message || error.message,
+        "error",
+      );
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFilesData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (e, fieldName) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate image for photo only
+    if (fieldName === "Attende_photo") {
+      if (!file.type.startsWith("image/")) {
+        Swal.fire("Please upload image file only!", "", "warning");
+        return;
+      }
     }
 
-    // const result = await dispatch(
-    //   AddKysDetail({
-    //     id: location.state.patientId,
-    //     passport: filesData.passport,
-    //     photo: filesData.photo,
-    //     Attende_passport: filesData.Attende_passport,
-    //     Attende_photo: filesData.Attende_photo,
-    //   }),
-    // ).unwrap();
-    // // console.log(filesData);
-    // try {
-    //   setOpen2(false);
-    //   Swal.fire("Passport Details Added Successfully!", "", "success");
-    //   dispatch(GetPatientTreatments({ id: location.state.patientId }));
-    // } catch (err) {
-    //   Swal.fire("Error!", err?.message || "An error occurred", "error");
-    // }
+    setFilesData((prev) => ({
+      ...prev,
+      [fieldName]: file,
+    }));
   };
+
   const handleOnChangeCheckbox = (event, id) => {
     const selectedService = Service.find((info) => info.serviceId === id);
     if (selectedService) {
@@ -700,39 +784,91 @@ function PatientDetail() {
         Swal.fire("Error", `${error?.response?.data?.message}`, "error");
       });
   };
+  //   const handleAddTritmentPayment = async (e) => {
+  //     e.preventDefault();
+  //  if (!treatmentId) {
+  //     Swal.fire("Error", "Treatment ID missing", "error");
+  //     return;
+  //   }
+  //     try {
+  //       await dispatch(
+  //         AddNewTretmentPayment({
+  //           id: treatmentId,
+  //           paid_amount: data.paid_amount,
+  //           paymentMethod: data.paymentMethod,
+  //           payment_Date: data.payment_Date,
+  //         }),
+  //       ).unwrap();
+
+  //       setOpen3(false);
+  //       Swal.fire("Success!", "Payment Details Added Successfully!", "success");
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //       setTreatmentId("");
+  //       setData("");
+  //     } catch (err) {
+  //       const errorMessage =
+  //         typeof err === "string" ? err : err?.message || "Something went wrong";
+
+  //       // ✅ STEP 1: close modal
+  //       setOpen3(false);
+
+  //       // ✅ STEP 2: show error swal
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Error",
+  //         text: errorMessage,
+  //         confirmButtonText: "OK",
+  //       }).then(() => {
+  //         // ✅ STEP 3: reopen modal after OK
+  //         setOpen3(true);
+  //       });
+  //     }
+  //   };
   const handleAddTritmentPayment = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
+
+    // if (!treatmentId) {
+    //   Swal.fire("Error", "Treatment ID missing", "error");
+    //   return;
+    // }
 
     try {
       await dispatch(
         AddNewTretmentPayment({
-          id: treatmentId,
-          paid_amount: data.paid_amount,
-          paymentMethod: data.paymentMethod,
-          payment_Date: data.payment_Date,
+          id: treatmentId || selectedTreatmentId,
+          paid_amount: data?.paid_amount,
+          paymentMethod: data?.paymentMethod,
+          payment_Date: data?.payment_Date,
         }),
       ).unwrap();
 
       setOpen3(false);
+
       Swal.fire("Success!", "Payment Details Added Successfully!", "success");
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+
+      if (location.state?.patientId) {
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      }
+
       setTreatmentId("");
-      setData("");
+
+      // ✅ reset properly
+      setData({
+        paid_amount: "",
+        paymentMethod: "",
+        payment_Date: "",
+      });
     } catch (err) {
       const errorMessage =
         typeof err === "string" ? err : err?.message || "Something went wrong";
 
-      // ✅ STEP 1: close modal
       setOpen3(false);
 
-      // ✅ STEP 2: show error swal
       Swal.fire({
         icon: "error",
         title: "Error",
         text: errorMessage,
-        confirmButtonText: "OK",
       }).then(() => {
-        // ✅ STEP 3: reopen modal after OK
         setOpen3(true);
       });
     }
@@ -804,13 +940,18 @@ function PatientDetail() {
     }
   };
   const groupedPayments = payment_details?.reduce((acc, info) => {
+    console.log(info);
     if (!acc[info.treatment_id]) {
       acc[info.treatment_id] = [];
     }
     acc[info.treatment_id].push(info);
     return acc;
   }, {});
-  const penModal = () => {
+  console.log("cccccccccccccccccccccccccccccccccccccccccccc", groupedPayments);
+  const penModal = (a, b) => {
+    console.log(a, b);
+    getapicall(b);
+    setGettreatmentserID(b);
     setOpenModal(true);
   };
   const closeModal = () => {
@@ -877,6 +1018,19 @@ function PatientDetail() {
     const { name, value } = e.target;
     setIniData({ ...iniData, [name]: value });
   };
+  const handleFileChange12 = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire("Only JPG, PNG, files are allowed.");
+      return;
+    }
+
+    setImagefile(file); // store in state
+  };
   const handleFileChange1 = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -889,7 +1043,7 @@ function PatientDetail() {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      alert("Only JPG, PNG, or PDF files are allowed.");
+      Swal.fire("Only JPG, PNG, or PDF files are allowed.");
       return;
     }
 
@@ -1306,29 +1460,22 @@ function PatientDetail() {
   const handleClicexportPayment = async (a, b) => {
     try {
       const response = await axios.get(`${baseurl}exportTreatmentExcel/${b}`, {
-        responseType: "blob", // ✅ VERY IMPORTANT
+        responseType: "blob",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
-      // create blob
       const blob = new Blob([response.data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-
       const url = window.URL.createObjectURL(blob);
-
       const link = document.createElement("a");
       link.href = url;
       link.download = "treatment-payments.xlsx";
-
       document.body.appendChild(link);
       link.click();
-
       link.remove();
       window.URL.revokeObjectURL(url);
-
       Swal.fire("Success", "Excel downloaded successfully!", "success");
     } catch (error) {
       console.log(error);
@@ -1598,6 +1745,96 @@ function PatientDetail() {
       await swalOnTop.fire("Error", errorMsg, "error");
     }
   };
+  // const handleAddTritmentPaymenttestsubmit =async ()=>{
+  //   try {
+  //     console.log(dataPerforma)
+  //     const formData = new FormData()
+  //     const response = await axios.post(`${baseurl}performainvoice`,formData, {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       })
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+  const handleAddTritmentPaymenttestsubmit = async () => {
+    try {
+      if (!dataPerforma) {
+        Swal.fire({
+          icon: "warning",
+          title: "No File Selected",
+          text: "Please select a Performa Invoice file first.",
+        });
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("perfomainvoice", dataPerforma);
+
+      const response = await axios.post(`${baseurl}performainvoice`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.data.success) {
+        setOpen32(false);
+        Swal.fire({
+          icon: "success",
+          title: "Uploaded Successfully!",
+          text: response?.data?.message || "Performa Invoice uploaded.",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Upload Failed!",
+        text:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      });
+    }
+  };
+  const AddpaymentOnchnage123 = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    // Allowed types
+    const allowedTypes = [
+      "application/pdf",
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/webp",
+    ];
+
+    // File type validation
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only PDF or Image files are allowed!");
+      e.target.value = null;
+      return;
+    }
+
+    // File size validation (5MB max)
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      alert("File size must be less than 5MB");
+      e.target.value = null;
+      return;
+    }
+
+    console.log("Valid file:", file);
+
+    // Agar state me store karna ho:
+    setDataPerforma((prev) => ({
+      ...prev,
+      perfomainvoice: file,
+    }));
+  };
 
   const getTreatmentPlan = async () => {
     const payload = {
@@ -1658,31 +1895,101 @@ function PatientDetail() {
     });
   };
 
-  const EditButtoneditprofile = () => {
-    navigate("/Admin/edit-patient", {
-      state: {
-        patientId: location.state.patientId,
-      },
-    });
+  const EditButtoneditprofile = (id) => {
+    console.log(id);
+    setEditPatientProfile(true);
+
+    //  await dispatch(
+    //           EditPatientType({
+    //             id: ispatient.patientId,
+    //             data: formData,
+    //           }),
+    //         ).unwrap();
+
+    //         Swal.fire(
+    //           "Success!",
+    //           "Patient updated successfully",
+    //           "success",
+    //         );
+    //         navigate("/Admin/patients");
   };
 
-  const handleclicksetData = (id) => {
-    console.log(id);
-    // console.log(treatemntData1)
-    console.log(treatmentData);
-    const filterData = treatmentData.filter((item) => item.treatmentId === id);
-    setTreatmentData(filterData);
+  const EditButtoneditprofileClose = () => {
+    setEditPatientProfile(false);
   };
 
-  const handlepatientTreatment = (id) => {
-    console.log(id);
-    console.log(payment_details);
-    // console.log(payment)
-    const FilterDataPayment = payment_details.filter(
-      (item) => item.treatment_id === id,
-    );
-    console.log(FilterDataPayment);
-    setPayment_details(FilterDataPayment);
+  // const handleupdateProfile =async()=>{
+  //   const formData = new FormData()
+  //   formData.append("patient_Profile",imagefile)
+  //   try {
+  //     const response = await axios.put(`${baseurl}update_patient/${location.state.patientId}`,formData, {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         })
+  //         if(response.data.success){
+  //           console.log(response.data)
+  //           setImagefile(null)
+  //         }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+  const handleupdateProfile = async () => {
+    if (!imagefile) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Image Selected",
+        text: "Please select an image first.",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("patient_Profile", imagefile);
+
+    try {
+      const response = await axios.put(
+        `${baseurl}update_patient/${location?.state?.patientId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            // ❌ Content-Type manually set karne ki zarurat nahi hoti
+            // Browser automatically set karega with boundary
+          },
+        },
+      );
+
+      if (response?.data?.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Profile Updated!",
+          text: "Patient profile updated successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        EditButtoneditprofileClose();
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        setImagefile(null);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: response?.data?.message || "Something went wrong",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+
+      Swal.fire({
+        icon: "error",
+        title: "Server Error",
+        text: error?.response?.data?.message || "Something went wrong",
+      });
+    }
   };
 
   const handleclickAttandpDetails = async (id) => {
@@ -1690,13 +1997,120 @@ function PatientDetail() {
     console.log(id);
     try {
       const response = await axios.get(`${baseurl}getAttendeeDetails/${id}`);
+      setTreatmentNamePassport(response.data);
       if (response.data.success) {
+        console.log(response.data.data);
         setPassportDetails(response.data.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  // const handkekeypreees =(e)=>{
+  //   if(e.charcode)
+  // }
+  const handkekeypreees = (e) => {
+    const charCode = e.charCode;
+
+    // 48–57 are ASCII codes for 0–9
+    if (charCode < 48 || charCode > 57) {
+      e.preventDefault();
+    }
+  };
+
+  const handledeedit = (a, b) => {
+    console.log(a, b)
+    setTreatmentIDa(a)
+    setDataImperial(true)
+  }
+
+  const dataIwemperial = () => {
+    setDataImperial(false)
+  }
+  const handleNothospitalchargeesdata = async () => {
+    const payload = {
+      hospital_charge: noteHospital2
+    }
+    try {
+      const response = await axios.put(
+        `${baseurl}updateHospitalCharge/${treatmentIDa?.treatment_id}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        // dispatch(getTreatmentPlan)
+        setDataImperial(false)
+        setNoteHospital2("")
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: "Hospital charge updated successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.response?.data?.message || "Something went wrong!",
+      });
+    }
+  };
+  const getSelectedTreatmentInfo = () => {
+    if (!selectedTreatmentId) return null;
+    return tretment?.find((t) => t.treatment_id === selectedTreatmentId);
+  };
+
+  const getSelectedTreatmentName = () => {
+    return getSelectedTreatmentInfo()?.treatment_name || "";
+  };
+
+  const handleMainTabChange = (tab) => {
+    setMainTab(tab);
+    setSelectedTreatmentId(null);
+    setActiveSubTab("details");
+  };
+
+  const handleBackToTreatmentList = () => {
+    setSelectedTreatmentId(null);
+    setActiveSubTab("details");
+  };
+
+  const handleAction = (e, type, info) => {
+    const tId = info.treatment_id;
+    const hDetails = info.Hospital_details;
+    const status = info.treatment_status;
+
+    setSelectedTreatmentId(tId);
+    setTreatMentNAem(status);
+
+    if (type === "attendant") {
+      setActiveSubTab("attendant");
+      handleclickAttandpDetails(tId);
+    } else if (type === "payment") {
+      setActiveSubTab("payment");
+    } else if (type === "reports") {
+      setActiveSubTab("reports");
+    } else if (type === "hospital") {
+      handleClickOpen(e, tId);
+    } else if (type === "appointment") {
+      handleClickOpen1(e, tId, hDetails);
+    } else if (type === "notes") {
+      handleClickOpenNotes(e, tId, hDetails);
+    } else if (type === "services") {
+      penModal(info, tId);
+    }
+  };
+
   return (
     <>
       <div className="page-wrapper">
@@ -1705,8 +2119,7 @@ function PatientDetail() {
             <div className="col-md-12">
               <h4 className="page-title">
                 <span>
-                  <i
-                    className="fi fi-sr-angle-double-small-left"
+                  <i className="fi fi-sr-angle-double-small-left"
                     style={{ cursor: "pointer" }}
                     onClick={() => {
                       window.history.back();
@@ -1719,16 +2132,13 @@ function PatientDetail() {
           </div>
           <div className="main_content">
             <div className="row align-items-center">
-              <div className="col-md-6">
+              <div className="col-md-12 d-flex gap-5">
                 <div class="profile-sidebar">
                   <div class="top">
                     <form>
                       <div class="image-wrap">
                         <div class="part-img">
-                          <img
-                            src={`${image}${ispatient?.patient_Profile}`}
-                            className="pro-img"
-                          />
+                          <img src={`${image}${ispatient?.patient_Profile}`} className="pro-img" />
                         </div>
                         <input
                           type="file"
@@ -1739,7 +2149,7 @@ function PatientDetail() {
                           <FaPen
                             size={12}
                             onClick={(e) =>
-                              EditButtoneditprofile(ispatient?.patientId)
+                              EditButtoneditprofile(location.state.patientId)
                             }
                           />
                         </label>
@@ -1753,86 +2163,58 @@ function PatientDetail() {
                           ? ispatient?.patientNumber
                           : ispatient?.patientId}
                       </p>
-                      <div className="d-flex">
-                        <p className="mx-2">
-                          <button
-                            type="button"
-                            className="add-button"
-                            onClick={() => {
-                              const file = kys[0].id_proof;
+                      <div className="d-flex gap-2">
+                        <button
+                          type="button"
+                          className="viewbtn"
+                          onClick={() => {
+                            const file = kys[0].id_proof;
+                            if (file) {
+                              window.open(
+                                `https://sisccltd.com/omca_crm/${file}`,
+                                "_blank",
+                              );
+                            } else {
+                              Swal.fire(
+                                "error",
+                                "Document not available",
+                                "Error",
+                              );
+                            }
+                          }}
+                        >
+                          View Patient ID
+                        </button>
+                        <button
+                          type="button"
+                          className="viewbtn"
+                          onClick={() => {
+                            const file = kys[0].passport;
 
-                              if (file) {
-                                window.open(
-                                  `https://sisccltd.com/omca_crm/${file}`,
-                                  "_blank",
-                                );
-                              } else {
-                                alert("Document not available");
-                              }
-                            }}
-                          >
-                            View Patient ID
-                          </button>
-                        </p>
-                        <p>
-                          <button
-                            type="button"
-                            className="add-button"
-                            onClick={() => {
-                              const file = kys[0].passport;
+                            if (file) {
+                              window.open(
+                                `https://sisccltd.com/omca_crm/${file}`,
+                                "_blank",
+                              );
+                            } else {
+                              alert("Document not available");
+                            }
+                          }}
+                        >
+                          View Passport
+                        </button>
 
-                              if (file) {
-                                window.open(
-                                  `https://sisccltd.com/omca_crm/${file}`,
-                                  "_blank",
-                                );
-                              } else {
-                                alert("Document not available");
-                              }
-                            }}
-                          >
-                            View Passport
-                          </button>
-                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6">
                 <div className="user-info-main">
-                  <div className="table-responsive">
-                    <table className="table mb-0">
-                      <tbody>
-                        <tr>
-                          <td>Phone:</td>
-                          <td className="even">
-                            {ispatient?.emergency_contact_no}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Email:</td>
-                          <td className="even">{ispatient?.email}</td>
-                        </tr>
-                        <tr>
-                          <td>Patient-Status:</td>
-                          <td className="even"> {ispatient?.patient_status}</td>
-                        </tr>
-                        <tr>
-                          <td>Country:</td>
-                          <td className="even">{ispatient?.country}</td>
-                        </tr>
-                        <tr>
-                          <td>Gender:</td>
-                          <td className="even">{ispatient?.gender}</td>
-                        </tr>
-                        <tr>
-                          <td>Passport Number:</td>
-                          <td className="even">{ispatient?.passport_num}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <p><i class="fa-solid fa-phone"></i><span>{ispatient?.emergency_contact_no}</span></p>
+                  <p><i class="fa-solid fa-envelope"></i><span>{ispatient?.email}</span></p>
+                  <p>Patient-Status:<span>{ispatient?.patient_status}</span></p>
+                  <p>Country:<span>{ispatient?.country}</span></p>
+                  <p>Gender:<span>{ispatient?.gender}</span></p>
+                  <p>Passport Number:<span>{ispatient?.passport_num}</span></p>
                 </div>
               </div>
             </div>
@@ -1840,18 +2222,35 @@ function PatientDetail() {
           <div className="patient-tabs">
             <ul className="nav nav-tabs nav-tabs-bottom">
               <li className="nav-item">
-                <a className="nav-link active" href="#about-cont123" data-toggle="tab">Treatment Plans{" "}</a>
+                <a
+                  className={`nav-link ${mainTab === "treatment-plans" ? "active" : ""}`}
+                  href="#about-cont123"
+                  data-toggle="tab"
+                  onClick={() => handleMainTabChange("treatment-plans")}
+                >
+                  Treatment Plans{" "}
+                </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#about-cont" data-toggle="tab">Treatment{" "}</a>
+                <a
+                  className={`nav-link ${mainTab === "treatment" ? "active" : ""}`}
+                  href="#about-cont"
+                  data-toggle="tab"
+                  onClick={() => handleMainTabChange("treatment")}
+                >
+                  Treatment{" "}
+                </a>
               </li>
             </ul>
             <div className="tab-content">
-              <div className="tab-pane show active" id="about-cont123">
+              <div className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`} id="about-cont123">
                 <div className="main-tab-hd justify-content-end">
                   <div className="treat-buttons">
                     <button onClick={PlanTreatmentPopUp} className="add-button">
-                      <span><i className="fa fa-plus"></i></span>{" "}Add Treatment Plan
+                      <span>
+                        <i className="fa fa-plus"></i>
+                      </span>{" "}
+                      Add Treatment Plan
                     </button>
                   </div>
                 </div>
@@ -1876,12 +2275,33 @@ function PatientDetail() {
                                       {info?.hospitals?.map((item, i) => (
                                         <div className="hospital-row" key={i}>
                                           <div>
-                                            <span className="hospital-name">{item.name}</span>
-                                            <span className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}>{item.status}</span>
+                                            <span className="hospital-name">
+                                              {item.name}
+                                            </span>
+                                            {info.isAnyHospitalApproved !==
+                                              false && (
+                                                <span
+                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                                >
+                                                  {item.status}
+                                                </span>
+                                              )}
                                           </div>
-                                          {info.isAnyHospitalApproved !== true && (
-                                            <button className="approve-btn" onClick={() => approveReject(info, item.id, "Approved")}>Approve</button>
-                                          )}
+                                          {info.isAnyHospitalApproved !==
+                                            true && (
+                                              <button
+                                                className="add-button"
+                                                onClick={() =>
+                                                  approveReject(
+                                                    info,
+                                                    item.id,
+                                                    "Approved",
+                                                  )
+                                                }
+                                              >
+                                                Approve
+                                              </button>
+                                            )}
                                         </div>
                                       ))}
                                     </div>
@@ -1903,13 +2323,15 @@ function PatientDetail() {
                                           </div>
                                         ))
                                       ) : (
-                                        <span className="text-muted">No Reports</span>
+                                        <span className="text-muted">
+                                          No Reports
+                                        </span>
                                       )}
                                     </div>
                                   </div>
                                   <div className="col-md-4">
                                     <div className="">
-                                      <h5>Reports</h5>
+                                      <h5>Notes</h5>
                                       <p className="notes-text">
                                         {info?.notes || "No Notes Added"}
                                       </p>
@@ -1925,699 +2347,759 @@ function PatientDetail() {
                   </div>
                 </div>
               </div>
-              <div className="tab-pane" id="about-cont">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>All Treatments</h6>
-                  </div>
-                  <div className="treat-buttons">
-                    <div className="mr-3">
-                      <button
-                        onClick={PatientDetailButton}
-                        className="add-button"
-                      >
-                        <span>
-                          <i className="fa fa-plus"></i>
-                        </span>{" "}
-                        Add Treatment
-                      </button>
+              <div className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`} id="about-cont">
+                {activeSubTab === "details" && (
+                  <div>
+                    <div className="main-tab-hd">
+                      <div className="all-hd">
+                        <h6>All Treatments</h6>
+                      </div>
+                      <div className="treat-buttons">
+                        <div className="mr-3">
+                          <button
+                            onClick={PatientDetailButton}
+                            className="add-button"
+                          >
+                            <span>
+                              <i className="fa fa-plus"></i>
+                            </span>{" "}
+                            Add Treatment
+                          </button>
+                        </div>
+                        <div className=""></div>
+                      </div>
                     </div>
-                    <div className="">
-                      <button className="add-button" onClick={penModal}>
-                        <span>
-                          <i className="fa fa-plus"></i>
-                        </span>{" "}
-                        Add Services
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {tretment?.length === 0 ? (
-                      "No Treatment  Added for this patients"
-                    ) : (
-                      <>
-                        {tretment?.map((info, index) => {
-                          console.log(info, "array data");
-                          return (
-                            <div className="card-box">
-                              <div className="treat-card">
-                                <div className="sectabmain">
-                                  <div className="treat-id">
-                                    <div>
-                                      <h3>
-                                        Treatment ID-
-                                        {info.treatment_id}{" "}
-                                      </h3>
-                                    </div>
-                                    <p
-                                      className="mb-0"
-                                      style={{
-                                        fontWeight: "500",
-                                        fontSize: "12px",
-                                      }}
-                                    >
-                                      {info.treatment_status}
-                                    </p>
-
-                                  </div>
-                                  <ul className="nav nav-tabs treat-tabs">
-                                    <li className="nav-item">
-                                      <a className="nav-link" href="#bottom-tab2" data-toggle="tab" onClick={() => {
-                                        handleclickAttandpDetails(
-                                          info.treatment_id,
-                                        );
-                                      }}> Add Attende Details</a>
-                                    </li>
-                                    <li className="nav-item">
-                                      <a className="nav-link" href="#bottom-tab4" data-toggle="tab" onClick={() => {
-                                        handlepatientTreatment(
-                                          info.treatment_id,
-                                        );
-                                      }}>Payment Details</a>
-                                    </li>
-                                    <li className="nav-item">
-                                      <a className="nav-link" href="#bottom-tab5" data-toggle="tab" onClick={() => {
-                                        handleclicksetData(
-                                          info.treatment_id,
-                                        );
-                                      }}>Reports</a>
-                                    </li>
-                                  </ul>
-                                </div>
-                                <div className="d-flex">
-                                  <button
-                                    onClick={(e) =>
-                                      handleClickOpen(e, info.treatment_id)
-                                    }
-                                    className="add-button1"
-                                  >
-                                    <span>
-                                      <i className="fa fa-plus"></i>
-                                    </span>{" "}
-                                    Add Hospital
-                                  </button>
-                                  <button
-                                    onClick={(e) =>
-                                      handleClickOpen1(
-                                        e,
-                                        info?.treatment_id,
-                                        info?.Hospital_details,
-                                      )
-                                    }
-                                    className="add-button1"
-                                  >
-                                    <span>
-                                      <i className="fa fa-plus"></i>
-                                    </span>{" "}
-                                    Add Appointment
-                                  </button>
-                                  <button
-                                    onClick={(e) =>
-                                      handleClickOpenNotes(
-                                        e,
-                                        info?.treatment_id,
-                                        info?.Hospital_details,
-                                      )
-                                    }
-                                    className="add-button1"
-                                  >
-                                    <span>
-                                      <i className="fa fa-plus"></i>
-                                    </span>{" "}
-                                    Add Notes
-                                  </button>
-                                </div>
-                              </div>
-                              <hr></hr>
-                              <div className="row gx-3 gy-3">
-                                <div className="col-md-4">
-                                  <div className="card patientreat">
-                                    <div className="card-header service-list">
-                                      <div className="d-flex">
-                                        <div>
-                                          <h6>Treatment</h6>
-                                        </div>
-                                        <div>
-                                          <h6
-                                            className="mx-2"
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() => {
-                                              handleclickEdAppointment(
-                                                info,
-                                              );
-                                            }}
-                                          >
-                                            <i className="fa-solid fa-pen-to-square"></i>
-                                          </h6>
-                                        </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        {tretment?.length === 0 ? (
+                          "No Treatment  Added for this patients"
+                        ) : (
+                          <>
+                            {tretment?.map((info, index) => {
+                              console.log(info, "array data");
+                              return (
+                                <div className="card-box">
+                                  <div className="treat-card">
+                                    <div className="sectabmain">
+                                      <div className="treat-id">
+                                        <h3 onClick={() => {
+                                          // Clicking in the list navigates to details sub-tab as per user request
+                                          setActiveSubTab("details");
+                                          setSelectedTreatmentId(
+                                            info.treatment_id,
+                                          );
+                                        }} style={{ cursor: "pointer" }}>
+                                          {info.treatment_name}{" "}
+                                        </h3>
+                                      </div>
+                                      <div className="">
+                                        <ul className="nav nav-tabs treat-tabs">
+                                          <li className="nav-item">
+                                            <button
+                                              className={`nav-link ${activeSubTab === "attendant" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                              onClick={(e) => handleAction(e, "attendant", info)}
+                                            >
+                                              Add Attendant
+                                            </button>
+                                          </li>
+                                          <li className="nav-item">
+                                            <button
+                                              className={`nav-link ${activeSubTab === "payment" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                              onClick={(e) => handleAction(e, "payment", info)}
+                                            >
+                                              Payment Details
+                                            </button>
+                                          </li>
+                                          <li className="nav-item">
+                                            <button
+                                              className={`nav-link ${activeSubTab === "reports" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                              onClick={(e) => handleAction(e, "reports", info)}
+                                            >
+                                              Reports
+                                            </button>
+                                          </li>
+                                          <li className="nav-item">
+                                            <button
+                                              className="nav-link"
+                                              onClick={(e) => handleAction(e, "hospital", info)}
+                                            >
+                                              | + Add Hospital
+                                            </button>
+                                          </li>
+                                          <li className="nav-item">
+                                            <button
+                                              className="nav-link"
+                                              onClick={(e) => handleAction(e, "appointment", info)}
+                                            >
+                                              | + Add Appointment
+                                            </button>
+                                          </li>
+                                          <li className="nav-item">
+                                            <button
+                                              className="nav-link"
+                                              onClick={(e) => handleAction(e, "notes", info)}
+                                            >
+                                              | + Add Notes
+                                            </button>
+                                          </li>
+                                          <li className="nav-item">
+                                            <button
+                                              className="nav-link"
+                                              onClick={(e) => handleAction(e, "services", info)}
+                                            >
+                                              | + Add Services
+                                            </button>
+                                          </li>
+                                        </ul>
                                       </div>
                                     </div>
-                                    <div className="card-body">
-                                      <ul className="trment-list">
-                                        <li>
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="para-main-div">
-                                                <p>
-                                                  Name:{" "}
-                                                  {info?.treatment_name}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="para-main-div">
-                                                <p>
-                                                  Charge:{" "}
-                                                  {
-                                                    info.treatment_course_fee
-                                                  }{" "}
-                                                  {info.duration}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="para-main-div">
-                                                <p>
-                                                  Date:{" "}
-                                                  {new Date(
-                                                    info?.treatment_created_at,
-                                                  ).toLocaleDateString(
-                                                    "en-GB",
-                                                  )}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="para-main-div">
-                                                <p>
-                                                  Time:{" "}
-                                                  {new Date(
-                                                    info?.treatment_created_at,
-                                                  ).toLocaleTimeString([], {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                    second: "2-digit",
-                                                  })}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
+                                    <p>{info.treatment_status}</p>
                                   </div>
-                                </div>
-                                <div className="col-md-4">
-                                  <div className="card patientreat">
-                                    <div className="card-header service-list">
-                                      <h6>Hospital</h6>
-                                    </div>
-                                    <div className="card-body">
-                                      <ul className="trment-list">
-                                        {info?.Hospital_details.map(
-                                          (item, index) => {
-                                            console.log(item);
-                                            return (
-                                              <>
-                                                <li key={index}>
-                                                  <div className="row">
-                                                    <div className="col-md-10">
-                                                      <div className="row">
-                                                        <div className="col-md-12">
-                                                          <div className="para-main-div">
-                                                            <p>
-                                                              Name:{" "}
-                                                              {item.hospital_Name ||
-                                                                "-"}
-                                                            </p>
-                                                          </div>
-                                                        </div>
-                                                        <div className="col-md-12">
-                                                          <div className="para-main-div">
-                                                            <p>
-                                                              Charge:{" "}
-                                                              {
-                                                                item.hospital_charge
-                                                              }
-                                                            </p>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                    <div className="col-md-2 text-end">
-                                                      {item.hospital_Name && (
-                                                        <i
-                                                          className="fa-solid fa-trash text-danger cursor-pointer"
-                                                          onClick={() =>
-                                                            handledelete(
-                                                              info,
-                                                              item,
-                                                            )
-                                                          }
-                                                        ></i>
-                                                      )}
-                                                    </div>
+                                  <hr></hr>
+                                  <div className="row gx-3 gy-3">
+                                    <div className="col-md-4">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list">
+                                          <div className="d-flex">
+                                            <div>
+                                              <h6>Treatment</h6>
+                                            </div>
+                                            <div>
+                                              <h6
+                                                className="mx-2"
+                                                style={{ cursor: "pointer" }}
+                                                onClick={() => {
+                                                  handleclickEdAppointment(
+                                                    info,
+                                                  );
+                                                }}
+                                              >
+                                                <i className="fa-solid fa-pen-to-square"></i>
+                                              </h6>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="card-body">
+                                          <ul className="trment-list">
+                                            <li>
+                                              <div className="row">
+                                                <div className="col-md-12">
+                                                  <div className="para-main-div">
+                                                    <p>
+                                                      Name:{" "}
+                                                      {info?.treatment_name}
+                                                    </p>
                                                   </div>
-                                                </li>
-                                              </>
-                                            );
-                                          },
-                                        )}
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-md-4">
-                                  {info?.services?.length > 0 ? (
-                                    <div className="card patientreat">
-                                      <div className="card-header service-list action-icon">
-                                        <h6>Free Services</h6>
+                                                </div>
+                                              </div>
+                                            </li>
+                                            <li>
+                                              <div className="row">
+                                                <div className="col-md-12">
+                                                  <div className="para-main-div">
+                                                    <p>
+                                                      Charge:{" "}
+                                                      {
+                                                        info.treatment_course_fee
+                                                      }{" "}
+                                                      {info.duration}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </li>
+                                            <li>
+                                              <div className="row">
+                                                <div className="col-md-12">
+                                                  <div className="para-main-div">
+                                                    <p>
+                                                      Date:{" "}
+                                                      {new Date(
+                                                        info?.treatment_created_at,
+                                                      ).toLocaleDateString(
+                                                        "en-GB",
+                                                      )}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </li>
+                                            <li>
+                                              <div className="row">
+                                                <div className="col-md-12">
+                                                  <div className="para-main-div">
+                                                    <p>
+                                                      Time:{" "}
+                                                      {new Date(
+                                                        info?.treatment_created_at,
+                                                      ).toLocaleTimeString([], {
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                        second: "2-digit",
+                                                      })}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </li>
+                                          </ul>
+                                        </div>
                                       </div>
-                                      <div className="card-body">
-                                        <ul className="free-list">
-                                          {info?.services?.map(
-                                            (item, index) => {
-                                              console.log(item);
-                                              if (
-                                                item.service_type === "Free"
-                                              ) {
+                                    </div>
+                                    <div className="col-md-4">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list">
+                                          <h6>Hospital   </h6>
+                                        </div>
+                                        <div className="card-body">
+                                          <ul className="trment-list">
+                                            {info?.Hospital_details.map(
+                                              (item, index) => {
+                                                console.log(item);
                                                 return (
-                                                  <li
-                                                    key={
-                                                      item._id ||
-                                                      item.serviceName
-                                                    }
-                                                  >
-                                                    <div
-                                                      className="row"
-                                                      key={index}
-                                                    >
-                                                      <div className="col-md-12">
-                                                        <div className="para-main-div d-flex">
-                                                          <div>
-                                                            <p>
-                                                              {
-                                                                item.serviceName
-                                                              }{" "}
-                                                            </p>
+                                                  <>
+                                                    {/* <li key={index}>
+                                                      <div className="row">
+                                                        <div className="col-md-10">
+                                                          <div className="row">
+                                                            <div className="col-md-12">
+                                                              <div className="para-main-div">
+                                                                <p>
+                                                                  Name:{" "}
+                                                                  {item.hospital_Name ||
+                                                                    "-"}
+                                                                </p>
+                                                              </div>
+                                                            </div>
+                                                            <div className="col-8">
+                                                              <div className="para-main-div">
+                                                                <p>
+                                                                  Charge:{" "}
+                                                                  {
+                                                                    item.hospital_charge
+                                                                  }
+                                                                </p>
+                                                              </div>
+                                                            </div>
+                                                            
+                                                           
+                                                          
                                                           </div>
-                                                          <div>
+                                                        </div>
+                                                        <div className="d-flex">
+                                                            <div className="col-md-2 text-end">
+                                                          {item.hospital_Name && (
                                                             <i
-                                                              className="fa-solid fa-trash mx-2 text-danger"
-                                                              style={{
-                                                                cursor:
-                                                                  "pointer",
-                                                              }}
+                                                              className="fa-solid fa-trash text-danger cursor-pointer"
                                                               onClick={() =>
-                                                                EditFreeDelete(
-                                                                  item,
+                                                                handledelete(
                                                                   info,
-                                                                  index,
+                                                                  item,
                                                                 )
                                                               }
                                                             ></i>
-                                                          </div>
+                                                          )}
+                                                        </div> 
+                                                         <div className="col-md-2 text-end">
+                                                          {item.hospital_Name && (
+                                                            <i
+                                                              className="fa-solid fa-edit cursor-pointer" style={{color:"#002f54"}}
+                                                              onClick={() =>
+                                                                handledeedit(
+                                                                  info,
+                                                                  item,
+                                                                )
+                                                              }
+                                                            ></i>
+                                                          )}
+                                                        </div>      
                                                         </div>
                                                       </div>
-                                                    </div>
-                                                  </li>
+                                                    </li> */}
+                                                    <li key={index}>
+                                                      <div className="row align-items-center">
+
+                                                        {/* Left Content */}
+                                                        <div className="col-md-10">
+                                                          <div className="para-main-div">
+                                                            <p className="mb-1">
+                                                              <strong>Name:</strong> {item.hospital_Name || "-"}
+                                                            </p>
+                                                            <p className="mb-0">
+                                                              <strong>Charge:</strong> {item.hospital_charge || "-"}
+                                                            </p>
+                                                          </div>
+                                                        </div>
+
+                                                        {/* Right Icons */}
+                                                        <div className="col-md-2 text-end">
+                                                          <div className="action-icon">
+
+                                                            {item.hospital_Name && (
+                                                              <i className="fa-solid fa-pen-to-square"
+                                                              
+                                                                onClick={() => handledeedit(info, item)}
+                                                              ></i>
+                                                            )}
+
+                                                            {item.hospital_Name && (
+                                                              <i
+                                                               className="fa-solid fa-trash"
+                                                                onClick={() => handledelete(info, item)}
+                                                              ></i>
+                                                            )}
+
+                                                          </div>
+                                                        </div>
+
+                                                      </div>
+                                                    </li>
+                                                  </>
                                                 );
-                                              }
-                                              return null;
-                                            },
-                                          )}
-                                        </ul>
+                                              },
+                                            )}
+                                          </ul>
+                                        </div>
                                       </div>
                                     </div>
-                                  ) : (
-                                    ""
-                                  )}
-                                </div>
-                                <div className="col-md-6">
-                                  {info?.treatmentNotes?.length > 0 ? (
-                                    <div className="card patientreat">
-                                      <div className="card-header service-list action-icon">
-                                        <h6>Notes</h6>
-                                      </div>
-                                      <div className="card-body">
-                                        <ul className="trment-list">
-                                          {info?.treatmentNotes?.map(
-                                            (item, index) => {
-                                              return (
-                                                <>
-                                                  <li key={index}>
-                                                    <div className="row">
-                                                      <div className="col-md-10">
-                                                        <div className="row">
-                                                          <div className="col-md-12">
-                                                            <div className="para-main-div">
-                                                              <p>
-                                                                Note:{" "}
-                                                                {item.note || "-"}
-                                                              </p>
-                                                            </div>
-                                                          </div>
-                                                          <div className="col-md-12">
-                                                            <div className="para-main-div">
-                                                              <p>
-                                                                Date:{" "}
-                                                                {new Date(
-                                                                  item?.date,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                ) || "-"}
-                                                              </p>
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                      <div className="col-md-2 text-end">
-                                                        <div className="action-icon">
-                                                          <i
-                                                            className="fa-solid fa-pen-to-square"
-                                                            onClick={(e) =>
-                                                              EditButton(
-                                                                item,
-                                                                info,
-                                                              )
-                                                            }
-                                                          ></i>
-                                                          <i
-                                                            className="fa-solid fa-trash"
-                                                            onClick={() =>
-                                                              EditDelete(
-                                                                item,
-                                                                info,
-                                                              )
-                                                            }
-                                                          ></i>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                  </li>
-                                                </>
-                                              );
-                                            },
-                                          )}
-                                        </ul>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    ""
-                                  )}
-                                </div>
-                                <div className="col-md-6">
-                                  {info?.services?.length > 0 ? (
-                                    <div className="card patientreat">
-                                      <div className="card-header service-list">
-                                        <h6>Extra Services</h6>
-                                      </div>
-                                      <div className="card-body">
-                                        <div className="table-responsive table-no-card">
-                                          <table className="table-card w-100">
-                                            <thead>
-                                              <tr>
-                                                <th>Service Name</th>
-                                                <th>Price</th>
-                                                {/* <th>Duration</th> */}
-                                                <th>Valid From</th>
-                                                <th>Valid To</th>
-                                                <th>Action</th>
-                                              </tr>
-                                            </thead>
-                                            <tbody>
+                                    <div className="col-md-4">
+                                      {info?.services?.length > 0 ? (
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list action-icon">
+                                            <h6>Free Services</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <ul className="free-list">
                                               {info?.services?.map(
                                                 (item, index) => {
-                                                  if (!item.price)
-                                                    return null;
+                                                  // console.log(item);
+                                                  if (
+                                                    item.service_type === "Free"
+                                                  ) {
+                                                    return (
+                                                      <li
+                                                        key={
+                                                          item._id ||
+                                                          item.serviceName
+                                                        }
+                                                      >
+                                                        <div
+                                                          className="row"
+                                                          key={index}
+                                                        >
+                                                          <div className="col-md-12">
+                                                            <div className="para-main-div d-flex">
+                                                              <div>
+                                                                <p>
+                                                                  {
+                                                                    item.serviceName
+                                                                  }{" "}
+                                                                </p>
+                                                              </div>
+                                                              <div>
+                                                                <i
+                                                                  className="fa-solid fa-trash mx-2 text-danger"
+                                                                  style={{
+                                                                    cursor:
+                                                                      "pointer",
+                                                                  }}
+                                                                  onClick={() =>
+                                                                    EditFreeDelete(
+                                                                      item,
+                                                                      info,
+                                                                      index,
+                                                                    )
+                                                                  }
+                                                                ></i>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </li>
+                                                    );
+                                                  }
+                                                  return null;
+                                                },
+                                              )}
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </div>
+                                    <div className="col-md-6">
+                                      {info?.services?.length > 0 ? (
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list">
+                                            <h6>Extra Services</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <div className="table-responsive table-no-card">
+                                              <table className="table-card w-100">
+                                                <thead>
+                                                  <tr>
+                                                    <th>Service Name</th>
+                                                    <th>Price</th>
+                                                    <th>Valid From</th>
+                                                    <th>Valid To</th>
+                                                    <th>Action</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {info?.services?.map(
+                                                    (item, index) => {
+                                                      if (!item.price)
+                                                        return null;
+                                                      return (
+                                                        <tr key={item._id || item.service_type}>
+                                                          <td>{item.serviceName || "-"}</td>
+                                                          <td>{item.price}</td>
+                                                          <td>
+                                                            {item.startTime
+                                                              ? new Date(
+                                                                item.startTime,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item.endTime
+                                                              ? new Date(
+                                                                item.endTime,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            <div className="action-icon">
+                                                              <i
+                                                                className="fa-solid fa-pen-to-square"
+                                                                onClick={() => {
+                                                                  hadnlcecEditModal(
+                                                                    item,
+                                                                    info,
+                                                                  );
+                                                                }}
+                                                              ></i>
+                                                              <i
+                                                                className="fa-solid fa-trash"
+                                                                onClick={() => {
+                                                                  handledeltePatientserveice(
+                                                                    item,
+                                                                    info,
+                                                                    index,
+                                                                  );
+                                                                }}
+                                                              ></i>
+                                                            </div>
+                                                          </td>
+                                                        </tr>
+                                                      );
+                                                    },
+                                                  )}
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </div>
+                                    <div className="col-md-6">
+                                      {info?.treatmentNotes?.length > 0 ? (
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list action-icon">
+                                            <h6>Notes</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <ul className="trment-list">
+                                              {info?.treatmentNotes?.map(
+                                                (item, index) => {
                                                   return (
-                                                    <tr
-                                                      key={
-                                                        item._id ||
-                                                        item.service_type
-                                                      }
-                                                    >
-                                                      <td>
-                                                        {item.serviceName ||
-                                                          "-"}
-                                                      </td>
-                                                      <td>{item.price}</td>
-                                                      {/* <td>
-                                                    {item.duration || "-"}
-                                                  </td> */}
-                                                      <td>
-                                                        {item.startTime
-                                                          ? new Date(
-                                                            item.startTime,
-                                                          ).toLocaleDateString(
-                                                            "en-GB",
-                                                          )
-                                                          : "-"}
-                                                      </td>
-                                                      <td>
-                                                        {item.endTime
-                                                          ? new Date(
-                                                            item.endTime,
-                                                          ).toLocaleDateString(
-                                                            "en-GB",
-                                                          )
-                                                          : "-"}
-                                                      </td>
-                                                      <td>
-                                                        <TableCell className="action-icon">
-                                                          <i
-                                                            className="fa-solid fa-pen-to-square"
-                                                            onClick={() => {
-                                                              hadnlcecEditModal(
-                                                                item,
-                                                                info,
-                                                              );
-                                                            }}
-                                                          ></i>
-                                                          <i
-                                                            className="fa-solid fa-trash"
-                                                            onClick={() => {
-                                                              handledeltePatientserveice(
-                                                                item,
-                                                                info,
-                                                                index,
-                                                              );
-                                                            }}
-                                                          ></i>
-                                                        </TableCell>
-                                                      </td>
-                                                    </tr>
+                                                    <>
+                                                      <li key={index}>
+                                                        <div className="row">
+                                                          <div className="col-md-10">
+                                                            <div className="row">
+                                                              <div className="col-md-12">
+                                                                <div className="para-main-div">
+                                                                  <p>
+                                                                    Note:{" "}
+                                                                    {item.note ||
+                                                                      "-"}
+                                                                  </p>
+                                                                </div>
+                                                              </div>
+                                                              <div className="col-md-12">
+                                                                <div className="para-main-div">
+                                                                  <p>
+                                                                    Date:{" "}
+                                                                    {new Date(
+                                                                      item?.date,
+                                                                    ).toLocaleDateString(
+                                                                      "en-GB",
+                                                                    ) || "-"}
+                                                                  </p>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                          <div className="col-md-2 text-end">
+                                                            <div className="action-icon">
+                                                              <i
+                                                                className="fa-solid fa-pen-to-square"
+                                                                onClick={(e) =>
+                                                                  EditButton(
+                                                                    item,
+                                                                    info,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                              <i
+                                                                className="fa-solid fa-trash"
+                                                                onClick={() =>
+                                                                  EditDelete(
+                                                                    item,
+                                                                    info,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </li>
+                                                    </>
                                                   );
                                                 },
                                               )}
-                                            </tbody>
-                                          </table>
+                                            </ul>
+                                          </div>
                                         </div>
-                                      </div>
+                                      ) : (
+                                        ""
+                                      )}
                                     </div>
-                                  ) : (
-                                    ""
-                                  )}
-                                </div>
-                                <div className="col-md-12">
-                                  {info?.appointments_details?.length >
-                                    0 ? (
-                                    <div className="card patientreat">
-                                      <div className="card-header service-list">
-                                        <h6>Appointment</h6>
-                                      </div>
-                                      <div className="card-body">
-                                        <div className="table-responsive table-no-card">
-                                          <table className="table-card w-100">
-                                            <thead>
-                                              <tr>
-                                                <th>ID</th>
-                                                <th>Vehicle No</th>
-                                                <th>Driver Name</th>
-                                                <th>Driver Contact</th>
-                                                <th>Pickup Time</th>
-                                                <th>Date</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              {info.appointments_details?.map(
-                                                (item) => (
-                                                  <tr
-                                                    key={item.appointmentId}
-                                                  >
-                                                    <td>
-                                                      {item.appointmentId}
-                                                    </td>
-                                                    <td>
-                                                      {item.mode !==
-                                                        "online"
-                                                        ? item.vehicle_no
-                                                        : "-"}
-                                                    </td>
-                                                    <td>
-                                                      {item.mode !==
-                                                        "online"
-                                                        ? item.driver_name
-                                                        : "-"}
-                                                    </td>
-                                                    <td>
-                                                      {item.mode !==
-                                                        "online"
-                                                        ? item.driver_contact
-                                                        : "-"}
-                                                    </td>
-                                                    <td>
-                                                      {item.mode !==
-                                                        "online"
-                                                        ? item.pickup_time
-                                                        : "-"}
-                                                    </td>
-                                                    <td>
-                                                      {item.appointment_Date
-                                                        ? new Date(
-                                                          item.appointment_Date,
-                                                        )
-                                                          .toISOString()
-                                                          .slice(0, 10)
-                                                        : ""}
-                                                    </td>
-                                                    <td>
-                                                      {item.status ===
-                                                        "Complete" ? (
-                                                        <span className="badge bg-primary">
-                                                          Completed
-                                                        </span>
-                                                      ) : (
-                                                        <span className="badge bg-primary">
-                                                          {item.status}
-                                                        </span>
-                                                      )}
-                                                    </td>
-                                                    <td className="action-icon">
-                                                      <i
-                                                        className="fa-solid fa-pen-to-square"
-                                                        onClick={() => {
-                                                          handleclickeditfunc(
-                                                            item,
-                                                          );
-                                                        }}
-                                                      ></i>
-                                                      <i
-                                                        className="fa-solid fa-trash"
-                                                        onClick={() => {
-                                                          handleclickeditdelete(
-                                                            item,
-                                                          );
-                                                        }}
-                                                      ></i>
-                                                    </td>
+                                    <div className="col-md-12">
+                                      {info?.appointments_details?.length >
+                                        0 ? (
+                                        <div className="card patientreat">
+                                          <div className="card-header service-list">
+                                            <h6>Appointment</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <div className="table-responsive table-no-card">
+                                              <table className="table-card w-100">
+                                                <thead>
+                                                  <tr>
+                                                    <th>ID</th>
+                                                    <th>Vehicle No</th>
+                                                    <th>Driver Name</th>
+                                                    <th>Driver Contact</th>
+                                                    <th>Pickup Time</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
                                                   </tr>
-                                                ),
-                                              )}
-                                            </tbody>
-                                          </table>
+                                                </thead>
+                                                <tbody>
+                                                  {info.appointments_details?.map(
+                                                    (item) => (
+                                                      <tr
+                                                        key={item.appointmentId}
+                                                      >
+                                                        <td>
+                                                          {item.appointmentId}
+                                                        </td>
+                                                        <td>
+                                                          {item.mode !==
+                                                            "online"
+                                                            ? item.vehicle_no
+                                                            : "-"}
+                                                        </td>
+                                                        <td>
+                                                          {item.mode !==
+                                                            "online"
+                                                            ? item.driver_name
+                                                            : "-"}
+                                                        </td>
+                                                        <td>
+                                                          {item.mode !==
+                                                            "online"
+                                                            ? item.driver_contact
+                                                            : "-"}
+                                                        </td>
+                                                        <td>
+                                                          {item.mode !==
+                                                            "online"
+                                                            ? item.pickup_time
+                                                            : "-"}
+                                                        </td>
+                                                        <td>
+                                                          {item.appointment_Date
+                                                            ? new Date(
+                                                              item.appointment_Date,
+                                                            )
+                                                              .toISOString()
+                                                              .slice(0, 10)
+                                                            : ""}
+                                                        </td>
+                                                        <td>
+                                                          {item.status ===
+                                                            "Complete" ? (
+                                                            <span className="badge bg-primary">
+                                                              Completed
+                                                            </span>
+                                                          ) : (
+                                                            <span className="badge bg-primary">
+                                                              {item.status}
+                                                            </span>
+                                                          )}
+                                                        </td>
+                                                        <td className="action-icon">
+                                                          <i
+                                                            className="fa-solid fa-pen-to-square"
+                                                            onClick={() => {
+                                                              handleclickeditfunc(
+                                                                item,
+                                                              );
+                                                            }}
+                                                          ></i>
+                                                          <i
+                                                            className="fa-solid fa-trash"
+                                                            onClick={() => {
+                                                              handleclickeditdelete(
+                                                                item,
+                                                              );
+                                                            }}
+                                                          ></i>
+                                                        </td>
+                                                      </tr>
+                                                    ),
+                                                  )}
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
                                         </div>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </div>
+                                  </div>
+                                  <hr></hr>
+                                  <div className="row justify-content-end">
+                                    <div className="col-md-12">
+                                      <div className="total-amount">
+                                        <h6 className="mb-0">Total Amount:</h6>
+                                        <p>{info.treatment_total_charge}</p>
                                       </div>
                                     </div>
-                                  ) : (
-                                    ""
-                                  )}
-                                </div>
-                              </div>
-                              <hr></hr>
-                              <div className="row justify-content-end">
-                                <div className="col-md-12">
-                                  <div className="total-amount">
-                                    <h6 className="mb-0">Total Amount:</h6>
-                                    <p>{info.treatment_total_charge}</p>
+                                    <div className="col-md-12">
+                                      <div className="total-amount">
+                                        <h6 className="mb-0">Due Amount:</h6>
+                                        <p>{info.treatment_due_payment}</p>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                                <div className="col-md-12">
-                                  <div className="total-amount">
-                                    <h6 className="mb-0">Due Amount:</h6>
-                                    <p>{info.treatment_due_payment}</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </>
-                    )}
+                              );
+                            })}
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
-              <div className="tab-pane" id="bottom-tab2">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>Passport Details</h6>
+              {activeSubTab === "attendant" && selectedTreatmentId && (
+                <div>
+                  <div className="main-tab-hd">
+                    <div className="all-hd">
+                      <h6>Attendant Details</h6>
+                    </div>
+                    <div className="">
+                      <button onClick={(e) => handleClickOpen2(e, selectedTreatmentId)} className="add-button">
+                        <span><i className="fa fa-plus"></i></span>{" "}
+                        Add Attendant
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <button
-                      onClick={(e) => handleClickOpen2(e)}
-                      className="add-button"
-                    >
-                      <span>
-                        <i className="fa fa-plus"></i>
-                      </span>{" "}
-                      Add Attende Details
-                    </button>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {kys?.length === 0
-                      ? "No passport details found"
-                      : kys?.map((info, index) => (
-                        <>
-                          <div key={index} className="card-box">
-                            <div className="treat-card">
-                              <div className="sectabmain">
-                                <div className="treat-id">
-                                  <div>
-                                    <h3 className="mb-0">
-                                      Treatment ID-{treatmentId}
-                                    </h3>
+                  <div className="row">
+                    {/* <div className="col-md-12">
+                      {kys?.length === 0
+                        ? "No passport details found"
+                        : kys?.map((info, index) => (
+                            <>
+                              <div key={index} className="card-box">
+                                <div className="treat-card">
+                                  <div className="sectabmain">
+                                    <div className="treat-id">
+                                      <div>
+                                        <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>
+                                          Treatment Name-
+                                          {getSelectedTreatmentName()}
+                                        </h3>
+                                      </div>
+                                    </div>
+                                    <div className="d-flex">
+                                      <ul className="nav nav-tabs treat-tabs">
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeSubTab === "details" ? "active" : ""}`}
+                                            onClick={handleBackToTreatmentList}
+                                          >
+                                            Treatment
+                                          </button>
+                                        </li>
+
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`}
+                                            onClick={() => {
+                                              setActiveSubTab("attendant");
+                                              handleclickAttandpDetails(
+                                                attendId,
+                                              );
+                                            }}
+                                          >
+                                            Add Attendant
+                                          </button>
+                                        </li>
+
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`}
+                                            onClick={() => {
+                                              setActiveSubTab("payment");
+                                            }}
+                                          >
+                                            Payment Details
+                                          </button>
+                                        </li>
+
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`}
+                                            onClick={() => {
+                                              setActiveSubTab("reports");
+                                            }}
+                                          >
+                                            Reports
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </div>
                                   </div>
                                 </div>
-                                <ul className="nav nav-tabs treat-tabs">
-                                  <li className="nav-item">
-                                    <a className="nav-link" href="#about-cont" data-toggle="tab"> Treatment</a>
-                                  </li>
-                                  <li className="nav-item">
-                                    <a className="nav-link" href="#bottom-tab4" data-toggle="tab" onClick={() => {
-                                      handleAddTritmentPayment(attendId);
-                                    }}>Payment Details</a>
-                                  </li>
-                                  <li className="nav-item">
-                                    <a className="nav-link" href="#bottom-tab5" data-toggle="tab" onClick={() => {
-                                      handleclicksetData(attendId);
-                                    }}>Reports</a>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                            <hr></hr>
-                            <div className="pass-detail">
-                              <div className="img-patient">
-                                <h6>Attende Image</h6>
-                                {/* {passportDetails.attendant_photo ? (
+                                <hr></hr>
+                                <div className="pass-detail">
+                                  <div className="img-patient">
+                                    <h6>Attendant Image</h6>
+                                    {/* {passportDetails.attendant_photo ? (
                                         <img
                                           src={`${image}${info.attendant_photo}`}
                                           alt="no image"
@@ -2634,396 +3116,511 @@ function PatientDetail() {
                                           height="100"
                                         />
                                       )} */}
-                                {passportDetails.attendant_photo ? (
-                                  <a
-                                    href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_photo}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="view-pass"
-                                  >
-                                    View Photo
-                                  </a>
-                                ) : (
-                                  <span className="text-muted">
-                                    Not Uploaded
-                                  </span>
-                                )}
-                              </div>
-                              <div className="id-proof">
-                                {/* <h6>Attende id Proof </h6> */}
-                                {/* {passportDetails.attendant_passport ? (
+                    {/* {passportDetails.attendant_photo ? (
+                                      <a
+                                        href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_photo}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="view-pass"
+                                      >
+                                        View Photo
+                                      </a>
+                                    ) : (
+                                      <span className="text-muted">
+                                        Not Uploaded
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="id-proof">
+                                    <div className="">
+                                      <h6>Attendant Passport</h6>
+                                      {passportDetails.attendant_passport ? (
                                         <a
                                           href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_passport}`}
                                           target="_blank"
                                           rel="noopener noreferrer"
-                                          className="btn btn-outline-primary btn-sm"
+                                          className="view-pass"
                                         >
-                                          View PDF
+                                          View Passport
                                         </a>
                                       ) : (
                                         <span className="text-muted">
                                           Not Uploaded
                                         </span>
-                                      )} */}
-                                <div className="">
-                                  <h6>Attende Passport</h6>
-                                  {passportDetails.attendant_passport ? (
-                                    <a
-                                      href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_passport}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="view-pass"
-                                    >
-                                      View Passport
-                                    </a>
-                                  ) : (
-                                    <span className="text-muted">
-                                      Not Uploaded
-                                    </span>
-                                  )}
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          ))}
+                    </div> */}
+                    <div className="col-md-12">
+                      <div className="card-box">
+                        <div className="treat-card">
+                          <div className="sectabmain">
+                            <div className="treat-id">
+                              <h3 style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>{getSelectedTreatmentName()}</h3>
+                            </div>
+                            <ul className="nav nav-tabs treat-tabs">
+                              <li className="nav-item">
+                                <button className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`} onClick={(e) => handleAction(e, "attendant", getSelectedTreatmentInfo())}>
+                                  Add Attendant
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`} onClick={(e) => handleAction(e, "payment", getSelectedTreatmentInfo())}>
+                                  Payment Details
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`} onClick={(e) => handleAction(e, "reports", getSelectedTreatmentInfo())}>
+                                  Reports
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button className="nav-link" onClick={(e) => handleAction(e, "hospital", getSelectedTreatmentInfo())}>
+                                  | + Add Hospital
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button className="nav-link" onClick={(e) => handleAction(e, "appointment", getSelectedTreatmentInfo())}>
+                                  | + Add Appointment
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button className="nav-link" onClick={(e) => handleAction(e, "notes", getSelectedTreatmentInfo())}>
+                                  | + Add Notes
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button className="nav-link" onClick={(e) => handleAction(e, "services", getSelectedTreatmentInfo())}>
+                                  | + Add Services
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <hr></hr>
+                        <div className="row">
+                          <div className="col-md-4">
+                            <div className="card attendant-card">
+                              <div className="card-body">
+                                <div className="detail-row">
+                                  <label>Name</label>
+                                  <span>{passportDetails?.attendant_fullname || "N/A"}</span>
+                                </div>
+                                <div className="detail-row">
+                                  <label>Relation</label>
+                                  <span>{passportDetails?.attendant_relation || "N/A"}</span>
+                                </div>
+                                <div className="detail-row">
+                                  <label>Contact</label>
+                                  <span>{passportDetails?.attendant_contact || "N/A"}</span>
+                                </div>
+                                <div className="detail-row">
+                                  <label>Attendant Photo</label>
+                                  <span>
+                                    {passportDetails?.attendant_photo ? (
+                                      <a
+                                        href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_photo}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="pdfdown"
+                                      >
+                                        View
+                                      </a>
+                                    ) : (
+                                      <span className="text-muted small">Not Uploaded</span>
+                                    )}
+                                  </span>
+                                </div>
+                                <div className="detail-row">
+                                  <label>Attendant Passport</label>
+                                  <span>
+                                    {passportDetails?.attendant_passport ? (
+                                      <a
+                                        href={`https://sisccltd.com/omca_crm/${passportDetails.attendant_passport}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="pdfdown"
+                                      >
+                                        View
+                                      </a>
+                                    ) : (
+                                      <span className="text-muted small">Not Uploaded</span>
+                                    )}
+                                  </span>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </>
-                      ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="tab-pane" id="bottom-tab3">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>Discussion Notes</h6>
+              )}
+              {activeSubTab === "payment" && selectedTreatmentId && (
+                <div>
+                  <div className="main-tab-hd">
+                    <div className="all-hd">
+                      <h6>Payment Details</h6>
+                    </div>
+                    <div className="treat-buttons">
+                      <button onClick={(e) => handleClicexportPayment(e, treatmentId)} className="add-button mx-2">
+                        <span><i className="fa fa-plus"></i></span>{" "} Export
+                      </button>
+                      <button onClick={(e) => handleClickOpen3(e, treatmentId)} className="add-button">
+                        <span><i className="fa fa-plus"></i></span>{" "}Add Amount
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    onClick={(e) => handleClickOpen5(e)}
-                    className="add-button"
-                  >
-                    <span>
-                      <i className="fa fa-plus"></i>
-                    </span>{" "}
-                    Add Notes
-                  </button>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {notes?.length === 0 ? (
-                      "No notes for Patient"
-                    ) : (
-                      <>
-                        {notes?.map((info, index) => {
-                          console.log(info);
-                          return (
-                            <>
-                              <div className="card-box">
-                                <div className="note-view">
-                                  <h3 className="card-title">
-                                    Note-{index + 1}
-                                  </h3>
+                  <div className="row">
+                    <div className="col-md-12">
+                      {Object.keys(groupedPayments).length === 0 ? (
+                        <>
+                          <div className="card-box">
+                            <div className="treat-card">
+                              <div className="sectabmain">
+                                <div className="treat-id">
+                                  <div>
+                                    <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>
+                                      Treatment Name-{getSelectedTreatmentName()}
+                                    </h3>
+                                  </div>
                                 </div>
-                                <div className="experience-box">
-                                  <ul className="experience-list">
-                                    <li>
-                                      <div className="experience-user">
-                                        <div className="before-circle"></div>
-                                      </div>
-                                      <div className="experience-content d-flex">
-                                        <div className="timeline-content">
-                                          <a href="#/" className="name">
-                                            {info.note}
-                                          </a>
-                                          <div>
-                                            {new Date(
-                                              info.date,
-                                            ).toLocaleDateString("en-GB")}
-                                          </div>
-                                        </div>
-                                        <div>
-                                          {" "}
-                                          <i
-                                            className="fa fa-edit text-primary "
-                                            onClick={() => {
-                                              handleopenNotesModal(info.id);
-                                            }}
-                                            style={{ cursor: "pointer" }}
-                                          ></i>
-                                        </div>
-                                      </div>
+                                <div className="d-flex">
+                                  <ul className="nav nav-tabs treat-tabs">
+                                    <li className="nav-item">
+                                      <button
+                                        className={`nav-link ${activeSubTab === "details" ? "active" : ""}`}
+                                        onClick={handleBackToTreatmentList}
+                                      >
+                                        Treatment
+                                      </button>
+                                    </li>
+
+                                    <li className="nav-item">
+                                      <button
+                                        className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`}
+                                        onClick={() => {
+                                          setActiveSubTab("attendant");
+                                          handleclickAttandpDetails(
+                                            selectedTreatmentId,
+                                          );
+                                        }}
+                                      >
+                                        Add Attendant
+                                      </button>
+                                    </li>
+
+                                    <li className="nav-item">
+                                      <button
+                                        className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`}
+                                        onClick={() => {
+                                          setActiveSubTab("payment");
+                                        }}
+                                      >
+                                        Payment Details
+                                      </button>
+                                    </li>
+
+                                    <li className="nav-item">
+                                      <button
+                                        className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`}
+                                        onClick={() => {
+                                          setActiveSubTab("reports");
+                                        }}
+                                      >
+                                        Reports
+                                      </button>
                                     </li>
                                   </ul>
                                 </div>
                               </div>
-                            </>
-                          );
-                        })}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="tab-pane" id="bottom-tab4">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>Payment Details</h6>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {payment_details?.length === 0 ? (
-                      "No payment details for patients"
-                    ) : (
-                      <>
-                        {groupedPayments &&
-                          Object.entries(groupedPayments).map(
-                            ([treatmentId, payments], index) => (
-                              <div className="card-box" key={treatmentId}>
-                                <div className="treat-card">
-                                  <div className="sectabmain">
-                                    <div className="treat-id">
-                                      <div>
-                                        <h3 className="mb-0">Treatment ID-{treatmentId}</h3>
+
+                            </div>
+                          </div>
+                          <hr></hr>
+                        </>
+                      ) : (
+                        <>
+                          {groupedPayments &&
+                            Object.entries(groupedPayments).map(
+                              ([treatmentId, payments], index) => {
+                                const { treatment_course_name } =
+                                  payments[0] || {};
+                                return (
+                                  <>
+                                    <div className="card-box" key={treatmentId}>
+                                      <div className="treat-card">
+                                        <div className="sectabmain">
+                                          <div className="treat-id">
+                                            <h3 style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}> {getSelectedTreatmentName()}</h3>
+                                          </div>
+                                          <ul className="nav nav-tabs treat-tabs">
+                                            <li className="nav-item">
+                                              <button className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`} onClick={(e) => handleAction(e, "attendant", getSelectedTreatmentInfo())}>
+                                                Add Attendant
+                                              </button>
+                                            </li>
+                                            <li className="nav-item">
+                                              <button className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`} onClick={(e) => handleAction(e, "payment", getSelectedTreatmentInfo())}>
+                                                Payment Details
+                                              </button>
+                                            </li>
+                                            <li className="nav-item">
+                                              <button className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`} onClick={(e) => handleAction(e, "reports", getSelectedTreatmentInfo())}>
+                                                Reports
+                                              </button>
+                                            </li>
+                                            <li className="nav-item">
+                                              <button className="nav-link" onClick={(e) => handleAction(e, "hospital", getSelectedTreatmentInfo())}>
+                                                | + Add Hospital
+                                              </button>
+                                            </li>
+                                            <li className="nav-item">
+                                              <button className="nav-link" onClick={(e) => handleAction(e, "appointment", getSelectedTreatmentInfo())}>
+                                                | + Add Appointment
+                                              </button>
+                                            </li>
+                                            <li className="nav-item">
+                                              <button className="nav-link" onClick={(e) => handleAction(e, "notes", getSelectedTreatmentInfo())}>
+                                                | + Add Notes
+                                              </button>
+                                            </li>
+                                            <li className="nav-item">
+                                              <button className="nav-link" onClick={(e) => handleAction(e, "services", getSelectedTreatmentInfo())}>
+                                                | + Add Services
+                                              </button>
+                                            </li>
+                                          </ul>
+                                        </div>
                                       </div>
-                                    </div>
+                                      <hr></hr>
+                                      <div className="experience-box">
+                                        <ul className="experience-list">
+                                          {payments.map((info, idx) => {
+                                            console.log(info);
+                                            return (
+                                              <>
+                                                <li key={idx}>
+                                                  <div className="experience-user">
+                                                    <div className="before-circle"></div>
+                                                  </div>
+                                                  <div className="experience-content">
+                                                    <div className="timeline-content">
+                                                      <div className="">
+                                                        <div>
+                                                          Payment Date -{" "}
+                                                          {moment(
+                                                            info.payment_Date,
+                                                          ).format("L")}
+                                                        </div>
+                                                        <div>
+                                                          Payment Method -{" "}
+                                                          {info.paymentMethod}
+                                                        </div>
+                                                        <div>
+                                                          Paid Amount -{" "}
+                                                          {info.paid_amount}
+                                                        </div>
+                                                      </div>
+                                                      <div className="">
+                                                        <button className="add-button" onClick={() => {
+                                                          navigate(
+                                                            "/Admin/Patient-Pdfdetails",
+                                                            {
+                                                              state: {
+                                                                data: info?.payment_id,
+                                                              },
+                                                            },
+                                                          );
+                                                        }}
+                                                        >
+                                                          {" "}
+                                                          PDF Download
+                                                        </button>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                              </>
+                                            );
+                                          })}
+                                        </ul>
+                                      </div>
+                                    </div >
+                                  </>
+                                );
+                              },
+                            )}
+                        </>
+                      )}
+
+                    </div>
+                  </div>
+                </div>
+              )}
+              {activeSubTab === "reports" && selectedTreatmentId && (
+                <div>
+                  <div className="main-tab-hd">
+                    <div className="all-hd">
+                      <h6>Reports</h6>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-12">
+                      {treatmentData.map((treatment) => {
+                        console.log(treatment);
+                        return (
+                          <>
+                            <div className="card-box mb-4" key={treatment.treatmentId}
+                            >
+                              {/* ===== Treatment Header ===== */}
+                              <div className="treat-card">
+                                <div className="sectabmain">
+                                  <div className="treat-id">
+                                    <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>
+
+                                      {getSelectedTreatmentName()}
+                                    </h3>
+                                  </div>
+                                  <div className="d-flex">
                                     <ul className="nav nav-tabs treat-tabs">
                                       <li className="nav-item">
-                                        <a className="nav-link" href="#about-cont" data-toggle="tab"> Treatment</a>
+                                        <button className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`} onClick={(e) => handleAction(e, "attendant", getSelectedTreatmentInfo())}>
+                                          Add Attendant
+                                        </button>
                                       </li>
                                       <li className="nav-item">
-                                        <a className="nav-link" href="#bottom-tab2" data-toggle="tab" > Add Attende Details</a>
+                                        <button className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`} onClick={(e) => handleAction(e, "payment", getSelectedTreatmentInfo())}>
+                                          Payment Details
+                                        </button>
                                       </li>
                                       <li className="nav-item">
-                                        <a className="nav-link" href="#bottom-tab5" data-toggle="tab" onClick={() => {
-                                          handleclicksetData(attendId);
-                                        }}>Reports</a>
+                                        <button className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`} onClick={(e) => handleAction(e, "reports", getSelectedTreatmentInfo())}>
+                                          Reports
+                                        </button>
+                                      </li>
+                                      <li className="nav-item">
+                                        <button className="nav-link" onClick={(e) => handleAction(e, "hospital", getSelectedTreatmentInfo())}>
+                                          | + Add Hospital
+                                        </button>
+                                      </li>
+                                      <li className="nav-item">
+                                        <button className="nav-link" onClick={(e) => handleAction(e, "appointment", getSelectedTreatmentInfo())}>
+                                          | + Add Appointment
+                                        </button>
+                                      </li>
+                                      <li className="nav-item">
+                                        <button className="nav-link" onClick={(e) => handleAction(e, "notes", getSelectedTreatmentInfo())}>
+                                          | + Add Notes
+                                        </button>
+                                      </li>
+                                      <li className="nav-item">
+                                        <button className="nav-link" onClick={(e) => handleAction(e, "services", getSelectedTreatmentInfo())}>
+                                          | + Add Services
+                                        </button>
                                       </li>
                                     </ul>
                                   </div>
                                   <div className="">
                                     <button
                                       onClick={(e) =>
-                                        handleClicexportPayment(
-                                          e,
-                                          treatmentId,
-                                        )
-                                      }
-                                      className="add-button mx-2"
-                                    >
-                                      <span>
-                                        <i className="fa fa-plus"></i>
-                                      </span>{" "}
-                                      Export
-                                    </button>
-                                    <button
-                                      onClick={(e) =>
-                                        handleClickOpen3(e, treatmentId)
+                                        handleClickOpen10(e, treatment.treatmentId)
                                       }
                                       className="add-button"
                                     >
                                       <span>
                                         <i className="fa fa-plus"></i>
                                       </span>{" "}
-                                      Add Amount
+                                      Add Report
                                     </button>
                                   </div>
                                 </div>
-                                <hr></hr>
-                                <div className="experience-box">
-                                  <ul className="experience-list">
-                                    {payments.map((info, idx) => {
-                                      console.log(info);
-                                      return (
-                                        <>
-                                          <li key={idx}>
-                                            <div className="experience-user">
-                                              <div className="before-circle"></div>
-                                            </div>
-                                            <div>
-                                              <h5></h5>
-                                            </div>
-                                            <div className="experience-content">
-                                              <div className="timeline-content">
-                                                <div>
-                                                  Payment Date -{" "}
-                                                  {moment(
-                                                    info.payment_Date,
-                                                  ).format("L")}
-                                                </div>
-                                                <div>
-                                                  Payment Method -{" "}
-                                                  {info.paymentMethod}
-                                                </div>
-                                                <div>
-                                                  Paid Amount -{" "}
-                                                  {info.paid_amount}
-                                                </div>
-                                                {/* <PictureAsPdf
-                                                 
-                                                /> */}
-                                                <button
-                                                  className="add-button"
-                                                  style={{
-                                                    cursor: "pointer",
-                                                  }}
-                                                  onClick={() => {
-                                                    navigate(
-                                                      "/Admin/Patient-Pdfdetails",
-                                                      {
-                                                        state: {
-                                                          data: info?.payment_id,
-                                                        },
-                                                      },
-                                                    );
-                                                  }}
-                                                >
-                                                  {" "}
-                                                  PDF Download
-                                                </button>
-                                              </div>
-                                            </div>
-                                          </li>
-                                        </>
-                                      );
-                                    })}
-                                  </ul>
-                                </div>
                               </div>
-                            ),
-                          )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="tab-pane" id="bottom-tab5">
-                <div className="main-tab-hd">
-                  <div className="all-hd">
-                    <h6>Reports</h6>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {treatmentData?.length === 0
-                      ? "No Reports for patients"
-                      : treatmentData.map((treatment) => (
-                        <div
-                          className="card-box mb-4"
-                          key={treatment.treatmentId}
-                        >
-                          {/* ===== Treatment Header ===== */}
-                          <div className="treat-card d-flex justify-content-between align-items-center">
-                            <div className="sectabmain">
-                              <div className="treat-id">
-                                <h3 className="mb-0" >Treatment ID - {treatment.treatmentId} </h3>
-                              </div>
-                              <ul className="nav nav-tabs treat-tabs">
-                                <li className="nav-item">
-                                  <a className="nav-link" href="#about-cont" data-toggle="tab"> Treatment</a>
-                                </li>
-                                <li className="nav-item">
-                                  <a className="nav-link" href="#bottom-tab2" data-toggle="tab" > Add Attende Details</a>
-                                </li>
-                                <li className="nav-item">
-                                  <a className="nav-link" href="#bottom-tab5" data-toggle="tab" oonClick={() => {
-                                    handlepatientTreatment(
-                                      treatment.treatmentId,
-                                    );
-                                  }}>Payment Details</a>
-                                </li>
-                              </ul>
-                            </div>
-                            {localStorage.getItem("Role") === "Admin" && (
-                              <button
-                                onClick={(e) =>
-                                  handleClickOpen10(
-                                    e,
-                                    treatment.treatmentId,
-                                  )
-                                }
-                                className="add-button"
-                              >
-                                <i className="fa fa-plus"></i> Add Report
-                              </button>
-                            )}
-                          </div>
-                          {/* ===== Reports Table ===== */}
-                          {
-                            treatment.reports &&
-                              treatment.reports.length > 0 ? (
-                              <div className="table-responsive mt-3">
-                                <TableContainer component={Paper}>
-                                  <Table className="table-no-card">
-                                    <TableHead>
-                                      <TableRow>
-                                        <TableCell>Treatment ID</TableCell>
-                                        <TableCell>Report Title</TableCell>
-                                        <TableCell>Report Date</TableCell>
-                                        {localStorage.getItem("Role") ===
-                                          "Admin" && (
-                                            <>
-                                              <TableCell>Reports</TableCell>
-                                              <TableCell>Action</TableCell>
-                                            </>
-                                          )}
-                                      </TableRow>
-                                    </TableHead>
-
-                                    <TableBody>
-                                      {treatment.reports.map((item) => (
-                                        <TableRow key={item._id}>
-                                          <TableCell>
-                                            {item.treatmentId}
-                                          </TableCell>
-                                          <TableCell>
-                                            {item.reportTitle}
-                                          </TableCell>
-                                          <TableCell>
-                                            {new Date(
-                                              item.treatment_report_date,
-                                            ).toLocaleDateString("en-GB")}
-                                          </TableCell>
-
+                              {/* ===== Reports Table ===== */}
+                              {treatment.reports &&
+                                treatment.reports.length > 0 ? (
+                                <div className="table-responsive mt-3">
+                                  <TableContainer component={Paper}>
+                                    <Table className="table-no-card">
+                                      <TableHead>
+                                        <TableRow>
+                                          <TableCell>Treatment ID</TableCell>
+                                          <TableCell>Report Title</TableCell>
+                                          <TableCell>Report Date</TableCell>
                                           {localStorage.getItem("Role") ===
                                             "Admin" && (
                                               <>
-                                                <TableCell>
-                                                  <a
-                                                    href={`${image}${item.treatmentReport}`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                  >
-                                                    Download Report
-                                                  </a>
-                                                </TableCell>
-                                                <TableCell>
-                                                  <i
-                                                    style={{
-                                                      cursor: "pointer",
-                                                    }}
-                                                    className="fa-solid fa-trash text-danger"
-                                                    onClick={() =>
-                                                      handledeleteReport(item)
-                                                    }
-                                                  ></i>
-                                                </TableCell>
+                                                <TableCell>Reports</TableCell>
+                                                <TableCell>Action</TableCell>
                                               </>
                                             )}
                                         </TableRow>
-                                      ))}
-                                    </TableBody>
-                                  </Table>
-                                </TableContainer>
-                              </div>
-                            ) : (
-                              <p className="mt-2 text-muted">
-                                No reports available
-                              </p>
-                            )
-                          }
-                        </div>
-                      ))}
+                                      </TableHead>
+
+                                      <TableBody>
+                                        {treatment.reports.map((item) => (
+                                          <TableRow key={item._id}>
+                                            <TableCell>
+                                              {item.treatmentId}
+                                            </TableCell>
+                                            <TableCell>
+                                              {item.reportTitle}
+                                            </TableCell>
+                                            <TableCell>
+                                              {new Date(
+                                                item.treatment_report_date,
+                                              ).toLocaleDateString("en-GB")}
+                                            </TableCell>
+
+                                            {localStorage.getItem("Role") ===
+                                              "Admin" && (
+                                                <>
+                                                  <TableCell>
+                                                    <a
+                                                      href={`${image}${item.treatmentReport}`}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                    >
+                                                      Download Report
+                                                    </a>
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    <i
+                                                      style={{
+                                                        cursor: "pointer",
+                                                      }}
+                                                      className="fa-solid fa-trash text-danger"
+                                                      onClick={() =>
+                                                        handledeleteReport(item)
+                                                      }
+                                                    ></i>
+                                                  </TableCell>
+                                                </>
+                                              )}
+                                          </TableRow>
+                                        ))}
+                                      </TableBody>
+                                    </Table>
+                                  </TableContainer>
+                                </div>
+                              ) : (
+                                <p className="mt-2 text-muted">
+                                  No reports available
+                                </p>
+                              )}
+                            </div>
+                          </>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -3147,7 +3744,7 @@ function PatientDetail() {
                   onClick={uploadmultipleRecord}
                   variant="contained"
                 >
-                  Submit
+                  Send
                 </Button>
               </DialogActions>
             </Box>
@@ -3284,7 +3881,7 @@ function PatientDetail() {
               }}
               className="contact-form"
             >
-              <Box>
+              {/* <Box>
                 <div className="field-set mb-0">
                   <label>
                     Select Treatment<span className="text-danger">*</span>
@@ -3307,7 +3904,7 @@ function PatientDetail() {
                     })}
                   </select>
                 </div>
-              </Box>
+              </Box> */}
               <Box sx={{ display: "flex", gap: 2 }}>
                 <Box sx={{ flex: 1 }}>
                   <div className="field-set mb-0">
@@ -3526,7 +4123,12 @@ function PatientDetail() {
               className="contact-form scrollModal"
             >
               <Box>
-                <form id="contact-form" className="contact-form" method="post" role="form">
+                <form
+                  id="contact-form"
+                  className="contact-form"
+                  method="post"
+                  role="form"
+                >
                   <div className="field-set">
                     <div>
                       <h6>Appointment will be:</h6>
@@ -3738,7 +4340,7 @@ function PatientDetail() {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>Add Attende Details</h6>
+              <h6>Add Attendant Details</h6>
             </div>
             <div className="cross-icon" onClick={handleClose2}>
               <i class="fa-solid fa-xmark"></i>
@@ -3784,33 +4386,81 @@ function PatientDetail() {
                   </div> */}
                   <div className="field-set">
                     <label>
-                      Attende Passport<span className="text-danger">*</span>
+                      Name<span className="text-danger">*</span>
                     </label>
                     <div className="upload-input">
                       <input
-                        type="file"
+                        type="text"
+                        name="attendant_fullname"
                         className="form-control"
-                        onChange={(e) => onChangeFile(e, "Attende_passport")}
+                        value={filesData.attendant_fullname}
+                        onChange={handleInputChange}
                       />
                     </div>
                   </div>
                   <div className="field-set">
                     <label>
-                      Attende Photo<span className="text-danger">*</span>
+                      Attendant Relation<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+                      <input
+                        type="text"
+                        name="attendant_relation"
+                        className="form-control"
+                        value={filesData.attendant_relation}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Attendant Contact<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+                      <input
+                        type="text"
+                        onKeyPress={(e) => {
+                          handkekeypreees(e);
+                        }}
+                        name="attendant_contact"
+                        className="form-control"
+                        value={filesData.attendant_contact}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="field-set">
+                    <label>
+                      Attendant Passport<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+                      <input
+                        type="file"
+                        className="form-control"
+                        onChange={(e) =>
+                          handleFileChange(e, "Attende_passport")
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Attendant Photo<span className="text-danger">*</span>
                     </label>
                     <div className="upload-input">
                       <input
                         type="file"
                         accept="image/*"
                         className="form-control"
-                        onChange={(e) => onChangeFile(e, "Attende_photo")}
+                        onChange={(e) => handleFileChange(e, "Attende_photo")}
                       />
                     </div>
                   </div>
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"
-                      onClick={(e) => handleKysDetail(e)}
+                      onClick={handleKysDetail}
                       variant="contained"
                     >
                       Submit
@@ -3821,6 +4471,68 @@ function PatientDetail() {
             </Box>
           </DialogContent>
         </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={dataImperial}
+          onClose={dataIwemperial}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Hospital Charge</h6>
+            </div>
+            <div className="cross-icon" onClick={dataIwemperial}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Enter Charge<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      id="w3review"
+                      name="setNoteHospital2"
+                      rows="4"
+                      cols="50"
+                      className="form-control"
+                      placeholder="Note"
+                      onKeyPress={(e) => { handkekeypreees(e) }}
+                      onChange={(e) => setNoteHospital2(e.target.value)}
+                      value={noteHospital2}
+                    />
+
+                  </div>
+
+                  <DialogActions className="submit-main">
+                    <Button
+                      // type="submit"
+                      variant="contained"
+                      onClick={() => { handleNothospitalchargeesdata() }}
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <ToastContainer />
       </React.Fragment>
       <React.Fragment>
         <Dialog
@@ -3971,6 +4683,68 @@ function PatientDetail() {
         <Dialog
           fullWidth={fullWidth}
           maxWidth={maxWidth}
+          open={open32}
+          onClose={handleclosePerforma}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Invoice</h6>
+            </div>
+            <div className="cross-icon" onClick={handleclosePerforma}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form" className="contact-form">
+                  {/* <div>{info.treatment_due_payment}</div> */}
+
+                  <div className="field-set">
+                    <label>
+                      Add Performa Invoice<span className="text-danger"></span>
+                    </label>
+                    <input
+                      type="file"
+                      id="birthday"
+                      name="perfomainvoice"
+                      placeholder="Appointment Date"
+                      className="form-control"
+                      accept=".pdf,image/*"
+                      onChange={AddpaymentOnchnage123}
+                    />
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      // type="submit"
+                      onClick={() => {
+                        handleAddTritmentPaymenttestsubmit();
+                      }}
+                      // onClick={(e) => handleAddTritmentPayment(e)}
+                      variant="contained"
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
           open={open3}
           onClose={handleClose3}
         >
@@ -4012,7 +4786,7 @@ function PatientDetail() {
                   {/* <div>{info.treatment_due_payment}</div> */}
                   <div className="field-set">
                     <label>
-                      Payment Method<span className="text-danger">*</span>
+                      Payment Method<span className="text-danger"></span>
                     </label>
                     <select
                       placeholder="payment Method"
@@ -4032,7 +4806,7 @@ function PatientDetail() {
                   </div>
                   <div className="field-set">
                     <label>
-                      Payment Date<span className="text-danger">*</span>
+                      Payment Date<span className="text-danger"></span>
                     </label>
                     <input
                       type="date"
@@ -4047,8 +4821,11 @@ function PatientDetail() {
                   </div>
                   <DialogActions className="submit-main">
                     <Button
-                      type="submit"
-                      onClick={(e) => handleAddTritmentPayment(e)}
+                      // type="submit"
+                      onClick={() => {
+                        handleAddTritmentPayment();
+                      }}
+                      // onClick={(e) => handleAddTritmentPayment(e)}
                       variant="contained"
                     >
                       Submit
@@ -4135,6 +4912,64 @@ function PatientDetail() {
                     <Button
                       // type="submit"
                       onClick={(e) => handleClickSubmit(e)}
+                      variant="contained"
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </div>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={editPatientProfile}
+          onClose={EditButtoneditprofileClose}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Upload Profile</h6>
+            </div>
+            <div className="cross-icon" onClick={EditButtoneditprofileClose}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <div id="contact-form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Profile <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="file"
+                      placeholder="payment Method"
+                      className="form-control"
+                      name="patient_Profile"
+                      accept="image/*"
+                      required
+                      onChange={handleFileChange12}
+                    />
+                  </div>
+
+                  <DialogActions className="submit-main">
+                    <Button
+                      // type="submit"
+                      onClick={() => handleupdateProfile()}
                       variant="contained"
                     >
                       Submit
