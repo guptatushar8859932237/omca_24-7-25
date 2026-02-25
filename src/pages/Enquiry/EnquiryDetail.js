@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { baseurl, image, imageUrl } from "../../Basurl/Baseurl";
+import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import avtar from "../../img/avtarImg.jpg"
 // 🔹 file type check
 const getFileType = (file) => {
@@ -248,8 +248,9 @@ export default function EnquiryDetail() {
                      <div className="engpatimg">
   {Array.isArray(row.patient_id_proof) && row.patient_id_proof.length > 0 ? (
     row.patient_id_proof.map((file, index) => (
-      <div key={index} className="doc-box">
-        <FilePreview file={file} />
+      <div key={index} className="doc-box viewbtn">
+        {/* <FilePreview file={file} /> */}
+        <a href={`${image}${file}`} >View Document</a>
       </div>
     ))
   ) : (
@@ -263,14 +264,18 @@ export default function EnquiryDetail() {
                     <div className="field-set">
                       <label>Patient Profile<span className="text-danger"></span></label>
                       <div className="engpatimg">
-                        <img
+                        {/* <img
                           src={row.patient_Profile ? `${imageUrl}${row.patient_Profile}` : `${avtar}`}
                           alt="No Document"
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = `${avtar}`
                           }}
-                        />
+                        /> */}
+                        <div className="viewbtn">
+
+                        <a  href={`${imageUrl}${row.patient_Profile}`} >View Document</a>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -376,7 +381,7 @@ export default function EnquiryDetail() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant ID Proof<span className="text-danger"></span></label>
-                       <div className="engpatimg">
+                       {/* <div className="engpatimg">
   {Array.isArray(row.patient_relation_id) && row.patient_relation_id.length > 0 ? (
     row.patient_relation_id.map((file, index) => (
       <div key={index} className="doc-box">
@@ -386,8 +391,20 @@ export default function EnquiryDetail() {
   ) : (
     <img src={avtar} alt="No Document" />
   )}
-</div>
+</div> */}
 
+      <div className="engpatimg">
+  {Array.isArray(row.patient_relation_id) && row.patient_relation_id.length > 0 ? (
+    row.patient_relation_id.map((file, index) => (
+      <div key={index} className="doc-box viewbtn">
+        {/* <FilePreview file={file} /> */}
+        <a href={`${image}${file}`} >View Document</a>
+      </div>
+    ))
+  ) : (
+    <img src={avtar} alt="No Document" />
+  )}
+</div>
                         </div>
                       </div>
                       <div className="col-md-4">

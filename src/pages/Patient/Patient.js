@@ -5,14 +5,12 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
-// components/Loader.jsx
-import CircularProgress from "@mui/material/CircularProgress";
 import { GetAllPatients } from "../../reducer/PatientsSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { DeletePatient } from "../../reducer/PatientsSlice";
 import Swal from "sweetalert2";
 import { StatusPatient } from "../../reducer/PatientsSlice";
@@ -36,14 +34,15 @@ import {
 import { toast } from "react-toastify";
 import { usePDF } from "react-to-pdf";
 import Loader from "../../components/Loader";
+import { useSearchParams } from "react-router-dom";
+
+
 export default function Patient() {
   const role = localStorage.getItem("Role");
   const navigate = useNavigate();
+  const location = useLocation();
   const [showActions, setShowActions] = useState(true);
   const [page, setPage] = useState(1);
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(25);
-  // const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [onVaue, setOnVaue] = useState("");
   const [fullWidth, setFullWidth] = React.useState(true);
@@ -62,19 +61,27 @@ export default function Patient() {
   const [filterValue, setFilterValue] = useState("");
   const [searchApiData, setSearchApiData] = useState([]);
   const [pdfRowLimit, setPdfRowLimit] = useState(null);
-  console.log(Treatment);
+
   const [report, setReport] = useState({
     country: " ",
     gender: " ",
     age: " ",
   });
-  const submitInputdata = (e) => {
-    const { name, value } = e.target;
-    setReport({ ...report, [name]: value });
-  };
+
+  const [searchParams] = useSearchParams();
+
+const statusFromUrl = searchParams.get("status");
+const typeFromUrl = searchParams.get("type");
+  const dashboardFilterApplied = useRef(false);
+  // Read dashboard filter values ONCE from location.state at mount time.
+  // We capture them into a ref so they survive the state-clearing navigate.
+  const initialStatusFilter = useRef(location.state?.status || '');
+  const initialTypeFilter = useRef(location.state?.type || '');
+
   const handleJobTitleChange = (event, value) => {
     setSelectedJobTitle(value);
   };
+
   useEffect(() => {
     dispatch(GetAllTreatment());
   }, [dispatch]);
@@ -83,19 +90,27 @@ export default function Patient() {
       setTreatmentname(Treatment);
     }
   }, [Treatment]);
-
-  useEffect(() => {
-    dispatch(
-      GetAllPatients({
-        page,
-        limit: rowsPerPage,
-        search: searchTerm,
-      }),
-    );
-  }, [dispatch, page, rowsPerPage, searchTerm]);
+useEffect(() => {
+  dispatch(
+    GetAllPatients({
+      page,
+      limit: rowsPerPage,
+      search: searchTerm,
+      p_status: statusFromUrl || "",
+      patient_type_new: typeFromUrl || "",
+    })
+  );
+}, [
+  dispatch,
+  page,
+  rowsPerPage,
+  searchTerm,
+  statusFromUrl,
+  typeFromUrl,
+]);
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setPage(1); // reset pagination on search
+    setPage(1);
   };
   useEffect(() => {
     if (patient) {
@@ -103,24 +118,14 @@ export default function Patient() {
       setSearchApiData(patient);
     }
   }, [patient]);
-  console.log(patient);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(1); // ✅ backend page 1-based
-  };
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
   const EditButton = (e, id) => {
-    console.log(id)
     navigate("/Admin/edit-patient", {
       state: {
         patientId: id,
       },
     });
   };
-  const PatientDetail = (e, id, enq,c,d) => {
-    console.log(e, id, enq,c,d)
+  const PatientDetail = (e, id, enq, c, d) => {
     navigate("/Admin/Patient-Detail", {
       state: {
         patientId: id,
@@ -132,7 +137,6 @@ export default function Patient() {
   };
   const handledelet = (e, patientId) => {
     e.preventDefault();
-
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -140,7 +144,6 @@ export default function Patient() {
       },
       buttonsStyling: false,
     });
-
     swalWithBootstrapButtons
       .fire({
         title: "Are you sure?",
@@ -154,7 +157,6 @@ export default function Patient() {
         if (result.isConfirmed) {
           try {
             await dispatch(DeletePatient({ id: patientId })).unwrap();
-
             await dispatch(
               GetAllPatients({
                 page,
@@ -162,7 +164,6 @@ export default function Patient() {
                 search: searchTerm,
               }),
             );
-
             Swal.fire("Deleted!", "Patient has been deleted.", "success");
           } catch (err) {
             Swal.fire("Error!", err?.message || "An error occurred", "error");
@@ -175,145 +176,6 @@ export default function Patient() {
         }
       });
   };
-
-  // const handledelet = (e, patientId) => {
-  //   e.preventDefault();
-  //   const swalWithBootstrapButtons = Swal.mixin({
-  //     customClass: {
-  //       confirmButton: "btn btn-success",
-  //       cancelButton: "btn btn-danger",
-  //     },
-  //     buttonsStyling: false,
-  //   });
-  //   swalWithBootstrapButtons
-  //     .fire({
-  //       title: "Are you sure?",
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonText: "Yes, delete it!",
-  //       cancelButtonText: "No, cancel!",
-  //       reverseButtons: true,
-  //     })
-  //     .then((result) => {
-  //       if (result.isConfirmed) {
-  //         dispatch(DeletePatient({ id: patientId }))
-  //           .unwrap()
-  //           .then(() => {
-  //               dispatch(
-  // GetAllPatients({
-  //   page,
-  //   limit: rowsPerPage,
-  //   search: searchTerm,
-  // }))
-  //           })
-  //           .then((newData) => {
-  //             Swal.fire("Deleted!", "Patient has been deleted.", "success");
-  //             setRows(newData.payload);
-  //           })
-  //           .catch((err) => {
-  //             Swal.fire("Error!", err?.message || "An error occurred", "error");
-  //           });
-  //       } else if (result.dismiss === Swal.DismissReason.cancel) {
-  //         swalWithBootstrapButtons.fire({
-  //           title: "Cancelled",
-  //           icon: "error",
-  //         });
-  //       }
-  //     });
-  // };
-  const handleChange = (event, id) => {
-    const { value } = event.target;
-    setSeekerStatus(value);
-  };
-  const handleClickOpen = async (e, id) => {
-    e.preventDefault();
-    try {
-      const result = await dispatch(
-        StatusPatient({ id: id, status: Number(seekerStatus) }),
-      ).unwrap();
-      Swal.fire("Success!", "Patient details updated successfully.", "success");
-      dispatch(
-        GetAllPatients({
-          page,
-          limit: rowsPerPage,
-          search: searchTerm,
-        }),
-      );
-    } catch (err) {
-      Swal.fire("Error!", err?.message || "An error occurred", "error");
-    }
-  };
-  const getReportData = () => {
-    axios
-      .get(
-        `${baseurl}exportfilteredpatient/${localStorage.getItem(
-          "_id",
-        )}?gender=${encodeURIComponent(
-          report.gender.trim(),
-        )}&treatment_name=${encodeURIComponent(
-          selectedJobTitle.trim(),
-        )}&age=${encodeURIComponent(
-          report.age.trim(),
-        )}&country=${encodeURIComponent(report.country.trim())}`,
-        {
-          responseType: "blob",
-        },
-      )
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", `report_${report}.xlsx`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      })
-      .catch((error) => {
-        Swal.fire(
-          "Error",
-          `No candidates found for the jobs posted by this client`,
-          "error",
-        );
-      })
-      .finally(() => {});
-  };
-  const handleFilter = (event) => {
-    if (event.target.value === "") {
-      setRows(searchApiData);
-    } else {
-      const filterResult = searchApiData.filter((item) => {
-        const enquiryId = item.patientId?.toLowerCase() || "";
-        const patientNumber = item.patientNumber?.toLowerCase() || "";
-        const emailMatches = item.email.toLowerCase();
-        const name = item.patient_name?.toLowerCase() || "";
-        const p_status = item.p_status?.toLowerCase() || "";
-        const contact = item?.emergency_contact
-          ? item.emergency_contact.toString().toLowerCase()
-          : "";
-        const country = item.country?.toLowerCase() || "";
-        const patientdesiese =
-          item.patient_disease[0].disease_name?.toLowerCase() || "";
-        const searchValue = event.target.value.toLowerCase();
-        return (
-          enquiryId.includes(searchValue) ||
-          patientNumber.includes(searchValue) ||
-          country.includes(searchValue) ||
-          patientdesiese.includes(searchValue) ||
-          p_status.includes(searchValue) ||
-          contact.includes(searchValue) ||
-          name.includes(searchValue) ||
-          emailMatches.includes(searchValue)
-        );
-      });
-      setRows(filterResult);
-    }
-    setFilterValue(event.target.value);
-  };
-  const handleClearFilter = () => {
-    setFilterValue("");
-    setRows(searchApiData);
-  };
-  console.log(seekerStatus);
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_patients`, {
@@ -372,7 +234,6 @@ export default function Patient() {
     });
   };
   const handleChangtype = async (e, i) => {
-    console.log(e, i);
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -396,26 +257,11 @@ export default function Patient() {
             search: searchTerm,
           }),
         );
-
         Swal.fire(
           "Success!",
           "patient status updated successfully!",
           "success",
         );
-        dispatch(
-          GetAllPatients({
-            page,
-            limit: rowsPerPage,
-            search: searchTerm,
-          }),
-        );
-
-        try {
-        } catch (refreshError) {
-          console.error("Error refreshing appointments:", refreshError);
-          toast.error("Failed to refresh appointments!");
-        }
-        return response.data;
       } else {
         throw new Error("Failed to update status. Please try again!");
       }
@@ -431,7 +277,6 @@ export default function Patient() {
     }
   };
   const handleChangefffff = async (e, i) => {
-    console.log(e, i);
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -455,26 +300,11 @@ export default function Patient() {
             search: searchTerm,
           }),
         );
-
         Swal.fire(
           "Success!",
           "patient status updated successfully!",
           "success",
         );
-        dispatch(
-          GetAllPatients({
-            page,
-            limit: rowsPerPage,
-            search: searchTerm,
-          }),
-        );
-
-        try {
-        } catch (refreshError) {
-          console.error("Error refreshing appointments:", refreshError);
-          toast.error("Failed to refresh appointments!");
-        }
-        return response.data;
       } else {
         throw new Error("Failed to update status. Please try again!");
       }
@@ -509,7 +339,6 @@ export default function Patient() {
         },
       });
       if (response) {
-        console.log(response.data);
         setRows(response.data.data);
       } else {
         console.log("something went wrong");
@@ -519,25 +348,49 @@ export default function Patient() {
     }
   };
   const Filterdata = () => {
-    console.log("filter data");
     setOpenFilter(true);
   };
   const closeFitler = () => {
-    console.log("filter data");
     setOpenFilter(false);
   };
-  const filterdataapi = async () => {
-    console.log(onVaue);
+  const filterdataapi = async (value, filterType = 'status') => {
+    console.log("Filtering by:", filterType, value);
     try {
-      const response = await axios.get(
-        `${baseurl}get_patients_by_status?p_status=${onVaue}`,
-      );
-      console.log(response.data.data);
+      let response;
+      if (filterType === 'status') {
+        response = await axios.get(
+          `${baseurl}get_patients_by_status?p_status=${encodeURIComponent(value)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+      } else if (filterType === 'type') {
+        response = await axios.get(
+          `${baseurl}get_patient_type_new?patient_type_new=${encodeURIComponent(value)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+      }
       setRows(response.data.data);
       setSearchApiData(response.data.data);
-      closeFitler();
+      setOpenFilter(false);
     } catch (error) {
       console.log(error);
+      toast.error("Failed to filter data");
+    }
+  };
+  const filterdataapiExisting = async () => {
+    const statusValues = ["Travelled", "Confirmed", "Pending", "On Hold", "Treatment Completed", "Cancelled", "Local Case", "Follow Up", "Passed Away"];
+    const typeValues = ["Private", "Foundation", "Insurance", "Insurance + Private"];
+    if (statusValues.includes(onVaue)) {
+      await filterdataapi(onVaue, 'status');
+    } else if (typeValues.includes(onVaue)) {
+      await filterdataapi(onVaue, 'type');
     }
   };
   return (
@@ -557,7 +410,7 @@ export default function Patient() {
                     <h6>Filter</h6>
                   </div>
                   <div className="cross-icon" onClick={closeFitler}>
-                    <i class="fa-solid fa-xmark"></i>
+                    <i className="fa-solid fa-xmark"></i>
                   </div>
                 </div>
                 <DialogContent className="main-box">
@@ -581,6 +434,7 @@ export default function Patient() {
                           <Select
                             placeholder="Filter data"
                             displayEmpty
+                            value={onVaue}
                             onChange={(e) => {
                               setOnVaue(e.target.value);
                             }}
@@ -589,17 +443,30 @@ export default function Patient() {
                             }}
                             className="status-direct"
                           >
-                            <em>select Data</em>
-                            <MenuItem value="Foundation">Foundation</MenuItem>
-                            <MenuItem value="Private">Private</MenuItem>
-                            <MenuItem value="Travelled"> Travelled</MenuItem>
+                            <MenuItem value="" disabled>
+                              <em>Select Filter</em>
+                            </MenuItem>
+                            
+                            <MenuItem disabled style={{ fontWeight: 'bold', color: '#666' }}>
+                              --- Status ---
+                            </MenuItem>
+                            <MenuItem value="Travelled">Travelled</MenuItem>
                             <MenuItem value="Confirmed">Confirmed</MenuItem>
                             <MenuItem value="Pending">Pending</MenuItem>
                             <MenuItem value="On Hold">On Hold</MenuItem>
+                            <MenuItem value="Treatment Completed">Treatment Completed</MenuItem>
                             <MenuItem value="Cancelled">Cancelled</MenuItem>
                             <MenuItem value="Local Case">Local Case</MenuItem>
                             <MenuItem value="Follow Up">Follow Up</MenuItem>
                             <MenuItem value="Passed Away">Passed Away</MenuItem>
+                            
+                            <MenuItem disabled style={{ fontWeight: 'bold', color: '#666' }}>
+                              --- Patient Type ---
+                            </MenuItem>
+                            <MenuItem value="Foundation">Foundation</MenuItem>
+                            <MenuItem value="Private">Private</MenuItem>
+                            <MenuItem value="Insurance">Insurance</MenuItem>
+                            <MenuItem value="Insurance + Private">Insurance + Private</MenuItem>
                           </Select>
                         </FormControl>
                       </TableCell>
@@ -608,7 +475,7 @@ export default function Patient() {
                           className="add-button ms-2"
                           onClick={(e) => {
                             e.preventDefault();
-                            filterdataapi();
+                            filterdataapiExisting();
                           }}
                         >
                           Filter Data
@@ -627,33 +494,6 @@ export default function Patient() {
                 <div className="d-flex">
                   <div className="search-btn-main">
                     <div className="mr-3">
-                      {/* <TextField
-                        sx={{ width: "100%" }}
-                        label="Search"
-                        id="outlined-size-small"
-                        size="small"
-                        className="field-count"
-                        value={filterValue}
-                        onChange={(e) => handleFilter(e)}
-                        InputLabelProps={{ shrink: true }}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment
-                              position="end"
-                              className="input-set"
-                            >
-                              {filterValue && (
-                                <IconButton
-                                  onClick={handleClearFilter}
-                                  edge="end"
-                                >
-                                  <ClearIcon />
-                                </IconButton>
-                              )}
-                            </InputAdornment>
-                          ),
-                        }}
-                      /> */}
                       <TextField
                         label="Search"
                         size="small"
@@ -743,10 +583,7 @@ export default function Patient() {
                           )}
                           <TableCell>Patient Id</TableCell>
                           <TableCell>Patient Name</TableCell>
-                          {/* <TableCell>Contact Number</TableCell> */}
                           <TableCell>Patient Disease</TableCell>
-                          {/* <TableCell>Date</TableCell> */}
-                          {/* <TableCell>Email</TableCell>*/}
                           <TableCell>Country</TableCell> 
                           {showActions === true ? (
                             <>
@@ -771,224 +608,184 @@ export default function Patient() {
                             </TableRow>
                           ) : (
                             rows.map((info, i) => {
-                              console.log(info)
                               return(
-                                <>
-                                 <TableRow key={info.patientId}>
-                                <TableCell>
-                                  {(page - 1) * rowsPerPage + i + 1}
-                                </TableCell>
-                                {showActions === false ? (
-                                  <>
-                                    <TableCell>
-                                      {info?.deletedBy?.name}
-                                    </TableCell>
-                                    <TableCell>
-                                      {info?.deletedBy?.email}
-                                    </TableCell>
-                                    <TableCell>
-                                      {new Date(
-                                        info.deletedAt,
-                                      ).toLocaleDateString("en-GB", {
-                                        day: "2-digit",
-                                        month: "short",
-                                        year: "numeric",
-                                      })}
-                                    </TableCell>
-                                    <TableCell>
-                                      {new Date(
-                                        info?.deletedAt,
-                                      ).toLocaleDateString("en-GB")}
-                                    </TableCell>
-                                  </>
-                                ) : (
-                                  ""
-                                )}
-                                <TableCell>
-                                  {info.patientNumber || info.patientId}
-                                </TableCell>
-                                {/* <TableCell
-                                  style={{ cursor: "pointer" }}
-                                  onClick={(e) =>
-                                    PatientDetail(
-                                      e,
-                                      info.patientId,
-                                      info.enquiryId,
-                                    )
-                                  }
-                                >
-                                  {info.patient_name}
-                                </TableCell> */}
-                                <TableCell
-  style={{ cursor: "pointer" }}
-  onClick={(e) => PatientDetail(e, info.patientId, info.enquiryId,info.id, info.patient_disease[0].treatment_id)}
-  title={info.patient_name} // This will show full name on hover
->
-  {info.patient_name.length > 15
-    ? info.patient_name.substring(0, 15) + "..."
-    : info.patient_name}
-</TableCell>
-
-                                 {/* <TableCell>
-                                  {info.patient_disease
-                                    ?.map((d) => d.disease_name)
-                                    .join(", ")}
-                                </TableCell> */}
-                                <TableCell
-  style={{ cursor: "pointer" }}
-  title={info.patient_disease
-    ?.map((d) => d.disease_name)
-    .join(", ")} // full list on hover
->
-  {(() => {
-    const diseases = info.patient_disease
-      ?.map((d) => d.disease_name)
-      .join(", ");
-    if (!diseases) return "";
-    return diseases.length > 15 ? diseases.substring(0, 15) + "..." : diseases;
-  })()}
-</TableCell>
-                                {/* <TableCell>
-                                  {info.emergency_contact ||
-                                    info.emergency_contact_no}
-                                </TableCell> */}
-                                {/* <TableCell>
-                                  {new Date(info.createdAt).toLocaleDateString(
-                                    "en-GB",
+                                <TableRow key={info.patientId}>
+                                  <TableCell>
+                                    {(page - 1) * rowsPerPage + i + 1}
+                                  </TableCell>
+                                  {showActions === false ? (
+                                    <>
+                                      <TableCell>
+                                        {info?.deletedBy?.name}
+                                      </TableCell>
+                                      <TableCell>
+                                        {info?.deletedBy?.email}
+                                      </TableCell>
+                                      <TableCell>
+                                        {new Date(
+                                          info.deletedAt,
+                                        ).toLocaleDateString("en-GB", {
+                                          day: "2-digit",
+                                          month: "short",
+                                          year: "numeric",
+                                        })}
+                                      </TableCell>
+                                      <TableCell>
+                                        {new Date(
+                                          info?.deletedAt,
+                                        ).toLocaleDateString("en-GB")}
+                                      </TableCell>
+                                    </>
+                                  ) : (
+                                    ""
                                   )}
-                                </TableCell> */}
-                                {/* <TableCell>{info.email}</TableCell> */}
-                                <TableCell>{info.country}</TableCell>
-                               
+                                  <TableCell>
+                                    {info.patientNumber || info.patientId}
+                                  </TableCell>
+                                  <TableCell
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => PatientDetail(e, info.patientId, info.enquiryId, info.id, info.patient_disease[0].treatment_id)}
+                                    title={info.patient_name}
+                                  >
+                                    {info.patient_name.length > 15
+                                      ? info.patient_name.substring(0, 15) + "..."
+                                      : info.patient_name}
+                                  </TableCell>
+                                  <TableCell
+                                    style={{ cursor: "pointer" }}
+                                    title={info.patient_disease
+                                      ?.map((d) => d.disease_name)
+                                      .join(", ")}
+                                  >
+                                    {(() => {
+                                      const diseases = info.patient_disease
+                                        ?.map((d) => d.disease_name)
+                                        .join(", ");
+                                      if (!diseases) return "";
+                                      return diseases.length > 15 ? diseases.substring(0, 15) + "..." : diseases;
+                                    })()}
+                                  </TableCell>
+                                  <TableCell>{info.country}</TableCell>
 
-                                {showActions === true ? (
-                                  <>
-                                    <TableCell>
-                                      <FormControl
-                                        sx={{ m: 1, minWidth: 120 }}
-                                        size="small"
-                                        className="cont-main"
-                                      >
-                                        <Select
-                                          value={info.patient_type_new}
-                                          onChange={(e) =>
-                                            handleChangtype(e, info.patientId)
-                                          }
-                                          displayEmpty
-                                          inputProps={{
-                                            "aria-label": "Without label",
-                                          }}
-                                          className="status-direct"
+                                  {showActions === true ? (
+                                    <>
+                                      <TableCell>
+                                        <FormControl
+                                          sx={{ m: 1, minWidth: 120 }}
+                                          size="small"
+                                          className="cont-main"
                                         >
-                                          <MenuItem value="Private">
-                                            Private
-                                          </MenuItem>
-                                          <MenuItem value="Foundation">
-                                            Foundation
-                                          </MenuItem>
-                                          <MenuItem value="Insurance">
-                                            Insurance
-                                          </MenuItem>
-                                          <MenuItem value="Insurance + Private">
-                                            Insurance + Private
-                                          </MenuItem>
-                                        </Select>
-                                      </FormControl>
-                                    </TableCell>
-                                    <TableCell>
-                                      <FormControl
-                                        sx={{ m: 1, minWidth: 120 }}
-                                        size="small"
-                                        className="cont-main"
-                                      >
-                                        <Select
-                                          value={info.p_status}
-                                          onChange={(e) =>
-                                            handleChangefffff(e, info.patientId)
-                                          }
-                                          displayEmpty
-                                          inputProps={{
-                                            "aria-label": "Without label",
-                                          }}
-                                          className="status-direct"
-                                        >
-                                          {/* <MenuItem value="Foundation">
-                                              Foundation
-                                            </MenuItem>
+                                          <Select
+                                            value={info.patient_type_new}
+                                            onChange={(e) =>
+                                              handleChangtype(e, info.patientId)
+                                            }
+                                            displayEmpty
+                                            inputProps={{
+                                              "aria-label": "Without label",
+                                            }}
+                                            className="status-direct"
+                                          >
                                             <MenuItem value="Private">
                                               Private
-                                            </MenuItem>  */}
-                                          <MenuItem value="Travelled">
-                                            {" "}
-                                            Travelled
-                                          </MenuItem>
-                                          <MenuItem value="Confirmed">
-                                            Confirmed
-                                          </MenuItem>
-                                          <MenuItem value="Pending">
-                                            Pending
-                                          </MenuItem>
-                                          <MenuItem value="On Hold">
-                                            On Hold
-                                          </MenuItem>
-                                          <MenuItem value="Treatment Completed">
-                                            Treatment Completed
-                                          </MenuItem>
-                                          <MenuItem value="Cancelled">
-                                            Cancelled
-                                          </MenuItem>
-                                          <MenuItem value="Local Case">
-                                            Local Case
-                                          </MenuItem>
-                                          <MenuItem value="Follow Up">
-                                            Follow Up
-                                          </MenuItem>
-                                          <MenuItem value="Passed Away">
-                                            Passed Away
-                                          </MenuItem>
-                                        </Select>
-                                      </FormControl>
-                                    </TableCell>
-                                    <TableCell className="action-icon">
-                                      <VisibilityIcon
-                                        className="eye-icon"
-                                        onClick={(e) =>
-                                          PatientDetail(
-                                            e,
-                                            info.patientId,
-                                            info.enquiryId,
-                                            info.id,
-                                            info.patient_disease[0].treatment_id
-                                          )
-                                        }
-                                      />
-                                      <i
-                                        className="fa-solid fa-pen-to-square"
-                                        onClick={(e) =>
-                                          EditButton(e, info.patientId)
-                                        }
-                                      ></i>
-                                      {localStorage.getItem("Role") ===
-                                      "Admin" ? (
+                                            </MenuItem>
+                                            <MenuItem value="Foundation">
+                                              Foundation
+                                            </MenuItem>
+                                            <MenuItem value="Insurance">
+                                              Insurance
+                                            </MenuItem>
+                                            <MenuItem value="Insurance + Private">
+                                              Insurance + Private
+                                            </MenuItem>
+                                          </Select>
+                                        </FormControl>
+                                      </TableCell>
+                                      <TableCell>
+                                        <FormControl
+                                          sx={{ m: 1, minWidth: 120 }}
+                                          size="small"
+                                          className="cont-main"
+                                        >
+                                          <Select
+                                            value={info.p_status}
+                                            onChange={(e) =>
+                                              handleChangefffff(e, info.patientId)
+                                            }
+                                            displayEmpty
+                                            inputProps={{
+                                              "aria-label": "Without label",
+                                            }}
+                                            className="status-direct"
+                                          >
+                                            <MenuItem value="Travelled">
+                                              Travelled
+                                            </MenuItem>
+                                            <MenuItem value="Confirmed">
+                                              Confirmed
+                                            </MenuItem>
+                                            <MenuItem value="Pending">
+                                              Pending
+                                            </MenuItem>
+                                            <MenuItem value="On Hold">
+                                              On Hold
+                                            </MenuItem>
+                                            <MenuItem value="Treatment Completed">
+                                              Treatment Completed
+                                            </MenuItem>
+                                            <MenuItem value="Cancelled">
+                                              Cancelled
+                                            </MenuItem>
+                                            <MenuItem value="Local Case">
+                                              Local Case
+                                            </MenuItem>
+                                            <MenuItem value="Follow Up">
+                                              Follow Up
+                                            </MenuItem>
+                                            <MenuItem value="Passed Away">
+                                              Passed Away
+                                            </MenuItem>
+                                          </Select>
+                                        </FormControl>
+                                      </TableCell>
+                                      <TableCell className="action-icon">
+                                        <VisibilityIcon
+                                          className="eye-icon"
+                                          onClick={(e) =>
+                                            PatientDetail(
+                                              e,
+                                              info.patientId,
+                                              info.enquiryId,
+                                              info.id,
+                                              info.patient_disease[0].treatment_id
+                                            )
+                                          }
+                                        />
                                         <i
-                                          className="fa-solid fa-trash"
-                                          onClick={(e) => {
-                                            handledelet(e, info.patientId);
-                                          }}
+                                          className="fa-solid fa-pen-to-square"
+                                          onClick={(e) =>
+                                            EditButton(e, info.patientId)
+                                          }
                                         ></i>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </TableCell>
-                                  </>
-                                ) : (
-                                  ""
-                                )}
-                              </TableRow>
-                                </>
+                                        {localStorage.getItem("Role") ===
+                                        "Admin" ? (
+                                          <i
+                                            className="fa-solid fa-trash"
+                                            onClick={(e) => {
+                                              handledelet(e, info.patientId);
+                                            }}
+                                          ></i>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </TableCell>
+                                    </>
+                                  ) : (
+                                    ""
+                                  )}
+                                </TableRow>
                               )
-                             
-})
+                            })
                           )}
                         </TableBody>
                       )}
