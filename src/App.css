@@ -177,12 +177,10 @@ textarea.form-control {
   font-size: 12px;
   transition: 0.3s ease;
 }
- 
+
 .edit-icon:hover {
   background: var(--bs-primary-color);
 }
- 
-
 
 /*-----------------
 	2. Table
@@ -307,7 +305,7 @@ table.table td h2 span {
   background-color: #fff;
   border-radius: 5px;
   margin-bottom: 25px;
-  padding: 20px;
+  padding: 15px;
   box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1) !important;
   position: relative;
 }
@@ -5869,7 +5867,7 @@ blockquote p {
 .main_content {
   background-color: #fff;
   border-radius: 5px;
-  padding: 25px;
+  padding: 15px;
   box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1) !important;
 }
 
@@ -6229,7 +6227,7 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
 }
 .add-button {
   padding: 5px 10px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   border-radius: 5px;
   border: 0px;
@@ -6238,7 +6236,7 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
     var(--bs-primary-color) 0%,
     var(--bs-blue-color) 72%
   );
-  line-height: 24px;
+  line-height: 20px;
   color: var(--bs-white-color);
   display: inline-block;
 }
@@ -6511,8 +6509,6 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
   margin-right: 8px;
 }
 .file-preview {
-  display: inline-block;
-  margin: 8px;
   position: relative;
 }
 
@@ -6535,35 +6531,21 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
 
 .delete-icon {
   position: absolute;
-  top: -6px;
-  right: -6px;
-  background: #ff4d4f;
-  color: #fff;
-  font-size: 14px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  text-align: center;
-  line-height: 22px;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.delete-icon {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  background: red;
-  color: white;
-  border-radius: 50%;
+  top: -7px;
+  right: -5px;
+  color: red;
   font-size: 12px;
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  text-align: center;
+  line-height: 22px;
+  z-index: 10;
 }
+
 .order-mnge .MuiAccordionSummary-content {
   display: flex;
   justify-content: space-between;
@@ -6721,10 +6703,10 @@ div:where(.swal2-container) .swal2-html-container {
 }
 .treat-buttons {
   display: flex;
+  gap: 15px;
+  justify-content: end;
+  margin-bottom: 15px;
 }
-/* .hos-table{
-  border-right: 1px solid #d9d8d9;
-} */
 .hos-table table {
   width: 100%;
 }
@@ -7173,7 +7155,9 @@ input:checked + .slider:before {
 }
 .engpatimg {
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 /* ------------------------------surbhi(05-2-26)-------------------------------- */
@@ -7185,7 +7169,7 @@ input:checked + .slider:before {
 }
 .service-list {
   background-color: unset !important;
-  border-bottom: 1px solid #eaeaea !important;
+  border-bottom: 1px solid #ccc !important;
   display: flex;
   gap: 10px;
   align-items: center;
@@ -7322,28 +7306,15 @@ input:checked + .slider:before {
   color: #856404;
 }
 
-.approve-btn {
-  background: #0d6efd;
-  color: white;
-  border: none;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.approve-btn:hover {
-  background: #0b5ed7;
-}
-
 .report-link {
-  color: #0d6efd;
+  color: var(--bs-heading-color);
   text-decoration: none;
   font-size: 14px;
 }
 
 .report-link:hover {
-  text-decoration: underline;
+  text-decoration: underline !important;
+  color: var(--bs-blue-color);
 }
 
 .notes-text {
@@ -7427,10 +7398,7 @@ input:checked + .slider:before {
   color: var(--bs-text-color) !important;
   margin-left: 5px;
 }
-.user-info-main {
-  border-left: 1px solid #eaeaea;
-  padding-left: 50px;
-}
+
 .viewbtn {
   padding: 5px 10px;
   font-size: 14px;
@@ -7446,4 +7414,33 @@ input:checked + .slider:before {
 .view-table-detail {
   scrollbar-width: thin; /* auto | thin | none */
   scrollbar-color: var(--bs-blue-color) #f1f1f1;
+}
+@media only screen and (max-width: 1280px) {
+  .sectabmain {
+    gap: 5px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .treat-tabs {
+    gap: 15px;
+  }
+  .treat-tabs .nav-link {
+    padding: 0px;
+  }
+  .part-txt h6 {
+    font-size: 14px;
+    line-height: 24px;
+  }
+  .part-txt p {
+    font-size: 12px;
+    line-height: 22px;
+  }
+}
+.patinfomain {
+  /* border-left: 1px solid #eaeaea; */
+  display: flex;
+  justify-content: space-between;
+}
+.viewbtn:hover {
+  color: var(--bs-heading-color);
 }

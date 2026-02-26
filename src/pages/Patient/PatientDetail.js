@@ -2141,7 +2141,7 @@ function PatientDetail() {
           </div>
           <div className="main_content">
             <div className="row align-items-center">
-              <div className="col-md-12 d-flex gap-5">
+              <div className="col-md-6">
                 <div class="profile-sidebar">
                   <div class="top">
                     <form>
@@ -2150,10 +2150,10 @@ function PatientDetail() {
                           <img
                             // src={`${image}${ispatient?.patient_Profile}`}
                             src={
-    ispatient?.patient_Profile
-      ? `${image}${ispatient?.patient_Profile}`
-      : avtar
-  }
+                              ispatient?.patient_Profile
+                                ? `${image}${ispatient?.patient_Profile}`
+                                : avtar
+                            }
                             className="pro-img"
                           />
                         </div>
@@ -2202,7 +2202,7 @@ function PatientDetail() {
                         >
                           View Patient ID
                         </button>
-                        <button
+                        {/* <button
                           type="button"
                           className="viewbtn"
                           onClick={() => {
@@ -2219,12 +2219,18 @@ function PatientDetail() {
                           }}
                         >
                           View Passport
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="col-md-6 patinfomain">
                 <div className="user-info-main">
+                  <p>
+                    <i class="fa-solid fa-phone"></i>
+                    <span>{ispatient?.contact_no}</span>
+                  </p>
                   <p>
                     <i class="fa-solid fa-phone"></i>
                     <span>{ispatient?.emergency_contact_no}</span>
@@ -2234,13 +2240,25 @@ function PatientDetail() {
                     <span>{ispatient?.email}</span>
                   </p>
                   <p>
-                    Patient-Status:<span>{ispatient?.patient_status}</span>
+                    Gender:<span>{ispatient?.gender}</span>
+                  </p>
+                  <p>
+                    Age:<span>{ispatient?.age}</span>
+                  </p>
+                </div>
+                <div className="user-info-main">
+                  <p>
+                    <i class="fa-solid fa-house-user"></i>
+                    <span>{ispatient?.address}</span>
+                  </p>
+                  <p>
+                    Town:<span>{ispatient?.town}</span>
                   </p>
                   <p>
                     Country:<span>{ispatient?.country}</span>
                   </p>
                   <p>
-                    Gender:<span>{ispatient?.gender}</span>
+                    Patient-Status:<span>{ispatient?.patient_status}</span>
                   </p>
                   <p>
                     Passport Number:<span>{ispatient?.passport_num}</span>
@@ -2252,38 +2270,22 @@ function PatientDetail() {
           <div className="patient-tabs">
             <ul className="nav nav-tabs nav-tabs-bottom">
               <li className="nav-item">
-                <a
-                  className={`nav-link ${mainTab === "treatment-plans" ? "active" : ""}`}
-                  href="#about-cont123"
-                  data-toggle="tab"
-                  onClick={() => handleMainTabChange("treatment-plans")}
-                >
-                  Treatment Plans{" "}
+                <a className={`nav-link ${mainTab === "treatment-plans" ? "active" : ""}`} href="#about-cont123" data-toggle="tab"
+                  onClick={() => handleMainTabChange("treatment-plans")}>Treatment Plans{" "}
                 </a>
               </li>
               <li className="nav-item">
-                <a
-                  className={`nav-link ${mainTab === "treatment" ? "active" : ""}`}
-                  href="#about-cont"
-                  data-toggle="tab"
-                  onClick={() => handleMainTabChange("treatment")}
-                >
+                <a className={`nav-link ${mainTab === "treatment" ? "active" : ""}`} href="#about-cont" data-toggle="tab" onClick={() => handleMainTabChange("treatment")}>
                   Treatment{" "}
                 </a>
               </li>
             </ul>
             <div className="tab-content">
-              <div
-                className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`}
-                id="about-cont123"
-              >
+              <div className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`} id="about-cont123">
                 <div className="main-tab-hd justify-content-end">
-                  <div className="treat-buttons">
+                  <div className="">
                     <button onClick={PlanTreatmentPopUp} className="add-button">
-                      <span>
-                        <i className="fa fa-plus"></i>
-                      </span>{" "}
-                      Add Treatment Plan
+                      <span><i className="fa fa-plus"></i></span>{" "}Add Treatment Plan
                     </button>
                   </div>
                 </div>
@@ -2302,7 +2304,7 @@ function PatientDetail() {
                               </div>
                               <div className="treatment-body">
                                 <div className="row">
-                                  <div className="col-md-4">
+                                  <div className="col-md-6">
                                     <div className="">
                                       <h5>Hospital</h5>
                                       {info?.hospitals?.map((item, i) => (
@@ -2313,33 +2315,33 @@ function PatientDetail() {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                              <span
-                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                              >
-                                                {item.status}
-                                              </span>
-                                            )}
+                                                <span
+                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                                >
+                                                  {item.status}
+                                                </span>
+                                              )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                            <button
-                                              className="add-button"
-                                              onClick={() =>
-                                                approveReject(
-                                                  info,
-                                                  item.id,
-                                                  "Approved",
-                                                )
-                                              }
-                                            >
-                                              Approve
-                                            </button>
-                                          )}
+                                              <button
+                                                className="add-button"
+                                                onClick={() =>
+                                                  approveReject(
+                                                    info,
+                                                    item.id,
+                                                    "Approved",
+                                                  )
+                                                }
+                                              >
+                                                Approve
+                                              </button>
+                                            )}
                                         </div>
                                       ))}
                                     </div>
                                   </div>
-                                  <div className="col-md-4">
+                                  <div className="col-md-2">
                                     <div className="">
                                       <h5>Reports</h5>
                                       {info?.reports?.length > 0 ? (
@@ -2362,12 +2364,20 @@ function PatientDetail() {
                                       )}
                                     </div>
                                   </div>
-                                  <div className="col-md-4">
+                                  <div className="col-md-2">
                                     <div className="">
                                       <h5>Notes</h5>
                                       <p className="notes-text">
                                         {info?.notes || "No Notes Added"}
                                       </p>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-2">
+                                    <div className="">
+                                      <h5>Action</h5>
+                                      <div className="action-icon">
+                                        <i className="fa-solid fa-trash" onClick={() => EditDelete(index, info)}></i>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -2380,29 +2390,23 @@ function PatientDetail() {
                   </div>
                 </div>
               </div>
-              <div
-                className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`}
-                id="about-cont"
-              >
+              <div className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`} id="about-cont">
                 {activeSubTab === "details" && (
                   <div>
                     <div className="main-tab-hd">
                       <div className="all-hd">
                         <h6>All Treatments</h6>
                       </div>
-                      <div className="treat-buttons">
-                        <div className="mr-3">
-                          <button
-                            onClick={PatientDetailButton}
-                            className="add-button"
-                          >
-                            <span>
-                              <i className="fa fa-plus"></i>
-                            </span>{" "}
-                            Add Treatment
-                          </button>
-                        </div>
-                        <div className=""></div>
+                      <div className="">
+                        <button
+                          onClick={PatientDetailButton}
+                          className="add-button"
+                        >
+                          <span>
+                            <i className="fa fa-plus"></i>
+                          </span>{" "}
+                          Add Treatment
+                        </button>
                       </div>
                     </div>
                     <div className="row">
@@ -2430,7 +2434,7 @@ function PatientDetail() {
                                         >
                                           {info.treatment_name}{" "}
                                         </h3>
-                                        <p>{info.treatment_status}</p>
+                                        <p className="mb-0">{info.treatment_status}</p>
                                       </div>
                                       <div className="">
                                         <ul className="nav nav-tabs treat-tabs">
@@ -2471,21 +2475,21 @@ function PatientDetail() {
                                           {!info?.Hospital_details?.some(
                                             (item) => item.hospital_Name,
                                           ) && (
-                                            <li className="nav-item">
-                                              <button
-                                                className="nav-link"
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "hospital",
-                                                    info,
-                                                  )
-                                                }
-                                              >
-                                                | + Add Hospital
-                                              </button>
-                                            </li>
-                                          )}
+                                              <li className="nav-item">
+                                                <button
+                                                  className="nav-link"
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "hospital",
+                                                      info,
+                                                    )
+                                                  }
+                                                >
+                                                  + Add Hospital
+                                                </button>
+                                              </li>
+                                            )}
 
                                           <li className="nav-item">
                                             <button
@@ -2498,7 +2502,7 @@ function PatientDetail() {
                                                 )
                                               }
                                             >
-                                              | + Add Appointment
+                                              + Add Appointment
                                             </button>
                                           </li>
                                           <li className="nav-item">
@@ -2508,7 +2512,7 @@ function PatientDetail() {
                                                 handleAction(e, "notes", info)
                                               }
                                             >
-                                              | + Add Notes
+                                              + Add Notes
                                             </button>
                                           </li>
                                           <li className="nav-item">
@@ -2522,7 +2526,7 @@ function PatientDetail() {
                                                 )
                                               }
                                             >
-                                              | + Add Services
+                                              + Add Services
                                             </button>
                                           </li>
                                         </ul>
@@ -2692,72 +2696,6 @@ function PatientDetail() {
                                         </div>
                                       </div>
                                     </div>
-                                    {/* <div className="col-md-4">
-                                      {info?.services?.length > 0 ? (
-                                        <div className="card patientreat">
-                                          <div className="card-header service-list action-icon">
-                                            <h6>Free Services</h6>
-                                          </div>
-                                          <div className="card-body">
-                                            <ul className="free-list">
-                                              {info?.services?.map(
-                                                (item, index) => {
-                                                  // console.log(item);
-                                                  if (
-                                                    item.service_type === "Free"
-                                                  ) {
-                                                    return (
-                                                      <li
-                                                        key={
-                                                          item._id ||
-                                                          item.serviceName
-                                                        }
-                                                      >
-                                                        <div
-                                                          className="row"
-                                                          key={index}
-                                                        >
-                                                          <div className="col-md-12">
-                                                            <div className="para-main-div d-flex">
-                                                              <div>
-                                                                <p>
-                                                                  {
-                                                                    item.serviceName
-                                                                  }{" "}
-                                                                </p>
-                                                              </div>
-                                                              <div>
-                                                                <i
-                                                                  className="fa-solid fa-trash mx-2 text-danger"
-                                                                  style={{
-                                                                    cursor:
-                                                                      "pointer",
-                                                                  }}
-                                                                  onClick={() =>
-                                                                    EditFreeDelete(
-                                                                      item,
-                                                                      info,
-                                                                      index,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              </div>
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </li>
-                                                    );
-                                                  }
-                                                  return null;
-                                                },
-                                              )}
-                                            </ul>
-                                          </div>
-                                        </div>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </div> */}
                                     {(() => {
                                       const freeServices =
                                         info?.services?.filter(
@@ -2858,19 +2796,19 @@ function PatientDetail() {
                                                           <td>
                                                             {item.startTime
                                                               ? new Date(
-                                                                  item.startTime,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                )
+                                                                item.startTime,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )
                                                               : "-"}
                                                           </td>
                                                           <td>
                                                             {item.endTime
                                                               ? new Date(
-                                                                  item.endTime,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                )
+                                                                item.endTime,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )
                                                               : "-"}
                                                           </td>
                                                           <td>
@@ -2912,71 +2850,39 @@ function PatientDetail() {
                                     <div className="col-md-6">
                                       {info?.treatmentNotes?.length > 0 ? (
                                         <div className="card patientreat">
-                                          <div className="card-header service-list action-icon">
+                                          <div className="card-header service-list">
                                             <h6>Notes</h6>
                                           </div>
                                           <div className="card-body">
-                                            <ul className="trment-list">
-                                              {info?.treatmentNotes?.map(
-                                                (item, index) => {
-                                                  return (
-                                                    <>
-                                                      <li key={index}>
-                                                        <div className="row">
-                                                          <div className="col-md-10">
-                                                            <div className="row">
-                                                              <div className="col-md-12">
-                                                                <div className="para-main-div">
-                                                                  <p>
-                                                                    Note:{" "}
-                                                                    {item.note ||
-                                                                      "-"}
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-                                                              <div className="col-md-12">
-                                                                <div className="para-main-div">
-                                                                  <p>
-                                                                    Date:{" "}
-                                                                    {new Date(
-                                                                      item?.date,
-                                                                    ).toLocaleDateString(
-                                                                      "en-GB",
-                                                                    ) || "-"}
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-                                                            </div>
+                                            <div className="table-responsive table-no-card">
+                                              <table className="table-card w-100">
+                                                <thead>
+                                                  <tr>
+                                                    <th>Note</th>
+                                                    <th>Date</th>
+                                                    <th>From</th>
+                                                    <th>Action</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {info?.treatmentNotes?.map((item, index) => {
+                                                    return (
+                                                      <tr key={item._id || index}>
+                                                        <td>{item.note || "-"}</td>
+                                                        <td>{item?.date ? new Date(item.date).toLocaleDateString("en-GB") : "-"}</td>
+                                                        <td>from dynamic data</td>
+                                                        <td>
+                                                          <div className="action-icon">
+                                                            <i className="fa-solid fa-pen-to-square" onClick={() => EditButton(item, info)}></i>
+                                                            <i className="fa-solid fa-trash" onClick={() => EditDelete(item, info)}></i>
                                                           </div>
-                                                          <div className="col-md-2 text-end">
-                                                            <div className="action-icon">
-                                                              <i
-                                                                className="fa-solid fa-pen-to-square"
-                                                                onClick={(e) =>
-                                                                  EditButton(
-                                                                    item,
-                                                                    info,
-                                                                  )
-                                                                }
-                                                              ></i>
-                                                              <i
-                                                                className="fa-solid fa-trash"
-                                                                onClick={() =>
-                                                                  EditDelete(
-                                                                    item,
-                                                                    info,
-                                                                  )
-                                                                }
-                                                              ></i>
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </li>
-                                                    </>
-                                                  );
-                                                },
-                                              )}
-                                            </ul>
+                                                        </td>
+                                                      </tr>
+                                                    );
+                                                  })}
+                                                </tbody>
+                                              </table>
+                                            </div>
                                           </div>
                                         </div>
                                       ) : (
@@ -2985,7 +2891,7 @@ function PatientDetail() {
                                     </div>
                                     <div className="col-md-12">
                                       {info?.appointments_details?.length >
-                                      0 ? (
+                                        0 ? (
                                         <div className="card patientreat">
                                           <div className="card-header service-list">
                                             <h6>Appointment</h6>
@@ -3016,40 +2922,40 @@ function PatientDetail() {
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                          "online"
+                                                            "online"
                                                             ? item.vehicle_no
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                          "online"
+                                                            "online"
                                                             ? item.driver_name
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                          "online"
+                                                            "online"
                                                             ? item.driver_contact
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                          "online"
+                                                            "online"
                                                             ? item.pickup_time
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.appointment_Date
                                                             ? new Date(
-                                                                item.appointment_Date,
-                                                              )
-                                                                .toISOString()
-                                                                .slice(0, 10)
+                                                              item.appointment_Date,
+                                                            )
+                                                              .toISOString()
+                                                              .slice(0, 10)
                                                             : ""}
                                                         </td>
                                                         <td>
                                                           {item.status ===
-                                                          "Complete" ? (
+                                                            "Complete" ? (
                                                             <span className="badge bg-primary">
                                                               Completed
                                                             </span>
@@ -3121,19 +3027,6 @@ function PatientDetail() {
                     <div className="all-hd">
                       <h6>Attendant Details</h6>
                     </div>
-                    <div className="">
-                      <button
-                        onClick={(e) =>
-                          handleClickOpen2(e, selectedTreatmentId)
-                        }
-                        className="add-button"
-                      >
-                        <span>
-                          <i className="fa fa-plus"></i>
-                        </span>{" "}
-                        Add Attendant
-                      </button>
-                    </div>
                   </div>
                   <div className="row">
                     <div className="col-md-12">
@@ -3141,118 +3034,130 @@ function PatientDetail() {
                         <div className="treat-card">
                           <div className="sectabmain">
                             <div className="treat-id">
-                              <h3
-                                style={{ cursor: "pointer" }}
-                                onClick={handleBackToTreatmentList}
-                              >
-                                {getSelectedTreatmentName()}
-                              </h3>
+                              <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}> {getSelectedTreatmentName()}</h3>
                             </div>
-                            <ul className="nav nav-tabs treat-tabs">
-                              <li className="nav-item">
-                                <button
-                                  className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`}
-                                  onClick={(e) =>
-                                    handleAction(
-                                      e,
-                                      "attendant",
-                                      getSelectedTreatmentInfo(),
-                                    )
-                                  }
-                                >
-                                  Add Attendant
-                                </button>
-                              </li>
-                              <li className="nav-item">
-                                <button
-                                  className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`}
-                                  onClick={(e) =>
-                                    handleAction(
-                                      e,
-                                      "payment",
-                                      getSelectedTreatmentInfo(),
-                                    )
-                                  }
-                                >
-                                  Payment Details
-                                </button>
-                              </li>
-                              <li className="nav-item">
-                                <button
-                                  className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`}
-                                  onClick={(e) =>
-                                    handleAction(
-                                      e,
-                                      "reports",
-                                      getSelectedTreatmentInfo(),
-                                    )
-                                  }
-                                >
-                                  Reports
-                                </button>
-                              </li>
-                              <li className="nav-item">
-                                <button
-                                  className="nav-link"
-                                  onClick={(e) =>
-                                    handleAction(
-                                      e,
-                                      "hospital",
-                                      getSelectedTreatmentInfo(),
-                                    )
-                                  }
-                                >
-                                  | + Add Hospital
-                                </button>
-                              </li>
-                              <li className="nav-item">
-                                <button
-                                  className="nav-link"
-                                  onClick={(e) =>
-                                    handleAction(
-                                      e,
-                                      "appointment",
-                                      getSelectedTreatmentInfo(),
-                                    )
-                                  }
-                                >
-                                  | + Add Appointment
-                                </button>
-                              </li>
-                              <li className="nav-item">
-                                <button
-                                  className="nav-link"
-                                  onClick={(e) =>
-                                    handleAction(
-                                      e,
-                                      "notes",
-                                      getSelectedTreatmentInfo(),
-                                    )
-                                  }
-                                >
-                                  | + Add Notes
-                                </button>
-                              </li>
-                              <li className="nav-item">
-                                <button
-                                  className="nav-link"
-                                  onClick={(e) =>
-                                    handleAction(
-                                      e,
-                                      "services",
-                                      getSelectedTreatmentInfo(),
-                                    )
-                                  }
-                                >
-                                  | + Add Services
-                                </button>
-                              </li>
-                            </ul>
+                            <div className="">
+                              <ul className="nav nav-tabs treat-tabs">
+                                <li className="nav-item">
+                                  <button
+                                    className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`}
+                                    onClick={(e) =>
+                                      handleAction(
+                                        e,
+                                        "attendant",
+                                        getSelectedTreatmentInfo(),
+                                      )
+                                    }
+                                  >
+                                    Add Attendant
+                                  </button>
+                                </li>
+                                <li className="nav-item">
+                                  <button
+                                    className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`}
+                                    onClick={(e) =>
+                                      handleAction(
+                                        e,
+                                        "payment",
+                                        getSelectedTreatmentInfo(),
+                                      )
+                                    }
+                                  >
+                                    Payment Details
+                                  </button>
+                                </li>
+                                <li className="nav-item">
+                                  <button
+                                    className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`}
+                                    onClick={(e) =>
+                                      handleAction(
+                                        e,
+                                        "reports",
+                                        getSelectedTreatmentInfo(),
+                                      )
+                                    }
+                                  >
+                                    Reports
+                                  </button>
+                                </li>
+                                <li className="nav-item">
+                                  <button
+                                    className="nav-link"
+                                    onClick={(e) =>
+                                      handleAction(
+                                        e,
+                                        "hospital",
+                                        getSelectedTreatmentInfo(),
+                                      )
+                                    }
+                                  >
+                                    + Add Hospital
+                                  </button>
+                                </li>
+                                <li className="nav-item">
+                                  <button
+                                    className="nav-link"
+                                    onClick={(e) =>
+                                      handleAction(
+                                        e,
+                                        "appointment",
+                                        getSelectedTreatmentInfo(),
+                                      )
+                                    }
+                                  >
+                                    + Add Appointment
+                                  </button>
+                                </li>
+                                <li className="nav-item">
+                                  <button
+                                    className="nav-link"
+                                    onClick={(e) =>
+                                      handleAction(
+                                        e,
+                                        "notes",
+                                        getSelectedTreatmentInfo(),
+                                      )
+                                    }
+                                  >
+                                    + Add Notes
+                                  </button>
+                                </li>
+                                <li className="nav-item">
+                                  <button
+                                    className="nav-link"
+                                    onClick={(e) =>
+                                      handleAction(
+                                        e,
+                                        "services",
+                                        getSelectedTreatmentInfo(),
+                                      )
+                                    }
+                                  >
+                                    + Add Services
+                                  </button>
+                                </li>
+                              </ul>
+                            </div>
                           </div>
                         </div>
                         <hr></hr>
                         <div className="row">
-                          <div className="col-md-4">
+                          <div className="col-md-12">
+                            <div className="treat-buttons">
+                              <button
+                                onClick={(e) =>
+                                  handleClickOpen2(e, selectedTreatmentId)
+                                }
+                                className="add-button"
+                              >
+                                <span>
+                                  <i className="fa fa-plus"></i>
+                                </span>{" "}
+                                Add Attendant
+                              </button>
+                            </div>
+                          </div>
+                          <div className="col-md-5">
                             <div className="card attendant-card">
                               <div className="card-body">
                                 <div className="detail-row">
@@ -3329,7 +3234,6 @@ function PatientDetail() {
                     <div className="all-hd">
                       <h6>Payment Details</h6>
                     </div>
-                    <div className="treat-buttons"></div>
                   </div>
                   <div className="row">
                     <div className="col-md-12">
@@ -3339,18 +3243,9 @@ function PatientDetail() {
                             <div className="treat-card">
                               <div className="sectabmain">
                                 <div className="treat-id">
-                                  <div>
-                                    <h3
-                                      className="mb-0"
-                                      style={{ cursor: "pointer" }}
-                                      onClick={handleBackToTreatmentList}
-                                    >
-                                      Treatment Name-
-                                      {getSelectedTreatmentName()}
-                                    </h3>
-                                  </div>
+                                  <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>{getSelectedTreatmentName()}</h3>
                                 </div>
-                                <div className="d-flex">
+                                <div className="">
                                   <ul className="nav nav-tabs treat-tabs">
                                     <li className="nav-item">
                                       <button
@@ -3405,7 +3300,7 @@ function PatientDetail() {
                                           )
                                         }
                                       >
-                                        | + Add Hospital
+                                        + Add Hospital
                                       </button>
                                     </li>
                                     <li className="nav-item">
@@ -3419,7 +3314,7 @@ function PatientDetail() {
                                           )
                                         }
                                       >
-                                        | + Add Appointment
+                                        + Add Appointment
                                       </button>
                                     </li>
                                     <li className="nav-item">
@@ -3433,7 +3328,7 @@ function PatientDetail() {
                                           )
                                         }
                                       >
-                                        | + Add Notes
+                                        + Add Notes
                                       </button>
                                     </li>
                                     <li className="nav-item">
@@ -3447,7 +3342,7 @@ function PatientDetail() {
                                           )
                                         }
                                       >
-                                        | + Add Services
+                                        + Add Services
                                       </button>
                                     </li>
                                   </ul>
@@ -3470,152 +3365,125 @@ function PatientDetail() {
                                       <div className="treat-card">
                                         <div className="sectabmain">
                                           <div className="treat-id">
-                                            <h3
-                                              style={{ cursor: "pointer" }}
-                                              onClick={
-                                                handleBackToTreatmentList
-                                              }
-                                            >
-                                              {" "}
-                                              {treatment_course_name}
+                                            <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>
+                                              {" "} {treatment_course_name}
                                             </h3>
                                           </div>
-                                          <ul className="nav nav-tabs treat-tabs">
-                                            <li className="nav-item">
-                                              <button
-                                                className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`}
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "attendant",
-                                                    getSelectedTreatmentInfo(),
-                                                  )
-                                                }
-                                              >
-                                                Add Attendant
-                                              </button>
-                                            </li>
-                                            <li className="nav-item">
-                                              <button
-                                                className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`}
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "payment",
-                                                    getSelectedTreatmentInfo(),
-                                                  )
-                                                }
-                                              >
-                                                Payment Details
-                                              </button>
-                                            </li>
-                                            <li className="nav-item">
-                                              <button
-                                                className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`}
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "reports",
-                                                    getSelectedTreatmentInfo(),
-                                                  )
-                                                }
-                                              >
-                                                Reports
-                                              </button>
-                                            </li>
-                                            <li className="nav-item">
-                                              <button
-                                                className="nav-link"
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "hospital",
-                                                    getSelectedTreatmentInfo(),
-                                                  )
-                                                }
-                                              >
-                                                | + Add Hospital
-                                              </button>
-                                            </li>
-                                            <li className="nav-item">
-                                              <button
-                                                className="nav-link"
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "appointment",
-                                                    getSelectedTreatmentInfo(),
-                                                  )
-                                                }
-                                              >
-                                                | + Add Appointment
-                                              </button>
-                                            </li>
-                                            <li className="nav-item">
-                                              <button
-                                                className="nav-link"
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "notes",
-                                                    getSelectedTreatmentInfo(),
-                                                  )
-                                                }
-                                              >
-                                                | + Add Notes
-                                              </button>
-                                            </li>
-                                            <li className="nav-item">
-                                              <button
-                                                className="nav-link"
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "services",
-                                                    getSelectedTreatmentInfo(),
-                                                  )
-                                                }
-                                              >
-                                                | + Add Services
-                                              </button>
-                                            </li>
-                                            <li className="nav-item">
-                                              <button
-                                                onClick={(e) =>
-                                                  handleClickOpen3(
-                                                    e,
-                                                    treatmentId,
-                                                  )
-                                                }
-                                                className="nav-link"
-                                              >
-                                                <span>
-                                                  <i className="fa fa-plus"></i>
-                                                </span>{" "}
-                                                Add Amount
-                                              </button>
-                                            </li>
-                                            <li className="nav-item">
-                                              <button
-                                                onClick={(e) =>
-                                                  handleClicexportPayment(
-                                                    e,
-                                                    treatmentId,
-                                                  )
-                                                }
-                                                className="nav-link"
-                                              >
-                                                <span>
-                                                  <i className="fa fa-plus"></i>
-                                                </span>{" "}
-                                                Export
-                                              </button>
-                                            </li>
-                                          </ul>
+                                          <div className="">
+                                            <ul className="nav nav-tabs treat-tabs">
+                                              <li className="nav-item">
+                                                <button
+                                                  className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`}
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "attendant",
+                                                      getSelectedTreatmentInfo(),
+                                                    )
+                                                  }
+                                                >
+                                                  Add Attendant
+                                                </button>
+                                              </li>
+                                              <li className="nav-item">
+                                                <button
+                                                  className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`}
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "payment",
+                                                      getSelectedTreatmentInfo(),
+                                                    )
+                                                  }
+                                                >
+                                                  Payment Details
+                                                </button>
+                                              </li>
+                                              <li className="nav-item">
+                                                <button
+                                                  className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`}
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "reports",
+                                                      getSelectedTreatmentInfo(),
+                                                    )
+                                                  }
+                                                >
+                                                  Reports
+                                                </button>
+                                              </li>
+                                              <li className="nav-item">
+                                                <button
+                                                  className="nav-link"
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "hospital",
+                                                      getSelectedTreatmentInfo(),
+                                                    )
+                                                  }
+                                                >
+                                                  + Add Hospital
+                                                </button>
+                                              </li>
+                                              <li className="nav-item">
+                                                <button
+                                                  className="nav-link"
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "appointment",
+                                                      getSelectedTreatmentInfo(),
+                                                    )
+                                                  }
+                                                >
+                                                  + Add Appointment
+                                                </button>
+                                              </li>
+                                              <li className="nav-item">
+                                                <button
+                                                  className="nav-link"
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "notes",
+                                                      getSelectedTreatmentInfo(),
+                                                    )
+                                                  }
+                                                >
+                                                  + Add Notes
+                                                </button>
+                                              </li>
+                                              <li className="nav-item">
+                                                <button
+                                                  className="nav-link"
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "services",
+                                                      getSelectedTreatmentInfo(),
+                                                    )
+                                                  }
+                                                >
+                                                  + Add Services
+                                                </button>
+                                              </li>
+
+                                            </ul>
+                                          </div>
                                         </div>
                                       </div>
                                       <hr></hr>
                                       <div className="experience-box">
+                                        <div className="treat-buttons">
+                                          <button onClick={(e) => handleClickOpen3(e, treatmentId,)} className="add-button">
+                                            <span><i className="fa fa-plus"></i></span>{" "}Add Amount
+                                          </button>
+                                          <button onClick={(e) => handleClicexportPayment(e, treatmentId,)} className="add-button">
+                                            <span><i className="fa fa-plus"></i></span>{" "}Export
+                                          </button>
+                                        </div>
                                         <ul className="experience-list">
                                           {payments.map((info, idx) => {
                                             console.log(info);
@@ -3693,23 +3561,15 @@ function PatientDetail() {
                         console.log(treatment);
                         return (
                           <>
-                            <div
-                              className="card-box mb-4"
-                              key={treatment.treatmentId}
-                            >
-                              {/* ===== Treatment Header ===== */}
+                            <div className="card-box mb-4" key={treatment.treatmentId}>
                               <div className="treat-card">
                                 <div className="sectabmain">
                                   <div className="treat-id">
-                                    <h3
-                                      className="mb-0"
-                                      style={{ cursor: "pointer" }}
-                                      onClick={handleBackToTreatmentList}
-                                    >
+                                    <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>
                                       {treatment?.treatment_course_name}
                                     </h3>
                                   </div>
-                                  <div className="d-flex">
+                                  <div className="">
                                     <ul className="nav nav-tabs treat-tabs">
                                       <li className="nav-item">
                                         <button
@@ -3764,7 +3624,7 @@ function PatientDetail() {
                                             )
                                           }
                                         >
-                                          | + Add Hospital
+                                          + Add Hospital
                                         </button>
                                       </li>
                                       <li className="nav-item">
@@ -3778,7 +3638,7 @@ function PatientDetail() {
                                             )
                                           }
                                         >
-                                          | + Add Appointment
+                                          + Add Appointment
                                         </button>
                                       </li>
                                       <li className="nav-item">
@@ -3792,7 +3652,7 @@ function PatientDetail() {
                                             )
                                           }
                                         >
-                                          | + Add Notes
+                                          + Add Notes
                                         </button>
                                       </li>
                                       <li className="nav-item">
@@ -3806,33 +3666,23 @@ function PatientDetail() {
                                             )
                                           }
                                         >
-                                          | + Add Services
+                                          + Add Services
                                         </button>
                                       </li>
                                     </ul>
                                   </div>
-                                  <div className="">
-                                    <button
-                                      onClick={(e) =>
-                                        handleClickOpen10(
-                                          e,
-                                          treatment.treatmentId,
-                                        )
-                                      }
-                                      className="add-button"
-                                    >
-                                      <span>
-                                        <i className="fa fa-plus"></i>
-                                      </span>{" "}
-                                      Add Report
-                                    </button>
-                                  </div>
                                 </div>
                               </div>
-                              {/* ===== Reports Table ===== */}
+                              <hr></hr>
+                              <div className="treat-buttons">
+                                <button onClick={(e) => handleClickOpen10(e, treatment.treatmentId,)} className="add-button" >
+                                  <span><i className="fa fa-plus"></i></span>{" "}
+                                  Add Report
+                                </button>
+                              </div>
                               {treatment.reports &&
-                              treatment.reports.length > 0 ? (
-                                <div className="table-responsive mt-3">
+                                treatment.reports.length > 0 ? (
+                                <div className="table-responsive">
                                   <TableContainer component={Paper}>
                                     <Table className="table-no-card">
                                       <TableHead>
@@ -3840,16 +3690,16 @@ function PatientDetail() {
                                           <TableCell>Treatment ID</TableCell>
                                           <TableCell>Report Title</TableCell>
                                           <TableCell>Report Date</TableCell>
+                                          <TableCell>From</TableCell>
                                           {localStorage.getItem("Role") ===
                                             "Admin" && (
-                                            <>
-                                              <TableCell>Reports</TableCell>
-                                              <TableCell>Action</TableCell>
-                                            </>
-                                          )}
+                                              <>
+                                                <TableCell>Reports</TableCell>
+                                                <TableCell>Action</TableCell>
+                                              </>
+                                            )}
                                         </TableRow>
                                       </TableHead>
-
                                       <TableBody>
                                         {treatment.reports.map((item) => (
                                           <TableRow key={item._id}>
@@ -3864,32 +3714,33 @@ function PatientDetail() {
                                                 item.treatment_report_date,
                                               ).toLocaleDateString("en-GB")}
                                             </TableCell>
+                                            <TableCell>from data</TableCell>
 
                                             {localStorage.getItem("Role") ===
                                               "Admin" && (
-                                              <>
-                                                <TableCell>
-                                                  <a
-                                                    href={`${image}${item.treatmentReport}`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                  >
-                                                    Download Report
-                                                  </a>
-                                                </TableCell>
-                                                <TableCell>
-                                                  <i
-                                                    style={{
-                                                      cursor: "pointer",
-                                                    }}
-                                                    className="fa-solid fa-trash text-danger"
-                                                    onClick={() =>
-                                                      handledeleteReport(item)
-                                                    }
-                                                  ></i>
-                                                </TableCell>
-                                              </>
-                                            )}
+                                                <>
+                                                  <TableCell>
+                                                    <a
+                                                      href={`${image}${item.treatmentReport}`}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                    >
+                                                      Download Report
+                                                    </a>
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    <i
+                                                      style={{
+                                                        cursor: "pointer",
+                                                      }}
+                                                      className="fa-solid fa-trash text-danger"
+                                                      onClick={() =>
+                                                        handledeleteReport(item)
+                                                      }
+                                                    ></i>
+                                                  </TableCell>
+                                                </>
+                                              )}
                                           </TableRow>
                                         ))}
                                       </TableBody>
@@ -3897,9 +3748,7 @@ function PatientDetail() {
                                   </TableContainer>
                                 </div>
                               ) : (
-                                <p className="mt-2 text-muted">
-                                  No reports available
-                                </p>
+                                <p>No reports available</p>
                               )}
                             </div>
                           </>
