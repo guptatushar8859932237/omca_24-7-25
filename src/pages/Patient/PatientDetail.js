@@ -2118,6 +2118,10 @@ function PatientDetail() {
       penModal(info, tId);
     }
   };
+
+  const handleclickdeleteplan =(item)=>{
+    console.log(item)
+  }
   return (
     <>
       <div className="page-wrapper">
@@ -2298,7 +2302,14 @@ function PatientDetail() {
                           return (
                             <div className="card-box" key={index}>
                               <div className="treatment-header">
+                                <div className="d-flex justify-content-between">
+                                  <div>
                                 <h5>{info?.treatment?.name}</h5>
+                                  </div>
+                                  <div>
+                                {/* <i onClick={()=>{handleclickdeleteplan(info?.treatment)}} className="fa fa-trash text-danger me-2"></i> */}
+                                  </div>
+                                </div>
                               </div>
                               <div className="treatment-body">
                                 <div className="row">

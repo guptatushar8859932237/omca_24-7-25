@@ -599,9 +599,8 @@ export default function EditEnquiry() {
                               setFieldValue("patient_id_proof", files);
                             }}
                           />
-                          <div className="engpatimg">
+                          {/* <div className="engpatimg">
                             {Array.isArray(editenquiry.patient_id_proof) &&
-                              editenquiry.patient_id_proof.length > 0 ? (
                               editenquiry.patient_id_proof.map(
                                 (file, index) => {
                                   const type = getFileType(file);
@@ -626,10 +625,40 @@ export default function EditEnquiry() {
                                   );
                                 },
                               )
-                            ) : (
-                              <img src={avtar} alt="default" />
-                            )}
-                          </div>
+                            ) }
+                          </div> */}
+                          <div className="engpatimg">
+  {Array.isArray(editenquiry?.patient_id_proof) &&
+    editenquiry.patient_id_proof.length > 0 &&
+    editenquiry.patient_id_proof.map((file, index) => {
+      const type = getFileType(file);
+      const fileUrl = `${imageUrl}${file}`;
+
+      return (
+        <div className="file-preview" key={index}>
+          <span
+            className="delete-icon"
+            onClick={() => handleDeletePatientIdProof(index)}
+          >
+            <i className="fa-solid fa-xmark"></i>
+          </span>
+
+          <button
+            type="button"
+            className="viewbtn"
+            onClick={() => window.open(fileUrl, "_blank")}
+          >
+            {type === "image" && "View Image"}
+            {type === "pdf" && "View PDF"}
+            {type === "word" && "View Word"}
+            {type === "excel" && "View Excel"}
+            {!["image", "pdf", "word", "excel"].includes(type) &&
+              "View File"}
+          </button>
+        </div>
+      );
+    })}
+</div>
 
                           <ErrorMessage
                             name="patient_id_proof"
