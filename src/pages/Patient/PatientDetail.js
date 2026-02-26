@@ -2118,7 +2118,6 @@ function PatientDetail() {
       penModal(info, tId);
     }
   };
-
   return (
     <>
       <div className="page-wrapper">
@@ -2148,12 +2147,11 @@ function PatientDetail() {
                       <div class="image-wrap">
                         <div class="part-img">
                           <img
-                            // src={`${image}${ispatient?.patient_Profile}`}
                             src={
-    ispatient?.patient_Profile
-      ? `${image}${ispatient?.patient_Profile}`
-      : avtar
-  }
+                              ispatient?.patient_Profile
+                                ? `${image}${ispatient?.patient_Profile}`
+                                : avtar
+                            }
                             className="pro-img"
                           />
                         </div>
@@ -3971,40 +3969,6 @@ function PatientDetail() {
                     <label>
                       Select Hospital<span className="text-danger">*</span>
                     </label>
-                    {/* <Autocomplete
-                      multiple
-                      options={hospitlID || []}
-                      getOptionLabel={(option) => option.name}
-                      // onChange={(e, values) => {
-                      //   setHospitalId(values);
-                      //   setErrors((prev) => ({ ...prev, hospitals: "" }));
-                      // }}
-                      onChange={(e, values) => {
-
-  const isSelectAll = values.find(
-    (val) => val._id === "all"
-  );
-
-  if (isSelectAll) {
-    const allHospitals = hospitlID.filter(
-      (item) => item._id !== "all"
-    );
-    setHospitalId(allHospitals);
-  } else {
-    setHospitalId(values);
-  }
-
-  setErrors((prev) => ({ ...prev, hospitals: "" }));
-}}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          placeholder="Hospital"
-                          error={!!errors.hospitals}
-                        // helperText={errors.hospitals}
-                        />
-                      )}
-                    /> */}
                     <Autocomplete
                       multiple
                       options={hospitlID || []}
@@ -4228,30 +4192,6 @@ function PatientDetail() {
               }}
               className="contact-form"
             >
-              {/* <Box>
-                <div className="field-set mb-0">
-                  <label>
-                    Select Treatment<span className="text-danger">*</span>
-                  </label>
-                  <select
-                    className="form-control"
-                    name="treatment"
-                    onChange={andlechange}
-                  >
-                    <option>Select Treatment</option>
-                    {treatmentuser.map((item, index) => {
-                      console.log(item);
-                      return (
-                        <>
-                          <option key={index} value={item.treatmentId}>
-                            {item?.treatment_name}
-                          </option>
-                        </>
-                      );
-                    })}
-                  </select>
-                </div>
-              </Box> */}
               <Box sx={{ display: "flex", gap: 2 }}>
                 <Box sx={{ flex: 1 }}>
                   <div className="field-set mb-0">
@@ -4708,31 +4648,6 @@ function PatientDetail() {
             >
               <Box>
                 <form id="contact-form" className="contact-form">
-                  {/* <div className="field-set">
-                    <label>
-                      Passport<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="file"
-                        className="form-control"
-                        onChange={(e) => onChangeFile(e, "passport")}
-                      />
-                    </div>
-                  </div>
-                  <div className="field-set">
-                    <label>
-                      Photo<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="form-control"
-                        onChange={(e) => onChangeFile(e, "photo")}
-                      />
-                    </div>
-                  </div> */}
                   <div className="field-set">
                     <label>
                       Name<span className="text-danger">*</span>
