@@ -379,11 +379,11 @@ export default function EditEnquiry() {
                                       selected?.dial_code || "",
                                     );
                                   }}
-                                  // input={
-                                  //   <OutlinedInput label="Select Country" />
-                                  // }
-                                  // displayEmpty
-                                  // sx={{ height: 40 }}
+                                // input={
+                                //   <OutlinedInput label="Select Country" />
+                                // }
+                                // displayEmpty
+                                // sx={{ height: 40 }}
                                 >
                                   <MenuItem value="">
                                     <em>Select Country</em>
@@ -588,87 +588,41 @@ export default function EditEnquiry() {
                               (i)
                             </span>
                           </label>
+                          <input
+                            className="form-control"
+                            type="file"
+                            name="patient_id_proof"
+                            accept="image/*,application/pdf"
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.currentTarget.files);
+                              setFieldValue("patient_id_proof", files);
+                            }}
+                          />
                           <div className="engpatimg">
-                            <input
-                              className="form-control"
-                              type="file"
-                              name="patient_id_proof"
-                              accept="image/*,application/pdf"
-                              multiple
-                              onChange={(e) => {
-                                const files = Array.from(e.currentTarget.files);
-                                setFieldValue("patient_id_proof", files);
-                              }}
-                            />
                             {Array.isArray(editenquiry.patient_id_proof) &&
-                            editenquiry.patient_id_proof.length > 0 ? (
+                              editenquiry.patient_id_proof.length > 0 ? (
                               editenquiry.patient_id_proof.map(
                                 (file, index) => {
                                   const type = getFileType(file);
                                   const fileUrl = `${imageUrl}${file}`;
 
                                   return (
-                                    // <div
-                                    //   className="file-preview position-relative"
-                                    //   key={index}
-                                    // >
-                                    //   {/* DELETE ICON – ALWAYS VISIBLE */}
-                                    //   <span
-                                    //     className="delete-icon"
-                                    //     onClick={() =>
-                                    //       handleDeletePatientIdProof(index)
-                                    //     }
-                                    //   >
-                                    //     ✕
-                                    //   </span>
 
-                                    //   {/* FILE PREVIEW */}
-                                    //   {type === "image" ? (
-                                    //     <img
-                                    //       src={fileUrl}
-                                    //       alt="patient-proof"
-                                    //       onError={(e) =>
-                                    //         (e.target.src = avtar)
-                                    //       }
-                                    //     />
-                                    //   ) : (
-                                    //     <a
-                                    //       href={fileUrl}
-                                    //       target="_blank"
-                                    //       rel="noopener noreferrer"
-                                    //       className="doc-link"
-                                    //     >
-                                    //       {type === "pdf" && "📄 PDF Document"}
-                                    //       {type === "word" &&
-                                    //         "📝 Word Document"}
-                                    //       {type === "excel" && "📊 Excel Sheet"}
-                                    //       {type === "other" && "📁 File"}
-                                    //     </a>
-                                    //   )}
-                                    // </div>
-                                  <div className="file-preview position-relative" key={index}>
-  
-  {/* DELETE ICON */}
-  <span
-    className="delete-icon"
-    onClick={() => handleDeletePatientIdProof(index)}
-  >
-    ✕
-  </span>
-
-  {/* VIEW BUTTON */}
-  <button
-    type="button"
-    className="btn btn-outline-primary btn-sm"
-    onClick={() => window.open(fileUrl, "_blank")}
-  >
-    {type === "image" && "🖼 View Image"}
-    {type === "pdf" && "📄 View PDF"}
-    {type === "word" && "📝 View Word"}
-    {type === "excel" && "📊 View Excel"}
-    {type === "other" && "📁 View File"}
-  </button>
-</div>
+                                    <div className="">
+                                      <div className="file-preview" key={index}>
+                                        <span className="delete-icon" onClick={() => handleDeletePatientIdProof(index)}>
+                                          <i class="fa-solid fa-xmark"></i>
+                                        </span>
+                                        <button type="button" className="viewbtn" onClick={() => window.open(fileUrl, "_blank")}>
+                                          {type === "image" && "View Image"}
+                                          {type === "pdf" && "View PDF"}
+                                          {type === "word" && "View Word"}
+                                          {type === "excel" && "View Excel"}
+                                          {type === "other" && "View File"}
+                                        </button>
+                                      </div>
+                                    </div>
                                   );
                                 },
                               )
@@ -697,33 +651,21 @@ export default function EditEnquiry() {
                               (i)
                             </span>
                           </label>
+                          <input
+                            className="form-control"
+                            type="file"
+                            name="patient_Profile"
+                            accept="image/*,application/pdf"
+                            onChange={(e) =>
+                              setFieldValue(
+                                "patient_Profile",
+                                e.currentTarget.files[0],
+                              )
+                            }
+                          />
                           <div className="engpatimg">
-                            <input
-                              className="form-control"
-                              type="file"
-                              name="patient_Profile"
-                              accept="image/*,application/pdf"
-                              onChange={(e) =>
-                                setFieldValue(
-                                  "patient_Profile",
-                                  e.currentTarget.files[0],
-                                )
-                              }
-                            />
-                            {/* <img
-                              src={
-                                editenquiry.patient_Profile
-                                  ? `${imageUrl}${editenquiry.patient_Profile}`
-                                  : `${avtar}`
-                              }
-                              alt=".."
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = `${avtar}`;
-                              }}
-                            /> */}
-                            <div className="btn btn-outline-primary btn-sm">
-                            <a href={`${imageUrl}${editenquiry.patient_Profile}`}>View Button</a>
+                            <div className="viewbtn">
+                              <a href={`${imageUrl}${editenquiry.patient_Profile}`}>View</a>
                             </div>
                           </div>
                           <ErrorMessage
@@ -940,54 +882,41 @@ export default function EditEnquiry() {
                                   * (i)
                                 </span>
                               </label>
+                              <input
+                                className="form-control"
+                                type="file"
+                                name="patient_relation_id"
+                                accept="image/*,application/pdf"
+                                multiple
+                                onChange={(e) => {
+                                  const files = Array.from(
+                                    e.currentTarget.files,
+                                  );
+                                  setFieldValue("patient_relation_id", files);
+                                }}
+                              />
                               <div className="engpatimg">
-                                <input
-                                  className="form-control"
-                                  type="file"
-                                  name="patient_relation_id"
-                                  accept="image/*,application/pdf"
-                                  multiple
-                                  onChange={(e) => {
-                                    const files = Array.from(
-                                      e.currentTarget.files,
+                                {Array.isArray(editenquiry.patient_relation_id) &&
+                                  editenquiry.patient_relation_id.length > 0 ? (
+                                  editenquiry.patient_relation_id.map((file, index) => {
+                                    const fileUrl = `${imageUrl}${file}`;
+
+                                    return (
+                                      <div className="">
+                                        <div className="file-preview" key={index}>
+                                          <span className="delete-icon" onClick={() =>  handleDeleteAttendantIdProof(index)}>
+                                            <i class="fa-solid fa-xmark"></i>
+                                          </span>
+                                          <button type="button" className="viewbtn" onClick={() => window.open(fileUrl, "_blank")}>
+                                            View
+                                          </button>
+                                        </div>
+                                      </div>
                                     );
-                                    setFieldValue("patient_relation_id", files);
-                                  }}
-                                />
-                              {Array.isArray(editenquiry.patient_relation_id) &&
- editenquiry.patient_relation_id.length > 0 ? (
-  editenquiry.patient_relation_id.map((file, index) => {
-    const fileUrl = `${imageUrl}${file}`;
-
-    return (
-      <div
-        className="file-preview position-relative"
-        key={index}
-      >
-        {/* DELETE ICON */}
-        <span
-          className="delete-icon"
-          onClick={() =>
-            handleDeleteAttendantIdProof(index)
-          }
-        >
-          ✕
-        </span>
-
-        {/* VIEW BUTTON ONLY */}
-        <button
-          type="button"
-          className="btn btn-sm btn-primary"
-          onClick={() => window.open(fileUrl, "_blank")}
-        >
-          View File
-        </button>
-      </div>
-    );
-  })
-) : (
-  <img src={avtar} alt="default" />
-)}
+                                  })
+                                ) : (
+                                  <img src={avtar} alt="default" />
+                                )}
                               </div>
                               <ErrorMessage
                                 name="patient_relation_id"

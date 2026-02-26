@@ -245,36 +245,29 @@ export default function EnquiryDetail() {
                   <div className="col-md-4">
                     <div className="field-set">
                       <label>Patient ID proof<span className="text-danger"></span></label>
-                     <div className="engpatimg">
-  {Array.isArray(row.patient_id_proof) && row.patient_id_proof.length > 0 ? (
-    row.patient_id_proof.map((file, index) => (
-      <div key={index} className="doc-box viewbtn">
-        {/* <FilePreview file={file} /> */}
-        <a href={`${image}${file}`} >View Document</a>
-      </div>
-    ))
-  ) : (
-    <img src={avtar} alt="No Document" />
-  )}
-</div>
+                      <div className="engpatimg mt-0">
+                        {Array.isArray(row.patient_id_proof) && row.patient_id_proof.length > 0 ? (
+                          row.patient_id_proof.map((file, index) => (
+                            <div key={index} className="file-preview">
+                              <span className="delete-icon">
+                                <i class="fa-solid fa-xmark"></i>
+                              </span>
+                              <a href={`${image}${file}`} className="viewbtn">View</a>
+                            </div>
+                          ))
+                        ) : (
+                          <img src={avtar} alt="No Document" />
+                        )}
+                      </div>
 
                     </div>
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
                       <label>Patient Profile<span className="text-danger"></span></label>
-                      <div className="engpatimg">
-                        {/* <img
-                          src={row.patient_Profile ? `${imageUrl}${row.patient_Profile}` : `${avtar}`}
-                          alt="No Document"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = `${avtar}`
-                          }}
-                        /> */}
+                      <div className="engpatimg mt-0">
                         <div className="viewbtn">
-
-                        <a  href={`${imageUrl}${row.patient_Profile}`} >View Document</a>
+                          <a href={`${imageUrl}${row.patient_Profile}`} >View</a>
                         </div>
                       </div>
                     </div>
@@ -345,66 +338,41 @@ export default function EnquiryDetail() {
                           />
                         </div>
                       </div>
-                            <div className="col-md-4">
-                    <div className="field-set">
-                      <label>Attendant Contact Number
-                        <span className="text-danger"></span>
-                      </label>
-                      <div className="country-code">
-                        <input
-                          class="form-control code-dial"
-                          type="text"
-                          value={row.phoneCode}
-                          readonly=""
-                        />
-                        <input
-                          class="form-control code-in"
-                          type="text"
-                          value={row.patient_relation_no}
-                          readonly=""
-                        />
-                      </div>
-                    </div>
-                  </div>
-                      {/* <div className="col-md-4">
+                      <div className="col-md-4">
                         <div className="field-set">
-                          <label>Attendant Contact Number<span className="text-danger"></span></label>
-                          {/* <input
-                            class="form-control"
-                            type="text"
-                            value={row.patient_relation_no}
-                            readonly=""
-                          /> */}
-                          
-                        {/* </div> */}
-                      {/* // </div>  */}
+                          <label>Attendant Contact Number
+                            <span className="text-danger"></span>
+                          </label>
+                          <div className="country-code">
+                            <input
+                              class="form-control code-dial"
+                              type="text"
+                              value={row.phoneCode}
+                              readonly=""
+                            />
+                            <input
+                              class="form-control code-in"
+                              type="text"
+                              value={row.patient_relation_no}
+                              readonly=""
+                            />
+                          </div>
+                        </div>
+                      </div>
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>Attendant ID Proof<span className="text-danger"></span></label>
-                       {/* <div className="engpatimg">
-  {Array.isArray(row.patient_relation_id) && row.patient_relation_id.length > 0 ? (
-    row.patient_relation_id.map((file, index) => (
-      <div key={index} className="doc-box">
-        <FilePreview file={file} />
-      </div>
-    ))
-  ) : (
-    <img src={avtar} alt="No Document" />
-  )}
-</div> */}
-
-      <div className="engpatimg">
-  {Array.isArray(row.patient_relation_id) && row.patient_relation_id.length > 0 ? (
-    row.patient_relation_id.map((file, index) => (
-      <div key={index} className="doc-box viewbtn">
-        {/* <FilePreview file={file} /> */}
-        <a href={`${image}${file}`} >View Document</a>
-      </div>
-    ))
-  ) : (
-    <img src={avtar} alt="No Document" />
-  )}
-</div>
+                          <div className="engpatimg">
+                            {Array.isArray(row.patient_relation_id) && row.patient_relation_id.length > 0 ? (
+                              row.patient_relation_id.map((file, index) => (
+                                <div key={index} className="doc-box viewbtn">
+                                  <a href={`${image}${file}`} >View</a>
+                                </div>
+                              ))
+                            ) : (
+                              <img src={avtar} alt="No Document" />
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="col-md-4">
