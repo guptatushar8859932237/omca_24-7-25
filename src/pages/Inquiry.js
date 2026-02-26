@@ -672,12 +672,12 @@ export default function Inquiry() {
                                   className="fa-solid fa-pen-to-square"
                                   onClick={(e) => EditButton(e, info.enquiryId)}
                                 ></i>
-                                <AssignmentIcon
+                                {/* <AssignmentIcon
                                   className="eye-icon"
                                   onClick={() => {
                                     handleClickOpen2modla();
                                   }}
-                                />
+                                /> */}
 
                                 {localStorage.getItem("Role") === "Admin" && (
                                   <i

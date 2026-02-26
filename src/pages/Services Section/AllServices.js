@@ -51,23 +51,56 @@ export default function AllServices() {
     navigate("/Admin/edit-service", { state: { serviceId: id } });
   };
   const handleDelete = async (e, serviceId) => {
-    e.preventDefault();
-    const response = await axios.delete(
-      `${baseurl}delete_service/${serviceId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
+  e.preventDefault();
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "You want to delete this service!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#6e7881",
+    confirmButtonText: "Yes, delete it!",
+  });
+  if (result.isConfirmed) {
+    try {
+      const response = await axios.delete(
+        `${baseurl}delete_service/${serviceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success === true) {
+        await dispatch(GetAllServices());
+        Swal.fire("Deleted!", "Service deleted successfully.", "success");
       }
-    );
-    if (response.data.success === true) {
-      await dispatch(GetAllServices());
-      Swal.fire("Status!", "Service Deleted successfully", "success");
-    } else {
-      console.log("coe error", error);
+    } catch (error) {
+      console.log("Delete error:", error);
+      Swal.fire("Error!", "Something went wrong.", "error");
     }
-  };
+  }
+};
+  // const handleDelete = async (e, serviceId) => {
+  //   e.preventDefault();
+  //   const response = await axios.delete(
+  //     `${baseurl}delete_service/${serviceId}`,
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+  //   if (response.data.success === true) {
+  //     await dispatch(GetAllServices());
+  //     Swal.fire("Status!", "Service Deleted successfully", "success");
+  //   } else {
+  //     console.log("coe error", error);
+  //   }
+  // };
   const dataActiveInactive = async (id, currentState) => {
     try {
       setActiveToggleLoading(id);
