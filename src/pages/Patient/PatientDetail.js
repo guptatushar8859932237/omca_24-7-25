@@ -53,6 +53,8 @@ function PatientDetail() {
   const [treatemntData1, setTreatemntData1] = useState([]);
   const [errors, setErrors] = useState({});
   const [drivername, setDrivername] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [notesID, setNotesID] = useState("");
   const [drivercontact, setDrivercontact] = useState("");
   const [fieldValue, setFieldValue] = useState("");
@@ -115,7 +117,9 @@ function PatientDetail() {
   const [note2, setNote2] = useState("");
   const [activeSubTab, setActiveSubTab] = useState("details");
   const [selectedTreatmentId, setSelectedTreatmentId] = useState(null);
-  const [mainTab, setMainTab] = useState("treatment-plans");
+  const [mainTab, setMainTab] = useState(() => {
+  return localStorage.getItem("patientMainTab") || "treatment-plans";
+});
   const [date2, setDate2] = useState();
   const [appHospital, setAppHospital] = useState("");
   const [kys, setKyc] = useState([]);
@@ -603,24 +607,8 @@ function PatientDetail() {
   useEffect(() => {
     getdataApi();
   }, []);
-  // const onChangeFile = (e, fieldName) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-  //   if (fieldName === "photo" && fieldName === "Attende_photo") {
-  //     const isImage = file.type.startsWith("image/");
-  //     if (!isImage) {
-  //       alert("Please upload an image file only for photo.");
-  //       return;
-  //     }
-  //   }
-  //   setFilesData((prevState) => ({
-  //     ...prevState,
-  //     [fieldName]: file,
-  //   }));
-  // };
   const handleKysDetail = async (e) => {
     e.preventDefault();
-
     const {
       attendant_fullname,
       attendant_relation,
@@ -628,8 +616,6 @@ function PatientDetail() {
       Attende_passport,
       Attende_photo,
     } = filesData;
-
-    // ✅ Mandatory Validation
     if (
       !attendant_fullname?.trim() ||
       !attendant_relation?.trim() ||
@@ -640,9 +626,7 @@ function PatientDetail() {
       Swal.fire("All fields are mandatory!", "", "warning");
       return;
     }
-
     const formData = new FormData();
-
     formData.append("attendant_fullname", attendant_fullname);
     formData.append("attendant_relation", attendant_relation);
     formData.append("attendant_contact", attendant_contact);
@@ -1822,7 +1806,7 @@ function PatientDetail() {
 
     // File type validation
     if (!allowedTypes.includes(file.type)) {
-      alert("Only PDF or Image files are allowed!");
+      Swal.fire("Only PDF or Image files are allowed!");
       e.target.value = null;
       return;
     }
@@ -1831,7 +1815,7 @@ function PatientDetail() {
     const maxSize = 5 * 1024 * 1024;
 
     if (file.size > maxSize) {
-      alert("File size must be less than 5MB");
+      Swal.fire("File size must be less than 5MB");
       e.target.value = null;
       return;
     }
@@ -1907,44 +1891,11 @@ function PatientDetail() {
   const EditButtoneditprofile = (id) => {
     console.log(id);
     setEditPatientProfile(true);
-
-    //  await dispatch(
-    //           EditPatientType({
-    //             id: ispatient.patientId,
-    //             data: formData,
-    //           }),
-    //         ).unwrap();
-
-    //         Swal.fire(
-    //           "Success!",
-    //           "Patient updated successfully",
-    //           "success",
-    //         );
-    //         navigate("/Admin/patients");
   };
 
   const EditButtoneditprofileClose = () => {
     setEditPatientProfile(false);
   };
-
-  // const handleupdateProfile =async()=>{
-  //   const formData = new FormData()
-  //   formData.append("patient_Profile",imagefile)
-  //   try {
-  //     const response = await axios.put(`${baseurl}update_patient/${location.state.patientId}`,formData, {
-  //           headers: {
-  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //             "Content-Type": "multipart/form-data",
-  //           },
-  //         })
-  //         if(response.data.success){
-  //           console.log(response.data)
-  //           setImagefile(null)
-  //         }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   const handleupdateProfile = async () => {
     if (!imagefile) {
@@ -1966,8 +1917,6 @@ function PatientDetail() {
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            // ❌ Content-Type manually set karne ki zarurat nahi hoti
-            // Browser automatically set karega with boundary
           },
         },
       );
@@ -2016,13 +1965,8 @@ function PatientDetail() {
     }
   };
 
-  // const handkekeypreees =(e)=>{
-  //   if(e.charcode)
-  // }
   const handkekeypreees = (e) => {
     const charCode = e.charCode;
-
-    // 48–57 are ASCII codes for 0–9
     if (charCode < 48 || charCode > 57) {
       e.preventDefault();
     }
@@ -2053,7 +1997,6 @@ function PatientDetail() {
       );
 
       if (response.data.success) {
-        // dispatch(getTreatmentPlan)
         setDataImperial(false);
         setNoteHospital2("");
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
@@ -2083,7 +2026,8 @@ function PatientDetail() {
   };
 
   const handleMainTabChange = (tab) => {
-    setMainTab(tab);
+      setMainTab(tab);
+  localStorage.setItem("patientMainTab", tab);
     setSelectedTreatmentId(null);
     setActiveSubTab("details");
   };
@@ -2119,9 +2063,62 @@ function PatientDetail() {
     }
   };
 
-  const handleclickdeleteplan =(item)=>{
-    console.log(item)
+  // const handleclickdeleteplan =(item)=>{
+  //   console.log(item)
+  // }
+  const handleclickdeleteplan = async (item) => {
+    console.log(item);
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel",
+      });
+
+      if (result.isConfirmed) {
+        const response = await axios.delete(
+          `${baseurl}deleteTreatmentPlan/${item._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          },
+        );
+
+        if (response.data.success) {
+          Swal.fire("Deleted!", "Plan deleted successfully.", "success");
+          // dispatch(getAllPlans());
+          getTreatmentPlan();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error!", "Something went wrong.", "error");
+    }
+  };
+
+  const handleStatusChange = async (id, status) => {
+  try {
+    const response = await axios.post(
+      `${baseurl}update_treatment_status/${id}`,
+      {status: status },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.data.success) {
+      Swal.fire("Updated!", "Status changed successfully", "success");
+  dispatch(GetPatientTreatments({ id: location.state.patientId }));
+    }
+  } catch (error) {
+    Swal.fire("Error!", "Something went wrong", "error");
   }
+};
   return (
     <>
       <div className="page-wrapper">
@@ -2182,46 +2179,73 @@ function PatientDetail() {
                           ? ispatient?.patientNumber
                           : ispatient?.patientId}
                       </p>
+                      {showModal && (
+                        <div className="custom-modal">
+                          <div className="modal-content">
+                            <button
+                              className="close-btn"
+                              onClick={() => setShowModal(false)}
+                            >
+                              ✖
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                setCurrentIndex((prev) =>
+                                  prev === 0
+                                    ? kys[0].id_proof.length - 1
+                                    : prev - 1,
+                                )
+                              }
+                            >
+                              ⬅
+                            </button>
+
+                            <img
+                              src={`https://sisccltd.com/omca_crm/${kys[0].id_proof[currentIndex]}`}
+                              alt="Document"
+                              style={{
+                                width: "400px",
+                                height: "400px",
+                                objectFit: "contain",
+                              }}
+                            />
+
+                            <button
+                              onClick={() =>
+                                setCurrentIndex((prev) =>
+                                  prev === kys[0].id_proof.length - 1
+                                    ? 0
+                                    : prev + 1,
+                                )
+                              }
+                            >
+                              ➡
+                            </button>
+                          </div>
+                        </div>
+                      )}
                       <div className="d-flex gap-2">
                         <button
                           type="button"
                           className="viewbtn"
                           onClick={() => {
-                            const file = kys[0].id_proof;
-                            if (file) {
-                              window.open(
-                                `https://sisccltd.com/omca_crm/${file}`,
-                                "_blank",
-                              );
+                            const files = kys[0]?.id_proof;
+
+                            if (files && files.length > 0) {
+                              setCurrentIndex(0);
+                              setShowModal(true);
                             } else {
                               Swal.fire(
-                                "error",
-                                "Document not available",
                                 "Error",
+                                "Document not available",
+                                "error",
                               );
                             }
                           }}
                         >
                           View Patient ID
                         </button>
-                        {/* <button
-                          type="button"
-                          className="viewbtn"
-                          onClick={() => {
-                            const file = kys[0].passport;
-
-                            if (file) {
-                              window.open(
-                                `https://sisccltd.com/omca_crm/${file}`,
-                                "_blank",
-                              );
-                            } else {
-                              alert("Document not available");
-                            }
-                          }}
-                        >
-                          View Passport
-                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -2272,22 +2296,38 @@ function PatientDetail() {
           <div className="patient-tabs">
             <ul className="nav nav-tabs nav-tabs-bottom">
               <li className="nav-item">
-                <a className={`nav-link ${mainTab === "treatment-plans" ? "active" : ""}`} href="#about-cont123" data-toggle="tab"
-                  onClick={() => handleMainTabChange("treatment-plans")}>Treatment Plans{" "}
+                <a
+                  className={`nav-link ${mainTab === "treatment-plans" ? "active" : ""}`}
+                  href="#about-cont123"
+                  data-toggle="tab"
+                  onClick={() => handleMainTabChange("treatment-plans")}
+                >
+                  Treatment Plans{" "}
                 </a>
               </li>
               <li className="nav-item">
-                <a className={`nav-link ${mainTab === "treatment" ? "active" : ""}`} href="#about-cont" data-toggle="tab" onClick={() => handleMainTabChange("treatment")}>
+                <a
+                  className={`nav-link ${mainTab === "treatment" ? "active" : ""}`}
+                  href="#about-cont"
+                  data-toggle="tab"
+                  onClick={() => handleMainTabChange("treatment")}
+                >
                   Treatment{" "}
                 </a>
               </li>
             </ul>
             <div className="tab-content">
-              <div className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`} id="about-cont123">
+              <div
+                className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`}
+                id="about-cont123"
+              >
                 <div className="main-tab-hd justify-content-end">
                   <div className="">
                     <button onClick={PlanTreatmentPopUp} className="add-button">
-                      <span><i className="fa fa-plus"></i></span>{" "}Add Treatment Plan
+                      <span>
+                        <i className="fa fa-plus"></i>
+                      </span>{" "}
+                      Add Treatment Plan
                     </button>
                   </div>
                 </div>
@@ -2304,10 +2344,15 @@ function PatientDetail() {
                               <div className="treatment-header">
                                 <div className="d-flex justify-content-between">
                                   <div>
-                                <h5>{info?.treatment?.name}</h5>
+                                    <h5>{info?.treatment?.name}</h5>
                                   </div>
                                   <div>
-                                {/* <i onClick={()=>{handleclickdeleteplan(info?.treatment)}} className="fa fa-trash text-danger me-2"></i> */}
+                                    <i
+                                      onClick={() => {
+                                        handleclickdeleteplan(info);
+                                      }}
+                                      className="fa fa-trash text-danger me-2"
+                                    ></i>
                                   </div>
                                 </div>
                               </div>
@@ -2324,28 +2369,28 @@ function PatientDetail() {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                                <span
-                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                                >
-                                                  {item.status}
-                                                </span>
-                                              )}
+                                              <span
+                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                              >
+                                                {item.status}
+                                              </span>
+                                            )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                              <button
-                                                className="add-button"
-                                                onClick={() =>
-                                                  approveReject(
-                                                    info,
-                                                    item.id,
-                                                    "Approved",
-                                                  )
-                                                }
-                                              >
-                                                Approve
-                                              </button>
-                                            )}
+                                            <button
+                                              className="add-button"
+                                              onClick={() =>
+                                                approveReject(
+                                                  info,
+                                                  item.id,
+                                                  "Approved",
+                                                )
+                                              }
+                                            >
+                                              Approve
+                                            </button>
+                                          )}
                                         </div>
                                       ))}
                                     </div>
@@ -2385,7 +2430,12 @@ function PatientDetail() {
                                     <div className="">
                                       <h5>Action</h5>
                                       <div className="action-icon">
-                                        <i className="fa-solid fa-trash" onClick={() => EditDelete(index, info)}></i>
+                                        <i
+                                          className="fa-solid fa-trash"
+                                          onClick={() =>
+                                            EditDelete(index, info)
+                                          }
+                                        ></i>
                                       </div>
                                     </div>
                                   </div>
@@ -2399,7 +2449,10 @@ function PatientDetail() {
                   </div>
                 </div>
               </div>
-              <div className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`} id="about-cont">
+              <div
+                className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`}
+                id="about-cont"
+              >
                 {activeSubTab === "details" && (
                   <div>
                     <div className="main-tab-hd">
@@ -2443,7 +2496,22 @@ function PatientDetail() {
                                         >
                                           {info.treatment_name}{" "}
                                         </h3>
-                                        <p className="mb-0">{info.treatment_status}</p>
+                                        {/* <p className="mb-0">
+                                          {info.treatment_status}
+                                        </p> */}
+                                        <select
+  className="form-select form-select-sm"
+  value={info.treatment_status || ""}
+  onChange={(e) =>
+    handleStatusChange(info.treatment_id, e.target.value)
+  }
+>
+  <option value="">Select Status</option>
+  <option value="Assigned to Hospital">Assigned to Hospital</option>
+  <option value="In Process">In Process</option>
+  <option value="Completed">Completed</option>
+  <option value="Cancelled">Cancelled</option>
+</select>
                                       </div>
                                       <div className="">
                                         <ul className="nav nav-tabs treat-tabs">
@@ -2484,21 +2552,21 @@ function PatientDetail() {
                                           {!info?.Hospital_details?.some(
                                             (item) => item.hospital_Name,
                                           ) && (
-                                              <li className="nav-item">
-                                                <button
-                                                  className="nav-link"
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "hospital",
-                                                      info,
-                                                    )
-                                                  }
-                                                >
-                                                  + Add Hospital
-                                                </button>
-                                              </li>
-                                            )}
+                                            <li className="nav-item">
+                                              <button
+                                                className="nav-link"
+                                                onClick={(e) =>
+                                                  handleAction(
+                                                    e,
+                                                    "hospital",
+                                                    info,
+                                                  )
+                                                }
+                                              >
+                                                + Add Hospital
+                                              </button>
+                                            </li>
+                                          )}
 
                                           <li className="nav-item">
                                             <button
@@ -2805,19 +2873,19 @@ function PatientDetail() {
                                                           <td>
                                                             {item.startTime
                                                               ? new Date(
-                                                                item.startTime,
-                                                              ).toLocaleDateString(
-                                                                "en-GB",
-                                                              )
+                                                                  item.startTime,
+                                                                ).toLocaleDateString(
+                                                                  "en-GB",
+                                                                )
                                                               : "-"}
                                                           </td>
                                                           <td>
                                                             {item.endTime
                                                               ? new Date(
-                                                                item.endTime,
-                                                              ).toLocaleDateString(
-                                                                "en-GB",
-                                                              )
+                                                                  item.endTime,
+                                                                ).toLocaleDateString(
+                                                                  "en-GB",
+                                                                )
                                                               : "-"}
                                                           </td>
                                                           <td>
@@ -2874,21 +2942,55 @@ function PatientDetail() {
                                                   </tr>
                                                 </thead>
                                                 <tbody>
-                                                  {info?.treatmentNotes?.map((item, index) => {
-                                                    return (
-                                                      <tr key={item._id || index}>
-                                                        <td>{item.note || "-"}</td>
-                                                        <td>{item?.date ? new Date(item.date).toLocaleDateString("en-GB") : "-"}</td>
-                                                        <td>from dynamic data</td>
-                                                        <td>
-                                                          <div className="action-icon">
-                                                            <i className="fa-solid fa-pen-to-square" onClick={() => EditButton(item, info)}></i>
-                                                            <i className="fa-solid fa-trash" onClick={() => EditDelete(item, info)}></i>
-                                                          </div>
-                                                        </td>
-                                                      </tr>
-                                                    );
-                                                  })}
+                                                  {info?.treatmentNotes?.map(
+                                                    (item, index) => {
+                                                      return (
+                                                        <tr
+                                                          key={
+                                                            item._id || index
+                                                          }
+                                                        >
+                                                          <td>
+                                                            {item.note || "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item?.date
+                                                              ? new Date(
+                                                                  item.date,
+                                                                ).toLocaleDateString(
+                                                                  "en-GB",
+                                                                )
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            from dynamic data
+                                                          </td>
+                                                          <td>
+                                                            <div className="action-icon">
+                                                              <i
+                                                                className="fa-solid fa-pen-to-square"
+                                                                onClick={() =>
+                                                                  EditButton(
+                                                                    item,
+                                                                    info,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                              <i
+                                                                className="fa-solid fa-trash"
+                                                                onClick={() =>
+                                                                  EditDelete(
+                                                                    item,
+                                                                    info,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                            </div>
+                                                          </td>
+                                                        </tr>
+                                                      );
+                                                    },
+                                                  )}
                                                 </tbody>
                                               </table>
                                             </div>
@@ -2900,7 +3002,7 @@ function PatientDetail() {
                                     </div>
                                     <div className="col-md-12">
                                       {info?.appointments_details?.length >
-                                        0 ? (
+                                      0 ? (
                                         <div className="card patientreat">
                                           <div className="card-header service-list">
                                             <h6>Appointment</h6>
@@ -2931,40 +3033,40 @@ function PatientDetail() {
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                            "online"
+                                                          "online"
                                                             ? item.vehicle_no
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                            "online"
+                                                          "online"
                                                             ? item.driver_name
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                            "online"
+                                                          "online"
                                                             ? item.driver_contact
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                            "online"
+                                                          "online"
                                                             ? item.pickup_time
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.appointment_Date
                                                             ? new Date(
-                                                              item.appointment_Date,
-                                                            )
-                                                              .toISOString()
-                                                              .slice(0, 10)
+                                                                item.appointment_Date,
+                                                              )
+                                                                .toISOString()
+                                                                .slice(0, 10)
                                                             : ""}
                                                         </td>
                                                         <td>
                                                           {item.status ===
-                                                            "Complete" ? (
+                                                          "Complete" ? (
                                                             <span className="badge bg-primary">
                                                               Completed
                                                             </span>
@@ -3043,7 +3145,14 @@ function PatientDetail() {
                         <div className="treat-card">
                           <div className="sectabmain">
                             <div className="treat-id">
-                              <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}> {getSelectedTreatmentName()}</h3>
+                              <h3
+                                className="mb-0"
+                                style={{ cursor: "pointer" }}
+                                onClick={handleBackToTreatmentList}
+                              >
+                                {" "}
+                                {getSelectedTreatmentName()}
+                              </h3>
                             </div>
                             <div className="">
                               <ul className="nav nav-tabs treat-tabs">
@@ -3252,7 +3361,13 @@ function PatientDetail() {
                             <div className="treat-card">
                               <div className="sectabmain">
                                 <div className="treat-id">
-                                  <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>{getSelectedTreatmentName()}</h3>
+                                  <h3
+                                    className="mb-0"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={handleBackToTreatmentList}
+                                  >
+                                    {getSelectedTreatmentName()}
+                                  </h3>
                                 </div>
                                 <div className="">
                                   <ul className="nav nav-tabs treat-tabs">
@@ -3374,8 +3489,15 @@ function PatientDetail() {
                                       <div className="treat-card">
                                         <div className="sectabmain">
                                           <div className="treat-id">
-                                            <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>
-                                              {" "} {treatment_course_name}
+                                            <h3
+                                              className="mb-0"
+                                              style={{ cursor: "pointer" }}
+                                              onClick={
+                                                handleBackToTreatmentList
+                                              }
+                                            >
+                                              {" "}
+                                              {treatment_course_name}
                                             </h3>
                                           </div>
                                           <div className="">
@@ -3478,7 +3600,6 @@ function PatientDetail() {
                                                   + Add Services
                                                 </button>
                                               </li>
-
                                             </ul>
                                           </div>
                                         </div>
@@ -3486,11 +3607,30 @@ function PatientDetail() {
                                       <hr></hr>
                                       <div className="experience-box">
                                         <div className="treat-buttons">
-                                          <button onClick={(e) => handleClickOpen3(e, treatmentId,)} className="add-button">
-                                            <span><i className="fa fa-plus"></i></span>{" "}Add Amount
+                                          <button
+                                            onClick={(e) =>
+                                              handleClickOpen3(e, treatmentId)
+                                            }
+                                            className="add-button"
+                                          >
+                                            <span>
+                                              <i className="fa fa-plus"></i>
+                                            </span>{" "}
+                                            Add Amount
                                           </button>
-                                          <button onClick={(e) => handleClicexportPayment(e, treatmentId,)} className="add-button">
-                                            <span><i className="fa fa-plus"></i></span>{" "}Export
+                                          <button
+                                            onClick={(e) =>
+                                              handleClicexportPayment(
+                                                e,
+                                                treatmentId,
+                                              )
+                                            }
+                                            className="add-button"
+                                          >
+                                            <span>
+                                              <i className="fa fa-plus"></i>
+                                            </span>{" "}
+                                            Export
                                           </button>
                                         </div>
                                         <ul className="experience-list">
@@ -3570,11 +3710,18 @@ function PatientDetail() {
                         console.log(treatment);
                         return (
                           <>
-                            <div className="card-box mb-4" key={treatment.treatmentId}>
+                            <div
+                              className="card-box mb-4"
+                              key={treatment.treatmentId}
+                            >
                               <div className="treat-card">
                                 <div className="sectabmain">
                                   <div className="treat-id">
-                                    <h3 className="mb-0" style={{ cursor: "pointer" }} onClick={handleBackToTreatmentList}>
+                                    <h3
+                                      className="mb-0"
+                                      style={{ cursor: "pointer" }}
+                                      onClick={handleBackToTreatmentList}
+                                    >
                                       {treatment?.treatment_course_name}
                                     </h3>
                                   </div>
@@ -3684,13 +3831,20 @@ function PatientDetail() {
                               </div>
                               <hr></hr>
                               <div className="treat-buttons">
-                                <button onClick={(e) => handleClickOpen10(e, treatment.treatmentId,)} className="add-button" >
-                                  <span><i className="fa fa-plus"></i></span>{" "}
+                                <button
+                                  onClick={(e) =>
+                                    handleClickOpen10(e, treatment.treatmentId)
+                                  }
+                                  className="add-button"
+                                >
+                                  <span>
+                                    <i className="fa fa-plus"></i>
+                                  </span>{" "}
                                   Add Report
                                 </button>
                               </div>
                               {treatment.reports &&
-                                treatment.reports.length > 0 ? (
+                              treatment.reports.length > 0 ? (
                                 <div className="table-responsive">
                                   <TableContainer component={Paper}>
                                     <Table className="table-no-card">
@@ -3702,11 +3856,11 @@ function PatientDetail() {
                                           <TableCell>From</TableCell>
                                           {localStorage.getItem("Role") ===
                                             "Admin" && (
-                                              <>
-                                                <TableCell>Reports</TableCell>
-                                                <TableCell>Action</TableCell>
-                                              </>
-                                            )}
+                                            <>
+                                              <TableCell>Reports</TableCell>
+                                              <TableCell>Action</TableCell>
+                                            </>
+                                          )}
                                         </TableRow>
                                       </TableHead>
                                       <TableBody>
@@ -3727,29 +3881,29 @@ function PatientDetail() {
 
                                             {localStorage.getItem("Role") ===
                                               "Admin" && (
-                                                <>
-                                                  <TableCell>
-                                                    <a
-                                                      href={`${image}${item.treatmentReport}`}
-                                                      target="_blank"
-                                                      rel="noreferrer"
-                                                    >
-                                                      Download Report
-                                                    </a>
-                                                  </TableCell>
-                                                  <TableCell>
-                                                    <i
-                                                      style={{
-                                                        cursor: "pointer",
-                                                      }}
-                                                      className="fa-solid fa-trash text-danger"
-                                                      onClick={() =>
-                                                        handledeleteReport(item)
-                                                      }
-                                                    ></i>
-                                                  </TableCell>
-                                                </>
-                                              )}
+                                              <>
+                                                <TableCell>
+                                                  <a
+                                                    href={`${image}${item.treatmentReport}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                  >
+                                                    Download Report
+                                                  </a>
+                                                </TableCell>
+                                                <TableCell>
+                                                  <i
+                                                    style={{
+                                                      cursor: "pointer",
+                                                    }}
+                                                    className="fa-solid fa-trash text-danger"
+                                                    onClick={() =>
+                                                      handledeleteReport(item)
+                                                    }
+                                                  ></i>
+                                                </TableCell>
+                                              </>
+                                            )}
                                           </TableRow>
                                         ))}
                                       </TableBody>

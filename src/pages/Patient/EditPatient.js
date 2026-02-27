@@ -699,27 +699,28 @@ export default function EditPatient() {
                             {/* Image Preview */}
                             <div style={{ marginTop: "10px" }}>
                               {previewImage ? (
-                                <img
-                                  src={previewImage}
-                                  alt="Preview"
-                                  width="120"
-                                  height="120"
-                                  style={{
-                                    objectFit: "cover",
-                                    borderRadius: "8px",
-                                  }}
-                                />
+                                <button
+                                  type="button"
+                                  className="btn btn-primary btn-sm"
+                                  onClick={() =>
+                                    window.open(previewImage, "_blank")
+                                  }
+                                >
+                                  View Image
+                                </button>
                               ) : ispatient?.patient_Profile ? (
-                                <img
-                                  src={`${image}/${ispatient.patient_Profile}`}
-                                  alt="Old Profile"
-                                  width="80"
-                                  height="80"
-                                  style={{
-                                    objectFit: "cover",
-                                    borderRadius: "8px",
-                                  }}
-                                />
+                                <button
+                                  type="button"
+                                  className="btn btn-primary btn-sm"
+                                  onClick={() =>
+                                    window.open(
+                                      `${image}/${ispatient.patient_Profile}`,
+                                      "_blank",
+                                    )
+                                  }
+                                >
+                                  View Image
+                                </button>
                               ) : null}
                             </div>
                           </div>
