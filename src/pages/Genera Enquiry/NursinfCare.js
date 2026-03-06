@@ -35,7 +35,10 @@ import {
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
   Modal, Box,
   Dialog,
-  DialogContent
+  DialogContent,
+  FormControl,
+  Select,
+  MenuItem
 } from "@mui/material";
 
 import ClearIcon from "@mui/icons-material/Clear";
@@ -106,6 +109,9 @@ export default function NursinfCare() {
       <p>{value || "-"}</p>
     </div>
   );
+  const handleChangtype =(e)=>{
+console.log(e)
+  }
   return (
     <div>
 
@@ -158,6 +164,7 @@ export default function NursinfCare() {
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>City</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -170,6 +177,35 @@ export default function NursinfCare() {
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item.city}</TableCell>
+                   <TableCell>
+                                                                                                                                                    <FormControl
+                                                                                                                                                      sx={{ m: 1, minWidth: 120 }}
+                                                                                                                                                      size="small"
+                                                                                                                                                      className="cont-main"
+                                                                                                                                                    >
+                                                                                                                                                      <Select
+                                                                                                                                                        value={item.patient_type_new}
+                                                                                                                                                        onChange={(e) =>
+                                                                                                                                                          handleChangtype(e, item.patientId)
+                                                                                                                                                        }
+                                                                                                                                                        displayEmpty
+                                                                                                                                                        inputProps={{
+                                                                                                                                                          "aria-label": "Without label",
+                                                                                                                                                        }}
+                                                                                                                                                        className="status-direct"
+                                                                                                                                                      >
+                                                                                                                                                        <MenuItem value="Pending">
+                                                                                                                                                          Pending
+                                                                                                                                                        </MenuItem>
+                                                                                                                                                        <MenuItem value="In-Process">
+                                                                                                                                                          In-Process
+                                                                                                                                                        </MenuItem>
+                                                                                                                                                        <MenuItem value="Closed">
+                                                                                                                                                          Closed
+                                                                                                                                                        </MenuItem>
+                                                                                                                                                      </Select>
+                                                                                                                                                    </FormControl>
+                                                                                                                                                  </TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"

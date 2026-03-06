@@ -35,7 +35,10 @@ import {
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
   Modal, Box,
   Dialog,
-  DialogContent
+  DialogContent,
+  FormControl,
+  Select,
+  MenuItem
 } from "@mui/material";
 
 import ClearIcon from "@mui/icons-material/Clear";
@@ -73,18 +76,17 @@ export default function AirAmbulance() {
 
   const filteredData = medicalVisaData.filter((item) => {
     const search = filterValue.toLowerCase();
-
     return (
       item.first_name?.toLowerCase().includes(search) ||
       item.email?.toLowerCase().includes(search) ||
-      item.phone?.toLowerCase().includes(search) ||
+      String(item.phone)?.includes(search) ||
       item.services?.toLowerCase().includes(search) ||
       item.city?.toLowerCase().includes(search) ||
       item.from?.toLowerCase().includes(search) ||
       item.to?.toLowerCase().includes(search) ||
       item.select_date?.toLowerCase().includes(search) ||
-      item.travellers_count?.toLowerCase().includes(search) ||
-      item.number_of_people?.toLowerCase().includes(search)
+      String(item.travellers_count)?.includes(search) ||
+      String(item.number_of_people)?.includes(search)
     );
   });
 
@@ -109,6 +111,8 @@ export default function AirAmbulance() {
       <p>{value || "-"}</p>
     </div>
   );
+  const handleChangtype = (e, id) => {
+    const newStatus = e.target.value; }
   return (
     <div>
 
@@ -161,6 +165,7 @@ export default function AirAmbulance() {
               <TableCell>Services</TableCell>
               <TableCell>From</TableCell>
               <TableCell>To</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -175,6 +180,35 @@ export default function AirAmbulance() {
                   <TableCell>{item.services?.replaceAll("_"," ")}</TableCell>
                   <TableCell>{item.from}</TableCell>
                   <TableCell>{item.to}</TableCell>
+                   <TableCell>
+                                                                                                                <FormControl
+                                                                                                                  sx={{ m: 1, minWidth: 120 }}
+                                                                                                                  size="small"
+                                                                                                                  className="cont-main"
+                                                                                                                >
+                                                                                                                  <Select
+                                                                                                                    value={item.patient_type_new}
+                                                                                                                    onChange={(e) =>
+                                                                                                                      handleChangtype(e, item.patientId)
+                                                                                                                    }
+                                                                                                                    displayEmpty
+                                                                                                                    inputProps={{
+                                                                                                                      "aria-label": "Without label",
+                                                                                                                    }}
+                                                                                                                    className="status-direct"
+                                                                                                                  >
+                                                                                                                    <MenuItem value="Pending">
+                                                                                                                      Pending
+                                                                                                                    </MenuItem>
+                                                                                                                    <MenuItem value="In-Process">
+                                                                                                                      In-Process
+                                                                                                                    </MenuItem>
+                                                                                                                    <MenuItem value="Closed">
+                                                                                                                      Closed
+                                                                                                                    </MenuItem>
+                                                                                                                  </Select>
+                                                                                                                </FormControl>
+                                                                                                              </TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"

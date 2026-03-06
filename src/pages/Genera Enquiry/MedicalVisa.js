@@ -6,7 +6,10 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
-  Modal, Box
+  Modal, Box,
+  FormControl,
+  Select,
+  MenuItem
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -52,7 +55,7 @@ export default function MedicalVisa() {
       item.first_name?.toLowerCase().includes(search) ||
       item.last_name?.toLowerCase().includes(search) ||
       item.nationality?.toLowerCase().includes(search) ||
-      item.phone_number?.toLowerCase().includes(search) ||
+      String(item.phone_number)?.includes(search) ||
       item.passport_number?.toLowerCase().includes(search)
     );
   });
@@ -79,6 +82,10 @@ export default function MedicalVisa() {
       <p>{value || "-"}</p>
     </div>
   );
+
+  const handleChangtype =(e)=>{
+    console.log(e)
+  }
   return (
     <div>
 
@@ -134,6 +141,7 @@ export default function MedicalVisa() {
               <TableCell>Passport No</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Applying For</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -148,6 +156,35 @@ export default function MedicalVisa() {
                   <TableCell>{item.passport_number}</TableCell>
                   <TableCell>{item.phone_number}</TableCell>
                 <TableCell>{item.applying_for?.replaceAll("_", " ")}</TableCell>
+                                   <TableCell>
+                                                                                                                                                                    <FormControl
+                                                                                                                                                                      sx={{ m: 1, minWidth: 120 }}
+                                                                                                                                                                      size="small"
+                                                                                                                                                                      className="cont-main"
+                                                                                                                                                                    >
+                                                                                                                                                                      <Select
+                                                                                                                                                                        value={item.patient_type_new}
+                                                                                                                                                                        onChange={(e) =>
+                                                                                                                                                                          handleChangtype(e, item.patientId)
+                                                                                                                                                                        }
+                                                                                                                                                                        displayEmpty
+                                                                                                                                                                        inputProps={{
+                                                                                                                                                                          "aria-label": "Without label",
+                                                                                                                                                                        }}
+                                                                                                                                                                        className="status-direct"
+                                                                                                                                                                      >
+                                                                                                                                                                        <MenuItem value="Pending">
+                                                                                                                                                                          Pending
+                                                                                                                                                                        </MenuItem>
+                                                                                                                                                                        <MenuItem value="In-Process">
+                                                                                                                                                                          In-Process
+                                                                                                                                                                        </MenuItem>
+                                                                                                                                                                        <MenuItem value="Closed">
+                                                                                                                                                                          Closed
+                                                                                                                                                                        </MenuItem>
+                                                                                                                                                                      </Select>
+                                                                                                                                                                    </FormControl>
+                                                                                                                                                                  </TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"

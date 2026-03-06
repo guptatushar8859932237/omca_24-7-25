@@ -7,7 +7,10 @@ import {
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
   Modal, Box,
   Dialog,
-  DialogContent
+  DialogContent,
+  FormControl,
+  Select,
+  MenuItem
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 export default function ForexService() {
@@ -38,7 +41,7 @@ export default function ForexService() {
       item.first_name?.toLowerCase().includes(search) ||
       item.email?.toLowerCase().includes(search) ||
       item.city?.toLowerCase().includes(search) ||
-      item.phone?.toLowerCase().includes(search) ||
+      String(item.phone)?.includes(search) ||
       item.services?.replaceAll("_"," ").toLowerCase().includes(search) ||
      new Date(item.select_date).toLocaleDateString("en-GB")?.toLowerCase().includes(search)
     );
@@ -65,6 +68,10 @@ export default function ForexService() {
       <p>{value || "-"}</p>
     </div>
   );
+
+  const handleChangtype =(e)=>{
+    console.log(e)
+  }
   return (
     <div>
 
@@ -119,6 +126,7 @@ export default function ForexService() {
               <TableCell>Services</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Select Date</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -132,6 +140,35 @@ export default function ForexService() {
                   <TableCell>{item.services?.replaceAll("_"," ")}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")=="01/01/1970"?"":new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell>
+                <TableCell>
+                                                          <FormControl
+                                                            sx={{ m: 1, minWidth: 120 }}
+                                                            size="small"
+                                                            className="cont-main"
+                                                          >
+                                                            <Select
+                                                              value={item.patient_type_new}
+                                                              onChange={(e) =>
+                                                                handleChangtype(e, item.patientId)
+                                                              }
+                                                              displayEmpty
+                                                              inputProps={{
+                                                                "aria-label": "Without label",
+                                                              }}
+                                                              className="status-direct"
+                                                            >
+                                                              <MenuItem value="Pending">
+                                                                Pending
+                                                              </MenuItem>
+                                                              <MenuItem value="In-Process">
+                                                                In-Process
+                                                              </MenuItem>
+                                                              <MenuItem value="Closed">
+                                                                Closed
+                                                              </MenuItem>
+                                                            </Select>
+                                                          </FormControl>
+                                                        </TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"

@@ -59,6 +59,7 @@ function PatientDetail() {
   const [drivercontact, setDrivercontact] = useState("");
   const [fieldValue, setFieldValue] = useState("");
   const [treatmentNamePassport, setTreatmentNamePassport] = useState("");
+
   const [value1, setValue1] = useState("");
   const [passportDetails, setPassportDetails] = useState({});
   const [editData, setEditData] = useState(null);
@@ -118,8 +119,8 @@ function PatientDetail() {
   const [activeSubTab, setActiveSubTab] = useState("details");
   const [selectedTreatmentId, setSelectedTreatmentId] = useState(null);
   const [mainTab, setMainTab] = useState(() => {
-  return localStorage.getItem("patientMainTab") || "treatment-plans";
-});
+    return localStorage.getItem("patientMainTab") || "treatment-plans";
+  });
   const [date2, setDate2] = useState();
   const [appHospital, setAppHospital] = useState("");
   const [kys, setKyc] = useState([]);
@@ -246,7 +247,9 @@ function PatientDetail() {
     setOpen32(true);
     setTreatmentId(tretmentId);
   };
-
+  useEffect(() => {
+    getallPayments();
+  }, [location.state.patientId]);
   const handleclosePerforma = () => {
     setOpen32(false);
   };
@@ -385,6 +388,7 @@ function PatientDetail() {
       console.error("Error fetching treatment data", error);
     }
   };
+
   const handlesubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -643,12 +647,10 @@ function PatientDetail() {
           },
         },
       );
-
       if (response.data.success) {
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         setOpen2(false);
         Swal.fire("Attendant  Details Added Successfully!", "", "success");
-        // Optional: Reset form
         setFilesData({
           attendant_fullname: "",
           attendant_relation: "",
@@ -1002,7 +1004,11 @@ function PatientDetail() {
 
   const handlefilechange = (e) => {
     const { name, value } = e.target;
-    setIniData({ ...iniData, [name]: value });
+
+    setIniData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
   const handleFileChange12 = (e) => {
     const file = e.target.files[0];
@@ -1017,9 +1023,9 @@ function PatientDetail() {
 
     setImagefile(file); // store in state
   };
+
   const handleFileChange1 = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
 
     const allowedTypes = [
       "image/jpeg",
@@ -1028,22 +1034,73 @@ function PatientDetail() {
       "application/pdf",
     ];
 
-    if (!allowedTypes.includes(file.type)) {
+    const validFiles = files.filter((file) => allowedTypes.includes(file.type));
+
+    if (validFiles.length !== files.length) {
       Swal.fire("Only JPG, PNG, or PDF files are allowed.");
       return;
     }
 
-    setImagefile(file); // store in state
+    setImagefile(validFiles);
   };
+  const handleAttachFile = (e) => {
+    const file = e.target.files[0];
 
+    setIniData((prev) => ({
+      ...prev,
+      attachFile: file,
+    }));
+  };
+  //   const handleClickSubmit = async () => {
+
+  //   const formData = new FormData();
+
+  //   formData.append("reportTitle", iniData.reportTitle);
+  //   formData.append("treatment_report_date", iniData.treatment_report_date);
+  //   formData.append("paid_to", iniData.paid_to);
+  //   formData.append("paid_for", iniData.paid_for);
+  //   formData.append("platform", 1);
+
+  //   // attach invoice
+  //   if (iniData.attachFile) {
+  //     formData.append("attachFile", iniData.attachFile);
+  //   }
+
+  //   // multiple reports
+  //   imagefile.forEach((file) => {
+  //     formData.append("treatmentReport", file);
+  //   });
+
+  //   for (let pair of formData.entries()) {
+  //     console.log(pair[0], pair[1]);
+  //   }
+
+  //   // API call
+  //   const response = await axios.post(
+  //     `${baseurl}addReports/${treatmentId}`,
+  //     formData,
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     }
+  //   );
+
+  // };
   const handleClickSubmit = async () => {
     try {
       const formData = new FormData();
       formData.append("reportTitle", iniData.reportTitle);
-      formData.append("treatmentReport", imagefile);
       formData.append("treatment_report_date", iniData.treatment_report_date);
+      formData.append("paid_to", iniData.paid_to);
+      formData.append("paid_for", iniData.paid_for);
       formData.append("platform", 1);
-
+      if (iniData.attachFile) {
+        formData.append("attachFile", iniData.attachFile);
+      }
+      imagefile.forEach((file) => {
+        formData.append("treatmentReport", file);
+      });
       const response = await axios.post(
         `${baseurl}addReports/${treatmentId}`,
         formData,
@@ -1053,44 +1110,33 @@ function PatientDetail() {
           },
         },
       );
-
-      if (response.data?.success) {
+      if (response?.data?.success) {
         handleClose10();
-        gtdatareportsdata();
-
-        setTimeout(() => {
-          Swal.fire("Success", "Report Added Successfully!", "success");
-        }, 300);
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Report Added Successfully!",
+        });
+        handleClose10(); // close modal
+        gtdatareportsdata(); // refresh data if needed
       } else {
-        handleClose10();
-
-        setTimeout(() => {
-          Swal.fire(
-            "Error",
-            response.data?.message || "Failed to add report",
-            "error",
-          );
-        }, 300);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response?.data?.message || "Failed to add report",
+        });
       }
     } catch (error) {
-      handleClose10();
-
-      setTimeout(() => {
-        if (error.response) {
-          Swal.fire(
-            "Error",
-            error.response.data?.message || "Server error",
-            "error",
-          );
-        } else if (error.request) {
-          Swal.fire("Network Error", "Server not responding", "error");
-        } else {
-          Swal.fire("Error", error.message, "error");
-        }
-      }, 300);
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      });
     }
   };
-
   const handleopenNotesModal = (id) => {
     console.log(notes);
     const response = notes.filter((item) => {
@@ -2026,8 +2072,8 @@ function PatientDetail() {
   };
 
   const handleMainTabChange = (tab) => {
-      setMainTab(tab);
-  localStorage.setItem("patientMainTab", tab);
+    setMainTab(tab);
+    localStorage.setItem("patientMainTab", tab);
     setSelectedTreatmentId(null);
     setActiveSubTab("details");
   };
@@ -2101,24 +2147,38 @@ function PatientDetail() {
   };
 
   const handleStatusChange = async (id, status) => {
-  try {
-    const response = await axios.post(
-      `${baseurl}update_treatment_status/${id}`,
-      {status: status },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+    try {
+      const response = await axios.post(
+        `${baseurl}update_treatment_status/${id}`,
+        { status: status },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
+      );
+      if (response.data.success) {
+        Swal.fire("Updated!", "Status changed successfully", "success");
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
       }
-    );
-    if (response.data.success) {
-      Swal.fire("Updated!", "Status changed successfully", "success");
-  dispatch(GetPatientTreatments({ id: location.state.patientId }));
+    } catch (error) {
+      Swal.fire("Error!", "Something went wrong", "error");
     }
-  } catch (error) {
-    Swal.fire("Error!", "Something went wrong", "error");
-  }
-};
+  };
+
+  const getallPayments = async () => {
+    try {
+      const patientId = location?.state?.patientId;
+
+      const response = await axios.get(
+        `${baseurl}getAllPaymentsByPatientId/${patientId}`,
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -2334,7 +2394,9 @@ function PatientDetail() {
                 <div className="row gx-3 gy-3">
                   <div className="col-md-12">
                     {treatemntData1?.length === 0 ? (
-                      "No Treatment Plan Added for this patients"
+                      <p className="text-center">
+                        No Treatment Plan Added for this patients
+                      </p>
                     ) : (
                       <>
                         {treatemntData1?.map((info, index) => {
@@ -2395,7 +2457,7 @@ function PatientDetail() {
                                       ))}
                                     </div>
                                   </div>
-                                  <div className="col-md-2">
+                                  <div className="col-md-3">
                                     <div className="">
                                       <h5>Reports</h5>
                                       {info?.reports?.length > 0 ? (
@@ -2418,7 +2480,7 @@ function PatientDetail() {
                                       )}
                                     </div>
                                   </div>
-                                  <div className="col-md-2">
+                                  <div className="col-md-3">
                                     <div className="">
                                       <h5>Notes</h5>
                                       <p className="notes-text">
@@ -2426,19 +2488,19 @@ function PatientDetail() {
                                       </p>
                                     </div>
                                   </div>
-                                  <div className="col-md-2">
+                                  {/* <div className="col-md-2">
                                     <div className="">
                                       <h5>Action</h5>
                                       <div className="action-icon">
                                         <i
                                           className="fa-solid fa-trash"
-                                          onClick={() =>
-                                            EditDelete(index, info)
-                                          }
+                                          // onClick={() =>
+                                          //   EditDelete(index, info)
+                                          // }
                                         ></i>
                                       </div>
                                     </div>
-                                  </div>
+                                  </div> */}
                                 </div>
                               </div>
                             </div>
@@ -2474,7 +2536,9 @@ function PatientDetail() {
                     <div className="row">
                       <div className="col-md-12">
                         {tretment?.length === 0 ? (
-                          "No Treatment  Added for this patients"
+                          <p className="text-center">
+                            No Treatment Added for this patients
+                          </p>
                         ) : (
                           <>
                             {tretment?.map((info, index) => {
@@ -2500,18 +2564,31 @@ function PatientDetail() {
                                           {info.treatment_status}
                                         </p> */}
                                         <select
-  className="form-select form-select-sm"
-  value={info.treatment_status || ""}
-  onChange={(e) =>
-    handleStatusChange(info.treatment_id, e.target.value)
-  }
->
-  <option value="">Select Status</option>
-  <option value="Assigned to Hospital">Assigned to Hospital</option>
-  <option value="In Process">In Process</option>
-  <option value="Completed">Completed</option>
-  <option value="Cancelled">Cancelled</option>
-</select>
+                                          className="form-select form-select-sm"
+                                          value={info.treatment_status || ""}
+                                          onChange={(e) =>
+                                            handleStatusChange(
+                                              info.treatment_id,
+                                              e.target.value,
+                                            )
+                                          }
+                                        >
+                                          <option value="">
+                                            Select Status
+                                          </option>
+                                          <option value="Assigned to Hospital">
+                                            Assigned to Hospital
+                                          </option>
+                                          <option value="In Process">
+                                            In Process
+                                          </option>
+                                          <option value="Completed">
+                                            Completed
+                                          </option>
+                                          <option value="Cancelled">
+                                            Cancelled
+                                          </option>
+                                        </select>
                                       </div>
                                       <div className="">
                                         <ul className="nav nav-tabs treat-tabs">
@@ -2951,6 +3028,10 @@ function PatientDetail() {
                                                           }
                                                         >
                                                           <td>
+                                                            {item.platform ==
+                                                            "1"
+                                                              ? "C"
+                                                              : "H"}{" "}
                                                             {item.note || "-"}
                                                           </td>
                                                           <td>
@@ -3198,6 +3279,7 @@ function PatientDetail() {
                                     Reports
                                   </button>
                                 </li>
+
                                 <li className="nav-item">
                                   <button
                                     className="nav-link"
@@ -3355,7 +3437,7 @@ function PatientDetail() {
                   </div>
                   <div className="row">
                     <div className="col-md-12">
-                      {Object.keys(groupedPayments).length === 0 ? (
+                      {/* {Object.keys(groupedPayments).length === 0 ? (
                         <>
                           <div className="card-box">
                             <div className="treat-card">
@@ -3476,169 +3558,171 @@ function PatientDetail() {
                           </div>
                           <hr></hr>
                         </>
-                      ) : (
-                        <>
-                          {groupedPayments &&
+                      ) : ( */}
+                      <>
+                        {/* {groupedPayments &&
                             Object.entries(groupedPayments).map(
                               ([treatmentId, payments], index) => {
                                 const { treatment_course_name } =
-                                  payments[0] || {};
-                                return (
-                                  <>
-                                    <div className="card-box" key={treatmentId}>
-                                      <div className="treat-card">
-                                        <div className="sectabmain">
-                                          <div className="treat-id">
-                                            <h3
-                                              className="mb-0"
-                                              style={{ cursor: "pointer" }}
-                                              onClick={
-                                                handleBackToTreatmentList
-                                              }
-                                            >
-                                              {" "}
-                                              {treatment_course_name}
-                                            </h3>
-                                          </div>
-                                          <div className="">
-                                            <ul className="nav nav-tabs treat-tabs">
-                                              <li className="nav-item">
-                                                <button
-                                                  className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`}
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "attendant",
-                                                      getSelectedTreatmentInfo(),
-                                                    )
-                                                  }
-                                                >
-                                                  Add Attendant
-                                                </button>
-                                              </li>
-                                              <li className="nav-item">
-                                                <button
-                                                  className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`}
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "payment",
-                                                      getSelectedTreatmentInfo(),
-                                                    )
-                                                  }
-                                                >
-                                                  Payment Details
-                                                </button>
-                                              </li>
-                                              <li className="nav-item">
-                                                <button
-                                                  className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`}
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "reports",
-                                                      getSelectedTreatmentInfo(),
-                                                    )
-                                                  }
-                                                >
-                                                  Reports
-                                                </button>
-                                              </li>
-                                              <li className="nav-item">
-                                                <button
-                                                  className="nav-link"
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "hospital",
-                                                      getSelectedTreatmentInfo(),
-                                                    )
-                                                  }
-                                                >
-                                                  + Add Hospital
-                                                </button>
-                                              </li>
-                                              <li className="nav-item">
-                                                <button
-                                                  className="nav-link"
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "appointment",
-                                                      getSelectedTreatmentInfo(),
-                                                    )
-                                                  }
-                                                >
-                                                  + Add Appointment
-                                                </button>
-                                              </li>
-                                              <li className="nav-item">
-                                                <button
-                                                  className="nav-link"
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "notes",
-                                                      getSelectedTreatmentInfo(),
-                                                    )
-                                                  }
-                                                >
-                                                  + Add Notes
-                                                </button>
-                                              </li>
-                                              <li className="nav-item">
-                                                <button
-                                                  className="nav-link"
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "services",
-                                                      getSelectedTreatmentInfo(),
-                                                    )
-                                                  }
-                                                >
-                                                  + Add Services
-                                                </button>
-                                              </li>
-                                            </ul>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <hr></hr>
-                                      <div className="experience-box">
-                                        <div className="treat-buttons">
+                                  payments[0] || {}; */}
+                        {tretment?.map((info, index) => {
+                          console.log(info, "array data");
+
+                          return (
+                            <>
+                              <div className="card-box" key={treatmentId}>
+                                <div className="treat-card">
+                                  <div className="sectabmain">
+                                    <div className="treat-id">
+                                      <h3
+                                        className="mb-0"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={handleBackToTreatmentList}
+                                      >
+                                        {" "}
+                                        {/* {treatment_course_name} */}
+                                        {info.treatment_name}
+                                      </h3>
+                                    </div>
+                                    <div className="">
+                                      <ul className="nav nav-tabs treat-tabs">
+                                        <li className="nav-item">
                                           <button
+                                            className={`nav-link ${activeSubTab === "attendant" ? "active" : ""}`}
                                             onClick={(e) =>
-                                              handleClickOpen3(e, treatmentId)
-                                            }
-                                            className="add-button"
-                                          >
-                                            <span>
-                                              <i className="fa fa-plus"></i>
-                                            </span>{" "}
-                                            Add Amount
-                                          </button>
-                                          <button
-                                            onClick={(e) =>
-                                              handleClicexportPayment(
+                                              handleAction(
                                                 e,
-                                                treatmentId,
+                                                "attendant",
+                                                getSelectedTreatmentInfo(),
                                               )
                                             }
-                                            className="add-button"
                                           >
-                                            <span>
-                                              <i className="fa fa-plus"></i>
-                                            </span>{" "}
-                                            Export
+                                            Add Attendant
                                           </button>
-                                        </div>
-                                        <ul className="experience-list">
-                                          {payments.map((info, idx) => {
-                                            console.log(info);
-                                            return (
+                                        </li>
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeSubTab === "payment" ? "active" : ""}`}
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "payment",
+                                                getSelectedTreatmentInfo(),
+                                              )
+                                            }
+                                          >
+                                            Payment Details
+                                          </button>
+                                        </li>
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeSubTab === "reports" ? "active" : ""}`}
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "reports",
+                                                getSelectedTreatmentInfo(),
+                                              )
+                                            }
+                                          >
+                                            Reports
+                                          </button>
+                                        </li>
+                                        <li className="nav-item">
+                                          <button
+                                            className="nav-link"
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "hospital",
+                                                getSelectedTreatmentInfo(),
+                                              )
+                                            }
+                                          >
+                                            + Add Hospital
+                                          </button>
+                                        </li>
+                                        <li className="nav-item">
+                                          <button
+                                            className="nav-link"
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "appointment",
+                                                getSelectedTreatmentInfo(),
+                                              )
+                                            }
+                                          >
+                                            + Add Appointment
+                                          </button>
+                                        </li>
+                                        <li className="nav-item">
+                                          <button
+                                            className="nav-link"
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "notes",
+                                                getSelectedTreatmentInfo(),
+                                              )
+                                            }
+                                          >
+                                            + Add Notes
+                                          </button>
+                                        </li>
+                                        <li className="nav-item">
+                                          <button
+                                            className="nav-link"
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "services",
+                                                getSelectedTreatmentInfo(),
+                                              )
+                                            }
+                                          >
+                                            + Add Services
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <hr></hr>
+                                <div className="experience-box">
+                                  <div className="treat-buttons">
+                                    <button
+                                      onClick={(e) =>
+                                        handleClickOpen3(e, info.treatment_id)
+                                      }
+                                      className="add-button"
+                                    >
+                                      <span>
+                                        <i className="fa fa-plus"></i>
+                                      </span>{" "}
+                                      Add Amount
+                                    </button>
+                                    <button
+                                      onClick={(e) =>
+                                        handleClicexportPayment(
+                                          e,
+                                          info.treatment_id,
+                                        )
+                                      }
+                                      className="add-button"
+                                    >
+                                      <span>
+                                        <i className="fa fa-plus"></i>
+                                      </span>{" "}
+                                      Export
+                                    </button>
+                                  </div>
+                                  {/* <ul className="experience-list">
+                                            {tretment?.payment_details?.map((info,index)=>{
+                                              console.log(info,"errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+ return (
                                               <>
-                                                <li key={idx}>
+                                                <li key={index}>
                                                   <div className="experience-user">
                                                     <div className="before-circle"></div>
                                                   </div>
@@ -3648,16 +3732,16 @@ function PatientDetail() {
                                                         <div>
                                                           Payment Date -{" "}
                                                           {moment(
-                                                            info.payment_Date,
+                                                            info?.payment_Date,
                                                           ).format("L")}
                                                         </div>
                                                         <div>
                                                           Payment Method -{" "}
-                                                          {info.paymentMethod}
+                                                          {info?.paymentMethod}
                                                         </div>
                                                         <div>
                                                           Paid Amount -{" "}
-                                                          {info.paid_amount}
+                                                          {info?.paid_amount}
                                                         </div>
                                                       </div>
                                                       <div className="">
@@ -3683,16 +3767,118 @@ function PatientDetail() {
                                                 </li>
                                               </>
                                             );
-                                          })}
-                                        </ul>
-                                      </div>
-                                    </div>
-                                  </>
-                                );
-                              },
-                            )}
-                        </>
-                      )}
+                                            })}
+                                        </ul> */}
+                                  {/* <ul className="experience-list">
+  {Array.isArray(tretment?.payment_details) &&
+    tretment.payment_details.map((info, index) => {
+      console.log(info, "payment info");
+
+      return (
+        <li key={index}>
+          <div className="experience-user">
+            <div className="before-circle"></div>
+          </div>
+
+          <div className="experience-content">
+            <div className="timeline-content">
+              <div>
+                <div>
+                  Payment Date -{" "}
+                  {moment(info?.payment_Date).format("L")}
+                </div>
+
+                <div>
+                  Payment Method - {info?.paymentMethod}
+                </div>
+
+                <div>
+                  Paid Amount - {info?.paid_amount}
+                </div>
+              </div>
+
+              <div>
+                <button
+                  className="add-button"
+                  onClick={() => {
+                    navigate("/Admin/Patient-Pdfdetails", {
+                      state: {
+                        data: info?.payment_id,
+                      },
+                    });
+                  }}
+                >
+                  PDF Download
+                </button>
+              </div>
+            </div>
+          </div>
+        </li>
+      );
+    })}
+</ul> */}
+                                  <ul className="experience-list">
+                                    {info?.payment_details?.map(
+                                      (info, index) => {
+                                        console.log(info, "payment info");
+                                        return (
+                                          <li key={index}>
+                                            <div className="experience-user">
+                                              <div className="before-circle"></div>
+                                            </div>
+
+                                            <div className="experience-content">
+                                              <div className="timeline-content">
+                                                <div>
+                                                  <div>
+                                                    Payment Date -{" "}
+                                                    {moment(
+                                                      info?.payment_Date,
+                                                    ).format("L")}
+                                                  </div>
+
+                                                  <div>
+                                                    Payment Method -{" "}
+                                                    {info?.paymentMethod}
+                                                  </div>
+
+                                                  <div>
+                                                    Paid Amount -{" "}
+                                                    {info?.paid_amount}
+                                                  </div>
+                                                </div>
+
+                                                <div>
+                                                  <button
+                                                    className="add-button"
+                                                    onClick={() => {
+                                                      navigate(
+                                                        "/Admin/Patient-Pdfdetails",
+                                                        {
+                                                          state: {
+                                                            data: info?._id,
+                                                          },
+                                                        },
+                                                      );
+                                                    }}
+                                                  >
+                                                    PDF Download
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </li>
+                                        );
+                                      },
+                                    )}
+                                  </ul>
+                                </div>
+                              </div>
+                            </>
+                          );
+                        })}
+                      </>
+                      {/* )} */}
                     </div>
                   </div>
                 </div>
@@ -3853,7 +4039,8 @@ function PatientDetail() {
                                           <TableCell>Treatment ID</TableCell>
                                           <TableCell>Report Title</TableCell>
                                           <TableCell>Report Date</TableCell>
-                                          <TableCell>From</TableCell>
+                                          <TableCell>Paid To</TableCell>
+                                          <TableCell>Paid From</TableCell>
                                           {localStorage.getItem("Role") ===
                                             "Admin" && (
                                             <>
@@ -3867,17 +4054,22 @@ function PatientDetail() {
                                         {treatment.reports.map((item) => (
                                           <TableRow key={item._id}>
                                             <TableCell>
-                                              {item.treatmentId}
+                                              {item?.treatmentId}
                                             </TableCell>
                                             <TableCell>
-                                              {item.reportTitle}
+                                              {item?.reportTitle}
+                                            </TableCell>
+                                            <TableCell>
+                                              {item?.paid_to}
+                                            </TableCell>
+                                            <TableCell>
+                                              {item?.paid_from}
                                             </TableCell>
                                             <TableCell>
                                               {new Date(
-                                                item.treatment_report_date,
+                                                item?.treatment_report_date,
                                               ).toLocaleDateString("en-GB")}
                                             </TableCell>
-                                            <TableCell>from data</TableCell>
 
                                             {localStorage.getItem("Role") ===
                                               "Admin" && (
@@ -4794,7 +4986,6 @@ function PatientDetail() {
                       value={noteHospital2}
                     />
                   </div>
-
                   <DialogActions className="submit-main">
                     <Button
                       // type="submit"
@@ -5131,7 +5322,7 @@ function PatientDetail() {
               <i class="fa-solid fa-xmark"></i>
             </div>
           </div>
-          <DialogContent className="main-box">
+          <DialogContent className="main-box view-table-detail">
             <Box
               noValidate
               component="form"
@@ -5154,7 +5345,6 @@ function PatientDetail() {
                       className="form-control"
                       multiple
                       name="reportTitle"
-                      required=""
                       onChange={handlefilechange}
                     />
                   </div>
@@ -5165,10 +5355,8 @@ function PatientDetail() {
                     <input
                       type="file"
                       multiple
-                      placeholder="payment Method"
                       className="form-control"
                       name="treatmentReport"
-                      required
                       onChange={handleFileChange1}
                     />
                   </div>
@@ -5184,6 +5372,50 @@ function PatientDetail() {
                       name="treatment_report_date"
                       required
                       onChange={handlefilechange}
+                    />
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Paid To <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      placeholder="payment Method"
+                      className="form-control"
+                      name="paid_to"
+                      required
+                      onChange={handlefilechange}
+                    >
+                      <option>Select</option>
+                      <option value="OMCA">OMCA</option>
+                      <option value="Hospital">Hospital</option>
+                    </select>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Paid For <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      placeholder="payment Method"
+                      className="form-control"
+                      name="paid_for"
+                      required
+                      onChange={handlefilechange}
+                    >
+                      <option>Select</option>
+                      <option value="treatment">Treatment</option>
+                      <option value="service">Service</option>
+                      <option value="guest_house">Guest House</option>
+                    </select>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Attach Invoice <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      name="attachFile"
+                      onChange={handleAttachFile}
                     />
                   </div>
 

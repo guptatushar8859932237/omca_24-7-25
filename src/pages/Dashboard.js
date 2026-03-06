@@ -984,7 +984,7 @@ export default function Dashboard() {
           </div>
           <div className="row gy-4">
           {/* appointment-graph */}
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
               <div className="card apointment-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
@@ -1007,7 +1007,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="card-body">
+                {/* <div className="card-body">
                   <ReactApexChart
                     type="bar"
                     height={350}
@@ -1021,11 +1021,11 @@ export default function Dashboard() {
                       colors: ["#0ba6df", "#22c7b8", "#ff0000"],
                     }}
                   />
-                </div>
-              </div>
-            </div>
+                </div> */}
+              {/* </div>
+            </div> */} 
           {/* treatment-graph */}
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
               <div className="card treatment-status-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
@@ -1069,7 +1069,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="card-body">
+                {/* <div className="card-body">
                   <ReactApexChart
                     type="bar"
                     height={350}
@@ -1101,11 +1101,11 @@ export default function Dashboard() {
                     }}
                   />
 
-                </div>
-              </div>
-            </div>
+                </div> */}
+              {/* </div> */}
+            {/* </div> */} 
           {/* cases-distribution-graph */}
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
               <div className="card treatment-distribution-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
@@ -1155,8 +1155,8 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
-            </div>
-          {/* revenue-payment-graph */}
+            </div> */}
+          {/* revenue-payment-graph
           <div className="col-md-6">
               <div className="card revenue-payment-card">
                 <div className="card-header">
@@ -1264,9 +1264,9 @@ export default function Dashboard() {
 
                 </div>
               </div>
-            </div>
+            </div> */}
           {/* hospital-performance-graph */}
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
               <div className="card hospital-performance-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
@@ -1348,9 +1348,9 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
           {/* holistical-data-graph */}
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
               <div className="card holistic-flow-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
@@ -1449,7 +1449,7 @@ export default function Dashboard() {
 
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
