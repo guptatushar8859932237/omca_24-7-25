@@ -83,7 +83,7 @@ export default function MedicalVisa() {
     </div>
   );
 
-  const handleChangtype =(e)=>{
+  const handleChangtype = (e) => {
     console.log(e)
   }
   return (
@@ -155,40 +155,40 @@ export default function MedicalVisa() {
                   <TableCell>{item.nationality}</TableCell>
                   <TableCell>{item.passport_number}</TableCell>
                   <TableCell>{item.phone_number}</TableCell>
-                <TableCell>{item.applying_for?.replaceAll("_", " ")}</TableCell>
-                                   <TableCell>
-                                                                                                                                                                    <FormControl
-                                                                                                                                                                      sx={{ m: 1, minWidth: 120 }}
-                                                                                                                                                                      size="small"
-                                                                                                                                                                      className="cont-main"
-                                                                                                                                                                    >
-                                                                                                                                                                      <Select
-                                                                                                                                                                        value={item.patient_type_new}
-                                                                                                                                                                        onChange={(e) =>
-                                                                                                                                                                          handleChangtype(e, item.patientId)
-                                                                                                                                                                        }
-                                                                                                                                                                        displayEmpty
-                                                                                                                                                                        inputProps={{
-                                                                                                                                                                          "aria-label": "Without label",
-                                                                                                                                                                        }}
-                                                                                                                                                                        className="status-direct"
-                                                                                                                                                                      >
-                                                                                                                                                                        <MenuItem value="Pending">
-                                                                                                                                                                          Pending
-                                                                                                                                                                        </MenuItem>
-                                                                                                                                                                        <MenuItem value="In-Process">
-                                                                                                                                                                          In-Process
-                                                                                                                                                                        </MenuItem>
-                                                                                                                                                                        <MenuItem value="Closed">
-                                                                                                                                                                          Closed
-                                                                                                                                                                        </MenuItem>
-                                                                                                                                                                      </Select>
-                                                                                                                                                                    </FormControl>
-                                                                                                                                                                  </TableCell>
+                  <TableCell>{item.applying_for?.replaceAll("_", " ")}</TableCell>
+                  <TableCell>
+                    <FormControl
+                      sx={{ m: 1, minWidth: 120 }}
+                      size="small"
+                      className="cont-main"
+                    >
+                      <Select
+                        value={item.patient_type_new}
+                        onChange={(e) =>
+                          handleChangtype(e, item.patientId)
+                        }
+                        displayEmpty
+                        inputProps={{
+                          "aria-label": "Without label",
+                        }}
+                        className="status-direct"
+                      >
+                        <MenuItem value="Pending">
+                          Pending
+                        </MenuItem>
+                        <MenuItem value="In-Process">
+                          In-Process
+                        </MenuItem>
+                        <MenuItem value="Closed">
+                          Closed
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
-                      style={{cursor:"pointer"}}
+                      style={{ cursor: "pointer" }}
                       onClick={() => handleView(item)}
                     />
                     {/* <button
@@ -502,67 +502,67 @@ export default function MedicalVisa() {
                     </div>
                   </div>
                 </div> */}
-              <div className="col-md-12 mt-3">
-                 <div className="all-hd mb-3">
+                <div className="col-md-12 mt-3">
+                  <div className="all-hd mb-3">
                     <h6>Document  Details</h6>
                   </div>
                   <div className="card">
                     <div
-                    className="card-body">
+                      className="card-body">
 
-  <div className="row">
+                      <div className="row">
 
-    {/* Document 1 */}
-    <div className="col-md-4 mb-3">
-      <div className="border rounded p-2 text-center">
-        <h6 className="mb-2 fw-bold">
-          {selectedRecord.reference_doc_name_1 || "image"}
-        </h6>
-        <img
-          src={`https://yellowcabsanfrancisco.com/omca/public/upload/photo/${selectedRecord.applicant_photo}`}
-            
-          
-          alt="doc-1"
-          className="img-fluid rounded"
-          style={{ height: "180px", objectFit: "cover", width: "100%" }}
-        />
-      </div>
-    </div>
+                        {/* Document 1 */}
+                        <div className="col-md-4 mb-3">
+                          <div className="border rounded p-2 text-center">
+                            <h6 className="mb-2 fw-bold">
+                              {selectedRecord.reference_doc_name_1 || "image"}
+                            </h6>
+                            <img
+                              src={`https://yellowcabsanfrancisco.com/omca/public/upload/photo/${selectedRecord.applicant_photo}`}
 
-    {/* Document 2 */}
-    <div className="col-md-4 mb-3">
-      <div className="border rounded p-2 text-center">
-        <h6 className="mb-2 fw-bold">
-          {selectedRecord.reference_doc_name_2 || "Visa"}
-        </h6>
-        <img
-          src={`https://yellowcabsanfrancisco.com/omca/public/upload/medicalvisa/${selectedRecord.medical_visa}`}
-          alt="doc-2"
-          className="img-fluid rounded"
-          style={{ height: "180px", objectFit: "cover", width: "100%" }}
-        />
-      </div>
-    </div>
 
-    {/* Document 3 */}
-    <div className="col-md-4 mb-3">
-      <div className="border rounded p-2 text-center">
-        <h6 className="mb-2 fw-bold">
-          {selectedRecord.reference_doc_name_3 || "Passport"}
-        </h6>
-        <img
-          src={`https://yellowcabsanfrancisco.com/omca/public/upload/passport/${selectedRecord.passport_copy}`}
-          alt="doc-3"
-          className="img-fluid rounded"
-          style={{ height: "180px", objectFit: "cover", width: "100%" }}
-        />
-      </div>
-    </div>
+                              alt="doc-1"
+                              className="img-fluid rounded"
+                              style={{ height: "180px", objectFit: "cover", width: "100%" }}
+                            />
+                          </div>
+                        </div>
 
-  </div>
+                        {/* Document 2 */}
+                        <div className="col-md-4 mb-3">
+                          <div className="border rounded p-2 text-center">
+                            <h6 className="mb-2 fw-bold">
+                              {selectedRecord.reference_doc_name_2 || "Visa"}
+                            </h6>
+                            <img
+                              src={`https://yellowcabsanfrancisco.com/omca/public/upload/medicalvisa/${selectedRecord.medical_visa}`}
+                              alt="doc-2"
+                              className="img-fluid rounded"
+                              style={{ height: "180px", objectFit: "cover", width: "100%" }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Document 3 */}
+                        <div className="col-md-4 mb-3">
+                          <div className="border rounded p-2 text-center">
+                            <h6 className="mb-2 fw-bold">
+                              {selectedRecord.reference_doc_name_3 || "Passport"}
+                            </h6>
+                            <img
+                              src={`https://yellowcabsanfrancisco.com/omca/public/upload/passport/${selectedRecord.passport_copy}`}
+                              alt="doc-3"
+                              className="img-fluid rounded"
+                              style={{ height: "180px", objectFit: "cover", width: "100%" }}
+                            />
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
-</div>
+                </div>
 
               </div>
             </Box>
