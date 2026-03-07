@@ -247,26 +247,26 @@ export default function EnquiryDetail() {
                       <label>Patient ID proof<span className="text-danger"></span></label>
                       <div className="engpatimg mt-0">
                         {Array.isArray(row?.patient_id_proof) &&
-  row.patient_id_proof.length > 0 &&
-  row.patient_id_proof.map((file, index) => (
-    <div key={index} className="file-preview">
-      
-      <span className="delete-icon">
-        <i className="fa-solid fa-xmark"></i>
-      </span>
+                          row.patient_id_proof.length > 0 &&
+                          row.patient_id_proof.map((file, index) => (
+                            <div key={index} className="file-preview">
 
-      <a
-        href={`${image}${file}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="viewbtn"
-      >
-        View
-      </a>
+                              <span className="delete-icon">
+                                <i className="fa-solid fa-xmark"></i>
+                              </span>
 
-    </div>
-  ))
-}
+                              <a
+                                href={`${image}${file}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="viewbtn"
+                              >
+                                View
+                              </a>
+
+                            </div>
+                          ))
+                        }
                       </div>
 
                     </div>

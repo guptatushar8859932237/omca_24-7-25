@@ -361,11 +361,11 @@ export default function EditEnquiry() {
                                       selected?.dial_code || "",
                                     );
                                   }}
-                                  // input={
-                                  //   <OutlinedInput label="Select Country" />
-                                  // }
-                                  // displayEmpty
-                                  // sx={{ height: 40 }}
+                                // input={
+                                //   <OutlinedInput label="Select Country" />
+                                // }
+                                // displayEmpty
+                                // sx={{ height: 40 }}
                                 >
                                   <MenuItem value="">
                                     <em>Select Country</em>
@@ -713,101 +713,97 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-                      <hr />
-                      <div className="row d-flex">
-                        <div className="col-md-4">
-                          <div className="field-set">
-                            <label>
-                              Treatment name
-                              <span className="text-danger">*</span>
-                            </label>
-                            <Autocomplete
-                              options={Treatment || []}
-                              getOptionLabel={(option) => option.name || ""}
-                              value={
-                                Treatment?.find(
-                                  (item) => item.name === values.disease_name,
-                                ) || null
-                              }
-                              onChange={(e, value) => {
-                                setFieldValue(
-                                  "disease_name",
-                                  value?.name || "",
-                                );
-                                setFieldValue(
-                                  "treatment_course_id",
-                                  value?.course_id || null,
-                                );
-                                setFieldValue("disease_id", value?.id || null);
-                              }}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  placeholder="Select Treatment"
-                                  error={Boolean(
-                                    values.disease_name === "" &&
-                                    basicSchema?.fields?.disease_name,
-                                  )}
-                                />
-                              )}
-                              sx={{
-                                "& .MuiOutlinedInput-root": {
-                                  padding: "0px",
-                                  "&:hover fieldset": {
-                                    borderColor: "#ced4da",
-                                  },
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Treatment name
+                            <span className="text-danger">*</span>
+                          </label>
+                          <Autocomplete
+                            options={Treatment || []}
+                            getOptionLabel={(option) => option.name || ""}
+                            value={
+                              Treatment?.find(
+                                (item) => item.name === values.disease_name,
+                              ) || null
+                            }
+                            onChange={(e, value) => {
+                              setFieldValue(
+                                "disease_name",
+                                value?.name || "",
+                              );
+                              setFieldValue(
+                                "treatment_course_id",
+                                value?.course_id || null,
+                              );
+                              setFieldValue("disease_id", value?.id || null);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                placeholder="Select Treatment"
+                                error={Boolean(
+                                  values.disease_name === "" &&
+                                  basicSchema?.fields?.disease_name,
+                                )}
+                              />
+                            )}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                padding: "0px",
+                                "&:hover fieldset": {
+                                  borderColor: "#ced4da",
                                 },
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-4">
-                          <div className="field-set">
-                            <label>
-                              Treating In Country
-                              <span className="text-danger">*</span>
-                            </label>
-                            <Field name="treatingIn">
-                              {({ field, form: { setFieldValue }, meta }) => (
-                                <FormControl
-                                  fullWidth
-                                  size="small"
-                                  error={!!meta.touched && !!meta.error}
-                                >
-                                  <Select
-                                    value={field.value}
-                                    onChange={(e) => {
-                                      const selected = Countries.find(
-                                        (c) => c.name === e.target.value,
-                                      );
-                                      setFieldValue(
-                                        "treatingIn",
-                                        e.target.value,
-                                      );
-                                    }}
-                                  >
-                                    <MenuItem value="">
-                                      <em>Select Country</em>
-                                    </MenuItem>
-
-                                    {Countries.map((country, i) => (
-                                      <MenuItem key={i} value={country.name}>
-                                        {country.name}
-                                      </MenuItem>
-                                    ))}
-                                  </Select>
-                                  <ErrorMessage
-                                    name="country"
-                                    component="div"
-                                    style={{ color: "red" }}
-                                  />
-                                </FormControl>
-                              )}
-                            </Field>
-                          </div>
+                              },
+                            }}
+                          />
                         </div>
                       </div>
-                      <hr />
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>
+                            Treating In Country
+                            <span className="text-danger">*</span>
+                          </label>
+                          <Field name="treatingIn">
+                            {({ field, form: { setFieldValue }, meta }) => (
+                              <FormControl
+                                fullWidth
+                                size="small"
+                                error={!!meta.touched && !!meta.error}
+                              >
+                                <Select
+                                  value={field.value}
+                                  onChange={(e) => {
+                                    const selected = Countries.find(
+                                      (c) => c.name === e.target.value,
+                                    );
+                                    setFieldValue(
+                                      "treatingIn",
+                                      e.target.value,
+                                    );
+                                  }}
+                                >
+                                  <MenuItem value="">
+                                    <em>Select Country</em>
+                                  </MenuItem>
+
+                                  {Countries.map((country, i) => (
+                                    <MenuItem key={i} value={country.name}>
+                                      {country.name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                                <ErrorMessage
+                                  name="country"
+                                  component="div"
+                                  style={{ color: "red" }}
+                                />
+                              </FormControl>
+                            )}
+                          </Field>
+                        </div>
+                      </div>
                       <div className="col-md-12">
                         <div className="form-check mb-3">
                           <Field
@@ -921,7 +917,7 @@ export default function EditEnquiry() {
                                 {Array.isArray(
                                   editenquiry.patient_relation_id,
                                 ) &&
-                                editenquiry.patient_relation_id.length > 0 ? (
+                                  editenquiry.patient_relation_id.length > 0 ? (
                                   editenquiry.patient_relation_id.map(
                                     (file, index) => {
                                       const fileUrl = `${imageUrl}${file}`;

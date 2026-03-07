@@ -300,7 +300,7 @@ export default function EditPatient() {
                   {({ isSubmitting, values, setFieldValue }) => (
                     <Form>
                       <div className="row">
-                        <div className="col-sm-6">
+                        <div className="col-md-4">
                           <div className="field-set">
                             <label>
                               NIC/passport<span className="text-danger">*</span>
@@ -317,136 +317,9 @@ export default function EditPatient() {
                             />
                           </div>
                         </div>
-                        <div className="col-sm-6">
+                        <div className="col-md-4">
                           <div className="field-set">
-                            <label>
-                              Patient Name<span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="text"
-                              name="patient_name"
-                            />
-                            <ErrorMessage
-                              name="patient_name"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="field-set">
-                            <label>
-                              Age<span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="number"
-                              name="age"
-                            />
-                            <ErrorMessage
-                              name="age"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="field-set">
-                            <label>
-                              Treatment Name
-                              <span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="text"
-                              name="patientDisease"
-                            />
-                            <ErrorMessage
-                              name="patientDisease"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="field-set">
-                            <label>
-                              Date<span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="date"
-                              name="created_at"
-                            />
-                            <ErrorMessage
-                              name="created_at"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="field-set">
-                            <label>
-                              Email<span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="email"
-                              name="email"
-                            />
-                            <ErrorMessage
-                              name="email"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div>
-                        {/* <div className="col-sm-6">
-                          <div className="field-set">
-                            <label>
-                              Contact Number{" "}
-                              <span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="text"
-                              name="emergency_contact_no"
-                            />
-                            <ErrorMessage
-                              name="emergency_contact_no"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div> */}
-                        <div className="col-md-6">
-                          <div className="field-set">
-                            <label>Phone / WhatsApp Number</label>
-                            <div className="country-code">
-                              <Field
-                                className="form-control code-dial"
-                                name="dial_code"
-                                disabled
-                              />
-                              <Field
-                                className="form-control code-in"
-                                name="emergency_contact_no"
-                              />
-                            </div>
-                            <ErrorMessage
-                              name="emergency_contact_no"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="field-set">
-                            <label>
-                              Country<span className="text-danger">*</span>
-                            </label>
+                            <label>Country<span className="text-danger">*</span></label>
                             <Field name="country">
                               {({ field, form }) => (
                                 <>
@@ -495,11 +368,242 @@ export default function EditPatient() {
                             </Field>
                           </div>
                         </div>
-                        <div className="col-sm-6">
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Phone / WhatsApp Number<span className="text-danger">*</span></label>
+                            <div className="country-code">
+                              <Field
+                                className="form-control code-dial"
+                                name="dial_code"
+                                disabled
+                              />
+                              <Field
+                                className="form-control code-in"
+                                name="emergency_contact_no"
+                              />
+                            </div>
+                            <ErrorMessage
+                              name="emergency_contact_no"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
                           <div className="field-set">
                             <label>
-                              Treating In<span className="text-danger">*</span>
+                              Patient Name<span className="text-danger">*</span>
                             </label>
+                            <Field
+                              className="form-control"
+                              type="text"
+                              name="patient_name"
+                            />
+                            <ErrorMessage
+                              name="patient_name"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set gender-select">
+                            <label className="gen-label">
+                              Gender<span className="text-danger">*</span>
+                            </label>
+                            <div className="form-check-inline">
+                              <label className="form-check-label">
+                                <Field
+                                  type="radio"
+                                  name="gender"
+                                  value="Male"
+                                  className="form-check-input"
+                                />{" "}
+                                Male
+                              </label>
+                            </div>
+                            <div className="form-check-inline">
+                              <label className="form-check-label">
+                                <Field
+                                  type="radio"
+                                  name="gender"
+                                  value="Female"
+                                  className="form-check-input"
+                                />{" "}
+                                Female
+                              </label>
+                            </div>
+                            <div className="form-check-inline">
+                              <label className="form-check-label">
+                                <Field
+                                  type="radio"
+                                  name="gender"
+                                  value="Others"
+                                  className="form-check-input"
+                                />
+                                Others
+                              </label>
+                            </div>
+                            <ErrorMessage
+                              name="gender"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>
+                              Age<span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="number"
+                              name="age"
+                            />
+                            <ErrorMessage
+                              name="age"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>
+                              Email<span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="email"
+                              name="email"
+                            />
+                            <ErrorMessage
+                              name="email"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>
+                              Town <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="text"
+                              name="town"
+                            />
+                            <ErrorMessage
+                              name="town"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>
+                              Address <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="text"
+                              name="address"
+                            />
+                            <ErrorMessage
+                              name="address"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Emergency Contact Number<span className="text-danger">*</span></label>
+                            <div className="country-code">
+                              <Field
+                                className="form-control code-dial"
+                                name="dial_code"
+                                disabled
+                              />
+                              <Field
+                                className="form-control code-in"
+                                name="patient_emergency_contact_no"
+                              />
+                            </div>
+                            <ErrorMessage
+                              name="patient_emergency_contact_no"
+                              component="div"
+                              className="text-danger"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Patient Id Proof<span className="text-danger">*</span></label>
+                            <Field className="form-control" type="text" name="patientNumber" />
+                            <ErrorMessage name="patientNumber" component="div" className="text-danger" />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Patient Profile<span className="text-danger">*</span></label>
+                            <input type="file" accept="image/*" className="form-control"
+                              onChange={(event) => {
+                                const file = event.currentTarget.files[0];
+                                if (file) {
+                                  setPreviewImage(URL.createObjectURL(file));
+                                  setFieldValue("patient_Profile", file); // store file in formik
+                                }
+                              }}
+                            />
+                            <div className="engpatimg">
+                              {previewImage ? (
+                                <button
+                                  type="button"
+                                  className="viewbtn"
+                                  onClick={() =>
+                                    window.open(previewImage, "_blank")
+                                  }
+                                >
+                                  View
+                                </button>
+                              ) : ispatient?.patient_Profile ? (
+                                <button
+                                  type="button"
+                                  className="viewbtn"
+                                  onClick={() =>
+                                    window.open(
+                                      `${image}/${ispatient.patient_Profile}`,
+                                      "_blank",
+                                    )
+                                  }
+                                >
+                                  View
+                                </button>
+                              ) : null}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Referral Name{" "}<span className="text-danger">*</span></label>
+                            <Field className="form-control" type="text" name="Referral_Name" />
+                            <ErrorMessage name="Referral_Name" component="div" className="text-danger" />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Treatment Name<span className="text-danger">*</span></label>
+                            <Field className="form-control" type="text" name="patientDisease" />
+                            <ErrorMessage name="patientDisease" component="div" className="text-danger" />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Treating In<span className="text-danger">*</span></label>
                             <Field name="treatingIn">
                               {({ field, form }) => (
                                 <>
@@ -546,194 +650,19 @@ export default function EditPatient() {
                             </Field>
                           </div>
                         </div>
-                        <div className="col-sm-6">
+                        <div className="col-md-4">
                           <div className="field-set">
-                            <label>
-                              Referral Name{" "}
-                              <span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="text"
-                              name="Referral_Name"
-                            />
-                            <ErrorMessage
-                              name="Referral_Name"
-                              component="div"
-                              className="text-danger"
-                            />
+                            <label>Date<span className="text-danger">*</span></label>
+                            <Field className="form-control" type="date" name="created_at" />
+                            <ErrorMessage name="created_at" component="div" className="text-danger" />
                           </div>
                         </div>
-                        <div className="col-sm-6">
-                          <div className="field-set">
-                            <label>
-                              Town <span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="text"
-                              name="town"
-                            />
-                            <ErrorMessage
-                              name="town"
-                              component="div"
-                              className="text-danger"
-                            />
+                        <div className="col-md-12">
+                          <div className="">
+                            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                              Submit
+                            </button>
                           </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="field-set">
-                            <label>
-                              Address <span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="text"
-                              name="address"
-                            />
-                            <ErrorMessage
-                              name="address"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="field-set gender-select">
-                            <label className="gen-label">
-                              Gender<span className="text-danger">*</span>
-                            </label>
-                            <div className="form-check-inline">
-                              <label className="form-check-label">
-                                <Field
-                                  type="radio"
-                                  name="gender"
-                                  value="Male"
-                                  className="form-check-input"
-                                />{" "}
-                                Male
-                              </label>
-                            </div>
-                            <div className="form-check-inline">
-                              <label className="form-check-label">
-                                <Field
-                                  type="radio"
-                                  name="gender"
-                                  value="Female"
-                                  className="form-check-input"
-                                />{" "}
-                                Female
-                              </label>
-                            </div>
-                            <div className="form-check-inline">
-                              <label className="form-check-label">
-                                <Field
-                                  type="radio"
-                                  name="gender"
-                                  value="Others"
-                                  className="form-check-input"
-                                />
-                                Others
-                              </label>
-                            </div>
-                            <ErrorMessage
-                              name="gender"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="field-set">
-                            <label>Emergency Contact Number</label>
-                            <div className="country-code">
-                              <Field
-                                className="form-control code-dial"
-                                name="dial_code"
-                                disabled
-                              />
-                              <Field
-                                className="form-control code-in"
-                                name="patient_emergency_contact_no"
-                              />
-                            </div>
-                            <ErrorMessage
-                              name="patient_emergency_contact_no"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <label className="gen-label fw-normal">
-                            Patient Id<span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control "
-                            type="text"
-                            name="patientNumber"
-                          />
-                          <ErrorMessage
-                            name="patientNumber"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="field-set">
-                            <label>Patient Profile Image</label>
-
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="form-control"
-                              onChange={(event) => {
-                                const file = event.currentTarget.files[0];
-                                if (file) {
-                                  setPreviewImage(URL.createObjectURL(file)); // show new preview
-                                  setFieldValue("patient_Profile", file); // store file in formik
-                                }
-                              }}
-                            />
-
-                            {/* Image Preview */}
-                            <div style={{ marginTop: "10px" }}>
-                              {previewImage ? (
-                                <button
-                                  type="button"
-                                  className="btn btn-primary btn-sm"
-                                  onClick={() =>
-                                    window.open(previewImage, "_blank")
-                                  }
-                                >
-                                  View Image
-                                </button>
-                              ) : ispatient?.patient_Profile ? (
-                                <button
-                                  type="button"
-                                  className="btn btn-primary btn-sm"
-                                  onClick={() =>
-                                    window.open(
-                                      `${image}/${ispatient.patient_Profile}`,
-                                      "_blank",
-                                    )
-                                  }
-                                >
-                                  View Image
-                                </button>
-                              ) : null}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="">
-                          <button
-                            type="submit"
-                            className="submit-btn"
-                            disabled={isSubmitting}
-                          >
-                            Submit
-                          </button>
                         </div>
                       </div>
                     </Form>
