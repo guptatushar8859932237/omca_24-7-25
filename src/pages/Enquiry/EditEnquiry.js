@@ -274,7 +274,6 @@ export default function EditEnquiry() {
                       formData.append(key, values[key]);
                     }
                   }
-
                   formData.append(
                     "discussionNotes",
                     JSON.stringify(values.discussion_notes),
@@ -356,7 +355,6 @@ export default function EditEnquiry() {
                                     const selected = Countries.find(
                                       (c) => c.name === e.target.value,
                                     );
-
                                     setFieldValue("country", e.target.value);
                                     setFieldValue(
                                       "dial_code",
@@ -372,7 +370,6 @@ export default function EditEnquiry() {
                                   <MenuItem value="">
                                     <em>Select Country</em>
                                   </MenuItem>
-
                                   {Countries.map((country, i) => (
                                     <MenuItem key={i} value={country.name}>
                                       {country.name}
@@ -414,7 +411,6 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
@@ -511,7 +507,6 @@ export default function EditEnquiry() {
                           />
                         </div>
                       </div>
-
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>

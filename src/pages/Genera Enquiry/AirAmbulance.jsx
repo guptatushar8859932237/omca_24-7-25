@@ -31,14 +31,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
-  Modal, Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Pagination,
+  Stack,
+  Modal,
+  Box,
   Dialog,
   DialogContent,
   FormControl,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 
 import ClearIcon from "@mui/icons-material/Clear";
@@ -46,9 +57,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 export default function AirAmbulance() {
   const dispatch = useDispatch();
 
-  const { testForms: formData, loading, error } = useSelector(
-    (state) => state.testForms
-  );
+  const {
+    testForms: formData,
+    loading,
+    error,
+  } = useSelector((state) => state.testForms);
 
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
@@ -90,10 +103,9 @@ export default function AirAmbulance() {
     );
   });
 
-
   const paginatedData = filteredData.slice(
     page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
+    page * rowsPerPage + rowsPerPage,
   );
 
   // Open popup
@@ -112,16 +124,16 @@ export default function AirAmbulance() {
     </div>
   );
   const handleChangtype = (e, id) => {
-    const newStatus = e.target.value; }
+    const newStatus = e.target.value;
+  };
   return (
     <div>
-
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
           <h2>Air Medical Escort</h2>
-        </div >
+        </div>
         <div>
           <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
             <TextField
@@ -149,17 +161,12 @@ export default function AirAmbulance() {
       </div>
       {/* Search */}
       {/* Table */}
-      <TableContainer component={Paper}
-        style={{ overflowX: "auto" }}>
-        <Table
-          stickyHeader
-          aria-label="sticky table"
-          className="table-no-card"
-        >
+      <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+        <Table stickyHeader aria-label="sticky table" className="table-no-card">
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-              <TableCell> Name</TableCell>
+              <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Services</TableCell>
@@ -177,43 +184,35 @@ export default function AirAmbulance() {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{item.services?.replaceAll("_"," ")}</TableCell>
+                  <TableCell>{item.services?.replaceAll("_", " ")}</TableCell>
                   <TableCell>{item.from}</TableCell>
                   <TableCell>{item.to}</TableCell>
-                   <TableCell>
-                                                                                                                <FormControl
-                                                                                                                  sx={{ m: 1, minWidth: 120 }}
-                                                                                                                  size="small"
-                                                                                                                  className="cont-main"
-                                                                                                                >
-                                                                                                                  <Select
-                                                                                                                    value={item.patient_type_new}
-                                                                                                                    onChange={(e) =>
-                                                                                                                      handleChangtype(e, item.patientId)
-                                                                                                                    }
-                                                                                                                    displayEmpty
-                                                                                                                    inputProps={{
-                                                                                                                      "aria-label": "Without label",
-                                                                                                                    }}
-                                                                                                                    className="status-direct"
-                                                                                                                  >
-                                                                                                                    <MenuItem value="Pending">
-                                                                                                                      Pending
-                                                                                                                    </MenuItem>
-                                                                                                                    <MenuItem value="In-Process">
-                                                                                                                      In-Process
-                                                                                                                    </MenuItem>
-                                                                                                                    <MenuItem value="Closed">
-                                                                                                                      Closed
-                                                                                                                    </MenuItem>
-                                                                                                                  </Select>
-                                                                                                                </FormControl>
-                                                                                                              </TableCell>
+                  <TableCell>
+                    <FormControl
+                      sx={{ m: 1, minWidth: 120 }}
+                      size="small"
+                      className="cont-main"
+                    >
+                      <Select
+                        value={item.patient_type_new}
+                        onChange={(e) => handleChangtype(e, item.patientId)}
+                        displayEmpty
+                        inputProps={{
+                          "aria-label": "Without label",
+                        }}
+                        className="status-direct"
+                      >
+                        <MenuItem value="Pending">Pending</MenuItem>
+                        <MenuItem value="In-Process">In-Process</MenuItem>
+                        <MenuItem value="Closed">Closed</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
                       onClick={() => handleView(item)}
-                      style={{cursor:"pointer"}}
+                      style={{ cursor: "pointer" }}
                     />
                   </TableCell>
                 </TableRow>
@@ -227,7 +226,7 @@ export default function AirAmbulance() {
             )}
           </TableBody>
         </Table>
-           <Stack spacing={2} alignItems="end" marginTop={2} padding={2}>
+        <Stack spacing={2} alignItems="end" marginTop={2} padding={2}>
           <Pagination
             count={Math.ceil(filteredData.length / rowsPerPage)}
             page={page + 1}
@@ -240,12 +239,13 @@ export default function AirAmbulance() {
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
-        open={open} onClose={handleClose}
+        open={open}
+        onClose={handleClose}
       >
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Air Medical Escort </h6>
+              <h6>Air Medical Escort </h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>
@@ -292,8 +292,8 @@ export default function AirAmbulance() {
                 {/* personal */}
                 <div className="col-md-12 mb-3">
                   <div className="all-hd mb-3">
-                      <h6>User Information</h6>
-                    </div>
+                    <h6>User Information</h6>
+                  </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
@@ -301,17 +301,23 @@ export default function AirAmbulance() {
                           <InfoItem label=" Name" value={selectedRecord.name} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Email" value={selectedRecord.email} />
+                          <InfoItem
+                            label="Email"
+                            value={selectedRecord.email}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Phone Number" value={selectedRecord.phone} />
+                          <InfoItem
+                            label="Phone Number"
+                            value={selectedRecord.phone}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="all-hd mb-3 mt-3">
-                      <h6>Travel Details</h6>
-                    </div>
+                    <h6>Travel Details</h6>
+                  </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
@@ -322,113 +328,177 @@ export default function AirAmbulance() {
                           <InfoItem label="To" value={selectedRecord.to} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Travel Date" value={new Date(selectedRecord.select_date).toLocaleDateString("en-GB")} />
+                          <InfoItem
+                            label="Travel Date"
+                            value={new Date(
+                              selectedRecord.select_date,
+                            ).toLocaleDateString("en-GB")}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Arrival Time " value={selectedRecord.arrival_time} />
+                          <InfoItem
+                            label="Arrival Time "
+                            value={selectedRecord.arrival_time}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Number of Traveller" value={selectedRecord.travellers_count} />
+                          <InfoItem
+                            label="Number of Traveller"
+                            value={selectedRecord.travellers_count}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Service " value={selectedRecord.services} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                    <div className="all-hd mb-3 mt-3">
-                      <h6>Emergency Assessment</h6>
-                    </div>
-                  <div className="card">
-                    <div className="card-body">
-                      <div className="row">
-                        <div className="col-md-4">
-                          <InfoItem label="Consciousness Status" value={selectedRecord.consciousness_status} />
-                        </div>
-                        <div className="col-md-4">
-                          <InfoItem label="Breathing Difficulty" value={selectedRecord.breathing_difficulty} />
-                        </div>
-                        <div className="col-md-4">
-                          <InfoItem label="Level of urgency" value={selectedRecord.level_of_urgency} />
-                        </div>
-                        <div className="col-md-4">
-                          <InfoItem label="Bleeding or Trauma Details" value={selectedRecord.bleeding_or_trauma_details} />
+                          <InfoItem
+                            label="Service "
+                            value={selectedRecord.services}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
-                   <div className="all-hd mb-3 mt-3">
-                      <h6>Destination Details</h6>
-                    </div>
+                  <div className="all-hd mb-3 mt-3">
+                    <h6>Emergency Assessment</h6>
+                  </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="Destination Address" value={selectedRecord.destination_address} />
+                          <InfoItem
+                            label="Consciousness Status"
+                            value={selectedRecord.consciousness_status}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Hospital Name" value={selectedRecord.hospital_name} />
+                          <InfoItem
+                            label="Breathing Difficulty"
+                            value={selectedRecord.breathing_difficulty}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Department or ward" value={selectedRecord.department_or_ward } />
+                          <InfoItem
+                            label="Level of urgency"
+                            value={selectedRecord.level_of_urgency}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Bleeding or Trauma Details"
+                            value={selectedRecord.bleeding_or_trauma_details}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
-                   <div className="all-hd mb-3 mt-3">
-                      <h6>Medical Information</h6>
-                    </div>
+                  <div className="all-hd mb-3 mt-3">
+                    <h6>Destination Details</h6>
+                  </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="Reason For Ambulance Request/Chief Complaint" value={selectedRecord.reason_for_ambulance_request} />
+                          <InfoItem
+                            label="Destination Address"
+                            value={selectedRecord.destination_address}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Patient Condition" value={selectedRecord.patient_condition} />
+                          <InfoItem
+                            label="Hospital Name"
+                            value={selectedRecord.hospital_name}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Ambulance Type" value={selectedRecord.ambulance_type } />
-                        </div>
-                        <div className="col-md-4">
-                          <InfoItem label="Special Needs" value={selectedRecord.special_needs } />
+                          <InfoItem
+                            label="Department or ward"
+                            value={selectedRecord.department_or_ward}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
-                   <div className="all-hd mb-3 mt-3">
-                      <h6>Attendant / Contact Person</h6>
-                    </div>
+                  <div className="all-hd mb-3 mt-3">
+                    <h6>Medical Information</h6>
+                  </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="Name of Caller Or Attendant" value={selectedRecord.name_of_caller_or_attendant} />
+                          <InfoItem
+                            label="Reason For Ambulance Request/Chief Complaint"
+                            value={selectedRecord.reason_for_ambulance_request}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Relationship to Patient" value={selectedRecord.relationship_to_patient} />
+                          <InfoItem
+                            label="Patient Condition"
+                            value={selectedRecord.patient_condition}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Alternate Contact Number" value={selectedRecord.alternate_contact_number } />
+                          <InfoItem
+                            label="Ambulance Type"
+                            value={selectedRecord.ambulance_type}
+                          />
                         </div>
-                    
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Special Needs"
+                            value={selectedRecord.special_needs}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                   <div className="all-hd mb-3 mt-3">
-                      <h6>Payment & Authorization</h6>
-                    </div>
+                  <div className="all-hd mb-3 mt-3">
+                    <h6>Attendant / Contact Person</h6>
+                  </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="Payment Method" value={selectedRecord.payment_method} />
+                          <InfoItem
+                            label="Name of Caller Or Attendant"
+                            value={selectedRecord.name_of_caller_or_attendant}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Insurance Details" value={selectedRecord.insurance_details} />
+                          <InfoItem
+                            label="Relationship to Patient"
+                            value={selectedRecord.relationship_to_patient}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Approval/Reference Number" value={selectedRecord.reference_number } />
+                          <InfoItem
+                            label="Alternate Contact Number"
+                            value={selectedRecord.alternate_contact_number}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="all-hd mb-3 mt-3">
+                    <h6>Payment & Authorization</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Payment Method"
+                            value={selectedRecord.payment_method}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Insurance Details"
+                            value={selectedRecord.insurance_details}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Approval/Reference Number"
+                            value={selectedRecord.reference_number}
+                          />
                         </div>
                       </div>
                     </div>
@@ -438,7 +508,6 @@ export default function AirAmbulance() {
             </Box>
           )}
         </DialogContent>
-
       </Dialog>
     </div>
   );
