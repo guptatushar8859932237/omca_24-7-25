@@ -97,11 +97,10 @@ export default function Sidebar() {
                   </NavLink>
             )} */}
             {menuItems.map((item) => {
-              const isStaticPermission = item.path === "/General_Enquiries";
               const hasPermission = permissions.includes(item.path);
 
               // If General Enquiries → always show
-              if (isStaticPermission || hasPermission) {
+              if ( hasPermission) {
                 return (
                   <li key={item.path}>
                     <NavLink

@@ -775,8 +775,6 @@ export default function Dashboard() {
               style={{ cursor: "pointer" }} 
              onClick={() => handleStatusClick('Cancelled')}
               >
-
-
                 <div className="dash-widget1">
                   <div
                     className="dash-widget-bg"
@@ -790,7 +788,6 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-
               {/* Local Case */}
               <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
               style={{ cursor: "pointer" }} 
@@ -842,7 +839,7 @@ export default function Dashboard() {
                     <i className="fa fa-heart-o"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientStatusCounts["Passed Away"] || 0}</h3>
+                    <h3>{count?.patientStatusCounts?.["Passed Away"]}</h3>
                     <span className="widget-title">Passed Away</span>
                   </div>
                 </div>
@@ -941,7 +938,7 @@ export default function Dashboard() {
               className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
               // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Services")}
             >
-              <div className="dash-widget1">
+              {/* <div className="dash-widget1">
                 <div className="dash-widget-bg">
                   <i className="fa fa-clipboard" aria-hidden="true"></i>
                 </div>
@@ -949,10 +946,10 @@ export default function Dashboard() {
                   <h3>0</h3>
                   <span className="widget-title">Country</span>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
-          <div className="row">
+          {/* <div className="row">
           <div className="col-md-12">
               <div className="treat-hd">
                 <h6>Treatment Cases</h6>
@@ -981,7 +978,7 @@ export default function Dashboard() {
                   </div>
                 </div>
               ))}
-          </div>
+          </div> */}
           <div className="row gy-4">
           {/* appointment-graph */}
           {/* <div className="col-md-6">
@@ -1007,7 +1004,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                {/* <div className="card-body">
+                <div className="card-body">
                   <ReactApexChart
                     type="bar"
                     height={350}
@@ -1021,11 +1018,11 @@ export default function Dashboard() {
                       colors: ["#0ba6df", "#22c7b8", "#ff0000"],
                     }}
                   />
-                </div> */}
-              {/* </div>
-            </div> */} 
+                </div>
+               </div>
+            </div> */}
           {/* treatment-graph */}
-          {/* <div className="col-md-6">
+           {/* <div className="col-md-6">
               <div className="card treatment-status-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
@@ -1069,7 +1066,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                {/* <div className="card-body">
+                <div className="card-body">
                   <ReactApexChart
                     type="bar"
                     height={350}
@@ -1101,12 +1098,12 @@ export default function Dashboard() {
                     }}
                   />
 
-                </div> */}
-              {/* </div> */}
-            {/* </div> */} 
+                </div> 
+              </div> 
+            </div>  */}
           {/* cases-distribution-graph */}
-          {/* <div className="col-md-6">
-              <div className="card treatment-distribution-card">
+           <div className="col-md-6">
+              {/* <div className="card treatment-distribution-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Treatment Cases Distribution</h5>
@@ -1154,11 +1151,11 @@ export default function Dashboard() {
                     height={350}
                   />
                 </div>
-              </div>
-            </div> */}
-          {/* revenue-payment-graph
+              </div> */}
+            </div> 
+           {/* revenue-payment-graph */}
           <div className="col-md-6">
-              <div className="card revenue-payment-card">
+              {/* <div className="card revenue-payment-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Revenue vs Due Payments</h5>
@@ -1263,11 +1260,11 @@ export default function Dashboard() {
                   )}
 
                 </div>
-              </div>
-            </div> */}
+              </div> */}
+            </div>
           {/* hospital-performance-graph */}
-          {/* <div className="col-md-6">
-              <div className="card hospital-performance-card">
+          <div className="col-md-6">
+              {/* <div className="card hospital-performance-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Top Hospitals by Patients</h5>
@@ -1347,8 +1344,8 @@ export default function Dashboard() {
                     }}
                   />
                 </div>
-              </div>
-            </div> */}
+              </div> */}
+            </div> 
           {/* holistical-data-graph */}
           {/* <div className="col-md-6">
               <div className="card holistic-flow-card">
@@ -1449,7 +1446,7 @@ export default function Dashboard() {
 
                 </div>
               </div>
-            </div> */}
+            </div>  */}
           </div>
         </div>
       </div>

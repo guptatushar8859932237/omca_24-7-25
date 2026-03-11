@@ -15,6 +15,9 @@ import {
 } from "@mui/material";
 
 import ClearIcon from "@mui/icons-material/Clear";
+import Swal from "sweetalert2";
+import { AdminBaseUrl } from "../../Basurl/Baseurl";
+import axios from "axios";
 
 export default function Hotel() {
   const dispatch = useDispatch();
@@ -83,9 +86,31 @@ export default function Hotel() {
     </div>
   );
 
-  const handleChangtype =(e)=>{
-    console.log(e)
+const handleChangtype = async (e, b) => {
+  console.log(e, b);
+
+  const data = {
+    id: b?.id,
+    model: "AmbulanceRequest",
+    status: e?.value || e?.target?.value
+  };
+
+  try {
+    const response = await axios.post(
+      `${AdminBaseUrl}update_user_request_status`,
+      data
+    );
+  dispatch(testForms());
+    if (response?.data?.success) {
+      Swal.fire("Success", "Status Updated Successfully", "success");
+    }
+
+  } catch (error) {
+    console.log(error);
+
+    Swal.fire("Error", "Something went wrong", "error");
   }
+};
   return (
     <div>
 
@@ -158,9 +183,9 @@ export default function Hotel() {
                                                                                                 className="cont-main"
                                                                                               >
                                                                                                 <Select
-                                                                                                  value={item.patient_type_new}
+                                                                                                  value={item.status}
                                                                                                   onChange={(e) =>
-                                                                                                    handleChangtype(e, item.patientId)
+                                                                                                    handleChangtype(e, item)
                                                                                                   }
                                                                                                   displayEmpty
                                                                                                   inputProps={{

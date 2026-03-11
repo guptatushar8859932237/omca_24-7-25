@@ -60,7 +60,7 @@ export default function EditStaff() {
       .min(6, "Phone number must be at least 6 digits")
       .max(15, "Phone number must not exceed 15 digits"),
     gender: Yup.string()
-      .oneOf(["Male", "Female", "Others"])
+      .oneOf(["Male", "Female", "Other"])
       .required("Gender is required"),
     profileImage: Yup.mixed().required("Profile image is required"),
     country: Yup.string().required("Country is required"),
@@ -383,7 +383,7 @@ export default function EditStaff() {
                         Female
                       </div>
                       <div className="form-check-inline">
-                        <Field type="radio" name="gender" value="Others" />{" "}
+                        <Field type="radio" name="gender" value="Other" />{" "}
                         Others
                       </div>
                       <ErrorMessage

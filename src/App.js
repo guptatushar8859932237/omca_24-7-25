@@ -57,12 +57,15 @@ import Addcurrency from "./pages/Currency/Addcurrency";
 import EditCurrency from "./pages/Currency/EditCurrency";
 import GerGeneralEnquiry from "./pages/Genera Enquiry/GerGeneralEnquiry";
 import EditPatientTreatment from "./pages/Patient/EditPatientTreatment";
+import IdleLogout from "./Idlegout";
 function App() {
   console.log("22/04/25");
   return (
     <>
       <Provider store={store}>
         <Router>
+          
+  <IdleLogout timeout={1000000} />
           <Routes>
             <Route path="/" element={<AdminLogin />} />
             <Route path="/Forgot" element={<Forgot />} />

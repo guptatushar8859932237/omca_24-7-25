@@ -55,7 +55,7 @@ export default function AddStaff() {
     .required("Role is required"),
 
   gender: Yup.string()
-    .oneOf(["Male", "Female", "Others"], "Invalid gender")
+    .oneOf(["Male", "Female", "Other"], "Invalid gender")
     .required("Gender is required"),
 
   country: Yup.string()
@@ -475,7 +475,7 @@ export default function AddStaff() {
                             <Field
                               type="radio"
                               name="gender"
-                              value="Others"
+                              value="Other"
                               className="form-check-input"
                             />
                             Others

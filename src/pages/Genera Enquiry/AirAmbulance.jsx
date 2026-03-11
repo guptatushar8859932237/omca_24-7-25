@@ -53,6 +53,9 @@ import {
 } from "@mui/material";
 
 import ClearIcon from "@mui/icons-material/Clear";
+import Swal from "sweetalert2";
+import { AdminBaseUrl } from "../../Basurl/Baseurl";
+import axios from "axios";
 
 export default function AirAmbulance() {
   const dispatch = useDispatch();
@@ -123,9 +126,29 @@ export default function AirAmbulance() {
       <p>{value || "-"}</p>
     </div>
   );
-  const handleChangtype = (e, id) => {
-    const newStatus = e.target.value;
+const handleChangtype = async (e, b) => {
+  console.log(e, b);
+  const data = {
+    id: b?.id,
+    model: "AirAmbulance",
+    status: e?.value || e?.target?.value
   };
+  try {
+    const response = await axios.post(
+      `${AdminBaseUrl}update_user_request_status`,
+      data
+    );
+  dispatch(testForms());
+    if (response?.data?.success) {
+      Swal.fire("Success", "Status Updated Successfully", "success");
+    }
+
+  } catch (error) {
+    console.log(error);
+
+    Swal.fire("Error", "Something went wrong", "error");
+  }
+};
   return (
     <div>
       {loading && <p>Loading...</p>}
@@ -159,8 +182,6 @@ export default function AirAmbulance() {
           </div>
         </div>
       </div>
-      {/* Search */}
-      {/* Table */}
       <TableContainer component={Paper} style={{ overflowX: "auto" }}>
         <Table stickyHeader aria-label="sticky table" className="table-no-card">
           <TableHead>
@@ -170,8 +191,6 @@ export default function AirAmbulance() {
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Services</TableCell>
-              <TableCell>From</TableCell>
-              <TableCell>To</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -185,8 +204,6 @@ export default function AirAmbulance() {
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item.services?.replaceAll("_", " ")}</TableCell>
-                  <TableCell>{item.from}</TableCell>
-                  <TableCell>{item.to}</TableCell>
                   <TableCell>
                     <FormControl
                       sx={{ m: 1, minWidth: 120 }}
@@ -194,8 +211,8 @@ export default function AirAmbulance() {
                       className="cont-main"
                     >
                       <Select
-                        value={item.patient_type_new}
-                        onChange={(e) => handleChangtype(e, item.patientId)}
+                        value={item.status}
+                        onChange={(e) => handleChangtype(e, item)}
                         displayEmpty
                         inputProps={{
                           "aria-label": "Without label",
@@ -235,7 +252,6 @@ export default function AirAmbulance() {
           />
         </Stack>
       </TableContainer>
-      {/* Popup Modal */}
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
@@ -253,39 +269,6 @@ export default function AirAmbulance() {
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-          {/* <Box>
-            {selectedRecord && (
-              <div className="table-responsive dataset">
-                <table className="table table-bordered mb-0">
-                  <tbody>
-                    {Object.entries(selectedRecord)
-                      .filter(([key]) =>
-                        [
-                          "first_name",
-                          "email",
-                          "phone",
-                          "services",
-                          "from",
-                          "to",
-                          "select_date",
-                          "travellers_count",
-                        ].includes(key)
-                      )
-                      .map(([key, value]) => (
-                        <tr key={key}>
-                          <th>
-                            {key
-                              .replace(/_/g, " ")
-                              .replace(/\b\w/g, (char) => char.toUpperCase())}
-                          </th>
-                          <td>{String(value)}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Box> */}
           {selectedRecord && (
             <Box>
               <div className="row">

@@ -15,6 +15,9 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import ClearIcon from "@mui/icons-material/Clear";
+import axios from "axios";
+import { AdminBaseUrl, baseurl } from "../../Basurl/Baseurl";
+import Swal from "sweetalert2";
 
 export default function MedicalVisa() {
   const dispatch = useDispatch();
@@ -83,9 +86,31 @@ export default function MedicalVisa() {
     </div>
   );
 
-  const handleChangtype = (e) => {
-    console.log(e)
+const handleChangtype = async (e, b) => {
+  console.log(e, b);
+
+  const data = {
+    id: b?.id,
+    model: "Medical",
+    status: e?.value || e?.target?.value
+  };
+
+  try {
+    const response = await axios.post(
+      `${AdminBaseUrl}update_user_request_status`,
+      data
+    );
+  dispatch(testForms());
+    if (response?.data?.success) {
+      Swal.fire("Success", "Status Updated Successfully", "success");
+    }
+
+  } catch (error) {
+    console.log(error);
+
+    Swal.fire("Error", "Something went wrong", "error");
   }
+};
   return (
     <div>
 
@@ -163,9 +188,9 @@ export default function MedicalVisa() {
                       className="cont-main"
                     >
                       <Select
-                        value={item.patient_type_new}
+                        value={item.status}
                         onChange={(e) =>
-                          handleChangtype(e, item.patientId)
+                          handleChangtype(e, item)
                         }
                         displayEmpty
                         inputProps={{
