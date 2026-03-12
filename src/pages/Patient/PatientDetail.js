@@ -2273,6 +2273,46 @@ function PatientDetail() {
       console.log(error);
     }
   };
+
+  // const handleclickDeleteTreatment =(treatment_id)=>{
+  //   console.log(treatment_id)
+  // }
+  const handleclickDeleteTreatment = async (treatment_id) => {
+  console.log(treatment_id);
+
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to recover this treatment!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#6e7881",
+    confirmButtonText: "Yes, delete it!",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `${baseurl}deleteTreatment/${treatment_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          Swal.fire("Deleted!", response.data.message, "success");
+         dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        } else {
+          Swal.fire("Error!", response.data.message, "error");
+        }
+      } catch (error) {
+        console.error(error);
+        Swal.fire("Error!", "Something went wrong", "error");
+      }
+    }
+  });
+};
   return (
     <>
       <div className="page-wrapper">
@@ -2692,6 +2732,7 @@ function PatientDetail() {
                                               ? info.treatment_name
                                               : treatmentNameHeading
                                         }{" "}
+                                        <i className="fa fa-trash text-danger" onClick={()=>{handleclickDeleteTreatment(info.treatment_id)}} ></i>
                                       </h3>
                                       <p className="mb-0">
                                         {/* {info.treatment_status} */}
