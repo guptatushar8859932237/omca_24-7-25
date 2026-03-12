@@ -53,6 +53,7 @@ function PatientDetail() {
   const [treatemntData1, setTreatemntData1] = useState([]);
   const [errors, setErrors] = useState({});
   const [drivername, setDrivername] = useState("");
+  const { Countries } = useSelector((state) => state.Countries);
   const [showModal, setShowModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [notesID, setNotesID] = useState("");
@@ -153,6 +154,7 @@ function PatientDetail() {
     paymentMethod: "",
     payment_Date: "",
   });
+   const usrFount = localStorage.getItem('Role')
   useEffect(() => {
     gtdatareportsdata();
     getextraservice();
@@ -445,6 +447,52 @@ function PatientDetail() {
       setIsSubmitting(false);
     }
   };
+
+  const deletePaymentInvoice =async(item)=>{
+     const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: false,
+    });
+    const result = await swalWithBootstrapButtons.fire({
+      title: "Are you sure?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true,
+    });
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `${baseurl}delete_payment/${item._id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          }
+        }
+        );
+        if (response.data?.success) {
+          Swal.fire("Deleted!", "Payment has been deleted.", "success");
+         getDataapi3(dataC)
+        } else {
+          toast.error("Failed to delete Payment");
+        }
+      } catch (error) {
+        console.error("Delete Payment error:", error);
+        toast.error("Something went wrong");
+      }
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      swalWithBootstrapButtons.fire({
+        title: "Cancelled",
+        icon: "error",
+      });
+    }
+  }
+
+
   const handledeleteReport = async (item) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -468,7 +516,7 @@ function PatientDetail() {
         );
         if (response.data?.success) {
           Swal.fire("Deleted!", "Report has been deleted.", "success");
-          gtdatareportsdata();
+           getDataapi3(dataC)
         } else {
           toast.error("Failed to delete report");
         }
@@ -644,9 +692,11 @@ function PatientDetail() {
     formData.append("attendant_fullname", attendant_fullname);
     formData.append("attendant_relation", attendant_relation);
     formData.append("attendant_contact", attendant_contact);
+    // formData.append("dial_code", filesData.dial_code);
+    formData.append("country", filesData.country);
     formData.append("attendant_passport", Attende_passport);
     formData.append("attendant_image", Attende_photo);
-
+    console.log(filesData)
     try {
       const response = await axios.post(
         `${baseurl}addAttendeeDetails/${attendId}`,
@@ -3369,6 +3419,15 @@ function PatientDetail() {
                                                               </div>
                                                               <div className="detail-row">
                                                                 <label>
+                                                                  Country
+                                                                </label>
+                                                                <span>
+                                                                  {item?.country ||
+                                                                    "N/A"}
+                                                                </span>
+                                                              </div>
+                                                              <div className="detail-row">
+                                                                <label>
                                                                   Attendant
                                                                   Photo
                                                                 </label>
@@ -3620,12 +3679,18 @@ function PatientDetail() {
                                                           <TableCell>
                                                             Document
                                                           </TableCell>
-                                                          <TableCell>
+                                                          {
+                                                            usrFount ==="Admin"?
+                                                            <>
+                                                             <TableCell>
                                                             PDF
                                                           </TableCell>
                                                           <TableCell>
                                                             Action
                                                           </TableCell>
+                                                            </>:""
+                                                          }
+                                                         
                                                         </TableRow>
                                                       </TableHead>
                                                       <TableBody>
@@ -3661,19 +3726,6 @@ function PatientDetail() {
                                                               <TableCell>
                                                                 {item?.notes}
                                                               </TableCell>
-
-                                                              {/* <TableCell>
-                                                               {item?.attachFile && (
-                                                                      <a
-                                                                        href={`https://sisccltd.com/omca_crm/${info?.treatmentReport}`}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                      >
-                                                                        View
-                                                                        Document
-                                                                      </a>
-                                                                    )}
-                                                              </TableCell> */}
                                                               <TableCell>
                                                                 {item?.attachFile ? (
                                                                   <a
@@ -3687,6 +3739,9 @@ function PatientDetail() {
                                                                   "-"
                                                                 )}
                                                               </TableCell>
+                                                              {
+                                                                  usrFount ==="Admin"?
+                                                            <>
                                                               <TableCell>
                                                                 <button
                                                                   className="add-button"
@@ -3704,7 +3759,6 @@ function PatientDetail() {
                                                                   <i className="fa fa-download"></i>
                                                                 </button>
                                                               </TableCell>
-
                                                               <TableCell>
                                                                 <i
                                                                   className="fa-solid fa-trash text-danger"
@@ -3713,12 +3767,15 @@ function PatientDetail() {
                                                                       "pointer",
                                                                   }}
                                                                   onClick={() =>
-                                                                    handledeleteReport(
+                                                                    deletePaymentInvoice(
                                                                       item,
                                                                     )
                                                                   }
                                                                 ></i>
                                                               </TableCell>
+                                                            </>:""
+                                                              }
+                                                            
                                                             </TableRow>
                                                           ),
                                                         )}
@@ -4607,7 +4664,9 @@ function PatientDetail() {
             >
               <Box>
                 <form id="contact-form" className="contact-form">
-                  <div className="field-set">
+                  <div className="row">
+                    <div className="col-6">
+                      <div className="field-set">
                     <label>
                       Name<span className="text-danger">*</span>
                     </label>
@@ -4621,7 +4680,9 @@ function PatientDetail() {
                       />
                     </div>
                   </div>
-                  <div className="field-set">
+                    </div>
+<div className="col-6">
+  <div className="field-set">
                     <label>
                       Attendant Relation<span className="text-danger">*</span>
                     </label>
@@ -4635,7 +4696,128 @@ function PatientDetail() {
                       />
                     </div>
                   </div>
-                  <div className="field-set">
+</div>
+                  </div>
+                 {/* <div className="field-set">
+  <div className="">
+    <label>
+      Country<span className="text-danger">*</span>
+    </label>
+
+    <Autocomplete
+      options={Countries || []}
+      getOptionLabel={(option) => option?.name || ""}
+      value={
+        Countries?.find(
+          (country) => country.name === filesData.country
+        ) || null
+      }
+      onChange={(event, newValue) => {
+        setFilesData({
+          ...filesData,
+          country: newValue?.name || "",
+          dial_code: newValue?.dial_code || "",
+        });
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          placeholder="Select Country"
+          size="small"
+        />
+      )}
+    />
+  </div>
+</div> */}
+  <div className="row">
+    <div className="col-6">
+ <div className="field-set">
+          <label>
+            Country<span className="text-danger">*</span>
+          </label>
+
+          <Autocomplete
+            options={Countries || []}
+            getOptionLabel={(option) => option?.name || ""}
+            value={
+              Countries?.find(
+                (country) => country.name === filesData.country
+              ) || null
+            }
+            onChange={(event, newValue) => {
+              setFilesData({
+                ...filesData,
+                country: newValue?.name || "",
+                dial_code: newValue?.dial_code || "",
+              });
+            }}
+            renderInput={(params) => (
+              <TextField {...params} placeholder="Select Country" size="small" />
+            )}
+          />
+        </div>
+    </div>
+    <div className="col-6">
+ <div className="field-set">
+          <label>
+            Attendant Contact<span className="text-danger">*</span>
+          </label>
+
+          <div className="country-code">
+            <input
+              type="text"
+              className="form-control code-dial"
+              value={filesData.dial_code}
+              disabled
+            />
+
+            <input
+              type="text"
+              name="attendant_contact"
+              className="form-control code-in"
+              value={filesData.attendant_contact}
+              onKeyPress={handkekeypreees}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+    </div>
+
+  </div>
+<div className="row">
+<div className="col-6">
+  <div className="field-set">
+                    <label>
+                      Attendant Passport<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+                      <input
+                        type="file"
+                        className="form-control"
+                        onChange={(e) =>
+                          handleFileChange(e, "Attende_passport")
+                        }
+                      />
+                    </div>
+                  </div>
+</div>
+<div className="col-6">
+   <div className="field-set">
+                    <label>
+                      Attendant Photo<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="form-control"
+                        onChange={(e) => handleFileChange(e, "Attende_photo")}
+                      />
+                    </div>
+                  </div>
+</div>
+</div>
+                  {/* <div className="field-set">
                     <label>
                       Attendant Contact<span className="text-danger">*</span>
                     </label>
@@ -4651,35 +4833,10 @@ function PatientDetail() {
                         onChange={handleInputChange}
                       />
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="field-set">
-                    <label>
-                      Attendant Passport<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="file"
-                        className="form-control"
-                        onChange={(e) =>
-                          handleFileChange(e, "Attende_passport")
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="field-set">
-                    <label>
-                      Attendant Photo<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="form-control"
-                        onChange={(e) => handleFileChange(e, "Attende_photo")}
-                      />
-                    </div>
-                  </div>
+                  
+                 
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"

@@ -6,18 +6,40 @@ import { baseurl } from "../Basurl/Baseurl";
 import { image } from "../Basurl/Baseurl";
 import { GetUserData } from "../reducer/userSlice";
 import { useSelector, useDispatch } from "react-redux";
-// import ReactApexChart from "react-apexcharts";
 import { GetAllTreatment } from "../reducer/TreatmentSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { GetAllHositalData } from "../reducer/HospitalSlice";
 import ReactApexChart from "react-apexcharts";
-
 export default function Dashboard() {
   const [arraycount, setArraycount] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [revenueData, setRevenueData] = useState({
+  Daily: { series: [], categories: [] },
+  Weekly: { series: [], categories: [] },
+  Monthly: { series: [], categories: [] }
+});
+  const [treatmentData, setTreatmentData] = useState({
+  Daily: { series: [], categories: [] },
+  Weekly: { series: [], categories: [] },
+  Monthly: { series: [], categories: [] },
+});
+ const [holisticChartData, setHolisticChartData] = useState({
+    Daily: { series: [], categories: [] },
+    Weekly: { series: [], categories: [] },
+    Monthly: { series: [], categories: [] }
+  });
+const [treatmentDistributionData, setTreatmentDistributionData] = useState({
+  Daily: { series: [], options: {} },
+  Weekly: { series: [], options: {} },
+  Monthly: { series: [], options: {} }
+});
+  const [responseDataChart, setResponseDataChart] = useState({
+    series: [],
+    categories: [],
+  });
+  const usrFount = localStorage.getItem("Role");
   const [patientStatusCounts, setPatientStatusCounts] = useState({
     Travelled: 0,
     Confirmed: 0,
@@ -29,23 +51,14 @@ export default function Dashboard() {
     "Follow Up": 0,
     "Passed Away": 0,
   });
-
   const [patientTypeCounts, setPatientTypeCounts] = useState({
     Private: 0,
     Foundation: 0,
     Insurance: 0,
     "Insurance + Private": 0,
   });
-
   const { getuser, loading, error } = useSelector((state) => state.getuser);
-
-  const { Treatment } = useSelector((state) => state.Treatment);
-
-  // Hospital selector
-  const { hospital } = useSelector((state) => state.hospital);
-
   const [count, setCount] = useState("");
-
   useEffect(() => {
     dispatch(GetUserData());
     dispatch(GetAllHositalData());
@@ -53,10 +66,36 @@ export default function Dashboard() {
     fetchAllPatientStatusCounts();
     getAllPatientTypeCounts();
   }, [dispatch]);
-
-  const GetDashboard = () => {
+ const formatConversionFunnel = (data) => {
+    return {
+      series: [
+        {
+          name: "Patients Flow",
+          data: [
+            data.enquiries || 0,
+            data.patients || 0,
+            data.appointments || 0,
+            data.treatments || 0,
+            data.completed || 0
+          ]
+        }
+      ],
+      categories: [
+        "Enquiries",
+        "Patients",
+        "Appointments",
+        "Treatments",
+        "Completed"
+      ]
+    };
+  };
+  const GetDashboard = (a,b) => {
     axios
-      .get(`${baseurl}Dashboard_count`, {
+      .get(`${baseurl}Dashboard_count`,{
+      params: {
+        period: a,
+        country: b
+      },
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -65,6 +104,38 @@ export default function Dashboard() {
       .then((response) => {
         console.log(response.data);
         if (response.data) {
+          console.log(response.data);
+          const appointmentChart = response.data.charts.appointmentChart;
+          const formattedData = formatAppointmentChart(appointmentChart);
+           setResponseDataChart(formattedData);
+           const treatmentChart = response.data.charts.treatmentChart;
+      const formattedTreatment = formatTreatmentChart(treatmentChart);
+      setTreatmentData({
+        Daily: formattedTreatment,
+        Weekly: formattedTreatment,
+        Monthly: formattedTreatment
+      });
+       const distribution = response.data.charts.treatmentDistribution;
+      const formattedDistribution = formatTreatmentDistribution(distribution);
+      setTreatmentDistributionData({
+        Daily: formattedDistribution,
+        Weekly: formattedDistribution,
+        Monthly: formattedDistribution
+      });
+       const revenueChart = response.data.charts.revenueChart;
+      const formattedRevenue = formatRevenueChart(revenueChart);
+      setRevenueData({
+        Daily: formattedRevenue,
+        Weekly: formattedRevenue,
+        Monthly: formattedRevenue
+      });
+    const funnel = response.data.charts.conversionFunnel;
+const formattedFunnel = formatConversionFunnel(funnel);
+setHolisticChartData({
+  Daily: formattedFunnel,
+  Weekly: formattedFunnel,
+  Monthly: formattedFunnel
+});
           setCount(response.data);
           setArraycount(response.data.courseAssignmentCounts);
         } else {
@@ -75,328 +146,86 @@ export default function Dashboard() {
         console.error("Error fetching job titles:", error);
       });
   };
+  const formatTreatmentChart = (data) => {
+  const categories = [];
+  const statusMap = {};
 
+  data.forEach((item) => {
+    const { year, month, day } = item._id.period;
+    const status = item._id.status;
+    const count = item.count;
+
+    const label = `${day}-${month}`;
+
+    if (!categories.includes(label)) {
+      categories.push(label);
+
+      // har status ke array ko sync rakhna
+      Object.keys(statusMap).forEach((key) => {
+        statusMap[key].push(0);
+      });
+    }
+
+    const index = categories.indexOf(label);
+
+    if (!statusMap[status]) {
+      statusMap[status] = new Array(categories.length).fill(0);
+    }
+
+    statusMap[status][index] = count;
+  });
+
+  const series = Object.keys(statusMap).map((status) => ({
+    name: status,
+    data: statusMap[status],
+  }));
+
+  return {
+    series,
+    categories,
+  };
+};
+  const formatAppointmentChart = (data) => {
+    const categories = [];
+    const schedule = [];
+    const cancelled = [];
+
+    data.forEach((item) => {
+      const { year, month, day } = item._id.period;
+      const status = item._id.status;
+      const count = item.count;
+
+      const label = `${day}-${month}`;
+
+      if (!categories.includes(label)) {
+        categories.push(label);
+        schedule.push(0);
+        cancelled.push(0);
+      }
+
+      const index = categories.indexOf(label);
+
+      if (status === "Schedule") {
+        schedule[index] = count;
+      }
+
+      if (status === "Cancelled") {
+        cancelled[index] = count;
+      }
+    });
+
+    return {
+      series: [
+        { name: "Schedule", data: schedule },
+        { name: "Cancelled", data: cancelled },
+      ],
+      categories,
+    };
+  };
   useEffect(() => {
     GetDashboard();
   }, []);
-
-  const handleclicknavi = (coursename) => {
-    console.log(coursename);
-    navigate("/Admin/filterdtata");
-  };
-
-  // graph start here
-  const [chartView, setChartView] = useState("Daily"); // shared for all charts
-  // Appointments chart
-  const appointmentsData = {
-    Daily: {
-      categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      series: [
-        { name: "Scheduled", data: [10, 15, 8, 20, 18, 12, 9] },
-        { name: "Completed", data: [8, 12, 6, 15, 14, 9, 7] },
-        { name: "Cancelled", data: [2, 3, 2, 5, 4, 3, 2] },
-      ]
-    },
-    Weekly: {
-      categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
-      series: [
-        { name: "Scheduled", data: [60, 70, 55, 80] },
-        { name: "Completed", data: [50, 60, 45, 70] },
-        { name: "Cancelled", data: [10, 10, 10, 10] },
-      ]
-    },
-    Monthly: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      series: [
-        { name: "Scheduled", data: [220, 240, 200, 260, 280, 300, 310, 290, 270, 260, 250, 240] },
-        { name: "Completed", data: [200, 210, 180, 230, 250, 270, 290, 260, 240, 230, 220, 210] },
-        { name: "Cancelled", data: [20, 30, 20, 30, 30, 30, 20, 30, 30, 30, 30, 30] },
-      ]
-    }
-  };
-  // Treatment chart
-  const treatmentData = {
-    Daily: {
-      categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      series: [
-        { name: "Admitted", data: [5, 7, 6, 8, 9, 4, 3] },
-        { name: "Under Review", data: [3, 4, 5, 6, 5, 3, 2] },
-        { name: "Operated", data: [2, 3, 2, 4, 3, 2, 1] },
-        { name: "Under Recovery", data: [4, 5, 6, 5, 6, 4, 3] },
-        { name: "Discharged", data: [3, 4, 3, 5, 4, 3, 2] },
-      ]
-    },
-    Weekly: {
-      categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
-      series: [
-        { name: "Admitted", data: [30, 35, 32, 40] },
-        { name: "Under Review", data: [20, 22, 25, 28] },
-        { name: "Operated", data: [15, 18, 16, 20] },
-        { name: "Under Recovery", data: [25, 28, 30, 32] },
-        { name: "Discharged", data: [22, 24, 23, 26] },
-      ]
-    },
-    Monthly: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      series: [
-        { name: "Admitted", data: [120, 130, 125, 140, 150, 160, 155, 148, 142, 138, 130, 125] },
-        { name: "Under Review", data: [90, 95, 92, 100, 105, 110, 108, 102, 98, 96, 94, 92] },
-        { name: "Operated", data: [70, 75, 72, 80, 85, 90, 88, 84, 82, 78, 75, 72] },
-        { name: "Under Recovery", data: [85, 90, 88, 95, 100, 105, 103, 98, 96, 94, 92, 90] },
-        { name: "Discharged", data: [80, 85, 82, 90, 95, 100, 98, 94, 92, 90, 88, 85] },
-      ]
-    }
-  };
-  // Revenue chart
-  const revenueData = {
-    Daily: {
-      categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      series: [
-        {
-          name: "Fees Collected",
-          type: "column",   // 👈 BAR
-          data: [20000, 25000, 22000, 24000, 26000, 20000, 18000],
-        },
-        {
-          name: "Due Amount",
-          type: "line",     // 👈 LINE
-          data: [5000, 4000, 6000, 3000, 7000, 4000, 3000],
-        },
-      ],
-    },
-
-    Weekly: {
-      categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
-      series: [
-        {
-          name: "Fees Collected",
-          type: "column",
-          data: [120000, 150000, 130000, 160000],
-        },
-        {
-          name: "Due Amount",
-          type: "line",
-          data: [30000, 25000, 40000, 35000],
-        },
-      ],
-    },
-
-    Monthly: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      series: [
-        {
-          name: "Fees Collected",
-          type: "column",
-          data: [120000, 150000, 130000, 160000, 170000, 180000, 175000, 160000, 155000, 150000, 145000, 140000],
-        },
-        {
-          name: "Due Amount",
-          type: "line",
-          data: [30000, 25000, 40000, 35000, 30000, 25000, 20000, 30000, 35000, 40000, 45000, 50000],
-        },
-      ],
-    },
-  };
-
-  // treatment cases distribution
-  const treatmentDistributionData = {
-    Daily: {
-      series: [10, 8, 6, 4, 2],
-      options: {
-        chart: { type: "donut" },
-        labels: ["Oncology", "Cardiology", "Neuro Spine", "Orthopedic", "Others"],
-        colors: ["#0066cc", "#0ba6df", "#002f54", "#22c7b8", "#fda25e"],
-        legend: { position: "bottom" },
-        tooltip: {
-          y: {
-            formatter: function (val) {
-              return `${val} Patients`;
-            },
-          },
-        },
-      },
-    },
-
-    Weekly: {
-      series: [70, 50, 40, 35, 20],
-      options: {
-        chart: { type: "donut" },
-        labels: ["Oncology", "Cardiology", "Neuro Spine", "Orthopedic", "Others"],
-        colors: ["#0066cc", "#0ba6df", "#002f54", "#22c7b8", "#fda25e"],
-        legend: { position: "bottom" },
-        tooltip: {
-          y: {
-            formatter: function (val) {
-              return `${val} Patients`;
-            },
-          },
-        },
-      },
-    },
-
-    Monthly: {
-      series: [300, 250, 200, 150, 100],
-      options: {
-        chart: { type: "donut" },
-        labels: ["Oncology", "Cardiology", "Neuro Spine", "Orthopedic", "Others"],
-        colors: ["#0066cc", "#0ba6df", "#002f54", "#22c7b8", "#fda25e"],
-        legend: { position: "bottom" },
-        tooltip: {
-          y: {
-            formatter: function (val) {
-              return `${val} Patients`;
-            },
-          },
-        },
-      },
-    },
-  };
-  // hospital
-  const hospitalPerformanceData = {
-    Daily: {
-      categories: [
-        "Apollo Hospital",
-        "Fortis",
-        "Max Healthcare",
-        "Medanta",
-        "AIIMS",
-        "Narayana Health",
-        "Manipal Hospital",
-        "Kokilaben Hospital",
-        "Artemis Hospital",
-        "BLK Max",
-        "Columbia Asia",
-        "Ruby Hall",
-        "Jaslok Hospital",
-        "Hinduja Hospital",
-        "Care Hospitals",
-        "Aster Medcity",
-        "Yashoda Hospital",
-        "Global Hospitals",
-        "SevenHills Hospital",
-        "Lilavati Hospital",
-      ],
-      series: [
-        {
-          name: "Patients",
-          data: [
-            45, 38, 42, 50, 60,
-            34, 29, 40, 36, 41,
-            33, 28, 26, 35, 39,
-            31, 37, 30, 27, 44,
-          ],
-        },
-      ],
-    },
-
-    Weekly: {
-      categories: [
-        "Apollo Hospital",
-        "Fortis",
-        "Max Healthcare",
-        "Medanta",
-        "AIIMS",
-        "Narayana Health",
-        "Manipal Hospital",
-        "Kokilaben Hospital",
-        "Artemis Hospital",
-        "BLK Max",
-        "Columbia Asia",
-        "Ruby Hall",
-        "Jaslok Hospital",
-        "Hinduja Hospital",
-        "Care Hospitals",
-        "Aster Medcity",
-        "Yashoda Hospital",
-        "Global Hospitals",
-        "SevenHills Hospital",
-        "Lilavati Hospital",
-      ],
-      series: [
-        {
-          name: "Patients",
-          data: [
-            320, 280, 300, 350, 400,
-            260, 240, 310, 270, 295,
-            250, 230, 220, 265, 285,
-            255, 290, 245, 225, 315,
-          ],
-        },
-      ],
-    },
-
-    Monthly: {
-      categories: [
-        "Apollo Hospital",
-        "Fortis",
-        "Max Healthcare",
-        "Medanta",
-        "AIIMS",
-        "Narayana Health",
-        "Manipal Hospital",
-        "Kokilaben Hospital",
-        "Artemis Hospital",
-        "BLK Max",
-        "Columbia Asia",
-        "Ruby Hall",
-        "Jaslok Hospital",
-        "Hinduja Hospital",
-        "Care Hospitals",
-        "Aster Medcity",
-        "Yashoda Hospital",
-        "Global Hospitals",
-        "SevenHills Hospital",
-        "Lilavati Hospital",
-      ],
-      series: [
-        {
-          name: "Patients",
-          data: [
-            1250, 1180, 1220, 1350, 1500,
-            1100, 1050, 1280, 1150, 1210,
-            1080, 1020, 980, 1120, 1190,
-            1095, 1230, 1070, 995, 1300,
-          ],
-        },
-      ],
-    },
-  };
-  const holisticChartData = {
-    Daily: {
-      categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      series: [
-        { name: "Enquiries", data: [120, 130, 125, 140, 135, 110, 100] },
-        { name: "Patients", data: [95, 100, 98, 105, 102, 90, 85] },
-        { name: "Appointments", data: [80, 85, 82, 88, 86, 75, 70] },
-        { name: "Treatments", data: [70, 75, 72, 78, 76, 65, 60] },
-        { name: "Completed", data: [60, 65, 63, 68, 66, 55, 50] },
-      ],
-    },
-
-    Weekly: {
-      categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
-      series: [
-        { name: "Enquiries", data: [780, 820, 800, 850] },
-        { name: "Patients", data: [640, 670, 660, 700] },
-        { name: "Appointments", data: [580, 600, 590, 620] },
-        { name: "Treatments", data: [520, 540, 530, 560] },
-        { name: "Completed", data: [480, 500, 490, 520] },
-      ],
-    },
-
-    Monthly: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      series: [
-        { name: "Enquiries", data: [3200, 3400, 3300, 3500, 3600, 3700, 2800, 2950, 2900, 3000, 3100, 3200] },
-        { name: "Patients", data: [2800, 2950, 2900, 3000, 3100, 3200, 2600, 2700, 2680, 2800, 2900, 3000] },
-        { name: "Appointments", data: [2600, 2700, 2680, 2800, 2900, 3000, 2400, 2500, 2480, 2600, 2700, 2800] },
-        { name: "Treatments", data: [2400, 2500, 2480, 2600, 2700, 2800, 2200, 2300, 2280, 2400, 2500, 2600] },
-        { name: "Completed", data: [2200, 2300, 2280, 2400, 2500, 2600, 3200, 3400, 3300, 3500, 3600, 3700,] },
-      ],
-    },
-  };
-
-  // Patient status counts fetch karne ka function
+  const [chartView, setChartView] = useState("Daily"); 
   const getPatientStatusCount = async (status) => {
     try {
       const response = await axios.get(
@@ -408,7 +237,6 @@ export default function Dashboard() {
           },
         },
       );
-
       if (response.data?.success && response.data?.data) {
         return response.data.data.length; // Array ki length return karo
       }
@@ -418,16 +246,17 @@ export default function Dashboard() {
       return 0;
     }
   };
-
   const handleStatusClick = (status) => {
-  navigate(`/Admin/patients?status=${encodeURIComponent(status)}`);
-};
-  
+    if (usrFount === "Admin") {
+      navigate(`/Admin/patients?status=${encodeURIComponent(status)}`);
+    }
+  };
   const handleTypeClick = (type) => {
-  navigate(`/Admin/patients?type=${encodeURIComponent(type)}`);
-};
-  // Holistic Data Cards redirect
+    usrFount === "Admin" &&
+      navigate(`/Admin/patients?type=${encodeURIComponent(type)}`);
+  };
   const handleHolisticClick = (type) => {
+    if (usrFount !== "Admin") return;
     switch (type) {
       case "enquiry":
         navigate("/Admin/inquiry");
@@ -451,7 +280,6 @@ export default function Dashboard() {
         break;
     }
   };
-
   const fetchAllPatientStatusCounts = async () => {
     const statuses = [
       "Travelled",
@@ -477,8 +305,6 @@ export default function Dashboard() {
 
     setPatientStatusCounts(counts);
   };
-
-  // patient type fetch
   const getAllPatientTypeCounts = async () => {
     const types = ["Private", "Foundation", "Insurance", "Insurance + Private"];
 
@@ -493,8 +319,6 @@ export default function Dashboard() {
 
     setPatientTypeCounts(newCounts);
   };
-
-  // Patient Type count function
   const fetchPatientTypeCount = async (type) => {
     try {
       const encodedType = encodeURIComponent(type);
@@ -515,7 +339,59 @@ export default function Dashboard() {
       return 0;
     }
   };
+  const formatTreatmentDistribution = (data) => {
 
+  const labels = data.map(item => item._id);
+  const series = data.map(item => item.count);
+
+  return {
+    series,
+    options: {
+      labels,
+      legend: {
+        position: "bottom"
+      },
+      dataLabels: {
+        enabled: true
+      }
+    }
+  };
+
+};
+const formatRevenueChart = (data) => {
+
+  const categories = [];
+  const feesData = [];
+  const dueData = [];
+
+  data.forEach((item) => {
+
+    const { year, month, day } = item._id;
+
+    const label = `${day}-${month}`;
+
+    categories.push(label);
+    feesData.push(item.feesCollected);
+    dueData.push(item.dueAmount);
+
+  });
+
+  return {
+    series: [
+      {
+        name: "Fees Collected",
+        type: "column",
+        data: feesData
+      },
+      {
+        name: "Due Amount",
+        type: "line",
+        data: dueData
+      }
+    ],
+    categories
+  };
+};
   return (
     <>
       <Navbar />
@@ -539,8 +415,6 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-
-          {/* Holistic Data Heading */}
           <div className="row">
             <div className="col-md-12">
               <div className="treat-hd">
@@ -549,7 +423,6 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-
           <div className="row">
             <div
               className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
@@ -610,7 +483,7 @@ export default function Dashboard() {
                   <i className="fa-solid fa-hospital"></i>
                 </div>
                 <div className="dash-widget-info1">
-                  <h3>{hospital?.length || 0}</h3>
+                  <h3>{count?.totalHospital || 0}</h3>
                   <span className="widget-title">Hospitals</span>
                 </div>
               </div>
@@ -641,7 +514,7 @@ export default function Dashboard() {
                   <i className="fa-solid fa-stethoscope"></i>
                 </div>
                 <div className="dash-widget-info1">
-                  <h3>{Treatment?.length || 0}</h3>
+                  <h3>{count?.totalTreatmentCourses || 0}</h3>
                   <span className="widget-title">Treatment</span>
                 </div>
               </div>
@@ -676,10 +549,11 @@ export default function Dashboard() {
             {/* Patient Status Cards */}
             <div className="row">
               {/* Travelled */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-               style={{ cursor: "pointer" }} 
-             onClick={() => handleStatusClick('Travelled')}>
-              
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleStatusClick("Travelled")}
+              >
                 <div className="dash-widget1">
                   <div
                     className="dash-widget-bg"
@@ -695,9 +569,10 @@ export default function Dashboard() {
               </div>
 
               {/* Confirmed */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              style={{ cursor: "pointer" }} 
-             onClick={() => handleStatusClick('Confirmed')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleStatusClick("Confirmed")}
               >
                 <div className="dash-widget1">
                   <div
@@ -714,9 +589,10 @@ export default function Dashboard() {
               </div>
 
               {/* Pending */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              style={{ cursor: "pointer" }} 
-             onClick={() => handleStatusClick('Pending')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleStatusClick("Pending")}
               >
                 <div className="dash-widget1">
                   <div
@@ -733,9 +609,10 @@ export default function Dashboard() {
               </div>
 
               {/* On Hold */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              style={{ cursor: "pointer" }} 
-             onClick={() => handleStatusClick('On Hold')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleStatusClick("On Hold")}
               >
                 <div className="dash-widget1">
                   <div
@@ -752,9 +629,10 @@ export default function Dashboard() {
               </div>
 
               {/* Treatment Completed */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              style={{ cursor: "pointer" }} 
-             onClick={() => handleStatusClick('Treatment Completed')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleStatusClick("Treatment Completed")}
               >
                 <div className="dash-widget1">
                   <div
@@ -771,9 +649,10 @@ export default function Dashboard() {
               </div>
 
               {/* Cancelled */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              style={{ cursor: "pointer" }} 
-             onClick={() => handleStatusClick('Cancelled')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleStatusClick("Cancelled")}
               >
                 <div className="dash-widget1">
                   <div
@@ -789,9 +668,10 @@ export default function Dashboard() {
                 </div>
               </div>
               {/* Local Case */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              style={{ cursor: "pointer" }} 
-             onClick={() => handleStatusClick('Local Case')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleStatusClick("Local Case")}
               >
                 <div className="dash-widget1">
                   <div
@@ -808,9 +688,10 @@ export default function Dashboard() {
               </div>
 
               {/* Follow Up */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              style={{ cursor: "pointer" }} 
-             onClick={() => handleStatusClick('Follow Up')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleStatusClick("Follow Up")}
               >
                 <div className="dash-widget1">
                   <div
@@ -827,9 +708,10 @@ export default function Dashboard() {
               </div>
 
               {/* Passed Away */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              style={{ cursor: "pointer" }} 
-             onClick={() => handleStatusClick('Passed Away')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleStatusClick("Passed Away")}
               >
                 <div className="dash-widget1">
                   <div
@@ -858,9 +740,10 @@ export default function Dashboard() {
 
             <div className="row">
               {/* Private */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              style={{ cursor: "pointer" }} 
-             onClick={() => handleTypeClick('Private')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleTypeClick("Private")}
               >
                 <div className="dash-widget1">
                   <div
@@ -877,9 +760,10 @@ export default function Dashboard() {
               </div>
 
               {/* Foundation */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-                       style={{ cursor: "pointer" }} 
-             onClick={() => handleTypeClick('Foundation')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleTypeClick("Foundation")}
               >
                 <div className="dash-widget1">
                   <div
@@ -896,9 +780,10 @@ export default function Dashboard() {
               </div>
 
               {/* Insurance */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-                       style={{ cursor: "pointer" }} 
-             onClick={() => handleTypeClick('Insurance')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleTypeClick("Insurance")}
               >
                 <div className="dash-widget1">
                   <div
@@ -915,9 +800,10 @@ export default function Dashboard() {
               </div>
 
               {/* Insurance + Private */}
-              <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-                       style={{ cursor: "pointer" }} 
-             onClick={() => handleTypeClick('Insurance + Private')}
+              <div
+                className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleTypeClick("Insurance + Private")}
               >
                 <div className="dash-widget1">
                   <div
@@ -980,31 +866,55 @@ export default function Dashboard() {
               ))}
           </div> */}
           <div className="row gy-4">
-          {/* appointment-graph */}
-          {/* <div className="col-md-6">
+            {/* appointment-graph */}
+            {/* <div className="col-md-6">
               <div className="card apointment-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Appointments per {chartView}</h5>
                     <div className="dropdown">
-                      <button className="submit-btn dropdown-toggle" type="button" id="chartDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                      <button
+                        className="submit-btn dropdown-toggle"
+                        type="button"
+                        id="chartDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         {chartView}
                       </button>
-                      <ul className="dropdown-menu" aria-labelledby="chartDropdown">
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="chartDropdown"
+                      >
                         <li>
-                          <button className="dropdown-item" onClick={() => setChartView("Daily")}>Daily</button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() => setChartView("Daily")}
+                          >
+                            Daily
+                          </button>
                         </li>
                         <li>
-                          <button className="dropdown-item" onClick={() => setChartView("Weekly")}>Weekly</button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() => setChartView("Weekly")}
+                          >
+                            Weekly
+                          </button>
                         </li>
                         <li>
-                          <button className="dropdown-item" onClick={() => setChartView("Monthly")}>Monthly</button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() => setChartView("Monthly")}
+                          >
+                            Monthly
+                          </button>
                         </li>
                       </ul>
                     </div>
                   </div>
                 </div>
-                <div className="card-body">
+                {/* <div className="card-body">
                   <ReactApexChart
                     type="bar"
                     height={350}
@@ -1018,11 +928,24 @@ export default function Dashboard() {
                       colors: ["#0ba6df", "#22c7b8", "#ff0000"],
                     }}
                   />
-                </div>
-               </div>
-            </div> */}
-          {/* treatment-graph */}
-           {/* <div className="col-md-6">
+                </div> */}
+                {/* <ReactApexChart
+                  type="bar"
+                  height={350}
+                  series={responseDataChart.series}
+                  options={{
+                    chart: { toolbar: { show: false } },
+                    plotOptions: { bar: { columnWidth: "55%" } },
+                    dataLabels: { enabled: false },
+                    xaxis: { categories: responseDataChart.categories },
+                    legend: { position: "top" },
+                    colors: ["#0ba6df", "#ff0000"],
+                  }}
+                />
+              </div>
+            </div> */} 
+            {/* treatment-graph */}
+            {/* <div className="col-md-6">
               <div className="card treatment-status-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
@@ -1067,7 +990,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="card-body">
-                  <ReactApexChart
+                  {/* <ReactApexChart
                     type="bar"
                     height={350}
                     series={treatmentData[chartView].series}
@@ -1096,14 +1019,26 @@ export default function Dashboard() {
 
                       colors: ["#0066cc", "#0ba6df", "#069494", "#fda25e", "#002f54"],
                     }}
-                  />
-
-                </div> 
+                  /> */}
+{/* <ReactApexChart
+  type="bar"
+  height={350}
+  series={treatmentData[chartView].series}
+  options={{
+    chart: { stacked: true, toolbar: { show: false } },
+    plotOptions: { bar: { columnWidth: "60%" } },
+    dataLabels: { enabled: false },
+    xaxis: { categories: treatmentData[chartView].categories },
+    legend: { position: "top" },
+    colors: ["#0066cc", "#0ba6df", "#069494", "#fda25e", "#002f54"],
+  }}
+/> */}
+                {/* </div> 
               </div> 
-            </div>  */}
-          {/* cases-distribution-graph */}
-           <div className="col-md-6">
-              {/* <div className="card treatment-distribution-card">
+            </div>  */} 
+            {/* cases-distribution-graph */}
+            {/* <div className="col-md-6">
+              <div className="card treatment-distribution-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Treatment Cases Distribution</h5>
@@ -1144,18 +1079,18 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="card-body">
-                  <ReactApexChart
-                    options={treatmentDistributionData[chartView].options}
-                    series={treatmentDistributionData[chartView].series}
-                    type="donut"
-                    height={350}
-                  />
+                <ReactApexChart
+  options={treatmentDistributionData[chartView].options}
+  series={treatmentDistributionData[chartView].series}
+  type="donut"
+  height={350}
+/>
                 </div>
-              </div> */}
-            </div> 
-           {/* revenue-payment-graph */}
-          <div className="col-md-6">
-              {/* <div className="card revenue-payment-card">
+              </div>
+            </div> */}
+            {/* revenue-payment-graph */}
+            {/* <div className="col-md-6">
+              <div className="card revenue-payment-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Revenue vs Due Payments</h5>
@@ -1196,74 +1131,37 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="card-body">
-                  {revenueData?.[chartView] && (
-                    <ReactApexChart
-                      type="line"
-                      height={350}
-                      series={revenueData[chartView].series}
-                      options={{
-                        chart: {
-                          toolbar: { show: false },
-                        },
-
-                        stroke: {
-                          width: [0, 3],
-                          curve: "smooth",
-                        },
-
-                        plotOptions: {
-                          bar: {
-                            columnWidth: "45%",
-                          },
-                        },
-
-                        markers: {
-                          size: 5,
-                        },
-
-                        dataLabels: {
-                          enabled: false,
-                        },
-
-                        xaxis: {
-                          categories: revenueData[chartView].categories,
-                        },
-
-                        yaxis: [
-                          {
-                            title: {
-                              text: "Fees Collected (₹)",
-                            },
-                          },
-                          {
-                            opposite: true,
-                            title: {
-                              text: "Due Amount (₹)",
-                            },
-                          },
-                        ],
-
-                        colors: ["#0ba6df", "#fda25e"],
-
-                        legend: {
-                          position: "top",
-                        },
-
-                        tooltip: {
-                          shared: true,
-                          y: {
-                            formatter: (val) => `₹ ${val.toLocaleString()}`,
-                          },
-                        },
-                      }}
-                    />
-                  )}
+                 <ReactApexChart
+  type="line"
+  height={350}
+  series={revenueData[chartView].series}
+  options={{
+    chart: { toolbar: { show: false } },
+    stroke: { width: [0, 3], curve: "smooth" },
+    plotOptions: { bar: { columnWidth: "45%" } },
+    markers: { size: 5 },
+    dataLabels: { enabled: false },
+    xaxis: { categories: revenueData[chartView].categories },
+    yaxis: [
+      { title: { text: "Fees Collected (₹)" } },
+      { opposite: true, title: { text: "Due Amount (₹)" } }
+    ],
+    colors: ["#0ba6df", "#fda25e"],
+    legend: { position: "top" },
+    tooltip: {
+      shared: true,
+      y: {
+        formatter: (val) => `₹ ${val.toLocaleString()}`
+      }
+    }
+  }}
+/>
 
                 </div>
-              </div> */}
-            </div>
-          {/* hospital-performance-graph */}
-          <div className="col-md-6">
+              </div>
+            </div> */}
+            {/* hospital-performance-graph */}
+            {/* <div className="col-md-6"> */}
               {/* <div className="card hospital-performance-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
@@ -1345,9 +1243,9 @@ export default function Dashboard() {
                   />
                 </div>
               </div> */}
-            </div> 
-          {/* holistical-data-graph */}
-          {/* <div className="col-md-6">
+            {/* </div> */}
+            {/* holistical-data-graph */}
+            {/* <div className="col-md-6">
               <div className="card holistic-flow-card">
                 <div className="card-header">
                   <div className="d-flex justify-content-between align-items-center">
@@ -1388,65 +1286,82 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="card-body">
-                  <ReactApexChart
-                    type="line"
-                    height={350}
-                    series={holisticChartData[chartView].series}
-                    options={{
-                      chart: {
-                        toolbar: { show: false },
-                        zoom: { enabled: false },
-                      },
+                {/* <div className="card-body">
+            <ReactApexChart
+  type="line"
+  height={350}
+  series={holisticChartData[chartView]?.series || []}
+  options={{
+    chart: { toolbar: { show: false }, zoom: { enabled: false } },
+    stroke: { curve: "smooth", width: 3 },
+    markers: { size: 5 },
+    dataLabels: { enabled: false },
+    xaxis: { categories: holisticChartData[chartView]?.categories || [] },
+    yaxis: { title: { text: "Total Count" } },
+    legend: { position: "top" },
+  }}
+/>
 
-                      stroke: {
-                        curve: "smooth",
-                        width: 3,
-                      },
+                </div> */}
+                  {/* <div className="card-body">
 
-                      markers: {
-                        size: 5,
-                        strokeWidth: 2,
-                        hover: { size: 7 },
-                      },
+          <ReactApexChart
+            type="line"
+            height={350}
+            series={holisticChartData?.[chartView]?.series || []}
+            options={{
+              chart: {
+                toolbar: { show: false },
+                zoom: { enabled: false },
+              },
 
-                      dataLabels: { enabled: false },
+              stroke: {
+                curve: "smooth",
+                width: 3,
+              },
 
-                      xaxis: {
-                        categories: holisticChartData[chartView].categories,
-                      },
+              markers: {
+                size: 5,
+              },
 
-                      yaxis: {
-                        title: {
-                          text: "Total Count",
-                        },
-                      },
+              dataLabels: { enabled: false },
 
-                      legend: {
-                        position: "top",
-                      },
+              xaxis: {
+                categories:
+                  holisticChartData?.[chartView]?.categories || [],
+              },
 
-                      colors: [
-                        "#0ba6df", // Enquiries
-                        "#069494", // Patients
-                        "#6326d0", // Appointments
-                        "#fda25e", // Treatments
-                        "#008000", // Completed
-                      ],
+              yaxis: {
+                title: {
+                  text: "Total Count",
+                },
+              },
 
-                      tooltip: {
-                        theme: "dark",
-                      },
+              legend: {
+                position: "top",
+              },
 
-                      grid: {
-                        strokeDashArray: 4,
-                      },
-                    }}
-                  />
+              colors: [
+                "#0ba6df",
+                "#069494",
+                "#6326d0",
+                "#fda25e",
+                "#008000",
+              ],
 
-                </div>
+              tooltip: {
+                theme: "dark",
+              },
+
+              grid: {
+                strokeDashArray: 4,
+              },
+            }}
+          />
+
+        </div>
               </div>
-            </div>  */}
+            </div>  */} 
           </div>
         </div>
       </div>
