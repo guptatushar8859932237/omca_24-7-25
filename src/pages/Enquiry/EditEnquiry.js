@@ -632,10 +632,10 @@ export default function EditEnquiry() {
                                           window.open(fileUrl, "_blank")
                                         }
                                       >
-                                        {type === "image" && "View Image"}
-                                        {type === "pdf" && "View PDF"}
-                                        {type === "word" && "View Word"}
-                                        {type === "excel" && "View Excel"}
+                                        {type === "image" && "View"}
+                                        {type === "pdf" && "View"}
+                                        {type === "word" && "View"}
+                                        {type === "excel" && "View"}
                                         {![
                                           "image",
                                           "pdf",
