@@ -105,7 +105,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div class="col-md-4">
                     <div className="field-set">
-                      <label>Passport Number<span className="text-danger"></span></label>
+                      <label>NIC / Passport<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="text"
@@ -116,7 +116,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Phone No / WhatsApp With Country Code
+                      <label>Phone No. / WhatsApp
                         <span className="text-danger"></span>
                       </label>
                       <div className="country-code">
@@ -211,7 +211,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Country<span className="text-danger"></span></label>
+                      <label>Country<span className="text-danger">*</span></label>
                       <input
                         class="form-control"
                         type="email"
@@ -251,9 +251,9 @@ export default function EnquiryDetail() {
                           row.patient_id_proof.map((file, index) => (
                             <div key={index} className="file-preview">
 
-                              <span className="delete-icon">
+                              {/* <span className="delete-icon">
                                 <i className="fa-solid fa-xmark"></i>
-                              </span>
+                              </span> */}
 
                               <a
                                 href={`${image}${file}`}
