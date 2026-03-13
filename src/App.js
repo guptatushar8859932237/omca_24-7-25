@@ -65,7 +65,7 @@ function App() {
       <Provider store={store}>
         <Router>
           
-  <IdleLogout timeout={1000000} />
+  <IdleLogout timeout={500000} />
           <Routes>
             <Route path="/" element={<AdminLogin />} />
             <Route path="/Forgot" element={<Forgot />} />

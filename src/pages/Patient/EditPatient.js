@@ -16,10 +16,13 @@ import { baseurl, image } from "../../Basurl/Baseurl";
 export default function EditPatient() {
   const navigate = useNavigate();
   const location = useLocation();
+  
   const dispatch = useDispatch();
   const [previewImage, setPreviewImage] = useState(null);
   const { patient, loading, error } = useSelector((state) => state.patient);
   const [ispatient, setIspatient] = useState(null);
+//  const [previewImage, setPreviewImage] = useState(null);
+const [previewDocs, setPreviewDocs] = useState([]);
   const { Countries } = useSelector((state) => state.Countries);
   useEffect(() => {
     dispatch(GetAllCountries());
@@ -120,182 +123,101 @@ export default function EditPatient() {
 
                     patient_relation_name:
                       ispatient?.patient_relation_name || "",
+                        id_proof: [],
                     patient_relation: ispatient?.patient_relation || "",
                     patient_relation_no: ispatient?.patient_relation_no || "",
                   }}
                   validationSchema={basicSchema}
-                  // onSubmit={async (values, { setSubmitting }) => {
-                  //   console.log("Submitting values:", values);
+                  //             onSubmit={async (values, { setSubmitting }) => {
                   //   try {
-                  //     const result = await dispatch(
-                  //       EditPatientType({ id: ispatient.patientId, ...values }),
+                  //     if (!ispatient?.patientId) {
+                  //       Swal.fire("Error!", "Patient ID missing", "error");
+                  //       return;
+                  //     }
+
+                  //     const formData = new FormData();
+
+                  //     Object.keys(values).forEach((key) => {
+                  //       if (key !== "patient_Profile") {
+                  //         formData.append(key, values[key] ?? "");
+                  //       }
+                  //     });
+
+                  //     if (values.patient_Profile instanceof File) {
+                  //       formData.append(
+                  //         "patient_Profile",
+                  //         values.patient_Profile,
+                  //       );
+                  //     }
+              
+
+                  //     await dispatch(
+                  //       EditPatientType({
+                  //         id: ispatient.patientId,
+                  //         data: formData,
+                  //       }),
                   //     ).unwrap();
+
                   //     Swal.fire(
                   //       "Success!",
-                  //       "Patient details updated successfully.",
+                  //       "Patient updated successfully",
                   //       "success",
                   //     );
                   //     navigate("/Admin/patients");
                   //   } catch (err) {
+                  //     console.error(err);
                   //     Swal.fire(
                   //       "Error!",
-                  //       err?.message || "An error occurred",
+                  //       err?.message || "Update failed",
                   //       "error",
                   //     );
+                  //   } finally {
+                  //     setSubmitting(false);
                   //   }
-                  //   setSubmitting(false);
                   // }}
-                  //                 onSubmit={async (values, { setSubmitting }) => {
-                  //   try {
-                  //     const formData = new FormData();
-
-                  //     // Append all fields
-                  //     Object.keys(values).forEach((key) => {
-                  //       // Image ko alag handle karenge
-                  //       if (key !== "patient_Profile") {
-                  //         formData.append(key, values[key]);
-                  //       }
-                  //     });
-
-                  //     // ✅ Only append image if user selected new file
-                  //     if (values.patient_Profile instanceof File) {
-                  //       formData.append("patient_Profile", values.patient_Profile);
-                  //     }
-
-                  //     const result = await dispatch(
-                  //       EditPatientType({
-                  //         id: ispatient.patientId,
-                  //         data: formData, // ✅ IMPORTANT
-                  //       })
-                  //     ).unwrap();
-
-                  //     Swal.fire("Success!", "Patient updated successfully", "success");
-                  //     navigate("/Admin/patients");
-
-                  //   } catch (err) {
-                  //     Swal.fire("Error!", err?.message || "Error occurred", "error");
-                  //   }
-
-                  //   setSubmitting(false);
-                  // }}
-                  // onSubmit={async (values, { setSubmitting }) => {
-                  //   try {
-                  //     const formData = new FormData();
-
-                  //     Object.keys(values).forEach((key) => {
-                  //       if (key !== "patient_Profile") {
-                  //         formData.append(key, values[key]);
-                  //       }
-                  //     });
-
-                  //     if (values.patient_Profile instanceof File) {
-                  //       formData.append("patient_Profile", values.patient_Profile);
-                  //     }
-
-                  //     await dispatch(
-                  //       EditPatientType({
-                  //         id: ispatient.patientId,   // ✅ id
-                  //         data: formData             // ✅ data
-                  //       })
-                  //     ).unwrap();
-
-                  //     Swal.fire("Success!", "Patient updated successfully", "success");
-                  //     navigate("/Admin/patients");
-
-                  //   } catch (err) {
-                  //     Swal.fire("Error!", err?.message || "Error occurred", "error");
-                  //   }
-
-                  //   setSubmitting(false);
-                  // }}
-                  // onSubmit={async (values, { setSubmitting }) => {
-                  //   try {
-                  //     console.log("onSubmit triggered");
-                  //     console.log("Values:", values);
-                  //     console.log("Patient ID:", ispatient?.patientId);
-
-                  //     const formData = new FormData();
-
-                  //     Object.keys(values).forEach((key) => {
-                  //       if (key !== "patient_Profile") {
-                  //         formData.append(key, values[key]);
-                  //       }
-                  //     });
-
-                  //     if (values.patient_Profile instanceof File) {
-                  //       formData.append("patient_Profile", values.patient_Profile);
-                  //     }
-
-                  //     for (let pair of formData.entries()) {
-                  //       console.log("FormData:", pair[0], pair[1]);
-                  //     }
-
-                  //     const payload = {
-                  //       id: ispatient?.patientId,
-                  //       data: formData
-                  //     };
-
-                  //     console.log("Dispatching:", payload);
-
-                  //     await dispatch(EditPatientType(payload)).unwrap();
-
-                  //     Swal.fire("Success!", "Patient updated successfully", "success");
-                  //     navigate("/Admin/patients");
-
-                  //   } catch (err) {
-                  //     console.error("Error:", err);
-                  //     Swal.fire("Error!", err?.message || "Error occurred", "error");
-                  //   }
-
-                  //   setSubmitting(false);
-                  // }}
-
                   onSubmit={async (values, { setSubmitting }) => {
-                    try {
-                      if (!ispatient?.patientId) {
-                        Swal.fire("Error!", "Patient ID missing", "error");
-                        return;
-                      }
+  try {
+    if (!ispatient?.patientId) {
+      Swal.fire("Error!", "Patient ID missing", "error");
+      return;
+    }
 
-                      const formData = new FormData();
+    const formData = new FormData();
 
-                      Object.keys(values).forEach((key) => {
-                        if (key !== "patient_Profile") {
-                          formData.append(key, values[key] ?? "");
-                        }
-                      });
+    Object.keys(values).forEach((key) => {
+      if (key !== "patient_Profile" && key !== "id_proof") {
+        formData.append(key, values[key] ?? "");
+      }
+    });
 
-                      if (values.patient_Profile instanceof File) {
-                        formData.append(
-                          "patient_Profile",
-                          values.patient_Profile,
-                        );
-                      }
+    // patient profile
+    if (values.patient_Profile instanceof File) {
+      formData.append("patient_Profile", values.patient_Profile);
+    }
 
-                      await dispatch(
-                        EditPatientType({
-                          id: ispatient.patientId,
-                          data: formData,
-                        }),
-                      ).unwrap();
+    // multiple id proofs
+    if (values.id_proof && values.id_proof.length > 0) {
+      values.id_proof.forEach((file) => {
+        formData.append("id_proof", file);
+      });
+    }
 
-                      Swal.fire(
-                        "Success!",
-                        "Patient updated successfully",
-                        "success",
-                      );
-                      navigate("/Admin/patients");
-                    } catch (err) {
-                      console.error(err);
-                      Swal.fire(
-                        "Error!",
-                        err?.message || "Update failed",
-                        "error",
-                      );
-                    } finally {
-                      setSubmitting(false);
-                    }
-                  }}
+    await dispatch(
+      EditPatientType({
+        id: ispatient.patientId,
+        data: formData,
+      })
+    ).unwrap();
+
+    Swal.fire("Success!", "Patient updated successfully", "success");
+    navigate("/Admin/patients");
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error!", err?.message || "Update failed", "error");
+  } finally {
+    setSubmitting(false);
+  }
+}}
                 >
                   {({ isSubmitting, values, setFieldValue }) => (
                     <Form>
@@ -542,11 +464,67 @@ export default function EditPatient() {
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Patient Id Proof<span className="text-danger">*</span></label>
+                            <label>Patient Id <span className="text-danger">*</span></label>
                             <Field className="form-control" type="text" name="patientNumber" />
                             <ErrorMessage name="patientNumber" component="div" className="text-danger" />
                           </div>
                         </div>
+                        <div className="col-md-4">
+  <div className="field-set">
+    <label>
+      Patient ID Proof <span className="text-danger">*</span>
+    </label>
+
+    <input
+      type="file"
+      multiple
+      className="form-control"
+      accept="image/*,.pdf"
+      onChange={(event) => {
+        const files = event.target.files;
+
+if (files && files.length > 0) {
+  const fileArray = Array.from(files);
+
+  setPreviewDocs(fileArray.map((file) => URL.createObjectURL(file)));
+
+  setFieldValue("id_proof", fileArray);
+}
+      }}
+    />
+
+    <div className="engpatimg">
+      
+      {/* Show newly selected files */}
+      {previewDocs.length > 0 &&
+        previewDocs.map((doc, index) => (
+          <button
+            key={index}
+            type="button"
+            className="viewbtn"
+            onClick={() => window.open(doc, "_blank")}
+          >
+            View {index + 1}
+          </button>
+        ))}
+
+      {/* Show existing docs from API */}
+      {previewDocs.length === 0 &&
+        ispatient?.patient_kyc?.[0]?.id_proof?.map((doc, index) => (
+          <button
+            key={index}
+            type="button"
+            className="viewbtn"
+            onClick={() =>
+              window.open(`${image}/${doc}`, "_blank")
+            }
+          >
+            View {index + 1}
+          </button>
+        ))}
+    </div>
+  </div>
+</div>
                         <div className="col-md-4">
                           <div className="field-set">
                             <label>Patient Profile<span className="text-danger">*</span></label>

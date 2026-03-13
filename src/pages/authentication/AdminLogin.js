@@ -55,7 +55,7 @@ export function AdminLogin(props) {
       localStorage.setItem("permissionArray", user.permissions);
       localStorage.setItem("Role", user.details.role);
       localStorage.setItem("name", user.details.name);
-
+      user.details.role==="Insurance Partner"?navigate("/Admin/Inquiry"):
       navigate("/Dashboard");
     }
   }, [user, navigate]);

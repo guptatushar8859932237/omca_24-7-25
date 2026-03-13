@@ -476,7 +476,7 @@ function PatientDetail() {
         );
         if (response.data?.success) {
           Swal.fire("Deleted!", "Payment has been deleted.", "success");
-          dispatch(GetPatientTreatments())
+          // dispatch(GetPatientTreatments())
           dispatch(GetPatientTreatments({ id: location.state.patientId }));
          getDataapi3(dataC)
         } else {
@@ -3485,7 +3485,7 @@ function PatientDetail() {
                                                                       rel="noopener noreferrer"
                                                                       className="pdfdown"
                                                                     >
-                                                                      View
+                                                                      Download
                                                                     </a>
                                                                   ) : (
                                                                     <span className="text-muted small">
@@ -3508,7 +3508,7 @@ function PatientDetail() {
                                                                       rel="noopener noreferrer"
                                                                       className="pdfdown"
                                                                     >
-                                                                      View
+                                                                  Download
                                                                     </a>
                                                                   ) : (
                                                                     <span className="text-muted small">
