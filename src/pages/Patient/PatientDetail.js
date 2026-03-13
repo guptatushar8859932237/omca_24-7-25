@@ -3725,17 +3725,14 @@ function PatientDetail() {
                                                           <TableCell>
                                                             Document
                                                           </TableCell>
-                                                          {
-                                                            usrFount ==="Admin"?
-                                                            <>
+                                                          
                                                              <TableCell>
                                                             PDF
                                                           </TableCell>
                                                           <TableCell>
                                                             Action
                                                           </TableCell>
-                                                            </>:""
-                                                          }
+                                                            
                                                          
                                                         </TableRow>
                                                       </TableHead>
@@ -3785,9 +3782,7 @@ function PatientDetail() {
                                                                   "-"
                                                                 )}
                                                               </TableCell>
-                                                              {
-                                                                  usrFount ==="Admin"?
-                                                            <>
+                                                             
                                                               <TableCell>
                                                                 <button
                                                                   className="add-button"
@@ -3819,8 +3814,7 @@ function PatientDetail() {
                                                                   }
                                                                 ></i>
                                                               </TableCell>
-                                                            </>:""
-                                                              }
+                                                            
                                                             
                                                             </TableRow>
                                                           ),
@@ -3877,18 +3871,14 @@ function PatientDetail() {
                                                         Report Date
                                                       </TableCell>
 
-                                                      {localStorage.getItem(
-                                                        "Role",
-                                                      ) === "Admin" && (
-                                                        <>
+                                                     
                                                           <TableCell>
                                                             Reports
                                                           </TableCell>
                                                           <TableCell>
                                                             Action
                                                           </TableCell>
-                                                        </>
-                                                      )}
+                                                       
                                                     </TableRow>
                                                   </TableHead>
 
@@ -3917,10 +3907,7 @@ function PatientDetail() {
                                                             )}
                                                           </TableCell>
 
-                                                          {localStorage.getItem(
-                                                            "Role",
-                                                          ) === "Admin" && (
-                                                            <>
+                                                        
                                                               <TableCell>
                                                                 <a
                                                                   href={`${image}${item.treatmentReport}`}
@@ -3946,8 +3933,7 @@ function PatientDetail() {
                                                                   }
                                                                 ></i>
                                                               </TableCell>
-                                                            </>
-                                                          )}
+                                                          
                                                         </TableRow>
                                                       ),
                                                     )}
