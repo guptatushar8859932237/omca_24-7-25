@@ -3415,129 +3415,131 @@ function PatientDetail() {
                                       <>
                                         <div>
                                           <div className="row">
-                                            < className="col-md-12">
-                                              <div className="top-collpse"></div>
-                                              <div className="treat-buttons">
-                                                <button
-                                                  onClick={(e) =>
-                                                    handleClickOpen2(
-                                                      e,
-                                                      selectedTreatmentId,
-                                                    )
-                                                  }
-                                                  className="add-button"
-                                                >
-                                                  <span>
-                                                    <i className="fa fa-plus"></i>
-                                                  </span>{" "}
-                                                </button>
+                                            <div className="col-md-12">
+                                              <div className="top-collpse">
+                                                <div className="treat-buttons">
+                                                  <button
+                                                    onClick={(e) =>
+                                                      handleClickOpen2(
+                                                        e,
+                                                        selectedTreatmentId,
+                                                      )
+                                                    }
+                                                    className="add-button"
+                                                  >
+                                                    <span>
+                                                      <i className="fa fa-plus"></i>
+                                                    </span>{" "}
+                                                  </button>
+                                                </div>
                                               </div>
-                                              </
-                                            </div>
-                                            {attandantFilered.map(
-                                              (item, index) => {
-                                                return (
-                                                  <>
-                                                    <div className="col-md-5">
-                                                      <div className="card attendant-card">
-                                                        <div className="card-body">
-                                                          <div className="detail-row">
-                                                            <label>
-                                                              Name
-                                                            </label>
-                                                            <span>
-                                                              {item?.attendant_fullname ||
-                                                                "N/A"}
-                                                            </span>
-                                                          </div>
-                                                          <div className="detail-row">
-                                                            <label>
-                                                              Relation
-                                                            </label>
-                                                            <span>
-                                                              {item?.attendant_relation ||
-                                                                "N/A"}
-                                                            </span>
-                                                          </div>
-                                                          <div className="detail-row">
-                                                            <label>
-                                                              Contact
-                                                            </label>
-                                                            <span>
-                                                              {item?.attendant_contact ||
-                                                                "N/A"}
-                                                            </span>
-                                                          </div>
-                                                          <div className="detail-row">
-                                                            <label>
-                                                              Country
-                                                            </label>
-                                                            <span>
-                                                              {item?.country ||
-                                                                "N/A"}
-                                                            </span>
-                                                          </div>
-                                                          <div className="detail-row">
-                                                            <label>
-                                                              Attendant
-                                                              Photo
-                                                            </label>
-                                                            <span>
-                                                              {item?.attendant_photo ? (
-                                                                <a
-                                                                  href={`https://sisccltd.com/omca_crm/${item.attendant_photo}`}
-                                                                  target="_blank"
-                                                                  rel="noopener noreferrer"
-                                                                  className="pdfdown"
-                                                                >
-                                                                  View
-                                                                </a>
-                                                              ) : (
-                                                                <span className="text-muted small">
-                                                                  Not
-                                                                  Uploaded
+                                              <div className="row gx-3 gy-3">
+                                                {attandantFilered.map(
+                                                  (item, index) => {
+                                                    return (
+                                                      <>
+                                                        <div className="col-md-6">
+                                                          <div className="card attendant-card">
+                                                            <div className="card-body">
+                                                              <div className="detail-row">
+                                                                <label>
+                                                                  Name
+                                                                </label>
+                                                                <span>
+                                                                  {item?.attendant_fullname ||
+                                                                    "N/A"}
                                                                 </span>
-                                                              )}
-                                                            </span>
-                                                          </div>
-                                                          <div className="detail-row">
-                                                            <label>
-                                                              Attendant
-                                                              Passport
-                                                            </label>
-                                                            <span>
-                                                              {item?.attendant_passport ? (
-                                                                <a
-                                                                  href={`https://sisccltd.com/omca_crm/${item.attendant_passport}`}
-                                                                  target="_blank"
-                                                                  rel="noopener noreferrer"
-                                                                  className="pdfdown"
-                                                                >
-                                                                  View
-                                                                </a>
-                                                              ) : (
-                                                                <span className="text-muted small">
-                                                                  Not Uploaded
+                                                              </div>
+                                                              <div className="detail-row">
+                                                                <label>
+                                                                  Relation
+                                                                </label>
+                                                                <span>
+                                                                  {item?.attendant_relation ||
+                                                                    "N/A"}
                                                                 </span>
-                                                              )}
-                                                            </span>
-                                                          </div>
-                                                          <div className="detail-row">
-                                                            <label>
-                                                              Action
-                                                            </label>
-                                                            <div className="action-icon">
-                                                              <i className="fa-solid fa-pen-to-square"></i>
-                                                              <i className="fa-solid fa-trash"></i>
+                                                              </div>
+                                                              <div className="detail-row">
+                                                                <label>
+                                                                  Contact
+                                                                </label>
+                                                                <span>
+                                                                  {item?.attendant_contact ||
+                                                                    "N/A"}
+                                                                </span>
+                                                              </div>
+                                                              <div className="detail-row">
+                                                                <label>
+                                                                  Country
+                                                                </label>
+                                                                <span>
+                                                                  {item?.country ||
+                                                                    "N/A"}
+                                                                </span>
+                                                              </div>
+                                                              <div className="detail-row">
+                                                                <label>
+                                                                  Attendant
+                                                                  Photo
+                                                                </label>
+                                                                <span>
+                                                                  {item?.attendant_photo ? (
+                                                                    <a
+                                                                      href={`https://sisccltd.com/omca_crm/${item.attendant_photo}`}
+                                                                      target="_blank"
+                                                                      rel="noopener noreferrer"
+                                                                      className="pdfdown"
+                                                                    >
+                                                                      View
+                                                                    </a>
+                                                                  ) : (
+                                                                    <span className="text-muted small">
+                                                                      Not
+                                                                      Uploaded
+                                                                    </span>
+                                                                  )}
+                                                                </span>
+                                                              </div>
+                                                              <div className="detail-row">
+                                                                <label>
+                                                                  Attendant
+                                                                  Passport
+                                                                </label>
+                                                                <span>
+                                                                  {item?.attendant_passport ? (
+                                                                    <a
+                                                                      href={`https://sisccltd.com/omca_crm/${item.attendant_passport}`}
+                                                                      target="_blank"
+                                                                      rel="noopener noreferrer"
+                                                                      className="pdfdown"
+                                                                    >
+                                                                      View
+                                                                    </a>
+                                                                  ) : (
+                                                                    <span className="text-muted small">
+                                                                      Not Uploaded
+                                                                    </span>
+                                                                  )}
+                                                                </span>
+                                                              </div>
+                                                              <div className="detail-row">
+                                                                <label>
+                                                                  Action
+                                                                </label>
+                                                                <div className="action-icon">
+                                                                  <i className="fa-solid fa-pen-to-square"></i>
+                                                                  <i className="fa-solid fa-trash"></i>
+                                                                </div>
+                                                              </div>
                                                             </div>
                                                           </div>
                                                         </div>
-                                                      </div>
-                                                    </div>
-                                                  </>
-                                                );
-                                              },
-                                            )}
+                                                      </>
+                                                    );
+                                                  },
+                                                )}
+                                              </div>
+                                            </div>
                                           </div>
                                         </div>
                                       </>
@@ -3605,17 +3607,13 @@ function PatientDetail() {
                                                         <TableCell>
                                                           Document
                                                         </TableCell>
-                                                        {
-                                                          usrFount === "Admin" ?
-                                                            <>
-                                                              <TableCell>
-                                                                PDF
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                Action
-                                                              </TableCell>
-                                                            </> : ""
-                                                        }
+
+                                                        <TableCell>
+                                                          PDF
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Action
+                                                        </TableCell>
 
                                                       </TableRow>
                                                     </TableHead>
@@ -3665,42 +3663,39 @@ function PatientDetail() {
                                                                 "-"
                                                               )}
                                                             </TableCell>
-                                                            {
-                                                              usrFount === "Admin" ?
-                                                                <>
-                                                                  <TableCell>
-                                                                    <button
-                                                                      className="add-button"
-                                                                      onClick={() => {
-                                                                        navigate(
-                                                                          "/Admin/Patient-Pdfdetails",
-                                                                          {
-                                                                            state: {
-                                                                              data: item?._id,
-                                                                            },
-                                                                          },
-                                                                        );
-                                                                      }}
-                                                                    >
-                                                                      <i className="fa fa-download"></i>
-                                                                    </button>
-                                                                  </TableCell>
-                                                                  <TableCell>
-                                                                    <i
-                                                                      className="fa-solid fa-trash text-danger"
-                                                                      style={{
-                                                                        cursor:
-                                                                          "pointer",
-                                                                      }}
-                                                                      onClick={() =>
-                                                                        deletePaymentInvoice(
-                                                                          item,
-                                                                        )
-                                                                      }
-                                                                    ></i>
-                                                                  </TableCell>
-                                                                </> : ""
-                                                            }
+
+                                                            <TableCell>
+                                                              <button
+                                                                className="add-button"
+                                                                onClick={() => {
+                                                                  navigate(
+                                                                    "/Admin/Patient-Pdfdetails",
+                                                                    {
+                                                                      state: {
+                                                                        data: item?._id,
+                                                                      },
+                                                                    },
+                                                                  );
+                                                                }}
+                                                              >
+                                                                <i className="fa fa-download"></i>
+                                                              </button>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              <i
+                                                                className="fa-solid fa-trash text-danger"
+                                                                style={{
+                                                                  cursor:
+                                                                    "pointer",
+                                                                }}
+                                                                onClick={() =>
+                                                                  deletePaymentInvoice(
+                                                                    item,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                            </TableCell>
+
 
                                                           </TableRow>
                                                         ),
@@ -3737,102 +3732,94 @@ function PatientDetail() {
                                                   Add Report
                                                 </button>
                                               </div>
-                                              </div>
+                                            </div>
 
-                                              <div className="table-responsive">
-                                                <TableContainer component={Paper}>
-                                                  <Table className="table-no-card">
-                                                    <TableHead>
-                                                      <TableRow>
-                                                        <TableCell>
-                                                          Treatment ID
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Report Title
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Report Date
-                                                        </TableCell>
+                                            <div className="table-responsive">
+                                              <TableContainer component={Paper}>
+                                                <Table className="table-no-card">
+                                                  <TableHead>
+                                                    <TableRow>
+                                                      <TableCell>
+                                                        Treatment ID
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        Report Title
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        Report Date
+                                                      </TableCell>
 
-                                                        {localStorage.getItem(
-                                                          "Role",
-                                                        ) === "Admin" && (
-                                                            <>
-                                                              <TableCell>
-                                                                Reports
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                Action
-                                                              </TableCell>
-                                                            </>
-                                                          )}
-                                                      </TableRow>
-                                                    </TableHead>
 
-                                                    <TableBody>
-                                                      {reportsFilered1.map(
-                                                        (item) => (
-                                                          <TableRow
-                                                            key={item._id}
-                                                          >
-                                                            <TableCell>
-                                                              {item.platform === 1
-                                                                ? "C"
-                                                                : "H"}{" "}
-                                                              {item?.treatmentId}
-                                                            </TableCell>
+                                                      <TableCell>
+                                                        Reports
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        Action
+                                                      </TableCell>
 
-                                                            <TableCell>
-                                                              {item?.reportTitle}
-                                                            </TableCell>
+                                                    </TableRow>
+                                                  </TableHead>
 
-                                                            <TableCell>
-                                                              {new Date(
-                                                                item?.treatment_report_date,
-                                                              ).toLocaleDateString(
-                                                                "en-GB",
-                                                              )}
-                                                            </TableCell>
+                                                  <TableBody>
+                                                    {reportsFilered1.map(
+                                                      (item) => (
+                                                        <TableRow
+                                                          key={item._id}
+                                                        >
+                                                          <TableCell>
+                                                            {item.platform === 1
+                                                              ? "C"
+                                                              : "H"}{" "}
+                                                            {item?.treatmentId}
+                                                          </TableCell>
 
-                                                            {localStorage.getItem(
-                                                              "Role",
-                                                            ) === "Admin" && (
-                                                                <>
-                                                                  <TableCell>
-                                                                    <a
-                                                                      href={`${image}${item.treatmentReport}`}
-                                                                      target="_blank"
-                                                                      rel="noreferrer"
-                                                                    >
-                                                                      Download
-                                                                      Report
-                                                                    </a>
-                                                                  </TableCell>
+                                                          <TableCell>
+                                                            {item?.reportTitle}
+                                                          </TableCell>
 
-                                                                  <TableCell>
-                                                                    <i
-                                                                      className="fa-solid fa-trash text-danger"
-                                                                      style={{
-                                                                        cursor:
-                                                                          "pointer",
-                                                                      }}
-                                                                      onClick={() =>
-                                                                        handledeleteReport(
-                                                                          item,
-                                                                        )
-                                                                      }
-                                                                    ></i>
-                                                                  </TableCell>
-                                                                </>
-                                                              )}
-                                                          </TableRow>
-                                                        ),
-                                                      )}
-                                                    </TableBody>
-                                                  </Table>
-                                                </TableContainer>
-                                              </div>
-                                       
+                                                          <TableCell>
+                                                            {new Date(
+                                                              item?.treatment_report_date,
+                                                            ).toLocaleDateString(
+                                                              "en-GB",
+                                                            )}
+                                                          </TableCell>
+
+
+                                                          <TableCell>
+                                                            <a
+                                                              href={`${image}${item.treatmentReport}`}
+                                                              target="_blank"
+                                                              rel="noreferrer"
+                                                            >
+                                                              Download
+                                                              Report
+                                                            </a>
+                                                          </TableCell>
+
+                                                          <TableCell>
+                                                            <i
+                                                              className="fa-solid fa-trash text-danger"
+                                                              style={{
+                                                                cursor:
+                                                                  "pointer",
+                                                              }}
+                                                              onClick={() =>
+                                                                handledeleteReport(
+                                                                  item,
+                                                                )
+                                                              }
+                                                            ></i>
+                                                          </TableCell>
+
+                                                        </TableRow>
+                                                      ),
+                                                    )}
+                                                  </TableBody>
+                                                </Table>
+                                              </TableContainer>
+                                            </div>
+
                                           </div>
                                         </div>
                                       </div>
