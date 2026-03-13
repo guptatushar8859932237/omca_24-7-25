@@ -476,6 +476,8 @@ function PatientDetail() {
         );
         if (response.data?.success) {
           Swal.fire("Deleted!", "Payment has been deleted.", "success");
+          dispatch(GetPatientTreatments())
+          dispatch(GetPatientTreatments({ id: location.state.patientId }));
          getDataapi3(dataC)
         } else {
           toast.error("Failed to delete Payment");
@@ -676,12 +678,14 @@ function PatientDetail() {
       attendant_relation,
       attendant_contact,
       Attende_passport,
+        country,
       Attende_photo,
     } = filesData;
     if (
       !attendant_fullname?.trim() ||
       !attendant_relation?.trim() ||
       !attendant_contact?.trim() ||
+      !country?.trim() ||
       !Attende_passport ||
       !Attende_photo
     ) {
@@ -4811,7 +4815,6 @@ function PatientDetail() {
               value={filesData.dial_code}
               disabled
             />
-
             <input
               type="text"
               name="attendant_contact"
@@ -4858,25 +4861,6 @@ function PatientDetail() {
                   </div>
 </div>
 </div>
-                  {/* <div className="field-set">
-                    <label>
-                      Attendant Contact<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="text"
-                        onKeyPress={(e) => {
-                          handkekeypreees(e);
-                        }}
-                        name="attendant_contact"
-                        className="form-control"
-                        value={filesData.attendant_contact}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </div> */}
-
-                  
                  
                   <DialogActions className="submit-main">
                     <Button
