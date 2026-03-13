@@ -3415,24 +3415,24 @@ function PatientDetail() {
                                       <>
                                         <div>
                                           <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="top-collpse">
-                                                <div className="treat-buttons">
-                                                  <button
-                                                    onClick={(e) =>
-                                                      handleClickOpen2(
-                                                        e,
-                                                        selectedTreatmentId,
-                                                      )
-                                                    }
-                                                    className="add-button"
-                                                  >
-                                                    <span>
-                                                      <i className="fa fa-plus"></i>
-                                                    </span>{" "}
-                                                  </button>
-                                                </div>
+                                            < className="col-md-12">
+                                              <div className="top-collpse"></div>
+                                              <div className="treat-buttons">
+                                                <button
+                                                  onClick={(e) =>
+                                                    handleClickOpen2(
+                                                      e,
+                                                      selectedTreatmentId,
+                                                    )
+                                                  }
+                                                  className="add-button"
+                                                >
+                                                  <span>
+                                                    <i className="fa fa-plus"></i>
+                                                  </span>{" "}
+                                                </button>
                                               </div>
+                                              </
                                             </div>
                                             {attandantFilered.map(
                                               (item, index) => {
@@ -3737,102 +3737,102 @@ function PatientDetail() {
                                                   Add Report
                                                 </button>
                                               </div>
-                                            </div>
+                                              </div>
 
-                                            <div className="table-responsive">
-                                              <TableContainer component={Paper}>
-                                                <Table className="table-no-card">
-                                                  <TableHead>
-                                                    <TableRow>
-                                                      <TableCell>
-                                                        Treatment ID
-                                                      </TableCell>
-                                                      <TableCell>
-                                                        Report Title
-                                                      </TableCell>
-                                                      <TableCell>
-                                                        Report Date
-                                                      </TableCell>
+                                              <div className="table-responsive">
+                                                <TableContainer component={Paper}>
+                                                  <Table className="table-no-card">
+                                                    <TableHead>
+                                                      <TableRow>
+                                                        <TableCell>
+                                                          Treatment ID
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Report Title
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Report Date
+                                                        </TableCell>
 
-                                                      {localStorage.getItem(
-                                                        "Role",
-                                                      ) === "Admin" && (
-                                                          <>
+                                                        {localStorage.getItem(
+                                                          "Role",
+                                                        ) === "Admin" && (
+                                                            <>
+                                                              <TableCell>
+                                                                Reports
+                                                              </TableCell>
+                                                              <TableCell>
+                                                                Action
+                                                              </TableCell>
+                                                            </>
+                                                          )}
+                                                      </TableRow>
+                                                    </TableHead>
+
+                                                    <TableBody>
+                                                      {reportsFilered1.map(
+                                                        (item) => (
+                                                          <TableRow
+                                                            key={item._id}
+                                                          >
                                                             <TableCell>
-                                                              Reports
+                                                              {item.platform === 1
+                                                                ? "C"
+                                                                : "H"}{" "}
+                                                              {item?.treatmentId}
                                                             </TableCell>
+
                                                             <TableCell>
-                                                              Action
+                                                              {item?.reportTitle}
                                                             </TableCell>
-                                                          </>
-                                                        )}
-                                                    </TableRow>
-                                                  </TableHead>
 
-                                                  <TableBody>
-                                                    {reportsFilered1.map(
-                                                      (item) => (
-                                                        <TableRow
-                                                          key={item._id}
-                                                        >
-                                                          <TableCell>
-                                                            {item.platform === 1
-                                                              ? "C"
-                                                              : "H"}{" "}
-                                                            {item?.treatmentId}
-                                                          </TableCell>
+                                                            <TableCell>
+                                                              {new Date(
+                                                                item?.treatment_report_date,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )}
+                                                            </TableCell>
 
-                                                          <TableCell>
-                                                            {item?.reportTitle}
-                                                          </TableCell>
+                                                            {localStorage.getItem(
+                                                              "Role",
+                                                            ) === "Admin" && (
+                                                                <>
+                                                                  <TableCell>
+                                                                    <a
+                                                                      href={`${image}${item.treatmentReport}`}
+                                                                      target="_blank"
+                                                                      rel="noreferrer"
+                                                                    >
+                                                                      Download
+                                                                      Report
+                                                                    </a>
+                                                                  </TableCell>
 
-                                                          <TableCell>
-                                                            {new Date(
-                                                              item?.treatment_report_date,
-                                                            ).toLocaleDateString(
-                                                              "en-GB",
-                                                            )}
-                                                          </TableCell>
-
-                                                          {localStorage.getItem(
-                                                            "Role",
-                                                          ) === "Admin" && (
-                                                              <>
-                                                                <TableCell>
-                                                                  <a
-                                                                    href={`${image}${item.treatmentReport}`}
-                                                                    target="_blank"
-                                                                    rel="noreferrer"
-                                                                  >
-                                                                    Download
-                                                                    Report
-                                                                  </a>
-                                                                </TableCell>
-
-                                                                <TableCell>
-                                                                  <i
-                                                                    className="fa-solid fa-trash text-danger"
-                                                                    style={{
-                                                                      cursor:
-                                                                        "pointer",
-                                                                    }}
-                                                                    onClick={() =>
-                                                                      handledeleteReport(
-                                                                        item,
-                                                                      )
-                                                                    }
-                                                                  ></i>
-                                                                </TableCell>
-                                                              </>
-                                                            )}
-                                                        </TableRow>
-                                                      ),
-                                                    )}
-                                                  </TableBody>
-                                                </Table>
-                                              </TableContainer>
-                                            </div>
-
+                                                                  <TableCell>
+                                                                    <i
+                                                                      className="fa-solid fa-trash text-danger"
+                                                                      style={{
+                                                                        cursor:
+                                                                          "pointer",
+                                                                      }}
+                                                                      onClick={() =>
+                                                                        handledeleteReport(
+                                                                          item,
+                                                                        )
+                                                                      }
+                                                                    ></i>
+                                                                  </TableCell>
+                                                                </>
+                                                              )}
+                                                          </TableRow>
+                                                        ),
+                                                      )}
+                                                    </TableBody>
+                                                  </Table>
+                                                </TableContainer>
+                                              </div>
+                                       
                                           </div>
                                         </div>
                                       </div>

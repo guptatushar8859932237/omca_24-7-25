@@ -415,6 +415,9 @@ const formatRevenueChart = (data) => {
               </div>
             </div>
           </div>
+          {
+            usrFount==="Insurance Partner"?"":
+         <>
           <div className="row">
             <div className="col-md-12">
               <div className="treat-hd">
@@ -1363,6 +1366,7 @@ const formatRevenueChart = (data) => {
               </div>
             </div>  */} 
           </div>
+            </>}
         </div>
       </div>
     </>
