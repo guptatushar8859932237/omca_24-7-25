@@ -50,7 +50,7 @@ export default function EditStaff() {
     name: Yup.string().required("Name is required"),
     role: Yup.string()
       .oneOf(
-        ["Manager", "Staff", "Finance", "Coordinator", "Receptionist"],
+        ["Manager", "Staff", "Finance", "Coordinator", "Receptionist","Insurance Partner","Physiotherapist" , "Nurse"],
         "Invalid role",
       )
       .required("Role is required"),
