@@ -3424,8 +3424,9 @@ function PatientDetail() {
                                                     >
                                                       <span>
                                                         <i className="fa fa-plus"></i>
+
                                                       </span>{" "}
-                                                    </button>
+                                                   Add Attendant </button>
                                                   </div>
                                                 </div>
                                                 {attandantFilered.map(
