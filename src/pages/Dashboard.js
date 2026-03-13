@@ -13,6 +13,8 @@ import { GetAllHositalData } from "../reducer/HospitalSlice";
 import ReactApexChart from "react-apexcharts";
 export default function Dashboard() {
   const [arraycount, setArraycount] = useState([]);
+  const [travelled,setTravelled]=useState({})
+  const [typeCounts,setTypeCounts]=useState({})
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [revenueData, setRevenueData] = useState({
@@ -136,6 +138,8 @@ setHolisticChartData({
   Weekly: formattedFunnel,
   Monthly: formattedFunnel
 });
+setTypeCounts(response.data.patientTypeCounts)
+setTravelled(response.data.patientStatusCounts)
           setCount(response.data);
           setArraycount(response.data.courseAssignmentCounts);
         } else {
@@ -237,6 +241,7 @@ setHolisticChartData({
           },
         },
       );
+      console.log(response.data)
       if (response.data?.success && response.data?.data) {
         return response.data.data.length; // Array ki length return karo
       }
@@ -247,6 +252,7 @@ setHolisticChartData({
     }
   };
   const handleStatusClick = (status) => {
+    console.log(status)
     if (usrFount === "Admin") {
       navigate(`/Admin/patients?status=${encodeURIComponent(status)}`);
     }
@@ -491,26 +497,8 @@ const formatRevenueChart = (data) => {
                 </div>
               </div>
             </div>
-
-            {/* <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3" 
-            // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}
-              >
-                    <div className="dash-widget1">
-                <div className="dash-widget-bg">
-                  <i className="fa-solid fa-server"></i>
-                </div>
-                <div className="dash-widget-info1">
-                  <h3>{count.services}</h3>
-                  <span className="widget-title">Services</span>
-                </div>
-              </div>
-              
-            </div> */}
-
-            {/* FIXED: Treatment count card with actual Treatment data */}
             <div
               className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Earnings")}
             >
               <div className="dash-widget1">
                 <div className="dash-widget-bg">
@@ -524,7 +512,6 @@ const formatRevenueChart = (data) => {
             </div>
             <div
               className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-              // style={{ cursor: "pointer" }} onClick={() => navigate("/Admin/Hospitals")}
               style={{ cursor: "pointer" }}
               onClick={() => handleHolisticClick("staff")}
             >
@@ -538,8 +525,6 @@ const formatRevenueChart = (data) => {
                 </div>
               </div>
             </div>
-
-            {/* Patient Status Heading */}
             <div className="row">
               <div className="col-md-12">
                 <div className="treat-hd">
@@ -548,10 +533,7 @@ const formatRevenueChart = (data) => {
                 </div>
               </div>
             </div>
-
-            {/* Patient Status Cards */}
             <div className="row">
-              {/* Travelled */}
               <div
                 className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
                 style={{ cursor: "pointer" }}
@@ -565,13 +547,11 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-plane"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientStatusCounts["Travelled"] || 0}</h3>
+                    <h3>{travelled.Travelled || 0}</h3>
                     <span className="widget-title">Travelled</span>
                   </div>
                 </div>
               </div>
-
-              {/* Confirmed */}
               <div
                 className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
                 style={{ cursor: "pointer" }}
@@ -585,7 +565,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-check-circle"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientStatusCounts["Confirmed"] || 0}</h3>
+                    <h3>{travelled?.Confirmed || 0}</h3>
                     <span className="widget-title">Confirmed</span>
                   </div>
                 </div>
@@ -605,7 +585,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-clock-o"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientStatusCounts["Pending"] || 0}</h3>
+                    <h3>{travelled?.Pending || 0}</h3>
                     <span className="widget-title">Pending</span>
                   </div>
                 </div>
@@ -625,7 +605,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-pause-circle"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientStatusCounts["On Hold"] || 0}</h3>
+                    <h3>{travelled?.["On Hold"] || 0}</h3>
                     <span className="widget-title">On Hold</span>
                   </div>
                 </div>
@@ -645,7 +625,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-medkit"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientStatusCounts["Treatment Completed"] || 0}</h3>
+                    <h3>{travelled?.["Treatment Completed"] || 0}</h3>
                     <span className="widget-title">Treatment Completed</span>
                   </div>
                 </div>
@@ -665,7 +645,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-times-circle"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientStatusCounts["Cancelled"] || 0}</h3>
+                    <h3>{travelled?.["Cancelled"] || 0}</h3>
                     <span className="widget-title">Cancelled</span>
                   </div>
                 </div>
@@ -684,7 +664,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-home"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientStatusCounts["Local Case"] || 0}</h3>
+                    <h3>{travelled?.["Local Case"] || 0}</h3>
                     <span className="widget-title">Local Case</span>
                   </div>
                 </div>
@@ -704,7 +684,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-phone"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientStatusCounts["Follow Up"] || 0}</h3>
+                    <h3>{travelled?.["Follow Up"] || 0}</h3>
                     <span className="widget-title">Follow Up</span>
                   </div>
                 </div>
@@ -724,7 +704,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-heart-o"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{count?.patientStatusCounts?.["Passed Away"]}</h3>
+                    <h3>{travelled?.["Passed Away"]}</h3>
                     <span className="widget-title">Passed Away</span>
                   </div>
                 </div>
@@ -756,7 +736,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-user"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientTypeCounts["Private"] || 0}</h3>
+                    <h3>{typeCounts?.["Private"] || 0}</h3>
                     <span className="widget-title">Private</span>
                   </div>
                 </div>
@@ -776,7 +756,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-building"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientTypeCounts["Foundation"] || 0}</h3>
+                    <h3>{typeCounts?.["Foundation"] || 0}</h3>
                     <span className="widget-title">Foundation</span>
                   </div>
                 </div>
@@ -796,7 +776,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-shield"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientTypeCounts["Insurance"] || 0}</h3>
+                    <h3>{typeCounts?.["Insurance"] || 0}</h3>
                     <span className="widget-title">Insurance</span>
                   </div>
                 </div>
@@ -816,7 +796,7 @@ const formatRevenueChart = (data) => {
                     <i className="fa fa-user-shield"></i>
                   </div>
                   <div className="dash-widget-info1">
-                    <h3>{patientTypeCounts["Insurance + Private"] || 0}</h3>
+                    <h3>{typeCounts?.["Insurance + Private"] || 0}</h3>
                     <span className="widget-title">Insurance + Private</span>
                   </div>
                 </div>

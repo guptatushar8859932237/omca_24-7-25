@@ -6213,7 +6213,7 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
 .patient-tabs .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
   color: var(--bs-heading-color);
-  font-size: 12px;
+  /* font-size: 12px; */
   font-weight: 500;
 }
 .patient-tabs {
@@ -6717,7 +6717,7 @@ div:where(.swal2-container) .swal2-html-container {
 }
 .para-main-div p {
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
   color: #666;
   margin-bottom: 0px;
 }
@@ -7206,7 +7206,7 @@ input:checked + .slider:before {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 10px 0px 20px !important;
+  padding: 20px 0px !important;
 }
 .service-list h6 {
   font-size: 14px;
@@ -7487,4 +7487,33 @@ input:checked + .slider:before {
   padding: 6px 12px !important;
   font-size: 14px !important;
   color: var(--bs-heading-color) !important;
+}
+
+.collapse-icon {
+  height: 30px;
+  width: 30px;
+  background-color: #ededed;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.collapse-icon i {
+  color: var(--bs-heading-color);
+  font-size: 14px;
+}
+.accor-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* When .collapse.show exists right after .treat-card */
+.treat-card:has(+ .collapse.show) {
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 20px;
+}
+.top-collpse{
+  margin: 20px 0px;
 }

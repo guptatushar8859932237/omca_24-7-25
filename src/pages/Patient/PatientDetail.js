@@ -50,6 +50,7 @@ function PatientDetail() {
   const [pickuptime, setPickuptime] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
   const [images, setImages] = useState([]);
+  const [openIndex, setOpenIndex] = useState(null);
   const [treatemntData1, setTreatemntData1] = useState([]);
   const [errors, setErrors] = useState({});
   const [drivername, setDrivername] = useState("");
@@ -154,7 +155,7 @@ function PatientDetail() {
     paymentMethod: "",
     payment_Date: "",
   });
-   const usrFount = localStorage.getItem('Role')
+  const usrFount = localStorage.getItem('Role')
   useEffect(() => {
     gtdatareportsdata();
     getextraservice();
@@ -219,6 +220,8 @@ function PatientDetail() {
     setOpen5(true);
     setEnqId(enq);
   };
+
+
   const handleClose5 = () => {
     setOpen5(false);
   };
@@ -448,8 +451,8 @@ function PatientDetail() {
     }
   };
 
-  const deletePaymentInvoice =async(item)=>{
-     const swalWithBootstrapButtons = Swal.mixin({
+  const deletePaymentInvoice = async (item) => {
+    const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
         cancelButton: "btn btn-danger",
@@ -467,7 +470,7 @@ function PatientDetail() {
     if (result.isConfirmed) {
       try {
         const response = await axios.delete(
-          `${baseurl}delete_payment/${item._id}`,{
+          `${baseurl}delete_payment/${item._id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -476,9 +479,8 @@ function PatientDetail() {
         );
         if (response.data?.success) {
           Swal.fire("Deleted!", "Payment has been deleted.", "success");
-          // dispatch(GetPatientTreatments())
-          dispatch(GetPatientTreatments({ id: location.state.patientId }));
-         getDataapi3(dataC)
+           getDataapi3(dataC)
+         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         } else {
           toast.error("Failed to delete Payment");
         }
@@ -518,7 +520,7 @@ function PatientDetail() {
         );
         if (response.data?.success) {
           Swal.fire("Deleted!", "Report has been deleted.", "success");
-           getDataapi3(dataC)
+          getDataapi3(dataC)
         } else {
           toast.error("Failed to delete report");
         }
@@ -678,7 +680,7 @@ function PatientDetail() {
       attendant_relation,
       attendant_contact,
       Attende_passport,
-        country,
+      country,
       Attende_photo,
     } = filesData;
     if (
@@ -2282,41 +2284,41 @@ function PatientDetail() {
   //   console.log(treatment_id)
   // }
   const handleclickDeleteTreatment = async (treatment_id) => {
-  console.log(treatment_id);
+    console.log(treatment_id);
 
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to recover this treatment!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#6e7881",
-    confirmButtonText: "Yes, delete it!",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        const response = await axios.delete(
-          `${baseurl}deleteTreatment/${treatment_id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to recover this treatment!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6e7881",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.delete(
+            `${baseurl}deleteTreatment/${treatment_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          if (response.data.success) {
+            Swal.fire("Deleted!", response.data.message, "success");
+            dispatch(GetPatientTreatments({ id: location.state.patientId }));
+          } else {
+            Swal.fire("Error!", response.data.message, "error");
           }
-        );
-
-        if (response.data.success) {
-          Swal.fire("Deleted!", response.data.message, "success");
-         dispatch(GetPatientTreatments({ id: location.state.patientId }));
-        } else {
-          Swal.fire("Error!", response.data.message, "error");
+        } catch (error) {
+          console.error(error);
+          Swal.fire("Error!", "Something went wrong", "error");
         }
-      } catch (error) {
-        console.error(error);
-        Swal.fire("Error!", "Something went wrong", "error");
       }
-    }
-  });
-};
+    });
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -2595,28 +2597,28 @@ function PatientDetail() {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                              <span
-                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                              >
-                                                {item.status}
-                                              </span>
-                                            )}
+                                                <span
+                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                                >
+                                                  {item.status}
+                                                </span>
+                                              )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                            <button
-                                              className="add-button"
-                                              onClick={() =>
-                                                approveReject(
-                                                  info,
-                                                  item.id,
-                                                  "Approved",
-                                                )
-                                              }
-                                            >
-                                              Approve
-                                            </button>
-                                          )}
+                                              <button
+                                                className="add-button"
+                                                onClick={() =>
+                                                  approveReject(
+                                                    info,
+                                                    item.id,
+                                                    "Approved",
+                                                  )
+                                                }
+                                              >
+                                                Approve
+                                              </button>
+                                            )}
                                         </div>
                                       ))}
                                     </div>
@@ -2705,13 +2707,13 @@ function PatientDetail() {
                             activeSubTab,
                           )
                             ? tretment?.filter(
-                                (item) =>
-                                  item.treatment_id === selectedTreatmentId,
-                              )
+                              (item) =>
+                                item.treatment_id === selectedTreatmentId,
+                            )
                             : tretment
                           )?.map((info, index) => {
                             return (
-                              <div className="card-box">
+                              <div className="card-box" id="accordion">
                                 <div className="treat-card">
                                   <div className="sectabmain">
                                     <div className="treat-id">
@@ -2736,7 +2738,6 @@ function PatientDetail() {
                                               ? info.treatment_name
                                               : treatmentNameHeading
                                         }{" "}
-                                        <i className="fa fa-trash text-danger" onClick={()=>{handleclickDeleteTreatment(info.treatment_id)}} ></i>
                                       </h3>
                                       <p className="mb-0">
                                         {/* {info.treatment_status} */}
@@ -2766,674 +2767,681 @@ function PatientDetail() {
                                         </option>
                                       </select>
                                     </div>
-                                    <div className="">
-                                      <ul className="nav nav-tabs treat-tabs">
-                                        <li className="nav-item">
-                                          <button
-                                            className={`nav-link ${activeSubTab === "attendant" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
-                                            onClick={(e) => {
-                                              handleAction(
-                                                e,
-                                                "attendant",
-                                                info,
-                                                info.treatment_name,
-                                              );
-                                            }}
-                                          >
-                                            Add Attendant
-                                          </button>
-                                        </li>
-                                        <li className="nav-item">
-                                          <button
-                                            className={`nav-link ${activeSubTab === "payment" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
-                                            onClick={(e) => {
-                                              handleAction(
-                                                e,
-                                                "payment",
-                                                info,
-                                                info.treatment_name,
-                                              );
-                                            }}
-                                          >
-                                            Payment Details
-                                          </button>
-                                        </li>
-                                        <li className="nav-item">
-                                          <button
-                                            className={`nav-link ${activeSubTab === "reports" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
-                                            onClick={(e) => {
-                                              handleAction(
-                                                e,
-                                                "reports",
-                                                info,
-                                                info.treatment_name,
-                                              );
-                                            }}
-                                          >
-                                            Reports
-                                          </button>
-                                        </li>
-                                        {!info?.Hospital_details?.some(
-                                          (item) => item.hospital_Name,
-                                        ) && (
+                                    <div className="accor-icon">
+                                      <div className="">
+                                        <ul className="nav nav-tabs treat-tabs">
+                                          <li className="nav-item">
+                                            <button
+                                              className={`nav-link ${activeSubTab === "attendant" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                              onClick={(e) => {
+                                                handleAction(
+                                                  e,
+                                                  "attendant",
+                                                  info,
+                                                  info.treatment_name,
+                                                );
+                                              }}
+                                            >
+                                              Add Attendant
+                                            </button>
+                                          </li>
+                                          <li className="nav-item">
+                                            <button
+                                              className={`nav-link ${activeSubTab === "payment" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                              onClick={(e) => {
+                                                handleAction(
+                                                  e,
+                                                  "payment",
+                                                  info,
+                                                  info.treatment_name,
+                                                );
+                                              }}
+                                            >
+                                              Payment Details
+                                            </button>
+                                          </li>
+                                          <li className="nav-item">
+                                            <button
+                                              className={`nav-link ${activeSubTab === "reports" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                              onClick={(e) => {
+                                                handleAction(
+                                                  e,
+                                                  "reports",
+                                                  info,
+                                                  info.treatment_name,
+                                                );
+                                              }}
+                                            >
+                                              Reports
+                                            </button>
+                                          </li>
+                                          {!info?.Hospital_details?.some(
+                                            (item) => item.hospital_Name,
+                                          ) && (
+                                              <li className="nav-item">
+                                                <button
+                                                  className="nav-link"
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "hospital",
+                                                      info,
+                                                    )
+                                                  }
+                                                >
+                                                  + Add Hospital
+                                                </button>
+                                              </li>
+                                            )}
+
                                           <li className="nav-item">
                                             <button
                                               className="nav-link"
                                               onClick={(e) =>
                                                 handleAction(
                                                   e,
-                                                  "hospital",
+                                                  "appointment",
                                                   info,
                                                 )
                                               }
                                             >
-                                              + Add Hospital
+                                              + Add Appointment
                                             </button>
                                           </li>
-                                        )}
+                                          <li className="nav-item">
+                                            <button
+                                              className="nav-link"
+                                              onClick={(e) =>
+                                                handleAction(e, "notes", info)
+                                              }
+                                            >
+                                              + Add Notes
+                                            </button>
+                                          </li>
+                                          <li className="nav-item">
+                                            <button
+                                              className="nav-link"
+                                              onClick={(e) =>
+                                                handleAction(e, "services", info)
+                                              }
+                                            >
+                                              + Add Services
+                                            </button>
+                                          </li>
+                                        </ul>
 
-                                        <li className="nav-item">
-                                          <button
-                                            className="nav-link"
-                                            onClick={(e) =>
-                                              handleAction(
-                                                e,
-                                                "appointment",
-                                                info,
-                                              )
-                                            }
-                                          >
-                                            + Add Appointment
-                                          </button>
-                                        </li>
-                                        <li className="nav-item">
-                                          <button
-                                            className="nav-link"
-                                            onClick={(e) =>
-                                              handleAction(e, "notes", info)
-                                            }
-                                          >
-                                            + Add Notes
-                                          </button>
-                                        </li>
-                                        <li className="nav-item">
-                                          <button
-                                            className="nav-link"
-                                            onClick={(e) =>
-                                              handleAction(e, "services", info)
-                                            }
-                                          >
-                                            + Add Services
-                                          </button>
-                                        </li>
-                                      </ul>
+                                      </div>
+                                      <div className="collapse-icon" onClick={() => setOpenIndex(openIndex === index ? null : index)} aria-expanded={openIndex === index}>
+                                        <i class="fa-solid fa-chevron-down"></i>
+                                      </div>
+                                      <div className="">
+                                        <i className="fa fa-trash text-danger" onClick={() => { handleclickDeleteTreatment(info.treatment_id) }} ></i>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                                <hr></hr>
-                                {activeSubTab === "details" ? (
-                                  <>
-                                    <div className="row gx-3 gy-3">
-                                      <div className="col-md-4">
-                                        <div className="card patientreat">
-                                          <div className="card-header service-list">
-                                            <div className="d-flex">
-                                              <div>
-                                                <h6>Treatment</h6>
-                                              </div>
-                                              <div>
-                                                <h6
-                                                  className="mx-2"
-                                                  style={{ cursor: "pointer" }}
-                                                  onClick={() => {
-                                                    handleclickEdAppointment(
-                                                      info,
-                                                    );
-                                                  }}
-                                                >
-                                                  <i className="fa-solid fa-pen-to-square"></i>
-                                                </h6>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div className="card-body">
-                                            <ul className="trment-list">
-                                              <li>
-                                                <div className="row">
-                                                  <div className="col-md-12">
-                                                    <div className="para-main-div">
-                                                      <p>
-                                                        Name:{" "}
-                                                        {info?.treatment_name}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </li>
-                                              <li>
-                                                <div className="row">
-                                                  <div className="col-md-12">
-                                                    <div className="para-main-div">
-                                                      <p>
-                                                        Charge:{" "}
-                                                        {
-                                                          info.treatment_course_fee
-                                                        }{" "}
-                                                        {info.duration}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </li>
-                                              <li>
-                                                <div className="row">
-                                                  <div className="col-md-12">
-                                                    <div className="para-main-div">
-                                                      <p>
-                                                        Date:{" "}
-                                                        {new Date(
-                                                          info?.treatment_created_at,
-                                                        ).toLocaleDateString(
-                                                          "en-GB",
-                                                        )}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </li>
-                                              <li>
-                                                <div className="row">
-                                                  <div className="col-md-12">
-                                                    <div className="para-main-div">
-                                                      <p>
-                                                        Time:{" "}
-                                                        {new Date(
-                                                          info?.treatment_created_at,
-                                                        ).toLocaleTimeString(
-                                                          [],
-                                                          {
-                                                            hour: "2-digit",
-                                                            minute: "2-digit",
-                                                            second: "2-digit",
-                                                          },
-                                                        )}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </li>
-                                            </ul>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="card patientreat">
-                                          <div className="card-header service-list">
-                                            <h6>Hospital </h6>
-                                          </div>
-                                          <div className="card-body">
-                                            <ul className="trment-list">
-                                              {info?.Hospital_details.map(
-                                                (item, index) => {
-                                                  // console.log(item);
-                                                  return (
-                                                    <>
-                                                      <li key={index}>
-                                                        <div className="row align-items-center">
-                                                          {/* Left Content */}
-                                                          <div className="col-md-10">
-                                                            <div className="para-main-div">
-                                                              <p className="mb-1">
-                                                                <strong>
-                                                                  Name:
-                                                                </strong>{" "}
-                                                                {item.hospital_Name ||
-                                                                  "-"}
-                                                              </p>
-                                                              <p className="mb-0">
-                                                                <strong>
-                                                                  Charge:
-                                                                </strong>{" "}
-                                                                {item.hospital_charge ||
-                                                                  "-"}
-                                                              </p>
-                                                            </div>
-                                                          </div>
-
-                                                          {/* Right Icons */}
-                                                          <div className="col-md-2 text-end">
-                                                            <div className="action-icon">
-                                                              {item.hospital_Name && (
-                                                                <i
-                                                                  className="fa-solid fa-pen-to-square"
-                                                                  onClick={() =>
-                                                                    handledeedit(
-                                                                      info,
-                                                                      item,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              )}
-
-                                                              {item.hospital_Name && (
-                                                                <i
-                                                                  className="fa-solid fa-trash"
-                                                                  onClick={() =>
-                                                                    handledelete(
-                                                                      info,
-                                                                      item,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              )}
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </li>
-                                                    </>
-                                                  );
-                                                },
-                                              )}
-                                            </ul>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      {(() => {
-                                        const freeServices =
-                                          info?.services?.filter(
-                                            (item) =>
-                                              item.service_type === "Free",
-                                          );
-
-                                        if (
-                                          !freeServices ||
-                                          freeServices.length === 0
-                                        )
-                                          return null;
-
-                                        return (
-                                          <div className="col-md-4">
-                                            <div className="card patientreat">
-                                              <div className="card-header service-list action-icon">
-                                                <h6>Free Services</h6>
-                                              </div>
-                                              <div className="card-body">
-                                                <ul className="free-list">
-                                                  {freeServices.map(
-                                                    (item, index) => (
-                                                      <li
-                                                        key={item._id || index}
-                                                      >
-                                                        <div className="row">
-                                                          <div className="col-md-12">
-                                                            <div className="para-main-div d-flex">
-                                                              <div>
-                                                                <p>
-                                                                  {
-                                                                    item.serviceName
-                                                                  }
-                                                                </p>
-                                                              </div>
-                                                              <div>
-                                                                <i
-                                                                  className="fa-solid fa-trash mx-2 text-danger"
-                                                                  style={{
-                                                                    cursor:
-                                                                      "pointer",
-                                                                  }}
-                                                                  onClick={() =>
-                                                                    EditFreeDelete(
-                                                                      item,
-                                                                      info,
-                                                                      index,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              </div>
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </li>
-                                                    ),
-                                                  )}
-                                                </ul>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        );
-                                      })()}
-                                      <div className="col-md-6">
-                                        {info?.services?.length > 0 ? (
+                                <div className={`collapse ${openIndex === index ? "show" : ""}`}>
+                                  {activeSubTab === "details" ? (
+                                    <>
+                                      <div className="row gx-3 gy-3">
+                                        <div className="col-md-4">
                                           <div className="card patientreat">
                                             <div className="card-header service-list">
-                                              <h6>Extra Services</h6>
+                                              <div className="d-flex">
+                                                <div>
+                                                  <h6>Treatment</h6>
+                                                </div>
+                                                <div>
+                                                  <h6
+                                                    className="mx-2"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={() => {
+                                                      handleclickEdAppointment(
+                                                        info,
+                                                      );
+                                                    }}
+                                                  >
+                                                    <i className="fa-solid fa-pen-to-square"></i>
+                                                  </h6>
+                                                </div>
+                                              </div>
                                             </div>
                                             <div className="card-body">
-                                              <div className="table-responsive table-no-card">
-                                                <table className="table-card w-100">
-                                                  <thead>
-                                                    <tr>
-                                                      <th>Service Name</th>
-                                                      <th>Price</th>
-                                                      <th>Valid From</th>
-                                                      <th>Valid To</th>
-                                                      <th>Action</th>
-                                                    </tr>
-                                                  </thead>
-                                                  <tbody>
-                                                    {info?.services?.map(
-                                                      (item, index) => {
-                                                        if (!item.price)
-                                                          return null;
-                                                        return (
-                                                          <tr
-                                                            key={
-                                                              item._id ||
-                                                              item.service_type
-                                                            }
-                                                          >
-                                                            <td>
-                                                              {item.serviceName ||
-                                                                "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item.price}
-                                                            </td>
-                                                            <td>
-                                                              {item.startTime
-                                                                ? new Date(
+                                              <ul className="trment-list">
+                                                <li>
+                                                  <div className="row">
+                                                    <div className="col-md-12">
+                                                      <div className="para-main-div">
+                                                        <p>
+                                                          Name:{" "}
+                                                          {info?.treatment_name}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                                <li>
+                                                  <div className="row">
+                                                    <div className="col-md-12">
+                                                      <div className="para-main-div">
+                                                        <p>
+                                                          Charge:{" "}
+                                                          {
+                                                            info.treatment_course_fee
+                                                          }{" "}
+                                                          {info.duration}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                                <li>
+                                                  <div className="row">
+                                                    <div className="col-md-12">
+                                                      <div className="para-main-div">
+                                                        <p>
+                                                          Date:{" "}
+                                                          {new Date(
+                                                            info?.treatment_created_at,
+                                                          ).toLocaleDateString(
+                                                            "en-GB",
+                                                          )}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                                <li>
+                                                  <div className="row">
+                                                    <div className="col-md-12">
+                                                      <div className="para-main-div">
+                                                        <p>
+                                                          Time:{" "}
+                                                          {new Date(
+                                                            info?.treatment_created_at,
+                                                          ).toLocaleTimeString(
+                                                            [],
+                                                            {
+                                                              hour: "2-digit",
+                                                              minute: "2-digit",
+                                                              second: "2-digit",
+                                                            },
+                                                          )}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                              </ul>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                          <div className="card patientreat">
+                                            <div className="card-header service-list">
+                                              <h6>Hospital </h6>
+                                            </div>
+                                            <div className="card-body">
+                                              <ul className="trment-list">
+                                                {info?.Hospital_details.map(
+                                                  (item, index) => {
+                                                    // console.log(item);
+                                                    return (
+                                                      <>
+                                                        <li key={index}>
+                                                          <div className="row align-items-center">
+                                                            {/* Left Content */}
+                                                            <div className="col-md-10">
+                                                              <div className="para-main-div">
+                                                                <p className="mb-1">
+                                                                  <strong>
+                                                                    Name:
+                                                                  </strong>{" "}
+                                                                  {item.hospital_Name ||
+                                                                    "-"}
+                                                                </p>
+                                                                <p className="mb-0">
+                                                                  <strong>
+                                                                    Charge:
+                                                                  </strong>{" "}
+                                                                  {item.hospital_charge ||
+                                                                    "-"}
+                                                                </p>
+                                                              </div>
+                                                            </div>
+
+                                                            {/* Right Icons */}
+                                                            <div className="col-md-2 text-end">
+                                                              <div className="action-icon">
+                                                                {item.hospital_Name && (
+                                                                  <i
+                                                                    className="fa-solid fa-pen-to-square"
+                                                                    onClick={() =>
+                                                                      handledeedit(
+                                                                        info,
+                                                                        item,
+                                                                      )
+                                                                    }
+                                                                  ></i>
+                                                                )}
+
+                                                                {item.hospital_Name && (
+                                                                  <i
+                                                                    className="fa-solid fa-trash"
+                                                                    onClick={() =>
+                                                                      handledelete(
+                                                                        info,
+                                                                        item,
+                                                                      )
+                                                                    }
+                                                                  ></i>
+                                                                )}
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </li>
+                                                      </>
+                                                    );
+                                                  },
+                                                )}
+                                              </ul>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        {(() => {
+                                          const freeServices =
+                                            info?.services?.filter(
+                                              (item) =>
+                                                item.service_type === "Free",
+                                            );
+
+                                          if (
+                                            !freeServices ||
+                                            freeServices.length === 0
+                                          )
+                                            return null;
+
+                                          return (
+                                            <div className="col-md-4">
+                                              <div className="card patientreat">
+                                                <div className="card-header service-list action-icon">
+                                                  <h6>Free Services</h6>
+                                                </div>
+                                                <div className="card-body">
+                                                  <ul className="free-list">
+                                                    {freeServices.map(
+                                                      (item, index) => (
+                                                        <li
+                                                          key={item._id || index}
+                                                        >
+                                                          <div className="row">
+                                                            <div className="col-md-12">
+                                                              <div className="para-main-div d-flex">
+                                                                <div>
+                                                                  <p>
+                                                                    {
+                                                                      item.serviceName
+                                                                    }
+                                                                  </p>
+                                                                </div>
+                                                                <div>
+                                                                  <i
+                                                                    className="fa-solid fa-trash mx-2 text-danger"
+                                                                    style={{
+                                                                      cursor:
+                                                                        "pointer",
+                                                                    }}
+                                                                    onClick={() =>
+                                                                      EditFreeDelete(
+                                                                        item,
+                                                                        info,
+                                                                        index,
+                                                                      )
+                                                                    }
+                                                                  ></i>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </li>
+                                                      ),
+                                                    )}
+                                                  </ul>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          );
+                                        })()}
+                                        <div className="col-md-6">
+                                          {info?.services?.length > 0 ? (
+                                            <div className="card patientreat">
+                                              <div className="card-header service-list">
+                                                <h6>Extra Services</h6>
+                                              </div>
+                                              <div className="card-body">
+                                                <div className="table-responsive table-no-card">
+                                                  <table className="table-card w-100">
+                                                    <thead>
+                                                      <tr>
+                                                        <th>Service Name</th>
+                                                        <th>Price</th>
+                                                        <th>Valid From</th>
+                                                        <th>Valid To</th>
+                                                        <th>Action</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      {info?.services?.map(
+                                                        (item, index) => {
+                                                          if (!item.price)
+                                                            return null;
+                                                          return (
+                                                            <tr
+                                                              key={
+                                                                item._id ||
+                                                                item.service_type
+                                                              }
+                                                            >
+                                                              <td>
+                                                                {item.serviceName ||
+                                                                  "-"}
+                                                              </td>
+                                                              <td>
+                                                                {item.price}
+                                                              </td>
+                                                              <td>
+                                                                {item.startTime
+                                                                  ? new Date(
                                                                     item.startTime,
                                                                   ).toLocaleDateString(
                                                                     "en-GB",
                                                                   )
-                                                                : "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item.endTime
-                                                                ? new Date(
+                                                                  : "-"}
+                                                              </td>
+                                                              <td>
+                                                                {item.endTime
+                                                                  ? new Date(
                                                                     item.endTime,
                                                                   ).toLocaleDateString(
                                                                     "en-GB",
                                                                   )
-                                                                : "-"}
-                                                            </td>
-                                                            <td>
-                                                              <div className="action-icon">
-                                                                <i
-                                                                  className="fa-solid fa-pen-to-square"
-                                                                  onClick={() => {
-                                                                    hadnlcecEditModal(
-                                                                      item,
-                                                                      info,
-                                                                    );
-                                                                  }}
-                                                                ></i>
-                                                                <i
-                                                                  className="fa-solid fa-trash"
-                                                                  onClick={() => {
-                                                                    handledeltePatientserveice(
-                                                                      item,
-                                                                      info,
-                                                                      index,
-                                                                    );
-                                                                  }}
-                                                                ></i>
-                                                              </div>
-                                                            </td>
-                                                          </tr>
-                                                        );
-                                                      },
-                                                    )}
-                                                  </tbody>
-                                                </table>
+                                                                  : "-"}
+                                                              </td>
+                                                              <td>
+                                                                <div className="action-icon">
+                                                                  <i
+                                                                    className="fa-solid fa-pen-to-square"
+                                                                    onClick={() => {
+                                                                      hadnlcecEditModal(
+                                                                        item,
+                                                                        info,
+                                                                      );
+                                                                    }}
+                                                                  ></i>
+                                                                  <i
+                                                                    className="fa-solid fa-trash"
+                                                                    onClick={() => {
+                                                                      handledeltePatientserveice(
+                                                                        item,
+                                                                        info,
+                                                                        index,
+                                                                      );
+                                                                    }}
+                                                                  ></i>
+                                                                </div>
+                                                              </td>
+                                                            </tr>
+                                                          );
+                                                        },
+                                                      )}
+                                                    </tbody>
+                                                  </table>
+                                                </div>
                                               </div>
                                             </div>
-                                          </div>
-                                        ) : (
-                                          ""
-                                        )}
-                                      </div>
-                                      <div className="col-md-6">
-                                        {info?.treatmentNotes?.length > 0 ? (
-                                          <div className="card patientreat">
-                                            <div className="card-header service-list">
-                                              <h6>Notes</h6>
-                                            </div>
-                                            <div className="card-body">
-                                              <div className="table-responsive table-no-card">
-                                                <table className="table-card w-100">
-                                                  <thead>
-                                                    <tr>
-                                                      <th>Note</th>
-                                                      <th>Date</th>
-                                                      <th>From</th>
-                                                      <th>Action</th>
-                                                    </tr>
-                                                  </thead>
-                                                  <tbody>
-                                                    {info?.treatmentNotes?.map(
-                                                      (item, index) => {
-                                                        return (
-                                                          <tr
-                                                            key={
-                                                              item._id || index
-                                                            }
-                                                          >
-                                                            <td>
-                                                              {item.platform ==
-                                                              "1"
-                                                                ? "C"
-                                                                : "H"}{" "}
-                                                              {item.note || "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item?.date
-                                                                ? new Date(
+                                          ) : (
+                                            ""
+                                          )}
+                                        </div>
+                                        <div className="col-md-6">
+                                          {info?.treatmentNotes?.length > 0 ? (
+                                            <div className="card patientreat">
+                                              <div className="card-header service-list">
+                                                <h6>Notes</h6>
+                                              </div>
+                                              <div className="card-body">
+                                                <div className="table-responsive table-no-card">
+                                                  <table className="table-card w-100">
+                                                    <thead>
+                                                      <tr>
+                                                        <th>Note</th>
+                                                        <th>Date</th>
+                                                        <th>From</th>
+                                                        <th>Action</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      {info?.treatmentNotes?.map(
+                                                        (item, index) => {
+                                                          return (
+                                                            <tr
+                                                              key={
+                                                                item._id || index
+                                                              }
+                                                            >
+                                                              <td>
+                                                                {item.platform ==
+                                                                  "1"
+                                                                  ? "C"
+                                                                  : "H"}{" "}
+                                                                {item.note || "-"}
+                                                              </td>
+                                                              <td>
+                                                                {item?.date
+                                                                  ? new Date(
                                                                     item.date,
                                                                   ).toLocaleDateString(
                                                                     "en-GB",
                                                                   )
+                                                                  : "-"}
+                                                              </td>
+                                                              <td>
+                                                                from dynamic data
+                                                              </td>
+                                                              <td>
+                                                                <div className="action-icon">
+                                                                  <i
+                                                                    className="fa-solid fa-pen-to-square"
+                                                                    onClick={() =>
+                                                                      EditButton(
+                                                                        item,
+                                                                        info,
+                                                                      )
+                                                                    }
+                                                                  ></i>
+                                                                  <i
+                                                                    className="fa-solid fa-trash"
+                                                                    onClick={() =>
+                                                                      EditDelete(
+                                                                        item,
+                                                                        info,
+                                                                      )
+                                                                    }
+                                                                  ></i>
+                                                                </div>
+                                                              </td>
+                                                            </tr>
+                                                          );
+                                                        },
+                                                      )}
+                                                    </tbody>
+                                                  </table>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </div>
+                                        <div className="col-md-12">
+                                          {info?.appointments_details?.length >
+                                            0 ? (
+                                            <div className="card patientreat">
+                                              <div className="card-header service-list">
+                                                <h6>Appointment</h6>
+                                              </div>
+                                              <div className="card-body">
+                                                <div className="table-responsive table-no-card">
+                                                  <table className="table-card w-100">
+                                                    <thead>
+                                                      <tr>
+                                                        <th>ID</th>
+                                                        <th>Vehicle No</th>
+                                                        <th>Driver Name</th>
+                                                        <th>Driver Contact</th>
+                                                        <th>Pickup Time</th>
+                                                        <th>Date</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      {info.appointments_details?.map(
+                                                        (item) => (
+                                                          <tr
+                                                            key={
+                                                              item.appointmentId
+                                                            }
+                                                          >
+                                                            <td>
+                                                              {item.appointmentId}
+                                                            </td>
+                                                            <td>
+                                                              {item.mode !==
+                                                                "online"
+                                                                ? item.vehicle_no
                                                                 : "-"}
                                                             </td>
                                                             <td>
-                                                              from dynamic data
+                                                              {item.mode !==
+                                                                "online"
+                                                                ? item.driver_name
+                                                                : "-"}
                                                             </td>
                                                             <td>
-                                                              <div className="action-icon">
-                                                                <i
-                                                                  className="fa-solid fa-pen-to-square"
-                                                                  onClick={() =>
-                                                                    EditButton(
-                                                                      item,
-                                                                      info,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                                <i
-                                                                  className="fa-solid fa-trash"
-                                                                  onClick={() =>
-                                                                    EditDelete(
-                                                                      item,
-                                                                      info,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              </div>
+                                                              {item.mode !==
+                                                                "online"
+                                                                ? item.driver_contact
+                                                                : "-"}
                                                             </td>
-                                                          </tr>
-                                                        );
-                                                      },
-                                                    )}
-                                                  </tbody>
-                                                </table>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        ) : (
-                                          ""
-                                        )}
-                                      </div>
-                                      <div className="col-md-12">
-                                        {info?.appointments_details?.length >
-                                        0 ? (
-                                          <div className="card patientreat">
-                                            <div className="card-header service-list">
-                                              <h6>Appointment</h6>
-                                            </div>
-                                            <div className="card-body">
-                                              <div className="table-responsive table-no-card">
-                                                <table className="table-card w-100">
-                                                  <thead>
-                                                    <tr>
-                                                      <th>ID</th>
-                                                      <th>Vehicle No</th>
-                                                      <th>Driver Name</th>
-                                                      <th>Driver Contact</th>
-                                                      <th>Pickup Time</th>
-                                                      <th>Date</th>
-                                                      <th>Status</th>
-                                                      <th>Action</th>
-                                                    </tr>
-                                                  </thead>
-                                                  <tbody>
-                                                    {info.appointments_details?.map(
-                                                      (item) => (
-                                                        <tr
-                                                          key={
-                                                            item.appointmentId
-                                                          }
-                                                        >
-                                                          <td>
-                                                            {item.appointmentId}
-                                                          </td>
-                                                          <td>
-                                                            {item.mode !==
-                                                            "online"
-                                                              ? item.vehicle_no
-                                                              : "-"}
-                                                          </td>
-                                                          <td>
-                                                            {item.mode !==
-                                                            "online"
-                                                              ? item.driver_name
-                                                              : "-"}
-                                                          </td>
-                                                          <td>
-                                                            {item.mode !==
-                                                            "online"
-                                                              ? item.driver_contact
-                                                              : "-"}
-                                                          </td>
-                                                          <td>
-                                                            {item.mode !==
-                                                            "online"
-                                                              ? item.pickup_time
-                                                              : "-"}
-                                                          </td>
-                                                          <td>
-                                                            {item.appointment_Date
-                                                              ? new Date(
+                                                            <td>
+                                                              {item.mode !==
+                                                                "online"
+                                                                ? item.pickup_time
+                                                                : "-"}
+                                                            </td>
+                                                            <td>
+                                                              {item.appointment_Date
+                                                                ? new Date(
                                                                   item.appointment_Date,
                                                                 )
                                                                   .toISOString()
                                                                   .slice(0, 10)
-                                                              : ""}
-                                                          </td>
-                                                          <td>
-                                                            {item.status ===
-                                                            "Complete" ? (
-                                                              <span className="badge bg-primary">
-                                                                Completed
-                                                              </span>
-                                                            ) : (
-                                                              <span className="badge bg-primary">
-                                                                {item.status}
-                                                              </span>
-                                                            )}
-                                                          </td>
-                                                          <td className="action-icon">
-                                                            <i
-                                                              className="fa-solid fa-pen-to-square"
-                                                              onClick={() => {
-                                                                handleclickeditfunc(
-                                                                  item,
-                                                                );
-                                                              }}
-                                                            ></i>
-                                                            <i
-                                                              className="fa-solid fa-trash"
-                                                              onClick={() => {
-                                                                handleclickeditdelete(
-                                                                  item,
-                                                                );
-                                                              }}
-                                                            ></i>
-                                                          </td>
-                                                        </tr>
-                                                      ),
-                                                    )}
-                                                  </tbody>
-                                                </table>
+                                                                : ""}
+                                                            </td>
+                                                            <td>
+                                                              {item.status ===
+                                                                "Complete" ? (
+                                                                <span className="badge bg-primary">
+                                                                  Completed
+                                                                </span>
+                                                              ) : (
+                                                                <span className="badge bg-primary">
+                                                                  {item.status}
+                                                                </span>
+                                                              )}
+                                                            </td>
+                                                            <td className="action-icon">
+                                                              <i
+                                                                className="fa-solid fa-pen-to-square"
+                                                                onClick={() => {
+                                                                  handleclickeditfunc(
+                                                                    item,
+                                                                  );
+                                                                }}
+                                                              ></i>
+                                                              <i
+                                                                className="fa-solid fa-trash"
+                                                                onClick={() => {
+                                                                  handleclickeditdelete(
+                                                                    item,
+                                                                  );
+                                                                }}
+                                                              ></i>
+                                                            </td>
+                                                          </tr>
+                                                        ),
+                                                      )}
+                                                    </tbody>
+                                                  </table>
+                                                </div>
                                               </div>
                                             </div>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </div>
+                                      </div>
+                                      <hr></hr>
+                                      <div className="row justify-content-end">
+                                        <div className="col-md-12">
+                                          <div className="total-amount">
+                                            <h6 className="mb-0">
+                                              Total Amount:
+                                            </h6>
+                                            <p>{info.treatment_total_charge}</p>
                                           </div>
-                                        ) : (
-                                          ""
-                                        )}
-                                      </div>
-                                    </div>
-                                    <hr></hr>
-                                    <div className="row justify-content-end">
-                                      <div className="col-md-12">
-                                        <div className="total-amount">
-                                          <h6 className="mb-0">
-                                            Total Amount:
-                                          </h6>
-                                          <p>{info.treatment_total_charge}</p>
+                                        </div>
+                                        <div className="col-md-12">
+                                          <div className="total-amount">
+                                            <h6 className="mb-0">Due Amount:</h6>
+                                            <p>{info.treatment_due_payment}</p>
+                                          </div>
                                         </div>
                                       </div>
-                                      <div className="col-md-12">
-                                        <div className="total-amount">
-                                          <h6 className="mb-0">Due Amount:</h6>
-                                          <p>{info.treatment_due_payment}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </>
-                                ) : (
-                                  ""
-                                )}
-                                {activeSubTab === "attendant" &&
-                                  selectedTreatmentId && (
-                                    <>
-                                      <div>
-                                        <div className="row">
-                                          <div className="col-md-12">
-                                            <div className="card-box">
-                                              <div className="row">
-                                                <div className="col-md-12">
-                                                  <div className="treat-buttons">
-                                                    <button
-                                                      onClick={(e) =>
-                                                        handleClickOpen2(
-                                                          e,
-                                                          selectedTreatmentId,
-                                                        )
-                                                      }
-                                                      className="add-button"
-                                                    >
-                                                      <span>
-                                                        <i className="fa fa-plus"></i>
-
-                                                      </span>{" "}
-                                                   Add Attendant </button>
-                                                  </div>
+                                    </>
+                                  ) : (
+                                    ""
+                                  )}
+                                  {activeSubTab === "attendant" &&
+                                    selectedTreatmentId && (
+                                      <>
+                                        <div>
+                                          <div className="row">
+                                            <div className="col-md-12">
+                                              <div className="top-collpse">
+                                                <div className="treat-buttons">
+                                                  <button
+                                                    onClick={(e) =>
+                                                      handleClickOpen2(
+                                                        e,
+                                                        selectedTreatmentId,
+                                                      )
+                                                    }
+                                                    className="add-button"
+                                                  >
+                                                    <span>
+                                                      <i className="fa fa-plus"></i>
+                                                    </span>{" "}
+                                                Add Attandant  </button>
                                                 </div>
+                                              </div>
+                                              <div className="row gx-3 gy-3">
                                                 {attandantFilered.map(
                                                   (item, index) => {
                                                     return (
                                                       <>
-                                                        <div className="col-md-5">
+                                                        <div className="col-md-6">
                                                           <div className="card attendant-card">
                                                             <div className="card-body">
                                                               <div className="detail-row">
@@ -3512,12 +3520,20 @@ function PatientDetail() {
                                                                     </a>
                                                                   ) : (
                                                                     <span className="text-muted small">
-                                                                      Not
-                                                                      Uploaded
+                                                                      Not Uploaded
                                                                     </span>
                                                                   )}
                                                                 </span>
                                                               </div>
+                                                              {/* <div className="detail-row">
+                                                                <label>
+                                                                  Action
+                                                                </label>
+                                                                <div className="action-icon">
+                                                                  <i className="fa-solid fa-pen-to-square"></i>
+                                                                  <i className="fa-solid fa-trash"></i>
+                                                                </div>
+                                                              </div> */}
                                                             </div>
                                                           </div>
                                                         </div>
@@ -3529,49 +3545,16 @@ function PatientDetail() {
                                             </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    </>
-                                  )}
-                                {activeSubTab === "payment" &&
-                                  selectedTreatmentId && (
-                                    <div>
-                                      <div className="row">
-                                        <div className="col-md-12">
-                                          <>
-                                            {/* {tretment?.map((info, index) => {
-                          console.log(info, "array data","Psychotherapy");
-                          return ( */}
-                                            {/* {tretment
-                                              ?.filter(
-                                                (item) =>
-                                                  item.treatment_name ===
-                                                  treatmentIdFilter,
-                                              )
-                                              .map((info, index) => {
-                                                console.log(treatmentIdFilter);
-                                                return ( */}
-                                            <>
-                                              <div className="card-box">
-                                                <div className="treat-card">
-                                                  <div className="sectabmain">
-                                                    <div className="treat-id">
-                                                      <h3
-                                                        className="mb-0"
-                                                        style={{
-                                                          cursor: "pointer",
-                                                        }}
-                                                        onClick={
-                                                          handleBackToTreatmentList
-                                                        }
-                                                      >
-                                                        {" "}
-                                                        {/* {treatment_course_name} */}
-                                                      </h3>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                <hr></hr>
-                                                <div className="experience-box">
+                                      </>
+                                    )}
+                                  {activeSubTab === "payment" &&
+                                    selectedTreatmentId && (
+                                      <>
+                                        <div>
+                                          <div className="row">
+                                            <div className="col-md-12">
+                                              <div className="experience-box">
+                                                <div className="top-collpse">
                                                   <div className="treat-buttons">
                                                     <button
                                                       onClick={(e) =>
@@ -3599,261 +3582,159 @@ function PatientDetail() {
                                                       Export
                                                     </button>
                                                   </div>
-                                                  {/* <ul className="experience-list"> */}
-                                                  {/* {paymentsFilered.map(
-                                                      (info, index) => {
-                                                        console.log(
-                                                          info,
-                                                          "payment info",
-                                                        );
-                                                        return (
-                                                          <li key={index}>
-                                                            <div className="experience-user">
-                                                              <div className="before-circle"></div>
-                                                            </div>
-
-                                                            <div className="experience-content">
-                                                              <div className="timeline-content">
-                                                                <div>
-                                                                  <div>
-                                                                    Payment Date
-                                                                    -{" "}
-                                                                    {moment(
-                                                                      info?.payment_Date,
-                                                                    ).format(
-                                                                      "L",
-                                                                    )}
-                                                                  </div>
-
-                                                                  <div>
-                                                                    Payment
-                                                                    Method -{" "}
-                                                                    {
-                                                                      info?.paymentMethod
-                                                                    }
-                                                                  </div>
-
-                                                                  <div>
-                                                                    Paid Amount
-                                                                    -{" "}
-                                                                    {
-                                                                      info?.paid_amount
-                                                                    }
-                                                                  </div>
-                                                                  <div>
-                                                                    Paid To -{" "}
-                                                                    {
-                                                                      info?.paid_to
-                                                                    }
-                                                                  </div>
-                                                                  <div>
-                                                                    Paid For -{" "}
-                                                                    {
-                                                                      info?.paid_for
-                                                                    }
-                                                                  </div>
-                                                                  <div>
-                                                                    Notes -{" "}
-                                                                    {
-                                                                      info?.notes
-                                                                    }
-                                                                  </div>
-                                                                  <div>
-                                                                    Document -{" "}
-                                                                    {info?.attachFile && (
-                                                                      <a
-                                                                        href={`https://sisccltd.com/omca_crm/${info?.attachFile}`}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                      >
-                                                                        View
-                                                                        Document
-                                                                      </a>
-                                                                    )}
-                                                                  </div>
-                                                                </div>
-
-                                                                <div>
-                                                                  <button
-                                                                    className="add-button"
-                                                                    onClick={() => {
-                                                                      navigate(
-                                                                        "/Admin/Patient-Pdfdetails",
-                                                                        {
-                                                                          state:
-                                                                            {
-                                                                              data: info?._id,
-                                                                            },
-                                                                        },
-                                                                      );
-                                                                    }}
-                                                                  >
-                                                                    PDF Download
-                                                                  </button>
-                                                                </div>
-                                                              </div>
-                                                            </div>
-                                                          </li>
-                                                        );
-                                                      },
-                                                    )} */}
-                                                  {/* </ul> */}
-                                                  <TableContainer
-                                                    component={Paper}
-                                                  >
-                                                    <Table className="table-no-card">
-                                                      <TableHead>
-                                                        <TableRow>
-                                                          <TableCell>
-                                                            Payment Date
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Payment Method
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Payment Amount
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Paid To
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Paid For
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Notes
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Document
-                                                          </TableCell>
-                                                          
-                                                             <TableCell>
-                                                            PDF
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Action
-                                                          </TableCell>
-                                                            
-                                                         
-                                                        </TableRow>
-                                                      </TableHead>
-                                                      <TableBody>
-                                                        {paymentsFilered.map(
-                                                          (item) => (
-                                                            <TableRow
-                                                              key={item._id}
-                                                            >
-                                                              <TableCell>
-                                                                {new Date(
-                                                                  item?.payment_Date,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                )}
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {
-                                                                  item?.paymentMethod
-                                                                }
-                                                              </TableCell>
-
-                                                              <TableCell>
-                                                                {
-                                                                  item?.paid_amount
-                                                                }
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {item?.paid_to}
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {item?.paid_for}
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {item?.notes}
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {item?.attachFile ? (
-                                                                  <a
-                                                                    href={`https://sisccltd.com/omca_crm/${item.attachFile}`}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                  >
-                                                                    <i className="fa fa-eye text-black"></i>
-                                                                  </a>
-                                                                ) : (
-                                                                  "-"
-                                                                )}
-                                                              </TableCell>
-                                                             
-                                                              <TableCell>
-                                                                <button
-                                                                  className="add-button"
-                                                                  onClick={() => {
-                                                                    navigate(
-                                                                      "/Admin/Patient-Pdfdetails",
-                                                                      {
-                                                                        state: {
-                                                                          data: item?._id,
-                                                                        },
-                                                                      },
-                                                                    );
-                                                                  }}
-                                                                >
-                                                                  <i className="fa fa-download"></i>
-                                                                </button>
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                <i
-                                                                  className="fa-solid fa-trash text-danger"
-                                                                  style={{
-                                                                    cursor:
-                                                                      "pointer",
-                                                                  }}
-                                                                  onClick={() =>
-                                                                    deletePaymentInvoice(
-                                                                      item,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              </TableCell>
-                                                            
-                                                            
-                                                            </TableRow>
-                                                          ),
-                                                        )}
-                                                      </TableBody>
-                                                    </Table>
-                                                  </TableContainer>
                                                 </div>
+                                                <TableContainer
+                                                  component={Paper}
+                                                >
+                                                  <Table className="table-no-card">
+                                                    <TableHead>
+                                                      <TableRow>
+                                                        <TableCell>
+                                                          Payment Date
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Payment Method
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Payment Amount
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Paid To
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Paid For
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Notes
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Document
+                                                        </TableCell>
+
+                                                        <TableCell>
+                                                          PDF
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Action
+                                                        </TableCell>
+
+                                                      </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                      {paymentsFilered.map(
+                                                        (item) => (
+                                                          <TableRow
+                                                            key={item._id}
+                                                          >
+                                                            <TableCell>
+                                                              {new Date(
+                                                                item?.payment_Date,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              {
+                                                                item?.paymentMethod
+                                                              }
+                                                            </TableCell>
+
+                                                            <TableCell>
+                                                              {
+                                                                item?.paid_amount
+                                                              }
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              {item?.paid_to}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              {item?.paid_for}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              {item?.notes}
+                                                            </TableCell>
+                                                            <TableCell className="action-btn">
+                                                              {item?.attachFile ? (
+                                                                <a
+                                                                  href={`https://sisccltd.com/omca_crm/${item.attachFile}`}
+                                                                  target="_blank"
+                                                                  rel="noopener noreferrer"
+                                                                >
+                                                                  <i className="fa fa-eye"></i>
+                                                                </a>
+                                                              ) : (
+                                                                "-"
+                                                              )}
+                                                            </TableCell>
+
+                                                            <TableCell>
+                                                              <button
+                                                                className="add-button"
+                                                                onClick={() => {
+                                                                  navigate(
+                                                                    "/Admin/Patient-Pdfdetails",
+                                                                    {
+                                                                      state: {
+                                                                        data: item?._id,
+                                                                      },
+                                                                    },
+                                                                  );
+                                                                }}
+                                                              >
+                                                                <i className="fa fa-download"></i>
+                                                              </button>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              <i
+                                                                className="fa-solid fa-trash text-danger"
+                                                                style={{
+                                                                  cursor:
+                                                                    "pointer",
+                                                                }}
+                                                                onClick={() =>
+                                                                  deletePaymentInvoice(
+                                                                    item,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                            </TableCell>
+
+
+                                                          </TableRow>
+                                                        ),
+                                                      )}
+                                                    </TableBody>
+                                                  </Table>
+                                                </TableContainer>
                                               </div>
-                                            </>
-                                            {/* ); */}
-                                            {/* })} */}
-                                          </>
-                                          {/* )} */}
+                                            </div>
+                                          </div>
                                         </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                {activeSubTab === "reports" &&
-                                  selectedTreatmentId && (
-                                    <div>
-                                      <div className="row">
-                                        <div className="col-md-12">
-                                          <div className="card-box mb-4">
-                                            <div className="treat-buttons">
-                                              <button
-                                                className="add-button"
-                                                onClick={(e) =>
-                                                  handleClickOpen10(
-                                                    e,
-                                                    selectedTreatmentId,
-                                                  )
-                                                }
-                                              >
-                                                <span>
-                                                  <i className="fa fa-plus"></i>
-                                                </span>
-                                                Add Report
-                                              </button>
+                                      </>
+                                    )
+                                  }
+                                  {activeSubTab === "reports" &&
+                                    selectedTreatmentId && (
+                                      <div>
+                                        <div className="row">
+                                          <div className="col-md-12">
+                                            <div className="top-collpse">
+                                              <div className="treat-buttons">
+                                                <button
+                                                  className="add-button"
+                                                  onClick={(e) =>
+                                                    handleClickOpen10(
+                                                      e,
+                                                      selectedTreatmentId,
+                                                    )
+                                                  }
+                                                >
+                                                  <span>
+                                                    <i className="fa fa-plus"></i>
+                                                  </span>
+                                                  Add Report
+                                                </button>
+                                              </div>
                                             </div>
 
                                             <div className="table-responsive">
@@ -3871,14 +3752,14 @@ function PatientDetail() {
                                                         Report Date
                                                       </TableCell>
 
-                                                     
-                                                          <TableCell>
-                                                            Reports
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Action
-                                                          </TableCell>
-                                                       
+
+                                                      <TableCell>
+                                                        Reports
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        Action
+                                                      </TableCell>
+
                                                     </TableRow>
                                                   </TableHead>
 
@@ -3907,33 +3788,33 @@ function PatientDetail() {
                                                             )}
                                                           </TableCell>
 
-                                                        
-                                                              <TableCell>
-                                                                <a
-                                                                  href={`${image}${item.treatmentReport}`}
-                                                                  target="_blank"
-                                                                  rel="noreferrer"
-                                                                >
-                                                                  Download
-                                                                  Report
-                                                                </a>
-                                                              </TableCell>
 
-                                                              <TableCell>
-                                                                <i
-                                                                  className="fa-solid fa-trash text-danger"
-                                                                  style={{
-                                                                    cursor:
-                                                                      "pointer",
-                                                                  }}
-                                                                  onClick={() =>
-                                                                    handledeleteReport(
-                                                                      item,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              </TableCell>
-                                                          
+                                                          <TableCell>
+                                                            <a
+                                                              href={`${image}${item.treatmentReport}`}
+                                                              target="_blank"
+                                                              rel="noreferrer"
+                                                            >
+                                                              Download
+                                                              Report
+                                                            </a>
+                                                          </TableCell>
+
+                                                          <TableCell>
+                                                            <i
+                                                              className="fa-solid fa-trash text-danger"
+                                                              style={{
+                                                                cursor:
+                                                                  "pointer",
+                                                              }}
+                                                              onClick={() =>
+                                                                handledeleteReport(
+                                                                  item,
+                                                                )
+                                                              }
+                                                            ></i>
+                                                          </TableCell>
+
                                                         </TableRow>
                                                       ),
                                                     )}
@@ -3941,11 +3822,12 @@ function PatientDetail() {
                                                 </Table>
                                               </TableContainer>
                                             </div>
+
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  )}
+                                    )}
+                                </div>
                               </div>
                             );
                           })}
@@ -3957,8 +3839,8 @@ function PatientDetail() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div >
+      </div >
       {/* treatment-plan */}
       <React.Fragment>
         <Dialog
@@ -4699,38 +4581,38 @@ function PatientDetail() {
                   <div className="row">
                     <div className="col-6">
                       <div className="field-set">
-                    <label>
-                      Name<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="text"
-                        name="attendant_fullname"
-                        className="form-control"
-                        value={filesData.attendant_fullname}
-                        onChange={handleInputChange}
-                      />
+                        <label>
+                          Name<span className="text-danger">*</span>
+                        </label>
+                        <div className="upload-input">
+                          <input
+                            type="text"
+                            name="attendant_fullname"
+                            className="form-control"
+                            value={filesData.attendant_fullname}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="field-set">
+                        <label>
+                          Attendant Relation<span className="text-danger">*</span>
+                        </label>
+                        <div className="upload-input">
+                          <input
+                            type="text"
+                            name="attendant_relation"
+                            className="form-control"
+                            value={filesData.attendant_relation}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                    </div>
-<div className="col-6">
-  <div className="field-set">
-                    <label>
-                      Attendant Relation<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="text"
-                        name="attendant_relation"
-                        className="form-control"
-                        value={filesData.attendant_relation}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </div>
-</div>
-                  </div>
-                 {/* <div className="field-set">
+                  {/* <div className="field-set">
   <div className="">
     <label>
       Country<span className="text-danger">*</span>
@@ -4761,94 +4643,114 @@ function PatientDetail() {
     />
   </div>
 </div> */}
-  <div className="row">
-    <div className="col-6">
- <div className="field-set">
-          <label>
-            Country<span className="text-danger">*</span>
-          </label>
+                  <div className="row">
+                    <div className="col-6">
+                      <div className="field-set">
+                        <label>
+                          Country<span className="text-danger">*</span>
+                        </label>
 
-          <Autocomplete
-            options={Countries || []}
-            getOptionLabel={(option) => option?.name || ""}
-            value={
-              Countries?.find(
-                (country) => country.name === filesData.country
-              ) || null
-            }
-            onChange={(event, newValue) => {
-              setFilesData({
-                ...filesData,
-                country: newValue?.name || "",
-                dial_code: newValue?.dial_code || "",
-              });
-            }}
-            renderInput={(params) => (
-              <TextField {...params} placeholder="Select Country" size="small" />
-            )}
-          />
-        </div>
-    </div>
-    <div className="col-6">
- <div className="field-set">
-          <label>
-            Attendant Contact<span className="text-danger">*</span>
-          </label>
+                        <Autocomplete
+                          options={Countries || []}
+                          getOptionLabel={(option) => option?.name || ""}
+                          value={
+                            Countries?.find(
+                              (country) => country.name === filesData.country
+                            ) || null
+                          }
+                          onChange={(event, newValue) => {
+                            setFilesData({
+                              ...filesData,
+                              country: newValue?.name || "",
+                              dial_code: newValue?.dial_code || "",
+                            });
+                          }}
+                          renderInput={(params) => (
+                            <TextField {...params} placeholder="Select Country" size="small" />
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="field-set">
+                        <label>
+                          Attendant Contact<span className="text-danger">*</span>
+                        </label>
 
-          <div className="country-code">
-            <input
-              type="text"
-              className="form-control code-dial"
-              value={filesData.dial_code}
-              disabled
-            />
-            <input
-              type="text"
-              name="attendant_contact"
-              className="form-control code-in"
-              value={filesData.attendant_contact}
-              onKeyPress={handkekeypreees}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-    </div>
+                        <div className="country-code">
+                          <input
+                            type="text"
+                            className="form-control code-dial"
+                            value={filesData.dial_code}
+                            disabled
+                          />
 
-  </div>
-<div className="row">
-<div className="col-6">
-  <div className="field-set">
+                          <input
+                            type="text"
+                            name="attendant_contact"
+                            className="form-control code-in"
+                            value={filesData.attendant_contact}
+                            onKeyPress={handkekeypreees}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div className="row">
+                    <div className="col-6">
+                      <div className="field-set">
+                        <label>
+                          Attendant Passport<span className="text-danger">*</span>
+                        </label>
+                        <div className="upload-input">
+                          <input
+                            type="file"
+                            className="form-control"
+                            onChange={(e) =>
+                              handleFileChange(e, "Attende_passport")
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="field-set">
+                        <label>
+                          Attendant Photo<span className="text-danger">*</span>
+                        </label>
+                        <div className="upload-input">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="form-control"
+                            onChange={(e) => handleFileChange(e, "Attende_photo")}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* <div className="field-set">
                     <label>
-                      Attendant Passport<span className="text-danger">*</span>
+                      Attendant Contact<span className="text-danger">*</span>
                     </label>
                     <div className="upload-input">
                       <input
-                        type="file"
+                        type="text"
+                        onKeyPress={(e) => {
+                          handkekeypreees(e);
+                        }}
+                        name="attendant_contact"
                         className="form-control"
-                        onChange={(e) =>
-                          handleFileChange(e, "Attende_passport")
-                        }
+                        value={filesData.attendant_contact}
+                        onChange={handleInputChange}
                       />
                     </div>
-                  </div>
-</div>
-<div className="col-6">
-   <div className="field-set">
-                    <label>
-                      Attendant Photo<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="form-control"
-                        onChange={(e) => handleFileChange(e, "Attende_photo")}
-                      />
-                    </div>
-                  </div>
-</div>
-</div>
-                 
+                  </div> */}
+
+
+
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"

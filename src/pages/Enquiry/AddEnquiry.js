@@ -356,7 +356,7 @@ export default function AddEnquiry() {
                         <div className="field-set">
                           <label>
                             {" "}
-                            Phone No / WhatsApp With Country Code
+                            Phone No / WhatsApp
                             <span className="text-danger">*</span>
                           </label>
                           <div

@@ -322,7 +322,7 @@ export default function EditEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Passport Number
+                            NIC / Passport
                             <span className="text-danger">*</span>
                           </label>
                           <Field
@@ -390,7 +390,7 @@ export default function EditEnquiry() {
                         <div className="field-set">
                           <label>
                             {" "}
-                            Phone No / WhatsApp With Country Code
+                            Phone No. / WhatsApp 
                             <span className="text-danger">*</span>
                           </label>
                           <div className="country-code">
@@ -535,7 +535,7 @@ export default function EditEnquiry() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Emergency Contact No </label>
+                          <label>Emergency Contact No<span className="text-danger">*</span></label>
                           <div className="country-code">
                             <Field
                               className="form-control code-dial"
@@ -557,7 +557,7 @@ export default function EditEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Id Proof{" "}
+                            Patient Id Proof<span className="text-danger">*</span>{" "}
                             <span
                               className="text-danger"
                               data-bs-placement="right"
@@ -578,8 +578,8 @@ export default function EditEnquiry() {
                               setFieldValue("patient_id_proof", files);
                             }}
                           />
-                          {/* <div className="engpatimg">
-                            {Array.isArray(editenquiry.patient_id_proof) &&
+                          <div className="engpatimg">
+                            {/* {Array.isArray(editenquiry.patient_id_proof) &&
                               editenquiry.patient_id_proof.map(
                                 (file, index) => {
                                   const type = getFileType(file);
@@ -604,8 +604,8 @@ export default function EditEnquiry() {
                                   );
                                 },
                               )
-                            ) }
-                          </div> */}
+                            ) } */}
+                          </div>
                           <div className="engpatimg">
                             {Array.isArray(editenquiry?.patient_id_proof) &&
                               editenquiry.patient_id_proof.length > 0 &&
@@ -632,10 +632,10 @@ export default function EditEnquiry() {
                                           window.open(fileUrl, "_blank")
                                         }
                                       >
-                                        {type === "image" && "View Image"}
-                                        {type === "pdf" && "View PDF"}
-                                        {type === "word" && "View Word"}
-                                        {type === "excel" && "View Excel"}
+                                        {type === "image" && "View"}
+                                        {type === "pdf" && "View"}
+                                        {type === "word" && "View"}
+                                        {type === "excel" && "View"}
                                         {![
                                           "image",
                                           "pdf",
@@ -659,7 +659,7 @@ export default function EditEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Profile{" "}
+                            Patient Profile<span className="text-danger">*</span>{" "}
                             <span
                               className="text-danger"
                               data-bs-placement="right"
@@ -700,7 +700,7 @@ export default function EditEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Referral Name<span className="text-danger"></span>
+                            Referral Name<span className="text-danger">*</span>
                           </label>
                           <Field
                             className="form-control"
@@ -765,7 +765,7 @@ export default function EditEnquiry() {
                             Treating In Country
                             <span className="text-danger">*</span>
                           </label>
-                          <Field name="treatingIn">
+                          <Field name="treatingIn" >
                             {({ field, form: { setFieldValue }, meta }) => (
                               <FormControl
                                 fullWidth
@@ -782,6 +782,13 @@ export default function EditEnquiry() {
                                       "treatingIn",
                                       e.target.value,
                                     );
+                                  }}
+                                  MenuProps={{
+                                    PaperProps: {
+                                      style: {
+                                        maxHeight: 250,
+                                      },
+                                    },
                                   }}
                                 >
                                   <MenuItem value="">
@@ -866,7 +873,7 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Contact Number
-                                <span className="text-danger"></span>
+                                <span className="text-danger">*</span>
                               </label>
                               <div className="country-code">
                                 <Field
@@ -967,7 +974,7 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Address
-                                <span className="text-danger"></span>
+                                <span className="text-danger">*</span>
                               </label>
                               <Field
                                 className="form-control"
