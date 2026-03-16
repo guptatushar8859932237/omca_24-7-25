@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { GetPatientTreatments } from "../../reducer/PatientTreatmentSlice";
 import { AddHospitalForPatient } from "../../reducer/PatientTreatmentSlice";
 import { GetAllHositalData } from "../../reducer/HospitalSlice";
+import { GetAllCountries, GetAllCountries2 } from "../../reducer/Countries";
 import TextField from "@mui/material/TextField";
 import Swal from "sweetalert2";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -54,7 +55,7 @@ function PatientDetail() {
   const [treatemntData1, setTreatemntData1] = useState([]);
   const [errors, setErrors] = useState({});
   const [drivername, setDrivername] = useState("");
-  const { Countries } = useSelector((state) => state.Countries);
+  // const { Countries } = useSelector((state) => state.Countries);
   const [showModal, setShowModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [notesID, setNotesID] = useState("");
@@ -82,6 +83,7 @@ function PatientDetail() {
   const [dataB, setDataB] = useState("");
   const location = useLocation();
   const dispatch = useDispatch();
+  const { Countries } = useSelector((state) => state.Countries);
   const { PatientTreatments, loading, error } = useSelector(
     (state) => state.PatientTreatments,
   );
@@ -194,6 +196,7 @@ function PatientDetail() {
     // console.log(error, hospital);
   }, [dispatch]);
   useEffect(() => {
+     dispatch(GetAllCountries2());
     dispatch(GetPatientTreatments({ id: location.state.patientId }));
   }, [dispatch, location.state.patientId]);
   useEffect(() => {
@@ -319,8 +322,11 @@ function PatientDetail() {
       });
   };
   useEffect(() => {
+      
     GetActiveService();
   }, []);
+
+
 
   const handlesubmitdata = async () => {
     const servipostdata = {
@@ -450,7 +456,6 @@ function PatientDetail() {
       setIsSubmitting(false);
     }
   };
-
   const deletePaymentInvoice = async (item) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {

@@ -37,10 +37,10 @@ export default function Navbar() {
   return (
     <div className="header">
       <div className="header-left">
-        <Link to="/" className="logo">
+        <Link  className="logo">
           <img src={logo} height="40" alt="" />
         </Link>
-        <Link to="/" className="logo-small">
+        <Link  className="logo-small">
           <img src={logodark} height="35" width="35" alt="" />
         </Link>
       </div>

@@ -262,7 +262,6 @@ setTravelled(response.data.patientStatusCounts)
       navigate(`/Admin/patients?type=${encodeURIComponent(type)}`);
   };
   const handleHolisticClick = (type) => {
-    if (usrFount !== "Admin") return;
     switch (type) {
       case "enquiry":
         navigate("/Admin/inquiry");
@@ -510,7 +509,8 @@ const formatRevenueChart = (data) => {
                 </div>
               </div>
             </div>
-            <div
+            {
+              usrFount ==="Admin"?  <div
               className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
               style={{ cursor: "pointer" }}
               onClick={() => handleHolisticClick("staff")}
@@ -524,7 +524,10 @@ const formatRevenueChart = (data) => {
                   <span className="widget-title">Total Staff</span>
                 </div>
               </div>
-            </div>
+            </div>:""
+             
+            }
+           
             <div className="row">
               <div className="col-md-12">
                 <div className="treat-hd">

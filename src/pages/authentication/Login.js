@@ -72,7 +72,7 @@ export const Login = () => {
 
     return isValid;
   };
-  const submitdata = (e) => {
+  const asubmitdata = (e) => {
     e.preventDefault();
 
     if (validate()) {

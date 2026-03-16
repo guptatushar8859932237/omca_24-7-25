@@ -15,6 +15,7 @@ import { DeletePatient } from "../../reducer/PatientsSlice";
 import Swal from "sweetalert2";
 import { StatusPatient } from "../../reducer/PatientsSlice";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import axios from "axios";
 import { baseurl } from "../../Basurl/Baseurl";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -35,7 +36,6 @@ import { toast } from "react-toastify";
 import { usePDF } from "react-to-pdf";
 import Loader from "../../components/Loader";
 import { useSearchParams } from "react-router-dom";
-
 
 export default function Patient() {
   const role = localStorage.getItem("Role");
@@ -61,7 +61,8 @@ export default function Patient() {
   const [filterValue, setFilterValue] = useState("");
   const [searchApiData, setSearchApiData] = useState([]);
   const [pdfRowLimit, setPdfRowLimit] = useState(null);
-
+  const [orderBy, setOrderBy] = useState("");
+  const [order, setOrder] = useState("asc");
   const [report, setReport] = useState({
     country: " ",
     gender: " ",
@@ -70,13 +71,13 @@ export default function Patient() {
 
   const [searchParams] = useSearchParams();
 
-const statusFromUrl = searchParams.get("status");
-const typeFromUrl = searchParams.get("type");
+  const statusFromUrl = searchParams.get("status");
+  const typeFromUrl = searchParams.get("type");
   const dashboardFilterApplied = useRef(false);
   // Read dashboard filter values ONCE from location.state at mount time.
   // We capture them into a ref so they survive the state-clearing navigate.
-  const initialStatusFilter = useRef(location.state?.status || '');
-  const initialTypeFilter = useRef(location.state?.type || '');
+  const initialStatusFilter = useRef(location.state?.status || "");
+  const initialTypeFilter = useRef(location.state?.type || "");
 
   const handleJobTitleChange = (event, value) => {
     setSelectedJobTitle(value);
@@ -90,24 +91,17 @@ const typeFromUrl = searchParams.get("type");
       setTreatmentname(Treatment);
     }
   }, [Treatment]);
-useEffect(() => {
-  dispatch(
-    GetAllPatients({
-      page,
-      limit: rowsPerPage,
-      search: searchTerm,
-      p_status: statusFromUrl || "",
-      patient_type_new: typeFromUrl || "",
-    })
-  );
-}, [
-  dispatch,
-  page,
-  rowsPerPage,
-  searchTerm,
-  statusFromUrl,
-  typeFromUrl,
-]);
+  useEffect(() => {
+    dispatch(
+      GetAllPatients({
+        page,
+        limit: rowsPerPage,
+        search: searchTerm,
+        p_status: statusFromUrl || "",
+        patient_type_new: typeFromUrl || "",
+      }),
+    );
+  }, [dispatch, page, rowsPerPage, searchTerm, statusFromUrl, typeFromUrl]);
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     setPage(1);
@@ -353,27 +347,27 @@ useEffect(() => {
   const closeFitler = () => {
     setOpenFilter(false);
   };
-  const filterdataapi = async (value, filterType = 'status') => {
+  const filterdataapi = async (value, filterType = "status") => {
     console.log("Filtering by:", filterType, value);
     try {
       let response;
-      if (filterType === 'status') {
+      if (filterType === "status") {
         response = await axios.get(
           `${baseurl}get_patients_by_status?p_status=${encodeURIComponent(value)}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
-      } else if (filterType === 'type') {
+      } else if (filterType === "type") {
         response = await axios.get(
           `${baseurl}get_patient_type_new?patient_type_new=${encodeURIComponent(value)}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
       }
       setRows(response.data.data);
@@ -385,13 +379,47 @@ useEffect(() => {
     }
   };
   const filterdataapiExisting = async () => {
-    const statusValues = ["Travelled", "Confirmed", "Pending", "On Hold", "Treatment Completed", "Cancelled", "Local Case", "Follow Up", "Passed Away"];
-    const typeValues = ["Private", "Foundation", "Insurance", "Insurance + Private"];
+    const statusValues = [
+      "Travelled",
+      "Confirmed",
+      "Pending",
+      "On Hold",
+      "Treatment Completed",
+      "Cancelled",
+      "Local Case",
+      "Follow Up",
+      "Passed Away",
+    ];
+    const typeValues = [
+      "Private",
+      "Foundation",
+      "Insurance",
+      "Insurance + Private",
+    ];
     if (statusValues.includes(onVaue)) {
-      await filterdataapi(onVaue, 'status');
+      await filterdataapi(onVaue, "status");
     } else if (typeValues.includes(onVaue)) {
-      await filterdataapi(onVaue, 'type');
+      await filterdataapi(onVaue, "type");
     }
+  };
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    const direction = isAsc ? "desc" : "asc";
+
+    setOrder(direction);
+    setOrderBy(property);
+
+    const sortedRows = [...rows].sort((a, b) => {
+      const valueA = a[property] || "";
+      const valueB = b[property] || "";
+
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setRows(sortedRows);
   };
   return (
     <>
@@ -446,27 +474,37 @@ useEffect(() => {
                             <MenuItem value="" disabled>
                               <em>Select Filter</em>
                             </MenuItem>
-                            
-                            <MenuItem disabled style={{ fontWeight: 'bold', color: '#666' }}>
+
+                            <MenuItem
+                              disabled
+                              style={{ fontWeight: "bold", color: "#666" }}
+                            >
                               --- Status ---
                             </MenuItem>
                             <MenuItem value="Travelled">Travelled</MenuItem>
                             <MenuItem value="Confirmed">Confirmed</MenuItem>
                             <MenuItem value="Pending">Pending</MenuItem>
                             <MenuItem value="On Hold">On Hold</MenuItem>
-                            <MenuItem value="Treatment Completed">Treatment Completed</MenuItem>
+                            <MenuItem value="Treatment Completed">
+                              Treatment Completed
+                            </MenuItem>
                             <MenuItem value="Cancelled">Cancelled</MenuItem>
                             <MenuItem value="Local Case">Local Case</MenuItem>
                             <MenuItem value="Follow Up">Follow Up</MenuItem>
                             <MenuItem value="Passed Away">Passed Away</MenuItem>
-                            
-                            <MenuItem disabled style={{ fontWeight: 'bold', color: '#666' }}>
+
+                            <MenuItem
+                              disabled
+                              style={{ fontWeight: "bold", color: "#666" }}
+                            >
                               --- Patient Type ---
                             </MenuItem>
                             <MenuItem value="Foundation">Foundation</MenuItem>
                             <MenuItem value="Private">Private</MenuItem>
                             <MenuItem value="Insurance">Insurance</MenuItem>
-                            <MenuItem value="Insurance + Private">Insurance + Private</MenuItem>
+                            <MenuItem value="Insurance + Private">
+                              Insurance + Private
+                            </MenuItem>
                           </Select>
                         </FormControl>
                       </TableCell>
@@ -581,10 +619,38 @@ useEffect(() => {
                           ) : (
                             ""
                           )}
-                          <TableCell>Patient Id</TableCell>
-                          <TableCell>Patient Name</TableCell>
+                          <TableCell>
+                            <TableSortLabel 
+                              active={orderBy === "patientNumber"}
+                              direction={
+                                orderBy === "patientNumber" ? order : "asc"
+                              }
+                              onClick={() => handleRequestSort("patientNumber")}
+                            >
+                              Patient Id
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "patient_name"}
+                              direction={
+                                orderBy === "patient_name" ? order : "asc"
+                              }
+                              onClick={() => handleRequestSort("patient_name")}
+                            >
+                              Patient Name
+                            </TableSortLabel>
+                          </TableCell>
                           <TableCell>Patient Disease</TableCell>
-                          <TableCell>Country</TableCell> 
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "country"}
+                              direction={orderBy === "country" ? order : "asc"}
+                              onClick={() => handleRequestSort("country")}
+                            >
+                              Country
+                            </TableSortLabel>
+                          </TableCell>
                           {showActions === true ? (
                             <>
                               <TableCell>Patient Type</TableCell>
@@ -608,12 +674,12 @@ useEffect(() => {
                             </TableRow>
                           ) : (
                             rows.map((info, i) => {
-                              return(
+                              return (
                                 <TableRow key={info.patientId}>
                                   <TableCell>
                                     {(page - 1) * rowsPerPage + i + 1}
                                   </TableCell>
-                                  {showActions === false ? (
+                                  {showActions === false                                                                                                                                                                                                                                                                                                                                                                                                                          ? (
                                     <>
                                       <TableCell>
                                         {info?.deletedBy?.name}
@@ -644,11 +710,20 @@ useEffect(() => {
                                   </TableCell>
                                   <TableCell
                                     style={{ cursor: "pointer" }}
-                                    onClick={(e) => PatientDetail(e, info.patientId, info.enquiryId, info.id, info.patient_disease[0].treatment_id)}
+                                    onClick={(e) =>
+                                      PatientDetail(
+                                        e,
+                                        info.patientId,
+                                        info.enquiryId,
+                                        info.id,
+                                        info.patient_disease[0].treatment_id,
+                                      )
+                                    }
                                     title={info.patient_name}
                                   >
                                     {info.patient_name.length > 15
-                                      ? info.patient_name.substring(0, 15) + "..."
+                                      ? info.patient_name.substring(0, 15) +
+                                        "..."
                                       : info.patient_name}
                                   </TableCell>
                                   <TableCell
@@ -662,7 +737,9 @@ useEffect(() => {
                                         ?.map((d) => d.disease_name)
                                         .join(", ");
                                       if (!diseases) return "";
-                                      return diseases.length > 15 ? diseases.substring(0, 15) + "..." : diseases;
+                                      return diseases.length > 15
+                                        ? diseases.substring(0, 15) + "..."
+                                        : diseases;
                                     })()}
                                   </TableCell>
                                   <TableCell>{info.country}</TableCell>
@@ -710,7 +787,10 @@ useEffect(() => {
                                           <Select
                                             value={info.p_status}
                                             onChange={(e) =>
-                                              handleChangefffff(e, info.patientId)
+                                              handleChangefffff(
+                                                e,
+                                                info.patientId,
+                                              )
                                             }
                                             displayEmpty
                                             inputProps={{
@@ -757,7 +837,8 @@ useEffect(() => {
                                               info.patientId,
                                               info.enquiryId,
                                               info.id,
-                                              info.patient_disease[0].treatment_id
+                                              info.patient_disease[0]
+                                                .treatment_id,
                                             )
                                           }
                                         />
@@ -784,7 +865,7 @@ useEffect(() => {
                                     ""
                                   )}
                                 </TableRow>
-                              )
+                              );
                             })
                           )}
                         </TableBody>

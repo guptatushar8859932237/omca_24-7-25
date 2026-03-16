@@ -9,6 +9,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -52,6 +53,8 @@ export default function Inquiry() {
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [orderDirection, setOrderDirection] = useState("asc");
+  const [orderBy, setOrderBy] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [report, setReport] = useState([]);
@@ -130,47 +133,43 @@ export default function Inquiry() {
   };
 
   const handleChange = async (event, id) => {
-  const { value } = event.target;
+    const { value } = event.target;
 
-  // confirmation alert
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "Do you really want to update the status?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, update it!",
-    cancelButtonText: "Cancel",
-    reverseButtons: true,
-  });
+    // confirmation alert
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to update the status?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, update it!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
 
-  // ❌ agar cancel kiya
-  if (!result.isConfirmed) {
-    return;
-  }
+    // ❌ agar cancel kiya
+    if (!result.isConfirmed) {
+      return;
+    }
 
-  // ✅ local state update
-  setSeekerStatus((prev) => ({
-    ...prev,
-    [id]: value,
-  }));
+    // ✅ local state update
+    setSeekerStatus((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
 
-  try {
-    await dispatch(
-      EnquiryStatus({ id, status: Number(value) })
-    ).unwrap();
+    try {
+      await dispatch(EnquiryStatus({ id, status: Number(value) })).unwrap();
 
-    Swal.fire("Success!", "Status updated successfully!", "success");
+      Swal.fire("Success!", "Status updated successfully!", "success");
 
-    // 🔥 row remove locally
-    setRows((prevRows) =>
-      prevRows.filter((item) => item.enquiryId !== id)
-    );
+      // 🔥 row remove locally
+      setRows((prevRows) => prevRows.filter((item) => item.enquiryId !== id));
 
-    dispatch(GetAllEnquiry());
-  } catch (err) {
-    Swal.fire("Error!", err?.message || "An error occurred", "error");
-  }
-};
+      dispatch(GetAllEnquiry());
+    } catch (err) {
+      Swal.fire("Error!", err?.message || "An error occurred", "error");
+    }
+  };
 
   // const handleChange = async (event, id) => {
   //   const { value } = event.target;
@@ -465,6 +464,26 @@ export default function Inquiry() {
       }
     });
   };
+
+  const handleRequestSort = (property) => {
+  const isAsc = orderBy === property && orderDirection === "asc";
+  const direction = isAsc ? "desc" : "asc";
+
+  setOrderDirection(direction);
+  setOrderBy(property);
+
+  const sortedData = [...rows].sort((a, b) => {
+    if (a[property] < b[property]) {
+      return direction === "asc" ? -1 : 1;
+    }
+    if (a[property] > b[property]) {
+      return direction === "asc" ? 1 : -1;
+    }
+    return 0;
+  });
+
+  setRows(sortedData);
+};
   return (
     <>
       <div className="page-wrapper">
@@ -560,11 +579,43 @@ export default function Inquiry() {
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
-                          <TableCell>Enquiry IDs</TableCell>
-                          <TableCell>Name</TableCell>
+                          <TableCell>
+  <TableSortLabel
+    active={orderBy === "enquiryId"}
+    direction={orderBy === "enquiryId" ? orderDirection : "asc"}
+    onClick={() => handleRequestSort("enquiryId")}
+  >
+    Enquiry IDs
+  </TableSortLabel>
+</TableCell>
+                        <TableCell>
+  <TableSortLabel
+    active={orderBy === "name"}
+    direction={orderBy === "name" ? orderDirection : "asc"}
+    onClick={() => handleRequestSort("name")}
+  >
+    Name
+  </TableSortLabel>
+</TableCell>
                           {/* <TableCell>Email</TableCell> */}
-                          <TableCell>Country</TableCell>
-                          <TableCell>Contact</TableCell>
+                        <TableCell>
+  <TableSortLabel
+    active={orderBy === "country"}
+    direction={orderBy === "country" ? orderDirection : "asc"}
+    onClick={() => handleRequestSort("country")}
+  >
+    Country
+  </TableSortLabel>
+</TableCell>
+                      <TableCell>
+  <TableSortLabel
+    active={orderBy === "emergency_contact"}
+    direction={orderBy === "emergency_contact" ? orderDirection : "asc"}
+    onClick={() => handleRequestSort("emergency_contact")}
+  >
+    Contact
+  </TableSortLabel>
+</TableCell>
                           <TableCell>Disease name</TableCell>
                           <TableCell>Status</TableCell>
                           <TableCell>Actions</TableCell>

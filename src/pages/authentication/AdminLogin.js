@@ -39,7 +39,7 @@ export function AdminLogin(props) {
     email: Yup.string().matches(passwordRules, "Please enter a valid email").required("Required"),
     password: Yup.string().required("Required").oneOf([Yup.ref('password'), null]).max(20, 'Passwords should not exceed 20 characters.'),
   });
-
+const permissions = JSON.parse(localStorage.getItem("permissionArray"));
   useEffect(() => {
     if (user) {
       Swal.fire({
@@ -55,8 +55,13 @@ export function AdminLogin(props) {
       localStorage.setItem("permissionArray", user.permissions);
       localStorage.setItem("Role", user.details.role);
       localStorage.setItem("name", user.details.name);
-      user.details.role==="Insurance Partner"?navigate("/Admin/Inquiry"):
-      navigate("/Dashboard");
+      // user.details.role===""?navigate("/Admin/Inquiry"):
+      // navigate("/Dashboard");
+      if (user?.permissions?.includes("/Dashboard")) {
+  navigate("/Dashboard");
+} else {
+  navigate("/Admin/Inquiry");
+}
     }
   }, [user, navigate]);
 console.log(localStorage.getItem("permissionArray"))
