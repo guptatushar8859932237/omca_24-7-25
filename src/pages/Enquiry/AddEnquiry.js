@@ -36,9 +36,9 @@ export default function AddEnquiry() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const basicSchema = Yup.object().shape({
     name: Yup.string().min(2).max(50).required("Name is required"),
-   disease_name: Yup.object()
-  .nullable()
-  .required("Disease name is required"),
+  //  disease_name: Yup.object()
+  // .nullable()
+  // .required("Disease name is required"),
     country: Yup.string().required("Country is required"),
     treatingIn: Yup.string().required("Treating In is required"),
     address: Yup.string().required("Address is required"),
@@ -57,8 +57,7 @@ export default function AddEnquiry() {
       then: (schema) => schema.required("Attendant Relationship is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
-      disease_name: Yup.string()
-    .required("Treatment name is required"),
+     
     //   patient_relation_address: Yup.string().when("showAttendant", {
     //   is: true,
     //   then: (schema) => schema.required("Attendant address is required"),
@@ -717,7 +716,7 @@ export default function AddEnquiry() {
                         <div className="field-set">
                           <label>
                             Treatment Name{" "}
-                            <span className="text-danger">*</span>
+                            <span className="text-danger"></span>
                           </label>
 {/* <Field name="disease_name">
   {({ form, meta }) => (

@@ -6,6 +6,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { GetPatientTreatments } from "../../reducer/PatientTreatmentSlice";
@@ -157,7 +158,7 @@ function PatientDetail() {
     paymentMethod: "",
     payment_Date: "",
   });
-  const usrFount = localStorage.getItem('Role')
+  const usrFount = localStorage.getItem("Role");
   useEffect(() => {
     gtdatareportsdata();
     getextraservice();
@@ -196,7 +197,7 @@ function PatientDetail() {
     // console.log(error, hospital);
   }, [dispatch]);
   useEffect(() => {
-     dispatch(GetAllCountries2());
+    dispatch(GetAllCountries2());
     dispatch(GetPatientTreatments({ id: location.state.patientId }));
   }, [dispatch, location.state.patientId]);
   useEffect(() => {
@@ -223,7 +224,6 @@ function PatientDetail() {
     setOpen5(true);
     setEnqId(enq);
   };
-
 
   const handleClose5 = () => {
     setOpen5(false);
@@ -322,11 +322,8 @@ function PatientDetail() {
       });
   };
   useEffect(() => {
-      
     GetActiveService();
   }, []);
-
-
 
   const handlesubmitdata = async () => {
     const servipostdata = {
@@ -475,17 +472,18 @@ function PatientDetail() {
     if (result.isConfirmed) {
       try {
         const response = await axios.delete(
-          `${baseurl}delete_payment/${item._id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          }
-        }
+          `${baseurl}delete_payment/${item._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          },
         );
         if (response.data?.success) {
           Swal.fire("Deleted!", "Payment has been deleted.", "success");
-           getDataapi3(dataC)
-         dispatch(GetPatientTreatments({ id: location.state.patientId }));
+          getDataapi3(dataC);
+          dispatch(GetPatientTreatments({ id: location.state.patientId }));
         } else {
           toast.error("Failed to delete Payment");
         }
@@ -499,8 +497,7 @@ function PatientDetail() {
         icon: "error",
       });
     }
-  }
-
+  };
 
   const handledeleteReport = async (item) => {
     const swalWithBootstrapButtons = Swal.mixin({
@@ -525,7 +522,7 @@ function PatientDetail() {
         );
         if (response.data?.success) {
           Swal.fire("Deleted!", "Report has been deleted.", "success");
-          getDataapi3(dataC)
+          getDataapi3(dataC);
         } else {
           toast.error("Failed to delete report");
         }
@@ -678,6 +675,12 @@ function PatientDetail() {
   useEffect(() => {
     getdataApi();
   }, []);
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "application/pdf",
+  ];
   const handleKysDetail = async (e) => {
     e.preventDefault();
     const {
@@ -699,15 +702,18 @@ function PatientDetail() {
       Swal.fire("All fields are mandatory!", "", "warning");
       return;
     }
+
     const formData = new FormData();
     formData.append("attendant_fullname", attendant_fullname);
     formData.append("attendant_relation", attendant_relation);
     formData.append("attendant_contact", attendant_contact);
     // formData.append("dial_code", filesData.dial_code);
     formData.append("country", filesData.country);
-    formData.append("attendant_passport", Attende_passport);
-    formData.append("attendant_image", Attende_photo);
-    console.log(filesData)
+    formData.append("attendant_image", filesData.Attende_photo);
+    filesData.Attende_passport.forEach((file) => {
+      formData.append("attendant_passport", file);
+    });
+    console.log(filesData);
     try {
       const response = await axios.post(
         `${baseurl}addAttendeeDetails/${attendId}`,
@@ -748,25 +754,77 @@ function PatientDetail() {
       [name]: value,
     }));
   };
+  // const handleFileChange = (e, fieldName) => {
+  //   const files = e.target.files;
 
+  //   if (!files || files.length === 0) return;
+
+  //   // 👉 For Attendant Photo (single image only)
+  //   if (fieldName === "Attende_photo") {
+  //     const file = files[0];
+
+  //     if (!file.type.startsWith("image/")) {
+  //       Swal.fire("Please upload image file only!", "", "warning");
+  //       return;
+  //     }
+
+  //     setFilesData((prev) => ({
+  //       ...prev,
+  //       [fieldName]: file, // single file
+  //     }));
+  //   }
+
+  //   // 👉 For Attendant Passport (multiple files allowed)
+  //   else if (fieldName === "Attende_passport") {
+  //     const fileArray = Array.from(files);
+
+  //     setFilesData((prev) => ({
+  //       ...prev,
+  //       [fieldName]: fileArray, // multiple files
+  //     }));
+  //   }
+  // };
   const handleFileChange = (e, fieldName) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = e.target.files;
 
-    // Validate image for photo only
+    if (!files || files.length === 0) return;
+
+    // 👉 Attendant Photo (single image only)
     if (fieldName === "Attende_photo") {
+      const file = files[0];
+
       if (!file.type.startsWith("image/")) {
-        Swal.fire("Please upload image file only!", "", "warning");
+        Swal.fire("Only image file allowed for Photo!", "", "warning");
         return;
       }
+
+      setFilesData((prev) => ({
+        ...prev,
+        [fieldName]: file,
+      }));
     }
 
-    setFilesData((prev) => ({
-      ...prev,
-      [fieldName]: file,
-    }));
-  };
+    // 👉 Attendant Passport (multiple: image OR PDF)
+    else if (fieldName === "Attende_passport") {
+      const fileArray = Array.from(files);
 
+      // validate each file
+      const validFiles = fileArray.filter(
+        (file) =>
+          file.type.startsWith("image/") || file.type === "application/pdf",
+      );
+
+      if (validFiles.length !== fileArray.length) {
+        Swal.fire("Only images and PDF files are allowed!", "", "warning");
+        return;
+      }
+
+      setFilesData((prev) => ({
+        ...prev,
+        [fieldName]: validFiles,
+      }));
+    }
+  };
   const handleOnChangeCheckbox = (event, id) => {
     const selectedService = Service.find((info) => info.serviceId === id);
     if (selectedService) {
@@ -2266,24 +2324,54 @@ function PatientDetail() {
   //   getDataapi3(c); // direct call with latest value
   // };
 
-  const getDataapi3 = async (tId) => {
-    try {
-      console.log(tId);
-      // const treatmentId = c?.treatment_id;
-      const treatmentid = selectedTreatmentId || tId;
-      const response = await axios.get(
-        `${baseurl}getAllTreatmentData/${location.state.patientId}/${treatmentid}`,
-      );
+const getDataapi3 = async (tId) => {
+  try {
+    const treatmentid = selectedTreatmentId || tId;
 
-      console.log(response.data.data);
+    const response = await axios.get(
+      `${baseurl}getAllTreatmentData/${location.state.patientId}/${treatmentid}`
+    );
 
-      setPaymentsFilered(response.data.data.payment_details);
-      setReportsFilered1(response.data.data.reports);
-      setAttandantFilered(response.data.data.attendants);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    const data = response.data.data;
+
+    // ✅ Normalize attendants passport here
+    const normalizedAttendants = data.attendants.map((att) => {
+      let passport = att.attendant_passport;
+
+      // normalize to array
+      if (!passport) {
+        passport = [];
+      } else if (Array.isArray(passport)) {
+        passport = passport;
+      } else if (typeof passport === "string") {
+        try {
+          if (passport.startsWith("[")) {
+            passport = JSON.parse(passport);
+          } else {
+            passport = [passport];
+          }
+        } catch {
+          passport = [passport];
+        }
+      } else if (typeof passport === "object") {
+        passport = [passport];
+      }
+
+      return {
+        ...att,
+        attendant_passport: passport,
+      };
+    });
+
+    // ✅ set normalized data
+    setPaymentsFilered(data.payment_details);
+    setReportsFilered1(data.reports);
+    setAttandantFilered(normalizedAttendants);
+
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   // const handleclickDeleteTreatment =(treatment_id)=>{
   //   console.log(treatment_id)
@@ -2308,7 +2396,7 @@ function PatientDetail() {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
-            }
+            },
           );
 
           if (response.data.success) {
@@ -2602,28 +2690,28 @@ function PatientDetail() {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                                <span
-                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                                >
-                                                  {item.status}
-                                                </span>
-                                              )}
+                                              <span
+                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                              >
+                                                {item.status}
+                                              </span>
+                                            )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                              <button
-                                                className="add-button"
-                                                onClick={() =>
-                                                  approveReject(
-                                                    info,
-                                                    item.id,
-                                                    "Approved",
-                                                  )
-                                                }
-                                              >
-                                                Approve
-                                              </button>
-                                            )}
+                                            <button
+                                              className="add-button"
+                                              onClick={() =>
+                                                approveReject(
+                                                  info,
+                                                  item.id,
+                                                  "Approved",
+                                                )
+                                              }
+                                            >
+                                              Approve
+                                            </button>
+                                          )}
                                         </div>
                                       ))}
                                     </div>
@@ -2712,9 +2800,9 @@ function PatientDetail() {
                             activeSubTab,
                           )
                             ? tretment?.filter(
-                              (item) =>
-                                item.treatment_id === selectedTreatmentId,
-                            )
+                                (item) =>
+                                  item.treatment_id === selectedTreatmentId,
+                              )
                             : tretment
                           )?.map((info, index) => {
                             return (
@@ -2823,21 +2911,22 @@ function PatientDetail() {
                                           {!info?.Hospital_details?.some(
                                             (item) => item.hospital_Name,
                                           ) && (
-                                              <li className="nav-item">
-                                                <button
-                                                  className="nav-link"
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "hospital",
-                                                      info,
-                                                    )
-                                                  }
-                                                >
-                                                  + Add Hospital
-                                                </button>
-                                              </li>
-                                            )}
+                                            <li className="nav-item">
+                                              <button
+                                                className="nav-link"
+                                                onClick={(e) =>
+                                                  handleAction(
+                                                    e,
+                                                    "hospital",
+                                                    info,
+                                                    info.treatment_name,
+                                                  )
+                                                }
+                                              >
+                                                + Add Hospital
+                                              </button>
+                                            </li>
+                                          )}
 
                                           <li className="nav-item">
                                             <button
@@ -2847,6 +2936,7 @@ function PatientDetail() {
                                                   e,
                                                   "appointment",
                                                   info,
+                                                  info.treatment_name,
                                                 )
                                               }
                                             >
@@ -2857,7 +2947,12 @@ function PatientDetail() {
                                             <button
                                               className="nav-link"
                                               onClick={(e) =>
-                                                handleAction(e, "notes", info)
+                                                handleAction(
+                                                  e,
+                                                  "notes",
+                                                  info,
+                                                  info.treatment_name,
+                                                )
                                               }
                                             >
                                               + Add Notes
@@ -2867,25 +2962,46 @@ function PatientDetail() {
                                             <button
                                               className="nav-link"
                                               onClick={(e) =>
-                                                handleAction(e, "services", info)
+                                                handleAction(
+                                                  e,
+                                                  "services",
+                                                  info,
+                                                  info.treatment_name,
+                                                )
                                               }
                                             >
                                               + Add Services
                                             </button>
                                           </li>
                                         </ul>
-
                                       </div>
-                                      <div className="collapse-icon" onClick={() => setOpenIndex(openIndex === index ? null : index)} aria-expanded={openIndex === index}>
+                                      <div
+                                        className="collapse-icon"
+                                        onClick={() =>
+                                          setOpenIndex(
+                                            openIndex === index ? null : index,
+                                          )
+                                        }
+                                        aria-expanded={openIndex === index}
+                                      >
                                         <i class="fa-solid fa-chevron-down"></i>
                                       </div>
                                       <div className="">
-                                        <i className="fa fa-trash text-danger" onClick={() => { handleclickDeleteTreatment(info.treatment_id) }} ></i>
+                                        <i
+                                          className="fa fa-trash text-danger"
+                                          onClick={() => {
+                                            handleclickDeleteTreatment(
+                                              info.treatment_id,
+                                            );
+                                          }}
+                                        ></i>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                                <div className={`collapse ${openIndex === index ? "show" : ""}`}>
+                                <div
+                                  className={`collapse ${openIndex === index ? "show" : ""}`}
+                                >
                                   {activeSubTab === "details" ? (
                                     <>
                                       <div className="row gx-3 gy-3">
@@ -2899,7 +3015,9 @@ function PatientDetail() {
                                                 <div>
                                                   <h6
                                                     className="mx-2"
-                                                    style={{ cursor: "pointer" }}
+                                                    style={{
+                                                      cursor: "pointer",
+                                                    }}
                                                     onClick={() => {
                                                       handleclickEdAppointment(
                                                         info,
@@ -3077,7 +3195,9 @@ function PatientDetail() {
                                                     {freeServices.map(
                                                       (item, index) => (
                                                         <li
-                                                          key={item._id || index}
+                                                          key={
+                                                            item._id || index
+                                                          }
                                                         >
                                                           <div className="row">
                                                             <div className="col-md-12">
@@ -3157,19 +3277,19 @@ function PatientDetail() {
                                                               <td>
                                                                 {item.startTime
                                                                   ? new Date(
-                                                                    item.startTime,
-                                                                  ).toLocaleDateString(
-                                                                    "en-GB",
-                                                                  )
+                                                                      item.startTime,
+                                                                    ).toLocaleDateString(
+                                                                      "en-GB",
+                                                                    )
                                                                   : "-"}
                                                               </td>
                                                               <td>
                                                                 {item.endTime
                                                                   ? new Date(
-                                                                    item.endTime,
-                                                                  ).toLocaleDateString(
-                                                                    "en-GB",
-                                                                  )
+                                                                      item.endTime,
+                                                                    ).toLocaleDateString(
+                                                                      "en-GB",
+                                                                    )
                                                                   : "-"}
                                                               </td>
                                                               <td>
@@ -3221,7 +3341,7 @@ function PatientDetail() {
                                                       <tr>
                                                         <th>Note</th>
                                                         <th>Date</th>
-                                                        <th>From</th>
+                                                        <th>Added By</th>
                                                         <th>Action</th>
                                                       </tr>
                                                     </thead>
@@ -3231,28 +3351,30 @@ function PatientDetail() {
                                                           return (
                                                             <tr
                                                               key={
-                                                                item._id || index
+                                                                item._id ||
+                                                                index
                                                               }
                                                             >
                                                               <td>
-                                                                {item.platform ==
-                                                                  "1"
-                                                                  ? "C"
-                                                                  : "H"}{" "}
-                                                                {item.note || "-"}
+                                                                {item.note ||
+                                                                  "-"}
                                                               </td>
                                                               <td>
                                                                 {item?.date
                                                                   ? new Date(
-                                                                    item.date,
-                                                                  ).toLocaleDateString(
-                                                                    "en-GB",
-                                                                  )
+                                                                      item.date,
+                                                                    ).toLocaleDateString(
+                                                                      "en-GB",
+                                                                    )
                                                                   : "-"}
                                                               </td>
                                                               <td>
-                                                                from dynamic data
+                                                                {item.platform ==
+                                                                "1"
+                                                                  ? "CRM"
+                                                                  : "Hospital"}{" "}
                                                               </td>
+
                                                               <td>
                                                                 <div className="action-icon">
                                                                   <i
@@ -3290,7 +3412,7 @@ function PatientDetail() {
                                         </div>
                                         <div className="col-md-12">
                                           {info?.appointments_details?.length >
-                                            0 ? (
+                                          0 ? (
                                             <div className="card patientreat">
                                               <div className="card-header service-list">
                                                 <h6>Appointment</h6>
@@ -3306,6 +3428,7 @@ function PatientDetail() {
                                                         <th>Driver Contact</th>
                                                         <th>Pickup Time</th>
                                                         <th>Date</th>
+                                                        <th>Notes</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
                                                       </tr>
@@ -3319,44 +3442,52 @@ function PatientDetail() {
                                                             }
                                                           >
                                                             <td>
-                                                              {item.appointmentId}
+                                                              {
+                                                                item.appointmentId
+                                                              }
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                                "online"
+                                                              "online"
                                                                 ? item.vehicle_no
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                                "online"
+                                                              "online"
                                                                 ? item.driver_name
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                                "online"
+                                                              "online"
                                                                 ? item.driver_contact
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                                "online"
+                                                              "online"
                                                                 ? item.pickup_time
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.appointment_Date
                                                                 ? new Date(
-                                                                  item.appointment_Date,
-                                                                )
-                                                                  .toISOString()
-                                                                  .slice(0, 10)
+                                                                    item.appointment_Date,
+                                                                  )
+                                                                    .toISOString()
+                                                                    .slice(
+                                                                      0,
+                                                                      10,
+                                                                    )
                                                                 : ""}
                                                             </td>
                                                             <td>
+                                                              {item?.note}
+                                                            </td>
+                                                            <td>
                                                               {item.status ===
-                                                                "Complete" ? (
+                                                              "Complete" ? (
                                                                 <span className="badge bg-primary">
                                                                   Completed
                                                                 </span>
@@ -3409,7 +3540,9 @@ function PatientDetail() {
                                         </div>
                                         <div className="col-md-12">
                                           <div className="total-amount">
-                                            <h6 className="mb-0">Due Amount:</h6>
+                                            <h6 className="mb-0">
+                                              Due Amount:
+                                            </h6>
                                             <p>{info.treatment_due_payment}</p>
                                           </div>
                                         </div>
@@ -3438,7 +3571,8 @@ function PatientDetail() {
                                                     <span>
                                                       <i className="fa fa-plus"></i>
                                                     </span>{" "}
-                                                Add Attandant  </button>
+                                                    Add Attandant{" "}
+                                                  </button>
                                                 </div>
                                               </div>
                                               <div className="row gx-3 gy-3">
@@ -3498,7 +3632,7 @@ function PatientDetail() {
                                                                       rel="noopener noreferrer"
                                                                       className="pdfdown"
                                                                     >
-                                                                      Download
+                                                                      <VisibilityIcon className="eye-icon" />
                                                                     </a>
                                                                   ) : (
                                                                     <span className="text-muted small">
@@ -3511,9 +3645,9 @@ function PatientDetail() {
                                                               <div className="detail-row">
                                                                 <label>
                                                                   Attendant
-                                                                  Passport
+                                                                  ID Proof
                                                                 </label>
-                                                                <span>
+                                                                {/* <span>
                                                                   {item?.attendant_passport ? (
                                                                     <a
                                                                       href={`https://sisccltd.com/omca_crm/${item.attendant_passport}`}
@@ -3521,14 +3655,67 @@ function PatientDetail() {
                                                                       rel="noopener noreferrer"
                                                                       className="pdfdown"
                                                                     >
-                                                                  Download
+                                                                      <VisibilityIcon className="eye-icon" />
                                                                     </a>
                                                                   ) : (
                                                                     <span className="text-muted small">
-                                                                      Not Uploaded
+                                                                      Not
+                                                                      Uploaded
                                                                     </span>
                                                                   )}
-                                                                </span>
+                                                                </span> */}
+                                                                {/* <span>
+                                                                  {item?.attendant_passport &&
+                                                                  item
+                                                                    .attendant_passport
+                                                                    .length >
+                                                                    0 ? (
+                                                                    item.attendant_passport.map(
+                                                                      (
+                                                                        file,
+                                                                        index,
+                                                                      ) => (
+                                                                        <a
+                                                                          key={
+                                                                            index
+                                                                          }
+                                                                          href={`https://sisccltd.com/omca_crm/${file}`}
+                                                                          target="_blank"
+                                                                          rel="noopener noreferrer"
+                                                                          className="pdfdown me-2"
+                                                                        >
+                                                                          <VisibilityIcon className="eye-icon" />
+                                                                        </a>
+                                                                      ),
+                                                                    )
+                                                                  ) : (
+                                                                    <span className="text-muted small">
+                                                                      Not
+                                                                      Uploaded
+                                                                    </span> */}
+                                                                  {/* )} */}
+                                                                {/* </span> */}
+                                                                <span>
+  {item?.attendant_passport?.length > 0 ? (
+    item.attendant_passport.map((file, index) => {
+      const filePath = typeof file === "object" ? file?.path : file;
+
+      return (
+        <a
+          key={index}
+          href={`https://sisccltd.com/omca_crm/${filePath}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="pdfdown me-2"
+        >
+          View
+        </a>
+      );
+    })
+  ) : (
+    <span className="text-muted small">Not Uploaded</span>
+  )}
+</span>
                                                               </div>
                                                               {/* <div className="detail-row">
                                                                 <label>
@@ -3612,17 +3799,23 @@ function PatientDetail() {
                                                         <TableCell>
                                                           Notes
                                                         </TableCell>
+
                                                         <TableCell>
                                                           Document
                                                         </TableCell>
-
-                                                        <TableCell>
-                                                          PDF
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Action
-                                                        </TableCell>
-
+                                                        {usrFount ===
+                                                        "Admin" ? (
+                                                          <>
+                                                            <TableCell>
+                                                              PDF
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              Action
+                                                            </TableCell>
+                                                          </>
+                                                        ) : (
+                                                          ""
+                                                        )}
                                                       </TableRow>
                                                     </TableHead>
                                                     <TableBody>
@@ -3658,6 +3851,7 @@ function PatientDetail() {
                                                             <TableCell>
                                                               {item?.notes}
                                                             </TableCell>
+
                                                             <TableCell className="action-btn">
                                                               {item?.attachFile ? (
                                                                 <a
@@ -3672,39 +3866,45 @@ function PatientDetail() {
                                                               )}
                                                             </TableCell>
 
-                                                            <TableCell>
-                                                              <button
-                                                                className="add-button"
-                                                                onClick={() => {
-                                                                  navigate(
-                                                                    "/Admin/Patient-Pdfdetails",
-                                                                    {
-                                                                      state: {
-                                                                        data: item?._id,
-                                                                      },
-                                                                    },
-                                                                  );
-                                                                }}
-                                                              >
-                                                                <i className="fa fa-download"></i>
-                                                              </button>
-                                                            </TableCell>
-                                                            <TableCell>
-                                                              <i
-                                                                className="fa-solid fa-trash text-danger"
-                                                                style={{
-                                                                  cursor:
-                                                                    "pointer",
-                                                                }}
-                                                                onClick={() =>
-                                                                  deletePaymentInvoice(
-                                                                    item,
-                                                                  )
-                                                                }
-                                                              ></i>
-                                                            </TableCell>
-
-
+                                                            {usrFount ===
+                                                            "Admin" ? (
+                                                              <>
+                                                                <TableCell>
+                                                                  <button
+                                                                    className="add-button"
+                                                                    onClick={() => {
+                                                                      navigate(
+                                                                        "/Admin/Patient-Pdfdetails",
+                                                                        {
+                                                                          state:
+                                                                            {
+                                                                              data: item?._id,
+                                                                            },
+                                                                        },
+                                                                      );
+                                                                    }}
+                                                                  >
+                                                                    <i className="fa fa-download"></i>
+                                                                  </button>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  <i
+                                                                    className="fa-solid fa-trash text-danger"
+                                                                    style={{
+                                                                      cursor:
+                                                                        "pointer",
+                                                                    }}
+                                                                    onClick={() =>
+                                                                      deletePaymentInvoice(
+                                                                        item,
+                                                                      )
+                                                                    }
+                                                                  ></i>
+                                                                </TableCell>
+                                                              </>
+                                                            ) : (
+                                                              ""
+                                                            )}
                                                           </TableRow>
                                                         ),
                                                       )}
@@ -3716,8 +3916,7 @@ function PatientDetail() {
                                           </div>
                                         </div>
                                       </>
-                                    )
-                                  }
+                                    )}
                                   {activeSubTab === "reports" &&
                                     selectedTreatmentId && (
                                       <div>
@@ -3756,15 +3955,23 @@ function PatientDetail() {
                                                       <TableCell>
                                                         Report Date
                                                       </TableCell>
-
-
                                                       <TableCell>
-                                                        Reports
-                                                      </TableCell>
-                                                      <TableCell>
-                                                        Action
+                                                        Added By
                                                       </TableCell>
 
+                                                      {usrFount === "Admin" ? (
+                                                        <>
+                                                          {" "}
+                                                          <TableCell>
+                                                            Reports
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            Action
+                                                          </TableCell>
+                                                        </>
+                                                      ) : (
+                                                        ""
+                                                      )}
                                                     </TableRow>
                                                   </TableHead>
 
@@ -3775,9 +3982,6 @@ function PatientDetail() {
                                                           key={item._id}
                                                         >
                                                           <TableCell>
-                                                            {item.platform === 1
-                                                              ? "C"
-                                                              : "H"}{" "}
                                                             {item?.treatmentId}
                                                           </TableCell>
 
@@ -3792,34 +3996,45 @@ function PatientDetail() {
                                                               "en-GB",
                                                             )}
                                                           </TableCell>
-
-
                                                           <TableCell>
-                                                            <a
-                                                              href={`${image}${item.treatmentReport}`}
-                                                              target="_blank"
-                                                              rel="noreferrer"
-                                                            >
-                                                              Download
-                                                              Report
-                                                            </a>
+                                                            {item?.platform ===
+                                                            1
+                                                              ? "CRM"
+                                                              : "Hospital"}
                                                           </TableCell>
 
-                                                          <TableCell>
-                                                            <i
-                                                              className="fa-solid fa-trash text-danger"
-                                                              style={{
-                                                                cursor:
-                                                                  "pointer",
-                                                              }}
-                                                              onClick={() =>
-                                                                handledeleteReport(
-                                                                  item,
-                                                                )
-                                                              }
-                                                            ></i>
-                                                          </TableCell>
-
+                                                          {usrFount ===
+                                                          "Admin" ? (
+                                                            <>
+                                                              {" "}
+                                                              <TableCell>
+                                                                <a
+                                                                  href={`${image}${item.treatmentReport}`}
+                                                                  target="_blank"
+                                                                  rel="noreferrer"
+                                                                >
+                                                                  Download
+                                                                  Report
+                                                                </a>
+                                                              </TableCell>
+                                                              <TableCell>
+                                                                <i
+                                                                  className="fa-solid fa-trash text-danger"
+                                                                  style={{
+                                                                    cursor:
+                                                                      "pointer",
+                                                                  }}
+                                                                  onClick={() =>
+                                                                    handledeleteReport(
+                                                                      item,
+                                                                    )
+                                                                  }
+                                                                ></i>
+                                                              </TableCell>
+                                                            </>
+                                                          ) : (
+                                                            ""
+                                                          )}
                                                         </TableRow>
                                                       ),
                                                     )}
@@ -3827,7 +4042,6 @@ function PatientDetail() {
                                                 </Table>
                                               </TableContainer>
                                             </div>
-
                                           </div>
                                         </div>
                                       </div>
@@ -3844,9 +4058,8 @@ function PatientDetail() {
               </div>
             </div>
           </div>
-        </div >
-      </div >
-      {/* treatment-plan */}
+        </div>
+      </div>
       <React.Fragment>
         <Dialog
           fullWidth
@@ -4209,7 +4422,6 @@ function PatientDetail() {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-      {/* add-hospital-modal-start */}
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}
@@ -4603,7 +4815,8 @@ function PatientDetail() {
                     <div className="col-6">
                       <div className="field-set">
                         <label>
-                          Attendant Relation<span className="text-danger">*</span>
+                          Attendant Relation
+                          <span className="text-danger">*</span>
                         </label>
                         <div className="upload-input">
                           <input
@@ -4660,7 +4873,7 @@ function PatientDetail() {
                           getOptionLabel={(option) => option?.name || ""}
                           value={
                             Countries?.find(
-                              (country) => country.name === filesData.country
+                              (country) => country.name === filesData.country,
                             ) || null
                           }
                           onChange={(event, newValue) => {
@@ -4671,7 +4884,11 @@ function PatientDetail() {
                             });
                           }}
                           renderInput={(params) => (
-                            <TextField {...params} placeholder="Select Country" size="small" />
+                            <TextField
+                              {...params}
+                              placeholder="Select Country"
+                              size="small"
+                            />
                           )}
                         />
                       </div>
@@ -4679,7 +4896,8 @@ function PatientDetail() {
                     <div className="col-6">
                       <div className="field-set">
                         <label>
-                          Attendant Contact<span className="text-danger">*</span>
+                          Attendant Contact
+                          <span className="text-danger">*</span>
                         </label>
 
                         <div className="country-code">
@@ -4701,17 +4919,19 @@ function PatientDetail() {
                         </div>
                       </div>
                     </div>
-
                   </div>
                   <div className="row">
                     <div className="col-6">
                       <div className="field-set">
                         <label>
-                          Attendant Passport<span className="text-danger">*</span>
+                          Attendant Id Proof
+                          <span className="text-danger">*</span>
                         </label>
                         <div className="upload-input">
                           <input
                             type="file"
+                            multiple
+                            accept="image/*,application/pdf"
                             className="form-control"
                             onChange={(e) =>
                               handleFileChange(e, "Attende_passport")
@@ -4730,32 +4950,14 @@ function PatientDetail() {
                             type="file"
                             accept="image/*"
                             className="form-control"
-                            onChange={(e) => handleFileChange(e, "Attende_photo")}
+                            onChange={(e) =>
+                              handleFileChange(e, "Attende_photo")
+                            }
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/* <div className="field-set">
-                    <label>
-                      Attendant Contact<span className="text-danger">*</span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="text"
-                        onKeyPress={(e) => {
-                          handkekeypreees(e);
-                        }}
-                        name="attendant_contact"
-                        className="form-control"
-                        value={filesData.attendant_contact}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </div> */}
-
-
-
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"
@@ -4977,7 +5179,6 @@ function PatientDetail() {
         </Dialog>
         <ToastContainer />
       </React.Fragment>
-      {/* add-payment-modal-start */}
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}

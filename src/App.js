@@ -65,7 +65,7 @@ function App() {
       <Provider store={store}>
         <Router>
           
-  <IdleLogout timeout={500000} />
+  <IdleLogout timeout={300000} />
           <Routes>
             <Route path="/" element={<AdminLogin />} />
             <Route path="/Forgot" element={<Forgot />} />
@@ -237,5 +237,4 @@ function App() {
     </>
   );
 }
-
 export default App;

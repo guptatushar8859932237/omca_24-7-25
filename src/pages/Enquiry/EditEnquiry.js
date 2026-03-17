@@ -60,7 +60,7 @@ export default function EditEnquiry() {
       )
       .required("Passport number is required"),
     treatingIn: Yup.string().required("Treating In is required"),
-    disease_name: Yup.string().required("Disease Name is required"),
+    // disease_name: Yup.string().required("Disease Name is required"),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"])
       .required("Gender is required"),
@@ -717,7 +717,7 @@ export default function EditEnquiry() {
                         <div className="field-set">
                           <label>
                             Treatment name
-                            <span className="text-danger">*</span>
+                            <span className="text-danger"></span>
                           </label>
                           <Autocomplete
                             options={Treatment || []}

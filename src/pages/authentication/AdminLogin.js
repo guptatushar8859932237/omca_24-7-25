@@ -19,27 +19,11 @@ export function AdminLogin(props) {
   const toggle = () => {
     setHide((prev) => !prev);
   };
-  // Key Fixes
-  // Formik Wrapping:
-
-  // The Formik component now correctly wraps the form using its children function.
-  // The form JSX is placed inside {({ isSubmitting }) => (...)}.
-  // Formik Props:
-
-  // Correctly pass initialValues, validationSchema, and onSubmit as props to Formik.
-  // Submit Button:
-
-  // Disabled the button while isSubmitting or loading to prevent multiple submissions.
-  // Error Handling:
-
-  // Added ErrorMessage components to display validation errors.
   const passwordRules = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/  
-;
   const basicSchema = Yup.object().shape({
     email: Yup.string().matches(passwordRules, "Please enter a valid email").required("Required"),
     password: Yup.string().required("Required").oneOf([Yup.ref('password'), null]).max(20, 'Passwords should not exceed 20 characters.'),
   });
-const permissions = JSON.parse(localStorage.getItem("permissionArray"));
   useEffect(() => {
     if (user) {
       Swal.fire({
@@ -55,8 +39,6 @@ const permissions = JSON.parse(localStorage.getItem("permissionArray"));
       localStorage.setItem("permissionArray", user.permissions);
       localStorage.setItem("Role", user.details.role);
       localStorage.setItem("name", user.details.name);
-      // user.details.role===""?navigate("/Admin/Inquiry"):
-      // navigate("/Dashboard");
       if (user?.permissions?.includes("/Dashboard")) {
   navigate("/Dashboard");
 } else {
@@ -85,20 +67,12 @@ console.log(localStorage.getItem("permissionArray"))
                       <Formik
                         initialValues={{ email: "", password: "" }}
                         validationSchema={basicSchema}
-                        // setSubmitting: A function provided by Formik to track the submit state.
-                        // onSubmit={(values, { setSubmitting }) => {
-                        //   dispatch(loginUser(values));
-                        //   setSubmitting(false);
-                        // }}
                         onSubmit={async (values, { setSubmitting }) => {
                           try {
                             const result = await dispatch(loginUser(values)).unwrap();
-                            
-                            
                           } catch (err) {
                             console.log(err)
                             toast.error(err?.message);
-                            // Swal.fire("Error!",  `${err?.message}`|| err?.message, "error");
                           }
                           setSubmitting(false);
                         }}
@@ -148,7 +122,6 @@ console.log(localStorage.getItem("permissionArray"))
                               {hide ? <VisibilityIcon /> : <VisibilityOffIcon />}
                             </span>
                             </div>
-                             
                             <div className="form-group text-right">
                               <NavLink to="Forgot">Forgot your password?</NavLink>
                             </div>
@@ -161,7 +134,6 @@ console.log(localStorage.getItem("permissionArray"))
                                 {loading ? "Logging in..." : "Login"}
                               </button>
                             </div>
-                            {/* {error && <p>Error: {error ? "invalid credentials" : null}</p>} */}
                           </Form>
                         )}
                       </Formik>

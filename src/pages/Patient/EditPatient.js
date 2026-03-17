@@ -16,13 +16,13 @@ import { baseurl, image } from "../../Basurl/Baseurl";
 export default function EditPatient() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const dispatch = useDispatch();
   const [previewImage, setPreviewImage] = useState(null);
   const { patient, loading, error } = useSelector((state) => state.patient);
   const [ispatient, setIspatient] = useState(null);
-//  const [previewImage, setPreviewImage] = useState(null);
-const [previewDocs, setPreviewDocs] = useState([]);
+  //  const [previewImage, setPreviewImage] = useState(null);
+  const [previewDocs, setPreviewDocs] = useState([]);
   const { Countries } = useSelector((state) => state.Countries);
   useEffect(() => {
     dispatch(GetAllCountries());
@@ -123,7 +123,7 @@ const [previewDocs, setPreviewDocs] = useState([]);
 
                     patient_relation_name:
                       ispatient?.patient_relation_name || "",
-                        id_proof: [],
+                    id_proof: [],
                     patient_relation: ispatient?.patient_relation || "",
                     patient_relation_no: ispatient?.patient_relation_no || "",
                   }}
@@ -149,7 +149,6 @@ const [previewDocs, setPreviewDocs] = useState([]);
                   //         values.patient_Profile,
                   //       );
                   //     }
-              
 
                   //     await dispatch(
                   //       EditPatientType({
@@ -176,48 +175,59 @@ const [previewDocs, setPreviewDocs] = useState([]);
                   //   }
                   // }}
                   onSubmit={async (values, { setSubmitting }) => {
-  try {
-    if (!ispatient?.patientId) {
-      Swal.fire("Error!", "Patient ID missing", "error");
-      return;
-    }
+                    try {
+                      if (!ispatient?.patientId) {
+                        Swal.fire("Error!", "Patient ID missing", "error");
+                        return;
+                      }
 
-    const formData = new FormData();
+                      const formData = new FormData();
 
-    Object.keys(values).forEach((key) => {
-      if (key !== "patient_Profile" && key !== "id_proof") {
-        formData.append(key, values[key] ?? "");
-      }
-    });
+                      Object.keys(values).forEach((key) => {
+                        if (key !== "patient_Profile" && key !== "id_proof") {
+                          formData.append(key, values[key] ?? "");
+                        }
+                      });
 
-    // patient profile
-    if (values.patient_Profile instanceof File) {
-      formData.append("patient_Profile", values.patient_Profile);
-    }
+                      // patient profile
+                      if (values.patient_Profile instanceof File) {
+                        formData.append(
+                          "patient_Profile",
+                          values.patient_Profile,
+                        );
+                      }
 
-    // multiple id proofs
-    if (values.id_proof && values.id_proof.length > 0) {
-      values.id_proof.forEach((file) => {
-        formData.append("id_proof", file);
-      });
-    }
+                      // multiple id proofs
+                      if (values.id_proof && values.id_proof.length > 0) {
+                        values.id_proof.forEach((file) => {
+                          formData.append("id_proof", file);
+                        });
+                      }
 
-    await dispatch(
-      EditPatientType({
-        id: ispatient.patientId,
-        data: formData,
-      })
-    ).unwrap();
+                      await dispatch(
+                        EditPatientType({
+                          id: ispatient.patientId,
+                          data: formData,
+                        }),
+                      ).unwrap();
 
-    Swal.fire("Success!", "Patient updated successfully", "success");
-    navigate("/Admin/patients");
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error!", err?.message || "Update failed", "error");
-  } finally {
-    setSubmitting(false);
-  }
-}}
+                      Swal.fire(
+                        "Success!",
+                        "Patient updated successfully",
+                        "success",
+                      );
+                      navigate("/Admin/patients");
+                    } catch (err) {
+                      console.error(err);
+                      Swal.fire(
+                        "Error!",
+                        err?.message || "Update failed",
+                        "error",
+                      );
+                    } finally {
+                      setSubmitting(false);
+                    }
+                  }}
                 >
                   {({ isSubmitting, values, setFieldValue }) => (
                     <Form>
@@ -241,7 +251,9 @@ const [previewDocs, setPreviewDocs] = useState([]);
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Country<span className="text-danger">*</span></label>
+                            <label>
+                              Country<span className="text-danger">*</span>
+                            </label>
                             <Field name="country">
                               {({ field, form }) => (
                                 <>
@@ -292,7 +304,10 @@ const [previewDocs, setPreviewDocs] = useState([]);
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Phone / WhatsApp Number<span className="text-danger">*</span></label>
+                            <label>
+                              Phone / WhatsApp Number
+                              <span className="text-danger">*</span>
+                            </label>
                             <div className="country-code">
                               <Field
                                 className="form-control code-dial"
@@ -443,7 +458,10 @@ const [previewDocs, setPreviewDocs] = useState([]);
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Emergency Contact Number<span className="text-danger">*</span></label>
+                            <label>
+                              Emergency Contact Number
+                              <span className="text-danger">*</span>
+                            </label>
                             <div className="country-code">
                               <Field
                                 className="form-control code-dial"
@@ -464,71 +482,93 @@ const [previewDocs, setPreviewDocs] = useState([]);
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Patient Id <span className="text-danger">*</span></label>
-                            <Field className="form-control" type="text" name="patientNumber" />
-                            <ErrorMessage name="patientNumber" component="div" className="text-danger" />
+                            <label>
+                              Patient Id <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="text"
+                              name="patientNumber"
+                            />
+                            <ErrorMessage
+                              name="patientNumber"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
                         </div>
                         <div className="col-md-4">
-  <div className="field-set">
-    <label>
-      Patient ID Proof <span className="text-danger">*</span>
-    </label>
+                          <div className="field-set">
+                            <label>
+                              Patient ID Proof{" "}
+                              <span className="text-danger">*</span>
+                            </label>
 
-    <input
-      type="file"
-      multiple
-      className="form-control"
-      accept="image/*,.pdf"
-      onChange={(event) => {
-        const files = event.target.files;
+                            <input
+                              type="file"
+                              multiple
+                              className="form-control"
+                              accept="image/*,.pdf"
+                              onChange={(event) => {
+                                const files = event.target.files;
 
-if (files && files.length > 0) {
-  const fileArray = Array.from(files);
+                                if (files && files.length > 0) {
+                                  const fileArray = Array.from(files);
 
-  setPreviewDocs(fileArray.map((file) => URL.createObjectURL(file)));
+                                  setPreviewDocs(
+                                    fileArray.map((file) =>
+                                      URL.createObjectURL(file),
+                                    ),
+                                  );
 
-  setFieldValue("id_proof", fileArray);
-}
-      }}
-    />
+                                  setFieldValue("id_proof", fileArray);
+                                }
+                              }}
+                            />
 
-    <div className="engpatimg">
-      
-      {/* Show newly selected files */}
-      {previewDocs.length > 0 &&
-        previewDocs.map((doc, index) => (
-          <button
-            key={index}
-            type="button"
-            className="viewbtn"
-            onClick={() => window.open(doc, "_blank")}
-          >
-            View {index + 1}
-          </button>
-        ))}
+                            <div className="engpatimg">
+                              {/* Show newly selected files */}
+                              {previewDocs.length > 0 &&
+                                previewDocs.map((doc, index) => (
+                                  <button
+                                    key={index}
+                                    type="button"
+                                    className="viewbtn"
+                                    onClick={() => window.open(doc, "_blank")}
+                                  >
+                                    View
+                                  </button>
+                                ))}
 
-      {/* Show existing docs from API */}
-      {previewDocs.length === 0 &&
-        ispatient?.patient_kyc?.[0]?.id_proof?.map((doc, index) => (
-          <button
-            key={index}
-            type="button"
-            className="viewbtn"
-            onClick={() =>
-              window.open(`${image}/${doc}`, "_blank")
-            }
-          >
-            View {index + 1}
-          </button>
-        ))}
-    </div>
-  </div>
-</div>
+                              {/* Show existing docs from API */}
+                              {previewDocs.length === 0 &&
+                                ispatient?.patient_kyc?.[0]?.id_proof?.map(
+                                  (doc, index) => (
+                                    <button
+                                      key={index}
+                                      type="button"
+                                      className="viewbtn"
+                                      onClick={() =>
+                                        window.open(`${image}/${doc}`, "_blank")
+                                      }
+                                    >
+                                      View
+                                    </button>
+                                  ),
+                                )}
+                            </div>
+                          </div>
+                        </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Patient Profile<span className="text-danger">*</span></label>
-                            <input type="file" accept="image/*" className="form-control"
+                            <label>
+                              Patient Profile
+                              <span className="text-danger">*</span>
+                            </label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="form-control"
                               onChange={(event) => {
                                 const file = event.currentTarget.files[0];
                                 if (file) {
@@ -567,21 +607,45 @@ if (files && files.length > 0) {
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Referral Name{" "}<span className="text-danger">*</span></label>
-                            <Field className="form-control" type="text" name="Referral_Name" />
-                            <ErrorMessage name="Referral_Name" component="div" className="text-danger" />
+                            <label>
+                              Referral Name{" "}
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="text"
+                              name="Referral_Name"
+                            />
+                            <ErrorMessage
+                              name="Referral_Name"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Treatment Name<span className="text-danger">*</span></label>
-                            <Field className="form-control" type="text" name="patientDisease" />
-                            <ErrorMessage name="patientDisease" component="div" className="text-danger" />
+                            <label>
+                              Treatment Name
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="text"
+                              name="patientDisease"
+                            />
+                            <ErrorMessage
+                              name="patientDisease"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Treating In<span className="text-danger">*</span></label>
+                            <label>
+                              Treating In<span className="text-danger">*</span>
+                            </label>
                             <Field name="treatingIn">
                               {({ field, form }) => (
                                 <>
@@ -630,14 +694,28 @@ if (files && files.length > 0) {
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
-                            <label>Date<span className="text-danger">*</span></label>
-                            <Field className="form-control" type="date" name="created_at" />
-                            <ErrorMessage name="created_at" component="div" className="text-danger" />
+                            <label>
+                              Date<span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              className="form-control"
+                              type="date"
+                              name="created_at"
+                            />
+                            <ErrorMessage
+                              name="created_at"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
                         </div>
                         <div className="col-md-12">
                           <div className="">
-                            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                            <button
+                              type="submit"
+                              className="submit-btn"
+                              disabled={isSubmitting}
+                            >
                               Submit
                             </button>
                           </div>
