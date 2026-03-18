@@ -56,11 +56,9 @@ export default function EditEnquiry() {
       .uppercase()
       .matches(
         /^[A-Z0-9]{7,15}$/,
-        "Passport number must be 7–15 characters (letters & digits only)",
-      )
+        "Passport number must be 7–15 characters (letters & digits only)",)
       .required("Passport number is required"),
     treatingIn: Yup.string().required("Treating In is required"),
-    // disease_name: Yup.string().required("Disease Name is required"),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"])
       .required("Gender is required"),
@@ -155,15 +153,12 @@ export default function EditEnquiry() {
               index,
             },
           });
-
-          // ✅ Update UI instantly
           setEnquiry((prev) => ({
             ...prev,
             patient_id_proof: prev.patient_id_proof.filter(
               (_, i) => i !== index,
             ),
           }));
-
           Swal.fire("Deleted!", "Image removed successfully.", "success");
         } catch (err) {
           Swal.fire("Error", "Unable to delete image", "error");
@@ -171,7 +166,6 @@ export default function EditEnquiry() {
       }
     });
   };
-
   const handleDeleteAttendantIdProof = async (index) => {
     Swal.fire({
       title: "Delete this image?",
@@ -188,15 +182,12 @@ export default function EditEnquiry() {
               index,
             },
           });
-
-          // ✅ Update UI immediately
           setEnquiry((prev) => ({
             ...prev,
             patient_relation_id: prev.patient_relation_id.filter(
               (_, i) => i !== index,
             ),
           }));
-
           Swal.fire("Deleted!", "Image removed successfully.", "success");
         } catch (err) {
           Swal.fire("Error", "Unable to delete image", "error");
@@ -204,7 +195,6 @@ export default function EditEnquiry() {
       }
     });
   };
-
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -307,7 +297,6 @@ export default function EditEnquiry() {
                         formData,
                       }),
                     ).unwrap();
-
                     Swal.fire("Enquiry updated successfully!", "", "success");
                     navigate("/Admin/Inquiry");
                   } catch (err) {
@@ -361,11 +350,6 @@ export default function EditEnquiry() {
                                       selected?.dial_code || "",
                                     );
                                   }}
-                                // input={
-                                //   <OutlinedInput label="Select Country" />
-                                // }
-                                // displayEmpty
-                                // sx={{ height: 40 }}
                                 >
                                   <MenuItem value="">
                                     <em>Select Country</em>
@@ -579,34 +563,6 @@ export default function EditEnquiry() {
                             }}
                           />
                           <div className="engpatimg">
-                            {/* {Array.isArray(editenquiry.patient_id_proof) &&
-                              editenquiry.patient_id_proof.map(
-                                (file, index) => {
-                                  const type = getFileType(file);
-                                  const fileUrl = `${imageUrl}${file}`;
-
-                                  return (
-
-                                    <div className="">
-                                      <div className="file-preview" key={index}>
-                                        <span className="delete-icon" onClick={() => handleDeletePatientIdProof(index)}>
-                                          <i class="fa-solid fa-xmark"></i>
-                                        </span>
-                                        <button type="button" className="viewbtn" onClick={() => window.open(fileUrl, "_blank")}>
-                                          {type === "image" && "View Image"}
-                                          {type === "pdf" && "View PDF"}
-                                          {type === "word" && "View Word"}
-                                          {type === "excel" && "View Excel"}
-                                          {type === "other" && "View File"}
-                                        </button>
-                                      </div>
-                                    </div>
-                                  );
-                                },
-                              )
-                            ) } */}
-                          </div>
-                          <div className="engpatimg">
                             {Array.isArray(editenquiry?.patient_id_proof) &&
                               editenquiry.patient_id_proof.length > 0 &&
                               editenquiry.patient_id_proof.map(
@@ -624,7 +580,6 @@ export default function EditEnquiry() {
                                       >
                                         <i className="fa-solid fa-xmark"></i>
                                       </span>
-
                                       <button
                                         type="button"
                                         className="viewbtn"
@@ -648,7 +603,6 @@ export default function EditEnquiry() {
                                 },
                               )}
                           </div>
-
                           <ErrorMessage
                             name="patient_id_proof"
                             component="div"
@@ -794,7 +748,6 @@ export default function EditEnquiry() {
                                   <MenuItem value="">
                                     <em>Select Country</em>
                                   </MenuItem>
-
                                   {Countries.map((country, i) => (
                                     <MenuItem key={i} value={country.name}>
                                       {country.name}
@@ -928,7 +881,6 @@ export default function EditEnquiry() {
                                   editenquiry.patient_relation_id.map(
                                     (file, index) => {
                                       const fileUrl = `${imageUrl}${file}`;
-
                                       return (
                                         <div className="">
                                           <div
@@ -985,65 +937,16 @@ export default function EditEnquiry() {
                         </div>
                       </>
                     )}
-                    {/* {
-                  editenquiry.discussion_notes?.length === 0 ? ("") : (
-                    <>
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="treat-hd">
-                            <h6>Discussion Notes</h6>
-                            <span className="line"></span>
-                          </div>
-                          <div className="tab-pane" id="bottom-tab3">
-                            {editenquiry.discussion_notes?.length === 0 ? (
-                              "No notes for patient"
-                            ) : (
-                              <>
-                                {editenquiry.discussion_notes?.map((info, index) => (
-                                  <div className="card-box">
-                                    <div className="note-view">
-                                      <h3 className="card-title">Note-{index + 1}</h3>
-                                    </div>
-                                    <div className="experience-box">
-                                      <ul className="experience-list">
-                                        <li>
-                                          <div className="experience-user">
-                                            <div className="before-circle"></div>
-                                          </div>
-                                          <div className="experience-content">
-                                            <div className="timeline-content">
-                                              <a href="#/" className="name">
-                                                {info.note}
-                                              </a>
-                                              <div>date-{new Date(info.date).toLocaleDateString("en-GB")}</div>
-                                              {/* {/ <span className="time">treatment due payment-{info.treatment_due_payment}</span>  */}
-                    {/* </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                ))}
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )
-                } */}
                     {values.discussion_notes?.map((note, index) => (
                       <div className="card-box" key={index}>
                         <div className="note-view">
                           <h3 className="card-title">Note-{index + 1}</h3>
                         </div>
-
                         <Field
                           as="textarea"
                           name={`discussion_notes.${index}.note`}
                           className="form-control"
                         />
-
                         <div>
                           Date -{" "}
                           {new Date(note.date).toLocaleDateString("en-GB")}
