@@ -23,8 +23,8 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hasPermission = (route) => {
-  return permissions.includes(route);
-};
+    return permissions.includes(route);
+  };
   const [revenueData, setRevenueData] = useState({
     all: { series: [], categories: [] },
     Daily: { series: [], categories: [] },
@@ -38,7 +38,7 @@ export default function Dashboard() {
     Daily: { series: [], categories: [] },
     Weekly: { series: [], categories: [] },
     Monthly: { series: [], categories: [] },
-     quarterly: { series: [], categories: [] },
+    quarterly: { series: [], categories: [] },
     yearly: { series: [], categories: [] },
   });
 
@@ -47,7 +47,7 @@ export default function Dashboard() {
     Daily: { series: [], categories: [] },
     Weekly: { series: [], categories: [] },
     Monthly: { series: [], categories: [] },
-     quarterly: { series: [], categories: [] },
+    quarterly: { series: [], categories: [] },
     yearly: { series: [], categories: [] },
   });
   const { Countries } = useSelector((state) => state.Countries);
@@ -57,7 +57,7 @@ export default function Dashboard() {
     Daily: { series: [], categories: [] },
     Weekly: { series: [], categories: [] },
     Monthly: { series: [], categories: [] },
-     quarterly: { series: [], categories: [] },
+    quarterly: { series: [], categories: [] },
     yearly: { series: [], categories: [] },
   });
   const [treatmentDistributionData, setTreatmentDistributionData] = useState({
@@ -65,7 +65,7 @@ export default function Dashboard() {
     Daily: { series: [], options: {} },
     Weekly: { series: [], options: {} },
     Monthly: { series: [], options: {} },
-     quarterly: { series: [], categories: [] },
+    quarterly: { series: [], categories: [] },
     yearly: { series: [], categories: [] },
   });
   const [responseDataChart, setResponseDataChart] = useState({
@@ -162,34 +162,34 @@ export default function Dashboard() {
           const treatmentChart = response.data?.charts?.treatmentChart;
           const formattedTreatment = formatTreatmentChart(treatmentChart);
           setTreatmentData({
-  all: formattedTreatment,
-  Daily: formattedTreatment,
-  Weekly: formattedTreatment,
-  Monthly: formattedTreatment,
-  quarterly: formattedTreatment,
-  yearly: formattedTreatment,
-});
+            all: formattedTreatment,
+            Daily: formattedTreatment,
+            Weekly: formattedTreatment,
+            Monthly: formattedTreatment,
+            quarterly: formattedTreatment,
+            yearly: formattedTreatment,
+          });
           const distribution = response.data?.charts?.treatmentDistribution;
           const formattedDistribution =
             formatTreatmentDistribution(distribution);
-         setTreatmentDistributionData({
-  all: formattedDistribution,
-  Daily: formattedDistribution,
-  Weekly: formattedDistribution,
-  Monthly: formattedDistribution,
-  quarterly: formattedDistribution,
-  yearly: formattedDistribution,
-});
+          setTreatmentDistributionData({
+            all: formattedDistribution,
+            Daily: formattedDistribution,
+            Weekly: formattedDistribution,
+            Monthly: formattedDistribution,
+            quarterly: formattedDistribution,
+            yearly: formattedDistribution,
+          });
           const revenueChart = response.data?.charts?.revenueChart;
           const formattedRevenue = formatRevenueChart(revenueChart);
-         setRevenueData({
-  all: formattedRevenue,
-  Daily: formattedRevenue,
-  Weekly: formattedRevenue,
-  Monthly: formattedRevenue,
-  quarterly: formattedRevenue,
-  yearly: formattedRevenue,
-});
+          setRevenueData({
+            all: formattedRevenue,
+            Daily: formattedRevenue,
+            Weekly: formattedRevenue,
+            Monthly: formattedRevenue,
+            quarterly: formattedRevenue,
+            yearly: formattedRevenue,
+          });
           const funnel = response.data?.charts?.conversionFunnel;
           const formattedFunnel = formatConversionFunnel(funnel);
           setHolisticChartData({
@@ -200,27 +200,27 @@ export default function Dashboard() {
           // const formattedHospital = formatHospitalPerformance(
           //   response.data?.charts?.topHospitals,
           // );
-const formattedHospital = formatHospitalPerformance(
-  response.data?.charts?.topHospitals,
-);
+          const formattedHospital = formatHospitalPerformance(
+            response.data?.charts?.topHospitals,
+          );
 
-setHospitalPerformanceData({
-  all: formattedHospital,
-  Daily: formattedHospital,
-  Weekly: formattedHospital,
-  Monthly: formattedHospital,
-  quarterly: formattedHospital,
-  yearly: formattedHospital,
-});
+          setHospitalPerformanceData({
+            all: formattedHospital,
+            Daily: formattedHospital,
+            Weekly: formattedHospital,
+            Monthly: formattedHospital,
+            quarterly: formattedHospital,
+            yearly: formattedHospital,
+          });
 
-         setHolisticChartData({
-  all: formattedFunnel,
-  Daily: formattedFunnel,
-  Weekly: formattedFunnel,
-  Monthly: formattedFunnel,
-  quarterly: formattedFunnel,
-  yearly: formattedFunnel,
-});
+          setHolisticChartData({
+            all: formattedFunnel,
+            Daily: formattedFunnel,
+            Weekly: formattedFunnel,
+            Monthly: formattedFunnel,
+            quarterly: formattedFunnel,
+            yearly: formattedFunnel,
+          });
           setTypeCounts(response.data.patientTypeCounts);
           setTravelled(response.data.patientStatusCounts);
           setCount(response.data);
@@ -513,61 +513,61 @@ setHospitalPerformanceData({
                 <div className="col-md-2">
                   <div className="treat-hd">
                     <div className="dropdown">
+                      <button
+                        className="submit-btn dropdown-toggle w-100"
+                        type="button"
+                        id="chartDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        {chartView}
+                      </button>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="chartDropdown"
+                      >
+                        <li>
                           <button
-                            className="submit-btn dropdown-toggle w-100"
-                            type="button"
-                            id="chartDropdown"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
+                            className="dropdown-item"
+                            onClick={() => setChartView("Daily")}
                           >
-                            {chartView}
+                            Daily
                           </button>
-                          <ul
-                            className="dropdown-menu"
-                            aria-labelledby="chartDropdown"
+                        </li>
+                        <li>
+                          <button
+                            className="dropdown-item"
+                            onClick={() => setChartView("Weekly")}
                           >
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => setChartView("Daily")}
-                              >
-                                Daily
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => setChartView("Weekly")}
-                              >
-                                Weekly
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => setChartView("Monthly")}
-                              >
-                                Monthly
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => setChartView("quarterly")}
-                              >
-                                Quarterly
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => setChartView("yearly")}
-                              >
-                                Yearly
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
+                            Weekly
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="dropdown-item"
+                            onClick={() => setChartView("Monthly")}
+                          >
+                            Monthly
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="dropdown-item"
+                            onClick={() => setChartView("quarterly")}
+                          >
+                            Quarterly
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="dropdown-item"
+                            onClick={() => setChartView("yearly")}
+                          >
+                            Yearly
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
                     {/* <select className="w-100 bg-white p-2 rounded">
                       <option >Select Filter</option>
                       <option  onClick={() => setChartView("Daily")}>Daily</option>
@@ -607,74 +607,74 @@ setHospitalPerformanceData({
               </div>
               <div className="row">
                 {hasPermission("/Enquiries") && (
-                <div
-                  className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleHolisticClick("enquiry")}
-                >
-                  <div className="dash-widget1">
-                    <div className="dash-widget-bg">
-                      <i className="fa fa-user-md"></i>
+                  <div
+                    className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleHolisticClick("enquiry")}
+                  >
+                    <div className="dash-widget1">
+                      <div className="dash-widget-bg">
+                        <i className="fa fa-user-md"></i>
+                      </div>
+                      <div className="dash-widget-info1">
+                        <h3>
+                          <CountUp
+                            start={0}
+                            end={count?.all_Enquiry || 0}
+                            duration={2}
+                          />
+                        </h3>
+                        <span className="widget-title">Total Enquiries</span>
+                      </div>
                     </div>
-                    <div className="dash-widget-info1">
-                      <h3>
-                        <CountUp
-                          start={0}
-                          end={count?.all_Enquiry || 0}
-                          duration={2}
-                        />
-                      </h3>
-                      <span className="widget-title">Total Enquiries</span>
-                    </div>
-                  </div>
-                </div>)}
+                  </div>)}
                 {hasPermission("/Manage_Appointments") && (
-                <div
-                  className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleHolisticClick("appointment")}
-                >
-                  <div className="dash-widget1">
-                    <div className="dash-widget-bg">
-                      <i
-                        className="fa fa-calendar-check-o"
-                        aria-hidden="true"
-                      ></i>
+                  <div
+                    className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleHolisticClick("appointment")}
+                  >
+                    <div className="dash-widget1">
+                      <div className="dash-widget-bg">
+                        <i
+                          className="fa fa-calendar-check-o"
+                          aria-hidden="true"
+                        ></i>
+                      </div>
+                      <div className="dash-widget-info1">
+                        <h3>
+                          <CountUp
+                            start={0}
+                            end={count?.totalAppointment || 0}
+                            duration={2}
+                          />
+                        </h3>
+                        <span className="widget-title">Total Appointments</span>
+                      </div>
                     </div>
-                    <div className="dash-widget-info1">
-                      <h3>
-                        <CountUp
-                          start={0}
-                          end={count?.totalAppointment || 0}
-                          duration={2}
-                        />
-                      </h3>
-                      <span className="widget-title">Total Appointments</span>
-                    </div>
-                  </div>
-                </div>)}
+                  </div>)}
                 {hasPermission("/Manage_Patients") && (
-                <div
-                  className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleHolisticClick("patient")}
-                >
-                  <div className="dash-widget1">
-                    <div className="dash-widget-bg">
-                      <i className="fas fa-user-injured"></i>
+                  <div
+                    className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleHolisticClick("patient")}
+                  >
+                    <div className="dash-widget1">
+                      <div className="dash-widget-bg">
+                        <i className="fas fa-user-injured"></i>
+                      </div>
+                      <div className="dash-widget-info1">
+                        <h3>
+                          <CountUp
+                            start={0}
+                            end={count?.Patients || 0}
+                            duration={2}
+                          />
+                        </h3>
+                        <span className="widget-title">Total Patients</span>
+                      </div>
                     </div>
-                    <div className="dash-widget-info1">
-                      <h3>
-                        <CountUp
-                          start={0}
-                          end={count?.Patients || 0}
-                          duration={2}
-                        />
-                      </h3>
-                      <span className="widget-title">Total Patients</span>
-                    </div>
-                  </div>
-                </div>)}
+                  </div>)}
                 <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
                   <div className="dash-widget1">
                     <div className="dash-widget-bg">
@@ -1138,7 +1138,7 @@ setHospitalPerformanceData({
                     </div>
                     <ReactApexChart
                       type="bar"
-                      height={350}        
+                      height={350}
                       series={responseDataChart.series}
                       options={{
                         chart: { toolbar: { show: false } },
@@ -1152,6 +1152,103 @@ setHospitalPerformanceData({
                   </div>
                 </div>
                 <div className="col-md-6">
+                  <div className="card holistic-flow-card">
+                    <div className="card-header">
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h5 className="mb-0">Patient Conversion Funnel (Enquiry → Completion)</h5>
+                        <div className="dropdown">
+                          <button
+                            className="submit-btn dropdown-toggle"
+                            type="button"
+                            id="chartDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            {chartView}
+                          </button>
+                          <ul
+                            className="dropdown-menu"
+                            aria-labelledby="chartDropdown"
+                          >
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => setChartView("Daily")}
+                              >
+                                Daily
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => {
+                                  GetDashboard();
+                                  setChartView("Weekly");
+                                }}
+                              >
+                                Weekly
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => setChartView("Monthly")}
+                              >
+                                Monthly
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => setChartView("quarterly")}
+                              >
+                                Quarterly
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => setChartView("yearly")}
+                              >
+                                Yearly
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-body">
+                      <ReactApexChart
+                        type="line"
+                        height={350}
+                        series={holisticChartData[chartView]?.series || []}
+                        options={{
+                          chart: {
+                            toolbar: { show: false },
+                            zoom: { enabled: false },
+                          },
+                          stroke: { curve: "smooth", width: 3 },
+                          markers: {
+                            size: 5,
+                            strokeWidth: 2,
+                            hover: { size: 7 },
+                          },
+                          dataLabels: { enabled: false },
+                          xaxis: {
+                            categories:
+                              holisticChartData[chartView]?.categories || [],
+                          },
+                          yaxis: { title: { text: "Total Count" } },
+                          legend: { position: "top" },
+                          grid: {
+                            strokeDashArray: 4,
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-12">
                   <div className="card treatment-status-card">
                     <div className="card-header">
                       <div className="d-flex justify-content-between align-items-center">
@@ -1239,7 +1336,7 @@ setHospitalPerformanceData({
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <div className="card treatment-distribution-card">
                     <div className="card-header">
                       <div className="d-flex justify-content-between align-items-center">
@@ -1312,7 +1409,7 @@ setHospitalPerformanceData({
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-8">
                   <div className="card revenue-payment-card">
                     <div className="card-header">
                       <div className="d-flex justify-content-between align-items-center">
@@ -1409,7 +1506,7 @@ setHospitalPerformanceData({
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-12">
                   <div className="card hospital-performance-card">
                     <div className="card-header">
                       <div className="d-flex justify-content-between align-items-center">
@@ -1457,7 +1554,7 @@ setHospitalPerformanceData({
                                 className="dropdown-item"
                                 onClick={() => setChartView("quarterly")}
                               >
-                              Quarterly
+                                Quarterly
                               </button>
                             </li>
                             <li>
@@ -1532,111 +1629,76 @@ setHospitalPerformanceData({
                         }}
                       /> */}
                       <ReactApexChart
-  type="bar"
-  height={350}
-  series={hospitalPerformanceData[chartView]?.series || []}
-  options={{
-    xaxis: {
-      categories:
-        hospitalPerformanceData[chartView]?.categories || [],
-    },
-  }}
-/>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="card holistic-flow-card">
-                    <div className="card-header">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h5 className="mb-0">
-                          Patient Conversion Funnel (Enquiry → Completion)
-                        </h5>
-                        <div className="dropdown">
-                          <button
-                            className="submit-btn dropdown-toggle"
-                            type="button"
-                            id="chartDropdown"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                          >
-                            {chartView}
-                          </button>
-                          <ul
-                            className="dropdown-menu"
-                            aria-labelledby="chartDropdown"
-                          >
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => setChartView("Daily")}
-                              >
-                                Daily
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => {
-                                  GetDashboard();
-                                  setChartView("Weekly");
-                                }}
-                              >
-                                Weekly
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => setChartView("Monthly")}
-                              >
-                                Monthly
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => setChartView("quarterly")}
-                              >
-                                Quarterly
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                className="dropdown-item"
-                                onClick={() => setChartView("yearly")}
-                              >
-                                Yearly
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="card-body">
-                      <ReactApexChart
-                        type="line"
+                        type="bar"
                         height={350}
-                        series={holisticChartData[chartView]?.series || []}
+                        series={hospitalPerformanceData[chartView]?.series || []}
                         options={{
                           chart: {
                             toolbar: { show: false },
-                            zoom: { enabled: false },
                           },
-                          stroke: { curve: "smooth", width: 3 },
-                          markers: { size: 5 },
-                          dataLabels: { enabled: false },
+
+                          plotOptions: {
+                            bar: {
+                              horizontal: false,
+                              columnWidth: "50%",
+                              borderRadius: 0,
+                            },
+                          },
+
+                          dataLabels: {
+                            enabled: false,
+                          },
                           xaxis: {
                             categories:
-                              holisticChartData[chartView]?.categories || [],
+                              hospitalPerformanceData[chartView]?.categories || [],
+                            labels: {
+                              rotate: -30,
+                              rotateAlways: true,
+                              trim: true,
+                              style: {
+                                fontSize: "12px"
+                              },
+                              // formatter: function (val) {
+                              //   return val.length > 20 ? val.substring(0, 20) + "..." : val;
+                              // }
+                            },
+                            title: {
+                              text: "Hospitals",
+                              style: {
+                                fontSize: "12px",
+                                fontWeight: 600,
+                                color: "#002f54",
+                              },
+                            },
                           },
-                          yaxis: { title: { text: "Total Count" } },
-                          legend: { position: "top" },
+                          yaxis: {
+                            title: {
+                              text: "Total Patients",
+                              style: {
+                                fontSize: "12px",
+                                fontWeight: 600,
+                                color: "#002f54",
+                              },
+                            },
+                          },
+                          tooltip: {
+                            shared: true,
+                            intersect: false,
+                            y: {
+                              formatter: function (val) {
+                                if (val === undefined || val === null)
+                                  return "";
+                                return val.toLocaleString();
+                              },
+                            },
+                          },
+                          colors: ["#0ba6df"],
                         }}
                       />
                     </div>
                   </div>
                 </div>
+
               </div>
             </>
           )}

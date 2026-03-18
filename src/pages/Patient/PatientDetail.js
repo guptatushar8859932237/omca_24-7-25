@@ -2324,54 +2324,54 @@ function PatientDetail() {
   //   getDataapi3(c); // direct call with latest value
   // };
 
-const getDataapi3 = async (tId) => {
-  try {
-    const treatmentid = selectedTreatmentId || tId;
+  const getDataapi3 = async (tId) => {
+    try {
+      const treatmentid = selectedTreatmentId || tId;
 
-    const response = await axios.get(
-      `${baseurl}getAllTreatmentData/${location.state.patientId}/${treatmentid}`
-    );
+      const response = await axios.get(
+        `${baseurl}getAllTreatmentData/${location.state.patientId}/${treatmentid}`
+      );
 
-    const data = response.data.data;
+      const data = response.data.data;
 
-    // ✅ Normalize attendants passport here
-    const normalizedAttendants = data.attendants.map((att) => {
-      let passport = att.attendant_passport;
+      // ✅ Normalize attendants passport here
+      const normalizedAttendants = data.attendants.map((att) => {
+        let passport = att.attendant_passport;
 
-      // normalize to array
-      if (!passport) {
-        passport = [];
-      } else if (Array.isArray(passport)) {
-        passport = passport;
-      } else if (typeof passport === "string") {
-        try {
-          if (passport.startsWith("[")) {
-            passport = JSON.parse(passport);
-          } else {
+        // normalize to array
+        if (!passport) {
+          passport = [];
+        } else if (Array.isArray(passport)) {
+          passport = passport;
+        } else if (typeof passport === "string") {
+          try {
+            if (passport.startsWith("[")) {
+              passport = JSON.parse(passport);
+            } else {
+              passport = [passport];
+            }
+          } catch {
             passport = [passport];
           }
-        } catch {
+        } else if (typeof passport === "object") {
           passport = [passport];
         }
-      } else if (typeof passport === "object") {
-        passport = [passport];
-      }
 
-      return {
-        ...att,
-        attendant_passport: passport,
-      };
-    });
+        return {
+          ...att,
+          attendant_passport: passport,
+        };
+      });
 
-    // ✅ set normalized data
-    setPaymentsFilered(data.payment_details);
-    setReportsFilered1(data.reports);
-    setAttandantFilered(normalizedAttendants);
+      // ✅ set normalized data
+      setPaymentsFilered(data.payment_details);
+      setReportsFilered1(data.reports);
+      setAttandantFilered(normalizedAttendants);
 
-  } catch (error) {
-    console.log(error);
-  }
-};
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // const handleclickDeleteTreatment =(treatment_id)=>{
   //   console.log(treatment_id)
@@ -2473,103 +2473,103 @@ const getDataapi3 = async (tId) => {
                           : ispatient?.patientId}
                       </p>
                       {showModal && (
-  <div className="custom-modal">
-    <div className="modal-content">
-      
-      {/* CLOSE BUTTON */}
-      <button
-        className="close-btn"
-        onClick={() => setShowModal(false)}
-      >
-        ✖
-      </button>
+                        <div className="custom-modal">
+                          <div className="modal-content">
 
-      {/* PREV BUTTON */}
-      <button
-        onClick={() =>
-          setCurrentIndex((prev) =>
-            prev === 0
-              ? (kys?.[0]?.id_proof?.length || 1) - 1
-              : prev - 1
-          )
-        }
-      >
-        ⬅
-      </button>
+                            {/* CLOSE BUTTON */}
+                            <button
+                              className="close-btn"
+                              onClick={() => setShowModal(false)}
+                            >
+                              ✖
+                            </button>
 
-      {/* FILE VIEWER */}
-      {(() => {
-        const currentFile = kys?.[0]?.id_proof?.[currentIndex];
-        const fileUrl = currentFile
-          ? `https://sisccltd.com/omca_crm/${currentFile}`
-          : "";
+                            {/* PREV BUTTON */}
+                            <button
+                              onClick={() =>
+                                setCurrentIndex((prev) =>
+                                  prev === 0
+                                    ? (kys?.[0]?.id_proof?.length || 1) - 1
+                                    : prev - 1
+                                )
+                              }
+                            >
+                              ⬅
+                            </button>
 
-        const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
+                            {/* FILE VIEWER */}
+                            {(() => {
+                              const currentFile = kys?.[0]?.id_proof?.[currentIndex];
+                              const fileUrl = currentFile
+                                ? `https://sisccltd.com/omca_crm/${currentFile}`
+                                : "";
 
-        if (!currentFile) {
-          return <p>No file available</p>;
-        }
+                              const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
 
-        return isPdf ? (
-          <iframe
-            src={fileUrl}
-            title="PDF Viewer"
-            width="400px"
-            height="400px"
-            style={{ border: "none" }}
-          />
-        ) : (
-          <img
-            src={fileUrl}
-            alt="Document"
-            style={{
-              width: "400px",
-              height: "400px",
-              objectFit: "contain",
-            }}
-          />
-        );
-      })()}
+                              if (!currentFile) {
+                                return <p>No file available</p>;
+                              }
 
-      {/* NEXT BUTTON */}
-      <button
-        onClick={() =>
-          setCurrentIndex((prev) =>
-            prev === (kys?.[0]?.id_proof?.length || 1) - 1
-              ? 0
-              : prev + 1
-          )
-        }
-      >
-        ➡
-      </button>
+                              return isPdf ? (
+                                <iframe
+                                  src={fileUrl}
+                                  title="PDF Viewer"
+                                  width="400px"
+                                  height="400px"
+                                  style={{ border: "none" }}
+                                />
+                              ) : (
+                                <img
+                                  src={fileUrl}
+                                  alt="Document"
+                                  style={{
+                                    width: "400px",
+                                    height: "400px",
+                                    objectFit: "contain",
+                                  }}
+                                />
+                              );
+                            })()}
 
-      {/* OPEN PDF IN NEW TAB */}
-      {(() => {
-        const currentFile = kys?.[0]?.id_proof?.[currentIndex];
-        const fileUrl = currentFile
-          ? `https://sisccltd.com/omca_crm/${currentFile}`
-          : "";
-        const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
+                            {/* NEXT BUTTON */}
+                            <button
+                              onClick={() =>
+                                setCurrentIndex((prev) =>
+                                  prev === (kys?.[0]?.id_proof?.length || 1) - 1
+                                    ? 0
+                                    : prev + 1
+                                )
+                              }
+                            >
+                              ➡
+                            </button>
 
-        return (
-          isPdf && (
-            <div style={{ marginTop: "10px" }}>
-              <a
-                href={fileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Open PDF in new tab
-              </a>
-            </div>
-          )
-        );
-      })()}
+                            {/* OPEN PDF IN NEW TAB */}
+                            {(() => {
+                              const currentFile = kys?.[0]?.id_proof?.[currentIndex];
+                              const fileUrl = currentFile
+                                ? `https://sisccltd.com/omca_crm/${currentFile}`
+                                : "";
+                              const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
 
-    </div>
-  </div>
-)}
+                              return (
+                                isPdf && (
+                                  <div style={{ marginTop: "10px" }}>
+                                    <a
+                                      href={fileUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      Open PDF in new tab
+                                    </a>
+                                  </div>
+                                )
+                              );
+                            })()}
+
+                          </div>
+                        </div>
+                      )}
                       {/* {showModal && (
                         
                         <div className="custom-modal">
@@ -2789,28 +2789,28 @@ const getDataapi3 = async (tId) => {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                              <span
-                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                              >
-                                                {item.status}
-                                              </span>
-                                            )}
+                                                <span
+                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                                >
+                                                  {item.status}
+                                                </span>
+                                              )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                            <button
-                                              className="add-button"
-                                              onClick={() =>
-                                                approveReject(
-                                                  info,
-                                                  item.id,
-                                                  "Approved",
-                                                )
-                                              }
-                                            >
-                                              Approve
-                                            </button>
-                                          )}
+                                              <button
+                                                className="add-button"
+                                                onClick={() =>
+                                                  approveReject(
+                                                    info,
+                                                    item.id,
+                                                    "Approved",
+                                                  )
+                                                }
+                                              >
+                                                Approve
+                                              </button>
+                                            )}
                                         </div>
                                       ))}
                                     </div>
@@ -2899,9 +2899,9 @@ const getDataapi3 = async (tId) => {
                             activeSubTab,
                           )
                             ? tretment?.filter(
-                                (item) =>
-                                  item.treatment_id === selectedTreatmentId,
-                              )
+                              (item) =>
+                                item.treatment_id === selectedTreatmentId,
+                            )
                             : tretment
                           )?.map((info, index) => {
                             return (
@@ -2909,31 +2909,39 @@ const getDataapi3 = async (tId) => {
                                 <div className="treat-card">
                                   <div className="sectabmain">
                                     <div className="treat-id">
-                                      <h3
-                                        onClick={() => {
-                                          setActiveSubTab("details");
-                                          setSelectedTreatmentId(
-                                            info.treatment_id,
-                                          );
-                                        }}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        {
-                                          // treatmentNameHeading
-                                          // === ""
-                                          //   ?
-                                          //   info.treatment_name
-                                          //   : treatmentNameHeading
-                                          activeSubTab === "details"
-                                            ? info.treatment_name
-                                            : treatmentIdFilter === ""
+                                      <div className="mngetreatment">
+                                        <h3
+                                          onClick={() => {
+                                            setActiveSubTab("details");
+                                            setSelectedTreatmentId(
+                                              info.treatment_id,
+                                            );
+                                          }}
+                                          style={{ cursor: "pointer", margin: 0 }}
+                                        >
+                                          {
+                                            // treatmentNameHeading
+                                            // === ""
+                                            //   ?
+                                            //   info.treatment_name
+                                            //   : treatmentNameHeading
+                                            activeSubTab === "details"
                                               ? info.treatment_name
-                                              : treatmentNameHeading
-                                        }{" "}
-                                      </h3>
-                                      <p className="mb-0">
-                                        {/* {info.treatment_status} */}
-                                      </p>
+                                              : treatmentIdFilter === ""
+                                                ? info.treatment_name
+                                                : treatmentNameHeading
+                                          }{" "}
+                                        </h3>
+                                        <div className="action-icon">
+                                          <i className="fa-solid fa-trash"
+                                            onClick={() => {
+                                              handleclickDeleteTreatment(
+                                                info.treatment_id,
+                                              );
+                                            }}>
+                                          </i>
+                                        </div>
+                                      </div>
                                       <select
                                         className="form-select form-select-sm"
                                         value={info.treatment_status || ""}
@@ -3010,22 +3018,22 @@ const getDataapi3 = async (tId) => {
                                           {!info?.Hospital_details?.some(
                                             (item) => item.hospital_Name,
                                           ) && (
-                                            <li className="nav-item">
-                                              <button
-                                                className="nav-link"
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "hospital",
-                                                    info,
-                                                    info.treatment_name,
-                                                  )
-                                                }
-                                              >
-                                                + Add Hospital
-                                              </button>
-                                            </li>
-                                          )}
+                                              <li className="nav-item">
+                                                <button
+                                                  className="nav-link"
+                                                  onClick={(e) =>
+                                                    handleAction(
+                                                      e,
+                                                      "hospital",
+                                                      info,
+                                                      info.treatment_name,
+                                                    )
+                                                  }
+                                                >
+                                                  + Add Hospital
+                                                </button>
+                                              </li>
+                                            )}
 
                                           <li className="nav-item">
                                             <button
@@ -3074,7 +3082,7 @@ const getDataapi3 = async (tId) => {
                                           </li>
                                         </ul>
                                       </div>
-                                      <div
+                                      {/* <div
                                         className="collapse-icon"
                                         onClick={() =>
                                           setOpenIndex(
@@ -3084,16 +3092,15 @@ const getDataapi3 = async (tId) => {
                                         aria-expanded={openIndex === index}
                                       >
                                         <i class="fa-solid fa-chevron-down"></i>
-                                      </div>
-                                      <div className="">
-                                        <i
-                                          className="fa fa-trash text-danger"
-                                          onClick={() => {
-                                            handleclickDeleteTreatment(
-                                              info.treatment_id,
-                                            );
-                                          }}
-                                        ></i>
+                                      </div> */}
+                                      <div
+                                        className={`collapse-icon ${openIndex === index ? "rotate" : ""}`}
+                                        onClick={() =>
+                                          setOpenIndex(openIndex === index ? null : index)
+                                        }
+                                        aria-expanded={openIndex === index}
+                                      >
+                                        <i className="fa-solid fa-chevron-down"></i>
                                       </div>
                                     </div>
                                   </div>
@@ -3236,8 +3243,7 @@ const getDataapi3 = async (tId) => {
                                                             <div className="col-md-2 text-end">
                                                               <div className="action-icon">
                                                                 {item.hospital_Name && (
-                                                                  <i
-                                                                    className="fa-solid fa-pen-to-square"
+                                                                  <i className="fa-solid fa-pen-to-square"
                                                                     onClick={() =>
                                                                       handledeedit(
                                                                         info,
@@ -3248,8 +3254,7 @@ const getDataapi3 = async (tId) => {
                                                                 )}
 
                                                                 {item.hospital_Name && (
-                                                                  <i
-                                                                    className="fa-solid fa-trash"
+                                                                  <i className="fa-solid fa-trash"
                                                                     onClick={() =>
                                                                       handledelete(
                                                                         info,
@@ -3293,36 +3298,13 @@ const getDataapi3 = async (tId) => {
                                                   <ul className="free-list">
                                                     {freeServices.map(
                                                       (item, index) => (
-                                                        <li
-                                                          key={
-                                                            item._id || index
-                                                          }
-                                                        >
+                                                        <li key={item._id || index}>
                                                           <div className="row">
                                                             <div className="col-md-12">
-                                                              <div className="para-main-div d-flex">
-                                                                <div>
-                                                                  <p>
-                                                                    {
-                                                                      item.serviceName
-                                                                    }
-                                                                  </p>
-                                                                </div>
-                                                                <div>
-                                                                  <i
-                                                                    className="fa-solid fa-trash mx-2 text-danger"
-                                                                    style={{
-                                                                      cursor:
-                                                                        "pointer",
-                                                                    }}
-                                                                    onClick={() =>
-                                                                      EditFreeDelete(
-                                                                        item,
-                                                                        info,
-                                                                        index,
-                                                                      )
-                                                                    }
-                                                                  ></i>
+                                                              <div className="para-main-div hosp-info">
+                                                                <p> {item.serviceName}</p>
+                                                                <div className="action-icon">
+                                                                  <i className="fa-solid fa-trash" onClick={() => EditFreeDelete(item, info, index,)}></i>
                                                                 </div>
                                                               </div>
                                                             </div>
@@ -3376,19 +3358,19 @@ const getDataapi3 = async (tId) => {
                                                               <td>
                                                                 {item.startTime
                                                                   ? new Date(
-                                                                      item.startTime,
-                                                                    ).toLocaleDateString(
-                                                                      "en-GB",
-                                                                    )
+                                                                    item.startTime,
+                                                                  ).toLocaleDateString(
+                                                                    "en-GB",
+                                                                  )
                                                                   : "-"}
                                                               </td>
                                                               <td>
                                                                 {item.endTime
                                                                   ? new Date(
-                                                                      item.endTime,
-                                                                    ).toLocaleDateString(
-                                                                      "en-GB",
-                                                                    )
+                                                                    item.endTime,
+                                                                  ).toLocaleDateString(
+                                                                    "en-GB",
+                                                                  )
                                                                   : "-"}
                                                               </td>
                                                               <td>
@@ -3461,15 +3443,15 @@ const getDataapi3 = async (tId) => {
                                                               <td>
                                                                 {item?.date
                                                                   ? new Date(
-                                                                      item.date,
-                                                                    ).toLocaleDateString(
-                                                                      "en-GB",
-                                                                    )
+                                                                    item.date,
+                                                                  ).toLocaleDateString(
+                                                                    "en-GB",
+                                                                  )
                                                                   : "-"}
                                                               </td>
                                                               <td>
                                                                 {item.platform ==
-                                                                "1"
+                                                                  "1"
                                                                   ? "CRM"
                                                                   : "Hospital"}{" "}
                                                               </td>
@@ -3511,7 +3493,7 @@ const getDataapi3 = async (tId) => {
                                         </div>
                                         <div className="col-md-12">
                                           {info?.appointments_details?.length >
-                                          0 ? (
+                                            0 ? (
                                             <div className="card patientreat">
                                               <div className="card-header service-list">
                                                 <h6>Appointment</h6>
@@ -3547,38 +3529,38 @@ const getDataapi3 = async (tId) => {
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                              "online"
+                                                                "online"
                                                                 ? item.vehicle_no
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                              "online"
+                                                                "online"
                                                                 ? item.driver_name
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                              "online"
+                                                                "online"
                                                                 ? item.driver_contact
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                              "online"
+                                                                "online"
                                                                 ? item.pickup_time
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.appointment_Date
                                                                 ? new Date(
-                                                                    item.appointment_Date,
+                                                                  item.appointment_Date,
+                                                                )
+                                                                  .toISOString()
+                                                                  .slice(
+                                                                    0,
+                                                                    10,
                                                                   )
-                                                                    .toISOString()
-                                                                    .slice(
-                                                                      0,
-                                                                      10,
-                                                                    )
                                                                 : ""}
                                                             </td>
                                                             <td>
@@ -3586,7 +3568,7 @@ const getDataapi3 = async (tId) => {
                                                             </td>
                                                             <td>
                                                               {item.status ===
-                                                              "Complete" ? (
+                                                                "Complete" ? (
                                                                 <span className="badge bg-primary">
                                                                   Completed
                                                                 </span>
@@ -3674,164 +3656,157 @@ const getDataapi3 = async (tId) => {
                                                   </button>
                                                 </div>
                                               </div>
-                                              <div className="row gx-3 gy-3">
+                                              {/* <div className="row gx-3 gy-3">
                                                 {attandantFilered.map(
                                                   (item, index) => {
                                                     return (
                                                       <>
-                                                        <div className="col-md-6">
-                                                          <div className="card attendant-card">
-                                                            <div className="card-body">
-                                                              <div className="detail-row">
-                                                                <label>
-                                                                  Name
-                                                                </label>
-                                                                <span>
-                                                                  {item?.attendant_fullname ||
-                                                                    "N/A"}
-                                                                </span>
-                                                              </div>
-                                                              <div className="detail-row">
-                                                                <label>
-                                                                  Relation
-                                                                </label>
-                                                                <span>
-                                                                  {item?.attendant_relation ||
-                                                                    "N/A"}
-                                                                </span>
-                                                              </div>
-                                                              <div className="detail-row">
-                                                                <label>
-                                                                  Contact
-                                                                </label>
-                                                                <span>
-                                                                  {item?.attendant_contact ||
-                                                                    "N/A"}
-                                                                </span>
-                                                              </div>
-                                                              <div className="detail-row">
-                                                                <label>
-                                                                  Country
-                                                                </label>
-                                                                <span>
-                                                                  {item?.country ||
-                                                                    "N/A"}
-                                                                </span>
-                                                              </div>
-                                                              <div className="detail-row">
-                                                                <label>
-                                                                  Attendant
-                                                                  Photo
-                                                                </label>
-                                                                <span>
-                                                                  {item?.attendant_photo ? (
-                                                                    <a
-                                                                      href={`https://sisccltd.com/omca_crm/${item.attendant_photo}`}
-                                                                      target="_blank"
-                                                                      rel="noopener noreferrer"
-                                                                      className="pdfdown"
-                                                                    >
-                                                                      <VisibilityIcon className="eye-icon" />
-                                                                    </a>
+                                                        <div className="col-md-12">
+                                                          <div className="table-responsive">
+                                                            <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+                                                              <Table stickyHeader aria-label="attendant table" className="table-no-card">
+                                                                <TableHead>
+                                                                  <TableRow>
+                                                                    <TableCell>Sr.No.</TableCell>
+                                                                    <TableCell>Name</TableCell>
+                                                                    <TableCell>Relation</TableCell>
+                                                                    <TableCell>Contact</TableCell>
+                                                                    <TableCell>Country</TableCell>
+                                                                    <TableCell>Attendant Photo</TableCell>
+                                                                    <TableCell>Attendant ID Proof</TableCell>
+                                                                  </TableRow>
+                                                                </TableHead>
+                                                                <TableBody>
+                                                                  {attandantFilered.length === 0 ? (
+                                                                    <TableRow>
+                                                                      <TableCell colSpan={7} align="center">
+                                                                        No data found
+                                                                      </TableCell>
+                                                                    </TableRow>
                                                                   ) : (
-                                                                    <span className="text-muted small">
-                                                                      Not
-                                                                      Uploaded
-                                                                    </span>
+                                                                    attandantFilered.map((item, index) => (
+                                                                      <TableRow key={item._id || index}>
+                                                                        <TableCell>{index + 1}</TableCell>
+                                                                        <TableCell>{item?.attendant_fullname || "N/A"}</TableCell>
+                                                                        <TableCell>{item?.attendant_relation || "N/A"}</TableCell>
+                                                                        <TableCell>{item?.attendant_contact || "N/A"}</TableCell>
+                                                                        <TableCell>{item?.country || "N/A"}</TableCell>
+                                                                        <TableCell>
+                                                                          {item?.attendant_photo ? (
+                                                                            <a
+                                                                              href={`https://sisccltd.com/omca_crm/${item.attendant_photo}`}
+                                                                              target="_blank"
+                                                                              rel="noopener noreferrer"
+                                                                            >
+                                                                              <VisibilityIcon />
+                                                                            </a>
+                                                                          ) : (
+                                                                            "Not Uploaded"
+                                                                          )}
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                          {item?.attendant_passport?.length > 0 ? (
+                                                                            item.attendant_passport.map((file, fIndex) => {
+                                                                              const filePath = typeof file === "object" ? file?.path : file;
+                                                                              return (
+                                                                                <a
+                                                                                  key={fIndex}
+                                                                                  href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                                                  target="_blank"
+                                                                                  rel="noopener noreferrer"
+                                                                                >
+                                                                                  View
+                                                                                </a>
+                                                                              );
+                                                                            })
+                                                                          ) : (
+                                                                            "Not Uploaded"
+                                                                          )}
+                                                                        </TableCell>
+                                                                      </TableRow>
+                                                                    ))
                                                                   )}
-                                                                </span>
-                                                              </div>
-                                                              <div className="detail-row">
-                                                                <label>
-                                                                  Attendant
-                                                                  ID Proof
-                                                                </label>
-                                                                {/* <span>
-                                                                  {item?.attendant_passport ? (
-                                                                    <a
-                                                                      href={`https://sisccltd.com/omca_crm/${item.attendant_passport}`}
-                                                                      target="_blank"
-                                                                      rel="noopener noreferrer"
-                                                                      className="pdfdown"
-                                                                    >
-                                                                      <VisibilityIcon className="eye-icon" />
-                                                                    </a>
-                                                                  ) : (
-                                                                    <span className="text-muted small">
-                                                                      Not
-                                                                      Uploaded
-                                                                    </span>
-                                                                  )}
-                                                                </span> */}
-                                                                {/* <span>
-                                                                  {item?.attendant_passport &&
-                                                                  item
-                                                                    .attendant_passport
-                                                                    .length >
-                                                                    0 ? (
-                                                                    item.attendant_passport.map(
-                                                                      (
-                                                                        file,
-                                                                        index,
-                                                                      ) => (
-                                                                        <a
-                                                                          key={
-                                                                            index
-                                                                          }
-                                                                          href={`https://sisccltd.com/omca_crm/${file}`}
-                                                                          target="_blank"
-                                                                          rel="noopener noreferrer"
-                                                                          className="pdfdown me-2"
-                                                                        >
-                                                                          <VisibilityIcon className="eye-icon" />
-                                                                        </a>
-                                                                      ),
-                                                                    )
-                                                                  ) : (
-                                                                    <span className="text-muted small">
-                                                                      Not
-                                                                      Uploaded
-                                                                    </span> */}
-                                                                  {/* )} */}
-                                                                {/* </span> */}
-                                                                <span>
-  {item?.attendant_passport?.length > 0 ? (
-    item.attendant_passport.map((file, index) => {
-      const filePath = typeof file === "object" ? file?.path : file;
-
-      return (
-        <a
-          key={index}
-          href={`https://sisccltd.com/omca_crm/${filePath}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="pdfdown me-2"
-        >
-          View
-        </a>
-      );
-    })
-  ) : (
-    <span className="text-muted small">Not Uploaded</span>
-  )}
-</span>
-                                                              </div>
-                                                              {/* <div className="detail-row">
-                                                                <label>
-                                                                  Action
-                                                                </label>
-                                                                <div className="action-icon">
-                                                                  <i className="fa-solid fa-pen-to-square"></i>
-                                                                  <i className="fa-solid fa-trash"></i>
-                                                                </div>
-                                                              </div> */}
-                                                            </div>
+                                                                </TableBody>
+                                                              </Table>
+                                                            </TableContainer>
                                                           </div>
                                                         </div>
+
+
                                                       </>
                                                     );
                                                   },
                                                 )}
+                                              </div> */}
+                                              <div className="row gx-3 gy-3">
+                                                <div className="col-md-12">
+                                                  <div className="table-responsive">
+                                                    <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+                                                      <Table stickyHeader aria-label="attendant table" className="table-no-card">
+                                                        <TableHead>
+                                                          <TableRow>
+                                                            <TableCell>Sr.No.</TableCell>
+                                                            <TableCell>Name</TableCell>
+                                                            <TableCell>Relation</TableCell>
+                                                            <TableCell>Contact</TableCell>
+                                                            <TableCell>Country</TableCell>
+                                                            <TableCell>Attendant Photo</TableCell>
+                                                            <TableCell>Attendant ID Proof</TableCell>
+                                                          </TableRow>
+                                                        </TableHead>
+
+                                                        <TableBody>
+                                                          {attandantFilered.length === 0 ? (
+                                                            <TableRow>
+                                                              <TableCell colSpan={7} align="center">
+                                                                No attendants found
+                                                              </TableCell>
+                                                            </TableRow>
+                                                          ) : (
+                                                            attandantFilered.map((item, index) => (
+                                                              <TableRow key={item._id || index}>
+                                                                <TableCell>{index + 1}</TableCell>
+                                                                <TableCell>{item?.attendant_fullname || "N/A"}</TableCell>
+                                                                <TableCell>{item?.attendant_relation || "N/A"}</TableCell>
+                                                                <TableCell>{item?.attendant_contact || "N/A"}</TableCell>
+                                                                <TableCell>{item?.country || "N/A"}</TableCell>
+
+                                                                <TableCell>
+                                                                  {item?.attendant_photo ? (
+                                                                    <a href={`https://sisccltd.com/omca_crm/${item.attendant_photo}`}
+                                                                      target="_blank" rel="noopener noreferrer" className="viewbtn">
+                                                                      View
+                                                                    </a>
+                                                                  ) : (
+                                                                    "Not Uploaded"
+                                                                  )}
+                                                                </TableCell>
+
+                                                                <TableCell>
+                                                                  {item?.attendant_passport?.length > 0 ? (
+                                                                    item.attendant_passport.map((file, fIndex) => {
+                                                                      const filePath = typeof file === "object" ? file?.path : file;
+                                                                      return (
+                                                                        <div key={fIndex}>
+                                                                          <a href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                                            target="_blank" rel="noopener noreferrer" className="viewbtn">
+                                                                            View {item.attendant_passport.length > 1 ? fIndex + 1 : ""}
+                                                                          </a>
+                                                                        </div>
+                                                                      );
+                                                                    })
+                                                                  ) : (
+                                                                    "Not Uploaded"
+                                                                  )}
+                                                                </TableCell>
+                                                              </TableRow>
+                                                            ))
+                                                          )}
+                                                        </TableBody>
+                                                      </Table>
+                                                    </TableContainer>
+                                                  </div>
+                                                </div>
                                               </div>
                                             </div>
                                           </div>
@@ -3903,7 +3878,7 @@ const getDataapi3 = async (tId) => {
                                                           Document
                                                         </TableCell>
                                                         {usrFount ===
-                                                        "Admin" ? (
+                                                          "Admin" ? (
                                                           <>
                                                             <TableCell>
                                                               PDF
@@ -3966,7 +3941,7 @@ const getDataapi3 = async (tId) => {
                                                             </TableCell>
 
                                                             {usrFount ===
-                                                            "Admin" ? (
+                                                              "Admin" ? (
                                                               <>
                                                                 <TableCell>
                                                                   <button
@@ -3976,9 +3951,9 @@ const getDataapi3 = async (tId) => {
                                                                         "/Admin/Patient-Pdfdetails",
                                                                         {
                                                                           state:
-                                                                            {
-                                                                              data: item?._id,
-                                                                            },
+                                                                          {
+                                                                            data: item?._id,
+                                                                          },
                                                                         },
                                                                       );
                                                                     }}
@@ -4097,13 +4072,13 @@ const getDataapi3 = async (tId) => {
                                                           </TableCell>
                                                           <TableCell>
                                                             {item?.platform ===
-                                                            1
+                                                              1
                                                               ? "CRM"
                                                               : "Hospital"}
                                                           </TableCell>
 
                                                           {usrFount ===
-                                                          "Admin" ? (
+                                                            "Admin" ? (
                                                             <>
                                                               {" "}
                                                               <TableCell>
