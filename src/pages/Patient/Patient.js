@@ -402,25 +402,50 @@ export default function Patient() {
       await filterdataapi(onVaue, "type");
     }
   };
+const handleRequestSort = (property) => {
+  const isAsc = orderBy === property && order === "asc";
+  const direction = isAsc ? "desc" : "asc";
 
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === "asc";
-    const direction = isAsc ? "desc" : "asc";
+  setOrder(direction);
+  setOrderBy(property);
 
-    setOrder(direction);
-    setOrderBy(property);
+  const sortedRows = [...rows].sort((a, b) => {
+    let valueA = "";
+    let valueB = "";
 
-    const sortedRows = [...rows].sort((a, b) => {
-      const valueA = a[property] || "";
-      const valueB = b[property] || "";
+    if (property === "patient_disease") {
+      valueA = a.patient_disease?.map(d => d.disease_name).join(", ") || "";
+      valueB = b.patient_disease?.map(d => d.disease_name).join(", ") || "";
+    } else {
+      valueA = a[property] || "";
+      valueB = b[property] || "";
+    }
 
-      if (valueA < valueB) return direction === "asc" ? -1 : 1;
-      if (valueA > valueB) return direction === "asc" ? 1 : -1;
-      return 0;
-    });
+    return direction === "asc"
+      ? valueA.localeCompare(valueB)
+      : valueB.localeCompare(valueA);
+  });
 
-    setRows(sortedRows);
-  };
+  setRows(sortedRows);
+};
+  // const handleRequestSort = (property) => {
+  //   const isAsc = orderBy === property && order === "asc";
+  //   const direction = isAsc ? "desc" : "asc";
+
+  //   setOrder(direction);
+  //   setOrderBy(property);
+
+  //   const sortedRows = [...rows].sort((a, b) => {
+  //     const valueA = a[property] || "";
+  //     const valueB = b[property] || "";
+
+  //     if (valueA < valueB) return direction === "asc" ? -1 : 1;
+  //     if (valueA > valueB) return direction === "asc" ? 1 : -1;
+  //     return 0;
+  //   });
+
+  //   setRows(sortedRows);
+  // };
   return (
     <>
       <div className="page-wrapper">
@@ -641,7 +666,15 @@ export default function Patient() {
                               Patient Name
                             </TableSortLabel>
                           </TableCell>
-                          <TableCell>Patient Disease</TableCell>
+                      <TableCell>
+  <TableSortLabel
+    active={orderBy === "patient_disease"}
+    direction={orderBy === "patient_disease" ? order : "asc"}
+    onClick={() => handleRequestSort("patient_disease")}
+  >
+    Patient Disease
+  </TableSortLabel>
+</TableCell>
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "country"}
@@ -653,8 +686,24 @@ export default function Patient() {
                           </TableCell>
                           {showActions === true ? (
                             <>
-                              <TableCell>Patient Type</TableCell>
-                              <TableCell>Status</TableCell>
+                             <TableCell>
+  <TableSortLabel
+    active={orderBy === "patient_type_new"}
+    direction={orderBy === "patient_type_new" ? order : "asc"}
+    onClick={() => handleRequestSort("patient_type_new")}
+  >
+    Patient Type
+  </TableSortLabel>
+</TableCell>
+                           <TableCell>
+  <TableSortLabel
+    active={orderBy === "p_status"}
+    direction={orderBy === "p_status" ? order : "asc"}
+    onClick={() => handleRequestSort("p_status")}
+  >
+    Status
+  </TableSortLabel>
+</TableCell>
                               <TableCell>Action</TableCell>
                             </>
                           ) : (

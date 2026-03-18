@@ -512,14 +512,70 @@ setHospitalPerformanceData({
                 </div>
                 <div className="col-md-2">
                   <div className="treat-hd">
-                    <select className="w-100 bg-white p-2 rounded">
+                    <div className="dropdown">
+                          <button
+                            className="submit-btn dropdown-toggle w-100"
+                            type="button"
+                            id="chartDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            {chartView}
+                          </button>
+                          <ul
+                            className="dropdown-menu"
+                            aria-labelledby="chartDropdown"
+                          >
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => setChartView("Daily")}
+                              >
+                                Daily
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => setChartView("Weekly")}
+                              >
+                                Weekly
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => setChartView("Monthly")}
+                              >
+                                Monthly
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => setChartView("quarterly")}
+                              >
+                                Quarterly
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className="dropdown-item"
+                                onClick={() => setChartView("yearly")}
+                              >
+                                Yearly
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                    {/* <select className="w-100 bg-white p-2 rounded">
                       <option >Select Filter</option>
                       <option  onClick={() => setChartView("Daily")}>Daily</option>
                       <option   onClick={() => setChartView("Weekly")}>Weekly</option>
                       <option  onClick={() => setChartView("Monthly")}>Monthly</option>
                       <option onClick={() => setChartView("quarterly")}>Quarterly</option>
                       <option  onClick={() => setChartView("yearly")}>Yearly</option>
-                    </select>
+                    </select> */}
                   </div>
                 </div>
                 <div className="col-md-3">

@@ -13,6 +13,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { baseurl, image } from "../../Basurl/Baseurl";
+import axios from "axios";
 export default function EditPatient() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,6 +70,43 @@ export default function EditPatient() {
     country: Yup.string().required("Country is required"),
   });
   if (!ispatient) return <div>Loading...</div>;
+
+  const handleDeleteDoc = async (docName) => {
+  try {
+    await axios.delete(
+      `${baseurl}delete_id_proof/${ispatient.patientNumber}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      ,
+      {
+        data: { file: docName }, // 👈 important (backend usually needs file name)
+      }
+    );
+
+    Swal.fire("Deleted!", "Document removed successfully", "success");
+
+    // update UI instantly
+    const updatedDocs =
+      ispatient?.patient_kyc?.[0]?.id_proof?.filter(
+        (doc) => doc !== docName
+      );
+
+    setIspatient((prev) => ({
+      ...prev,
+      patient_kyc: [
+        {
+          ...prev.patient_kyc[0],
+          id_proof: updatedDocs,
+        },
+      ],
+    }));
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error!", "Failed to delete document", "error");
+  }
+};
   return (
     <>
       <div className="page-wrapper">
@@ -526,37 +564,75 @@ export default function EditPatient() {
                               }}
                             />
 
-                            <div className="engpatimg">
-                              {/* Show newly selected files */}
-                              {previewDocs.length > 0 &&
-                                previewDocs.map((doc, index) => (
-                                  <button
-                                    key={index}
-                                    type="button"
-                                    className="viewbtn"
-                                    onClick={() => window.open(doc, "_blank")}
-                                  >
-                                    View
-                                  </button>
-                                ))}
+                          <div className="engpatimg d-flex flex-wrap gap-2">
 
-                              {/* Show existing docs from API */}
-                              {previewDocs.length === 0 &&
-                                ispatient?.patient_kyc?.[0]?.id_proof?.map(
-                                  (doc, index) => (
-                                    <button
-                                      key={index}
-                                      type="button"
-                                      className="viewbtn"
-                                      onClick={() =>
-                                        window.open(`${image}/${doc}`, "_blank")
-                                      }
-                                    >
-                                      View
-                                    </button>
-                                  ),
-                                )}
-                            </div>
+  {/* New Uploaded Files */}
+  {previewDocs.length > 0 &&
+    previewDocs.map((doc, index) => (
+      <div key={index} style={{ position: "relative" }}>
+        <button
+          type="button"
+          className="viewbtn"
+          onClick={() => window.open(doc, "_blank")}
+        >
+          View
+        </button>
+
+        <span
+          style={{
+            position: "absolute",
+            top: "-5px",
+            right: "-5px",
+            cursor: "pointer",
+            color: "red",
+            fontWeight: "bold",
+            background: "#fff",
+            borderRadius: "50%",
+            padding: "2px 6px",
+          }}
+          onClick={() => {
+            const updated = previewDocs.filter((_, i) => i !== index);
+            setPreviewDocs(updated);
+            setFieldValue("id_proof", updated);
+          }}
+        >
+          X
+        </span>
+      </div>
+    ))}
+
+  {/* Existing Docs from API */}
+  {previewDocs.length === 0 &&
+    ispatient?.patient_kyc?.[0]?.id_proof?.map((doc, index) => (
+      <div key={index} style={{ position: "relative" }}>
+        <button
+          type="button"
+          className="viewbtn"
+          onClick={() => window.open(`${image}/${doc}`, "_blank")}
+        >
+          View
+        </button>
+
+        {/* DELETE ICON */}
+        <span
+          style={{
+            position: "absolute",
+            top: "-5px",
+            right: "-5px",
+            cursor: "pointer",
+            color: "red",
+            fontWeight: "bold",
+            background: "#fff",
+            borderRadius: "50%",
+            padding: "2px 6px",
+          }}
+          onClick={() => handleDeleteDoc(doc)}
+        >
+          ❌
+        </span>
+      </div>
+    ))}
+</div>
                           </div>
                         </div>
                         <div className="col-md-4">
@@ -627,7 +703,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Treatment Name
-                              <span className="text-danger">*</span>
+                              <span className="text-danger"></span>
                             </label>
                             <Field
                               className="form-control"

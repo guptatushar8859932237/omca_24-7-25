@@ -2473,6 +2473,105 @@ const getDataapi3 = async (tId) => {
                           : ispatient?.patientId}
                       </p>
                       {showModal && (
+  <div className="custom-modal">
+    <div className="modal-content">
+      
+      {/* CLOSE BUTTON */}
+      <button
+        className="close-btn"
+        onClick={() => setShowModal(false)}
+      >
+        ✖
+      </button>
+
+      {/* PREV BUTTON */}
+      <button
+        onClick={() =>
+          setCurrentIndex((prev) =>
+            prev === 0
+              ? (kys?.[0]?.id_proof?.length || 1) - 1
+              : prev - 1
+          )
+        }
+      >
+        ⬅
+      </button>
+
+      {/* FILE VIEWER */}
+      {(() => {
+        const currentFile = kys?.[0]?.id_proof?.[currentIndex];
+        const fileUrl = currentFile
+          ? `https://sisccltd.com/omca_crm/${currentFile}`
+          : "";
+
+        const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
+
+        if (!currentFile) {
+          return <p>No file available</p>;
+        }
+
+        return isPdf ? (
+          <iframe
+            src={fileUrl}
+            title="PDF Viewer"
+            width="400px"
+            height="400px"
+            style={{ border: "none" }}
+          />
+        ) : (
+          <img
+            src={fileUrl}
+            alt="Document"
+            style={{
+              width: "400px",
+              height: "400px",
+              objectFit: "contain",
+            }}
+          />
+        );
+      })()}
+
+      {/* NEXT BUTTON */}
+      <button
+        onClick={() =>
+          setCurrentIndex((prev) =>
+            prev === (kys?.[0]?.id_proof?.length || 1) - 1
+              ? 0
+              : prev + 1
+          )
+        }
+      >
+        ➡
+      </button>
+
+      {/* OPEN PDF IN NEW TAB */}
+      {(() => {
+        const currentFile = kys?.[0]?.id_proof?.[currentIndex];
+        const fileUrl = currentFile
+          ? `https://sisccltd.com/omca_crm/${currentFile}`
+          : "";
+        const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
+
+        return (
+          isPdf && (
+            <div style={{ marginTop: "10px" }}>
+              <a
+                href={fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open PDF in new tab
+              </a>
+            </div>
+          )
+        );
+      })()}
+
+    </div>
+  </div>
+)}
+                      {/* {showModal && (
+                        
                         <div className="custom-modal">
                           <div className="modal-content">
                             <button
@@ -2517,7 +2616,7 @@ const getDataapi3 = async (tId) => {
                             </button>
                           </div>
                         </div>
-                      )}
+                      )} */}
                       {/* <div className="d-flex gap-2">
                         <button
                           type="button"
@@ -4982,7 +5081,7 @@ const getDataapi3 = async (tId) => {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>Add Hospital Charge</h6>
+              <h6>Edit Hospital Charge</h6>
             </div>
             <div className="cross-icon" onClick={dataIwemperial}>
               <i class="fa-solid fa-xmark"></i>
