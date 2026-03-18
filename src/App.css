@@ -6133,6 +6133,7 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
   margin-right: 5px;
   cursor: pointer;
   vertical-align: middle;
+  display: inline-block;
 }
 .action-icon .eye-icon {
   font-size: 18px;
@@ -7514,6 +7515,23 @@ input:checked + .slider:before {
   border-bottom: 1px solid #cccccc;
   padding-bottom: 20px;
 }
-.top-collpse{
+.top-collpse {
   margin: 20px 0px;
+}
+.collapse-icon i {
+  transition: transform 0.3s ease;
+}
+
+.collapse-icon.rotate i {
+  transform: rotate(180deg);
+}
+.hosp-info {
+  display: flex;
+  gap: 10px;
+}
+.mngetreatment{
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+  align-items: center;
 }
