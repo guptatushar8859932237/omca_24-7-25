@@ -7529,9 +7529,25 @@ input:checked + .slider:before {
   display: flex;
   gap: 10px;
 }
-.mngetreatment{
+.mngetreatment {
   display: flex;
   gap: 10px;
   margin-bottom: 8px;
   align-items: center;
+}
+.custmselect {
+  font-family: unset !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--bs-text-color) !important;
+}
+.custmselect span {
+  font-family: unset !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--bs-text-color);
+  padding: 0;
+}
+.staffpermiss{
+  gap: 8px;
 }
