@@ -3782,7 +3782,7 @@ function PatientDetail() {
                                                                   )}
                                                                 </TableCell>
 
-                                                                <TableCell>
+                                                                <TableCell className="d-flex gap-2">
                                                                   {item?.attendant_passport?.length > 0 ? (
                                                                     item.attendant_passport.map((file, fIndex) => {
                                                                       const filePath = typeof file === "object" ? file?.path : file;
