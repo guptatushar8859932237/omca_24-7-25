@@ -499,7 +499,7 @@ export default function EditStaff() {
                             setFieldValue("roleStatuses", value);
                           }
                         }}
-                        className="form-control"
+                        className=""
                         renderValue={(selected) => selected.join(", ")}
                         MenuProps={{
                           PaperProps: {
@@ -508,7 +508,7 @@ export default function EditStaff() {
                           disableAutoFocusItem: true,
                         }}
                       >
-                        <MenuItem value="All">
+                        <MenuItem className="custmselect staffpermiss" value="All">
                           <Checkbox
                             checked={
                               values.roleStatuses.length ===
@@ -519,16 +519,16 @@ export default function EditStaff() {
                               values.roleStatuses.length < statusOptions.length
                             }
                           />
-                          <ListItemText primary="Select All" />
+                          <ListItemText className="custmselect" primary="Select All" />
                         </MenuItem>
                         {statusOptions.map((roleStatuses) => (
-                          <MenuItem key={roleStatuses} value={roleStatuses}>
+                          <MenuItem className="custmselect staffpermiss" key={roleStatuses} value={roleStatuses}>
                             <Checkbox
                               checked={
                                 values.roleStatuses.indexOf(roleStatuses) > -1
                               }
                             />
-                            <ListItemText primary={roleStatuses} />
+                            <ListItemText className="custmselect" primary={roleStatuses} />
                           </MenuItem>
                         ))}
                       </Select>

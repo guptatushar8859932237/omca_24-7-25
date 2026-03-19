@@ -152,7 +152,7 @@
 //   //         if (response.data.success && response.data.data) {
 //   //           setRows(response.data.data); // Show filtered patients in table
 //   //         }
-          
+
 
 //   //         if (response.data.download_link) {
 //   //           const link = document.createElement("a");
@@ -587,11 +587,11 @@ export default function Reports() {
   useEffect(() => {
     dispatch(GetAllPatients());
   }, [dispatch]);
- useEffect(() => {
-  if (patient && patient.length > 0) {
-    setRows(patient);
-  }
-}, [patient]);
+  useEffect(() => {
+    if (patient && patient.length > 0) {
+      setRows(patient);
+    }
+  }, [patient]);
   const handledelet = (e, patientId) => {
     e.preventDefault();
     const swalWithBootstrapButtons = Swal.mixin({
@@ -735,13 +735,13 @@ export default function Reports() {
       if (response.data.success && response.data.data) {
         setRows(response.data.data);
         setLastFilterParams(params); // 👈 save filters for download
-       setPage(0);
+        setPage(0);
       }
-//       if (response.data.success && response.data.data) {
-//   setRows(response.data.data);
-//   setLastFilterParams(params);
-//   // 👈 VERY IMPORTANT
-// }
+      //       if (response.data.success && response.data.data) {
+      //   setRows(response.data.data);
+      //   setLastFilterParams(params);
+      //   // 👈 VERY IMPORTANT
+      // }
     } catch (error) {
       const errorMessage =
         error?.response?.data?.message ||
@@ -839,12 +839,10 @@ export default function Reports() {
                             },
                           }}
                         >
-                          <MenuItem value="">
-                            <em>Select Country</em>
-                          </MenuItem>
+                          <MenuItem value="" className="custmselect">Select Country</MenuItem>
                           {Countries && Countries.length > 0 ? (
                             Countries.map((con, idx) => (
-                              <MenuItem key={idx} value={con.name}>
+                              <MenuItem className="custmselect" key={idx} value={con.name}>
                                 {con.name}
                               </MenuItem>
                             ))
@@ -857,11 +855,9 @@ export default function Reports() {
                   </div>
                   <div className="col-md-3">
                     <div className="field-set">
-                      <label>
-                        Treatment Name<span className="text-danger">*</span>
-                      </label>
+                      <label>Treatment Name<span className="text-danger">*</span></label>
                       <FormControl fullWidth size="small">
-                        <Select
+                        {/* <Select
                           name="treatment"
                           value={report.treatment}
                           onChange={submitInputdata}
@@ -870,28 +866,56 @@ export default function Reports() {
                             <OutlinedInput placeholder="Select Treatment" />
                           }
                           sx={{ height: 40 }}
-                          className="select-treatment form-control"
+                          className="select-treatment"
                           MenuProps={{
                             PaperProps: {
                               style: { maxHeight: 200 },
                             },
                           }}
                         >
-                          <MenuItem value="">
-                            <em>Select Treatment</em>
-                          </MenuItem>
+                          <MenuItem value="" className="custmselect">Select Treatment</MenuItem>
                           {treatmentname && treatmentname.length > 0 ? (
                             treatmentname.map((item, index) => (
                               <MenuItem key={index} value={item.course_name}>
                                 {item.name}
+                              <MenuItem className="custmselect" key={index} value={item.course_name}>
+                                {item.course_name}
                               </MenuItem>
                             ))
                           ) : (
                             <MenuItem disabled>
                               No treatments available
                             </MenuItem>
-                          )}
-                        </Select>
+                          }
+                        </Select> */}
+                        <Select
+  name="treatment"
+  value={report.treatment || ""}
+  onChange={submitInputdata}
+  displayEmpty
+  input={<OutlinedInput placeholder="Select Treatment" />}
+  sx={{ height: 40 }}
+  className="select-treatment"
+  MenuProps={{
+    PaperProps: {
+      style: { maxHeight: 200 },
+    },
+  }}
+>
+  <MenuItem value="" className="custmselect">
+    Select Treatment
+  </MenuItem>
+
+  {treatmentname && treatmentname.length > 0 ? (
+    treatmentname.map((item, index) => (
+      <MenuItem key={index} value={item.course_name}>
+        {item.course_name}
+      </MenuItem>
+    ))
+  ) : (
+    <MenuItem disabled>No treatments available</MenuItem>
+  )}
+</Select>
                       </FormControl>
                     </div>
                   </div>
@@ -902,6 +926,7 @@ export default function Reports() {
                       </label>
                       <FormControl fullWidth size="small">
                         <Select
+
                           name="hospital"
                           value={report.hospital}
                           onChange={submitInputdata}
@@ -910,19 +935,17 @@ export default function Reports() {
                             <OutlinedInput placeholder="Select Hospital" />
                           }
                           sx={{ height: 40 }}
-                          className="select-hospital form-control"
+                          className="select-hospital"
                           MenuProps={{
                             PaperProps: {
                               style: { maxHeight: 200 },
                             },
                           }}
                         >
-                          <MenuItem value="">
-                            <em>Select Hospital</em>
-                          </MenuItem>
+                          <MenuItem className="custmselect" value="">Select Hospital</MenuItem>
                           {hospital && hospital.length > 0 ? (
                             hospital.map((item, index) => (
-                              <MenuItem key={index} value={item.name}>
+                              <MenuItem className="custmselect" key={index} value={item.name}>
                                 {item.name}
                               </MenuItem>
                             ))
@@ -1009,42 +1032,42 @@ export default function Reports() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                     {rows.length > 0 ? (
-  rows
-    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-    .map((info, i) => {
-                          console.log(info);
-                          return (
-                            <>
-                              <TableRow
-                                role="checkbox"
-                                tabIndex={-1}
-                                key={info.patientId}
-                              >
-                                <TableCell>
-                                  {page * rowsPerPage + i + 1}
-                                </TableCell>
-                                <TableCell>{info.patientId}</TableCell>
-                                <TableCell>{info.patient_name}</TableCell>
-                                <TableCell>
-                                  {info.emergency_contact
-                                    ? info.emergency_contact
-                                    : info.emergency_contact_no}
-                                </TableCell>
-                                <TableCell>{info.email}</TableCell>
-                                <TableCell>
-                                  {new Date(info.createdAt).toLocaleDateString(
-                                    "en-GB",
-                                  )}
-                                </TableCell>
-                                <TableCell>{info.country}</TableCell>
-                                <TableCell>
-                                  {info.patient_disease[0].disease_name}
-                                </TableCell>
-                              </TableRow>
-                            </>
-                          );
-                        })):""}
+                      {rows.length > 0 ? (
+                        rows
+                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                          .map((info, i) => {
+                            console.log(info);
+                            return (
+                              <>
+                                <TableRow
+                                  role="checkbox"
+                                  tabIndex={-1}
+                                  key={info.patientId}
+                                >
+                                  <TableCell>
+                                    {page * rowsPerPage + i + 1}
+                                  </TableCell>
+                                  <TableCell>{info.patientId}</TableCell>
+                                  <TableCell>{info.patient_name}</TableCell>
+                                  <TableCell>
+                                    {info.emergency_contact
+                                      ? info.emergency_contact
+                                      : info.emergency_contact_no}
+                                  </TableCell>
+                                  <TableCell>{info.email}</TableCell>
+                                  <TableCell>
+                                    {new Date(info.createdAt).toLocaleDateString(
+                                      "en-GB",
+                                    )}
+                                  </TableCell>
+                                  <TableCell>{info.country}</TableCell>
+                                  <TableCell>
+                                    {info.patient_disease[0].disease_name}
+                                  </TableCell>
+                                </TableRow>
+                              </>
+                            );
+                          })) : ""}
                     </TableBody>
                   </Table>
                   <Stack spacing={2} alignItems="end" marginTop={2}>

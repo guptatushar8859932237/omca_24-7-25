@@ -72,41 +72,41 @@ export default function EditPatient() {
   if (!ispatient) return <div>Loading...</div>;
 
   const handleDeleteDoc = async (docName) => {
-  try {
-    await axios.delete(
-      `${baseurl}delete_id_proof/${ispatient.patientNumber}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      ,
-      {
-        data: { file: docName }, // 👈 important (backend usually needs file name)
+    try {
+      await axios.delete(
+        `${baseurl}delete_id_proof/${ispatient.patientNumber}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       }
-    );
-
-    Swal.fire("Deleted!", "Document removed successfully", "success");
-
-    // update UI instantly
-    const updatedDocs =
-      ispatient?.patient_kyc?.[0]?.id_proof?.filter(
-        (doc) => doc !== docName
+        ,
+        {
+          data: { file: docName }, // 👈 important (backend usually needs file name)
+        }
       );
 
-    setIspatient((prev) => ({
-      ...prev,
-      patient_kyc: [
-        {
-          ...prev.patient_kyc[0],
-          id_proof: updatedDocs,
-        },
-      ],
-    }));
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error!", "Failed to delete document", "error");
-  }
-};
+      Swal.fire("Deleted!", "Document removed successfully", "success");
+
+      // update UI instantly
+      const updatedDocs =
+        ispatient?.patient_kyc?.[0]?.id_proof?.filter(
+          (doc) => doc !== docName
+        );
+
+      setIspatient((prev) => ({
+        ...prev,
+        patient_kyc: [
+          {
+            ...prev.patient_kyc[0],
+            id_proof: updatedDocs,
+          },
+        ],
+      }));
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error!", "Failed to delete document", "error");
+    }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -498,7 +498,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Emergency Contact Number
-                              <span className="text-danger"></span>
+                              <span className="text-danger">*</span>
                             </label>
                             <div className="country-code">
                               <Field
@@ -521,7 +521,7 @@ export default function EditPatient() {
                         <div className="col-md-4">
                           <div className="field-set">
                             <label>
-                              Patient Id <span className="text-danger"></span>
+                              Patient Id <span className="text-danger">*</span>
                             </label>
                             <Field
                               className="form-control"
@@ -539,7 +539,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Patient ID Proof{" "}
-                              <span className="text-danger"></span>
+                              <span className="text-danger">*</span>
                             </label>
 
                             <input
@@ -564,82 +564,57 @@ export default function EditPatient() {
                               }}
                             />
 
-                          <div className="engpatimg d-flex flex-wrap gap-2">
+                            <div className="engpatimg">
 
-  {/* New Uploaded Files */}
-  {previewDocs.length > 0 &&
-    previewDocs.map((doc, index) => (
-      <div key={index} style={{ position: "relative" }}>
-        <button
-          type="button"
-          className="viewbtn"
-          onClick={() => window.open(doc, "_blank")}
-        >
-          View
-        </button>
+                              {/* New Uploaded Files */}
+                              {previewDocs.length > 0 &&
+                                previewDocs.map((doc, index) => (
+                                  <div className="file-preview" key={index}>
+                                    <span className="delete-icon"
+                                      onClick={() => {
+                                        const updated = previewDocs.filter((_, i) => i !== index);
+                                        setPreviewDocs(updated);
+                                        setFieldValue("id_proof", updated);
+                                      }}>
+                                      <i className="fa-solid fa-xmark"></i>
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="viewbtn"
+                                      onClick={() => window.open(doc, "_blank")}
+                                    >
+                                      View
+                                    </button>
 
-        <span
-          style={{
-            position: "absolute",
-            top: "-5px",
-            right: "-5px",
-            cursor: "pointer",
-            color: "red",
-            fontWeight: "bold",
-            background: "#fff",
-            borderRadius: "50%",
-            padding: "2px 6px",
-          }}
-          onClick={() => {
-            const updated = previewDocs.filter((_, i) => i !== index);
-            setPreviewDocs(updated);
-            setFieldValue("id_proof", updated);
-          }}
-        >
-          X
-        </span>
-      </div>
-    ))}
+                                  </div>
+                                ))}
 
-  {/* Existing Docs from API */}
-  {previewDocs.length === 0 &&
-    ispatient?.patient_kyc?.[0]?.id_proof?.map((doc, index) => (
-      <div key={index} style={{ position: "relative" }}>
-        <button
-          type="button"
-          className="viewbtn"
-          onClick={() => window.open(`${image}/${doc}`, "_blank")}
-        >
-          View
-        </button>
+                              {/* Existing Docs from API */}
 
-        {/* DELETE ICON */}
-        <span
-          style={{
-            position: "absolute",
-            top: "-5px",
-            right: "-5px",
-            cursor: "pointer",
-            color: "red",
-            fontWeight: "bold",
-            background: "#fff",
-            borderRadius: "50%",
-            padding: "2px 6px",
-          }}
-          onClick={() => handleDeleteDoc(doc)}
-        >
-          ❌
-        </span>
-      </div>
-    ))}
-</div>
+                              {previewDocs.length === 0 &&
+                                ispatient?.patient_kyc?.[0]?.id_proof?.map((doc, index) => (
+                                  <div className="file-preview" key={index}>
+                                    <span className="delete-icon" onClick={() => handleDeleteDoc(doc)}>
+                                      <i className="fa-solid fa-xmark"></i>
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="viewbtn"
+                                      onClick={() => window.open(`${image}/${doc}`, "_blank")}
+                                    >
+                                      View
+                                    </button>
+                                  </div>
+                                ))}
+
+                            </div>
                           </div>
                         </div>
                         <div className="col-md-4">
                           <div className="field-set">
                             <label>
                               Patient Profile
-                              <span className="text-danger"></span>
+                              <span className="text-danger">*</span>
                             </label>
                             <input
                               type="file"
@@ -685,7 +660,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Referral Name{" "}
-                              <span className="text-danger"></span>
+                              <span className="text-danger">*</span>
                             </label>
                             <Field
                               className="form-control"
@@ -703,7 +678,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Treatment Name
-                              <span className="text-danger"></span>
+                              <span className="text-danger">*</span>
                             </label>
                             <Field
                               className="form-control"
