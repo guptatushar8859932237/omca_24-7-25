@@ -883,7 +883,7 @@ export default function Reports() {
                           {treatmentname && treatmentname.length > 0 ? (
                             treatmentname.map((item, index) => (
                               <MenuItem key={index} value={item.course_name}>
-                                {item.course_name}
+                                {item.name}
                               </MenuItem>
                             ))
                           ) : (

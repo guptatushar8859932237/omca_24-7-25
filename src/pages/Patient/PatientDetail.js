@@ -6,7 +6,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { GetPatientTreatments } from "../../reducer/PatientTreatmentSlice";
@@ -19,22 +18,17 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { AppointmentForPatient } from "../../reducer/PatientTreatmentSlice";
 import {
   AdminBaseUrl,
-  base,
-  baseu11,
   baseurl,
   image,
 } from "../../Basurl/Baseurl";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
-import Select from "@mui/material/Select";
-import moment from "moment";
 import axios from "axios";
 import { AddNewTretmentPayment } from "../../reducer/PatientTreatmentSlice";
 import { FaPen } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import avtar from "../../img/avtarImg.jpg";
 import {
-  Avatar,
   Checkbox,
   Paper,
   Table,
@@ -234,6 +228,7 @@ function PatientDetail() {
     setOpen5(false);
   };
   const handleClickOpen1 = (e, tretmentId, listhospital) => {
+    console.log(e, tretmentId, listhospital);
     // console.log(
     //   "Asdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsd",
     //   e.target.value,
@@ -870,68 +865,68 @@ function PatientDetail() {
     // console.log("All Services Sent to API:", allServices);/
   };
   const handleNotesdata = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // reset errors
-  setNoteErr({
-    note2: false,
-    date2: false,
-  });
-
-  let hasError = false;
-
-  if (!note2) {
-    setNoteErr((prev) => ({ ...prev, note2: true }));
-    hasError = true;
-  }
-
-  if (!date2) {
-    setNoteErr((prev) => ({ ...prev, date2: true }));
-    hasError = true;
-  }
-
-  if (hasError) return;
-
-  // ✅ FormData for multiple images
-  const formData = new FormData();
-  formData.append("note", note2);
-  formData.append("date", date2);
-
-  // images state (array of files)
-  if (images && images.length > 0) {
-    images.forEach((img) => {
-      formData.append("treatmentNoteImages", img); // backend should use upload.array("images")
+    // reset errors
+    setNoteErr({
+      note2: false,
+      date2: false,
     });
-  }
 
-  axios
-    .post(`${baseurl}add_treatment_notes/${treatmentId}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((response) => {
-      if (response.status === 200) {
-        setOpen5(false);
-        Swal.fire("Success", "Notes added successfully!", "success");
+    let hasError = false;
 
-        dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      }
+    if (!note2) {
+      setNoteErr((prev) => ({ ...prev, note2: true }));
+      hasError = true;
+    }
 
-      // reset fields
-      setNote2("");
-      setDate2("");
-      setImages([]); // ✅ clear images
-      setNoteErr({
-        note2: false,
-        date2: false,
+    if (!date2) {
+      setNoteErr((prev) => ({ ...prev, date2: true }));
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    // ✅ FormData for multiple images
+    const formData = new FormData();
+    formData.append("note", note2);
+    formData.append("date", date2);
+
+    // images state (array of files)
+    if (images && images.length > 0) {
+      images.forEach((img) => {
+        formData.append("treatmentNoteImages", img); // backend should use upload.array("images")
       });
-    })
-    .catch((error) => {
-      setOpen5(false);
-      Swal.fire("Error", `${error?.response?.data?.message}`, "error");
-    });
-};
+    }
+
+    axios
+      .post(`${baseurl}add_treatment_notes/${treatmentId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setOpen5(false);
+          Swal.fire("Success", "Notes added successfully!", "success");
+
+          dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        }
+
+        // reset fields
+        setNote2("");
+        setDate2("");
+        setImages([]); // ✅ clear images
+        setNoteErr({
+          note2: false,
+          date2: false,
+        });
+      })
+      .catch((error) => {
+        setOpen5(false);
+        Swal.fire("Error", `${error?.response?.data?.message}`, "error");
+      });
+  };
   const handleAddTritmentPayment = async () => {
     try {
       const formData = new FormData();
@@ -1164,13 +1159,13 @@ function PatientDetail() {
   };
 
   const handleViewImages = (images) => {
-  if (!images || images.length === 0) return;
+    if (!images || images.length === 0) return;
 
-  images.forEach((img) => {
-    const url = image + img;
-    window.open(url, "_blank");
-  });
-};
+    images.forEach((img) => {
+      const url = image + img;
+      window.open(url, "_blank");
+    });
+  };
   const handleClickSubmit = async () => {
     try {
       const formData = new FormData();
@@ -1532,7 +1527,7 @@ function PatientDetail() {
           vehicle_no: vehicalnumber,
         }),
       };
-console.log(payload)
+      console.log(payload);
       const response = await axios.put(
         `${baseurl}edit_appointment/${appointmentid}`,
         payload,
@@ -1615,7 +1610,6 @@ console.log(payload)
     const payload = {
       note: note2,
       date: date2,
-      
     };
     try {
       const response = await axios.put(
@@ -2153,22 +2147,18 @@ console.log(payload)
     setActiveSubTab("details");
   };
 
-
   const handleAction = (e, type, info, d) => {
+    console.log(e, type, info, d);
     const tId = info.treatment_id;
     const hDetails = info.Hospital_details;
     const status = info.treatment_status;
     const treatmentName = info.treatment_name;
-
-    // common state
     setSelectedTreatmentId(tId);
     setTreatMentNAem(status);
     setTreatmentNameHeading(d);
     setTreatmentIdFilter(treatmentName);
     console.log(tId);
-    // api data
     getDataapi3(tId);
-
     if (type === "attendant") {
       setActiveSubTab("attendant");
       handleclickAttandpDetails(tId);
@@ -2179,8 +2169,7 @@ console.log(payload)
     } else if (type === "hospital") {
       handleClickOpen(e, tId);
     } else if (type === "appointment") {
-      setActiveSubTab("Appointment")
-      handleClickOpen1(e, tId, hDetails);
+      setActiveSubTab("Appointment");
     } else if (type === "notes") {
       handleClickOpenNotes(e, tId, hDetails);
     } else if (type === "services") {
@@ -2188,7 +2177,6 @@ console.log(payload)
     }
   };
   const handleclickdeleteplan = async (item) => {
-    // console.log(item);
     try {
       const result = await Swal.fire({
         title: "Are you sure?",
@@ -2198,7 +2186,6 @@ console.log(payload)
         confirmButtonText: "Yes, delete it!",
         cancelButtonText: "Cancel",
       });
-
       if (result.isConfirmed) {
         const response = await axios.delete(
           `${baseurl}deleteTreatmentPlan/${item._id}`,
@@ -2208,10 +2195,8 @@ console.log(payload)
             },
           },
         );
-
         if (response.data.success) {
           Swal.fire("Deleted!", "Plan deleted successfully.", "success");
-          // dispatch(getAllPlans());
           getTreatmentPlan();
         }
       }
@@ -2220,7 +2205,6 @@ console.log(payload)
       Swal.fire("Error!", "Something went wrong.", "error");
     }
   };
-
   const handleStatusChange = async (id, status) => {
     try {
       const response = await axios.post(
@@ -2240,35 +2224,26 @@ console.log(payload)
       Swal.fire("Error!", "Something went wrong", "error");
     }
   };
-
   const getallPayments = async () => {
     try {
       const patientId = location?.state?.patientId;
-
       const response = await axios.get(
         `${baseurl}getAllPaymentsByPatientId/${patientId}`,
       );
-
       // console.log(response.data);
     } catch (error) {
       // console.log(error);
     }
   };
-
   const getDataapi3 = async (tId) => {
     try {
       const treatmentid = selectedTreatmentId || tId;
-
       const response = await axios.get(
-        `${baseurl}getAllTreatmentData/${location.state.patientId}/${treatmentid}`
+        `${baseurl}getAllTreatmentData/${location.state.patientId}/${treatmentid}`,
       );
-
       const data = response.data.data;
-
-      // ✅ Normalize attendants passport here
       const normalizedAttendants = data.attendants.map((att) => {
         let passport = att.attendant_passport;
-
         // normalize to array
         if (!passport) {
           passport = [];
@@ -2287,29 +2262,20 @@ console.log(payload)
         } else if (typeof passport === "object") {
           passport = [passport];
         }
-
         return {
           ...att,
           attendant_passport: passport,
         };
       });
-
-      // ✅ set normalized data
       setPaymentsFilered(data.payment_details);
       setReportsFilered1(data.reports);
       setAttandantFilered(normalizedAttendants);
-
     } catch (error) {
       console.log(error);
     }
   };
-
-  // const handleclickDeleteTreatment =(treatment_id)=>{
-  //   console.log(treatment_id)
-  // }
   const handleclickDeleteTreatment = async (treatment_id) => {
     console.log(treatment_id);
-
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to recover this treatment!",
@@ -2329,7 +2295,6 @@ console.log(payload)
               },
             },
           );
-
           if (response.data.success) {
             Swal.fire("Deleted!", response.data.message, "success");
             dispatch(GetPatientTreatments({ id: location.state.patientId }));
@@ -2343,17 +2308,18 @@ console.log(payload)
       }
     });
   };
-
-  const getAttemdeData=async()=>{
-try {
-    const response = await axios.get(`${baseurl}getAttendeeDetails/${location.state.patientId}`)
-    if(response.data.success){
-      setGetAttendeDetails(response.data.data)
+  const getAttemdeData = async () => {
+    try {
+      const response = await axios.get(
+        `${baseurl}getAttendeeDetails/${location.state.patientId}`,
+      );
+      if (response.data.success) {
+        setGetAttendeDetails(response.data.data);
+      }
+    } catch (error) {
+      console.log(error);
     }
-} catch (error) {
-    console.log(error)
-}
-  }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -2417,7 +2383,6 @@ try {
                       {showModal && (
                         <div className="custom-modal">
                           <div className="modal-content">
-
                             {/* CLOSE BUTTON */}
                             <button
                               className="close-btn"
@@ -2432,7 +2397,7 @@ try {
                                 setCurrentIndex((prev) =>
                                   prev === 0
                                     ? (kys?.[0]?.id_proof?.length || 1) - 1
-                                    : prev - 1
+                                    : prev - 1,
                                 )
                               }
                             >
@@ -2440,11 +2405,14 @@ try {
                             </button>
                             {/* FILE VIEWER */}
                             {(() => {
-                              const currentFile = kys?.[0]?.id_proof?.[currentIndex];
+                              const currentFile =
+                                kys?.[0]?.id_proof?.[currentIndex];
                               const fileUrl = currentFile
                                 ? `https://sisccltd.com/omca_crm/${currentFile}`
                                 : "";
-                              const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
+                              const isPdf = currentFile
+                                ?.toLowerCase()
+                                .endsWith(".pdf");
                               if (!currentFile) {
                                 return <p>No file available</p>;
                               }
@@ -2473,18 +2441,21 @@ try {
                                 setCurrentIndex((prev) =>
                                   prev === (kys?.[0]?.id_proof?.length || 1) - 1
                                     ? 0
-                                    : prev + 1
+                                    : prev + 1,
                                 )
                               }
                             >
                               ➡
                             </button>
                             {(() => {
-                              const currentFile = kys?.[0]?.id_proof?.[currentIndex];
+                              const currentFile =
+                                kys?.[0]?.id_proof?.[currentIndex];
                               const fileUrl = currentFile
                                 ? `https://sisccltd.com/omca_crm/${currentFile}`
                                 : "";
-                              const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
+                              const isPdf = currentFile
+                                ?.toLowerCase()
+                                .endsWith(".pdf");
                               return (
                                 isPdf && (
                                   <div style={{ marginTop: "10px" }}>
@@ -2499,7 +2470,6 @@ try {
                                 )
                               );
                             })()}
-
                           </div>
                         </div>
                       )}
@@ -2729,28 +2699,28 @@ try {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                                <span
-                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                                >
-                                                  {item.status}
-                                                </span>
-                                              )}
+                                              <span
+                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                              >
+                                                {item.status}
+                                              </span>
+                                            )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                              <button
-                                                className="add-button"
-                                                onClick={() =>
-                                                  approveReject(
-                                                    info,
-                                                    item.id,
-                                                    "Approved",
-                                                  )
-                                                }
-                                              >
-                                                Approve
-                                              </button>
-                                            )}
+                                            <button
+                                              className="add-button"
+                                              onClick={() =>
+                                                approveReject(
+                                                  info,
+                                                  item.id,
+                                                  "Approved",
+                                                )
+                                              }
+                                            >
+                                              Approve
+                                            </button>
+                                          )}
                                         </div>
                                       ))}
                                     </div>
@@ -2839,9 +2809,9 @@ try {
                             activeSubTab,
                           )
                             ? tretment?.filter(
-                              (item) =>
-                                item.treatment_id === selectedTreatmentId,
-                            )
+                                (item) =>
+                                  item.treatment_id === selectedTreatmentId,
+                              )
                             : tretment
                           )?.map((info, index) => {
                             return (
@@ -2857,7 +2827,10 @@ try {
                                               info.treatment_id,
                                             );
                                           }}
-                                          style={{ cursor: "pointer", margin: 0 }}
+                                          style={{
+                                            cursor: "pointer",
+                                            margin: 0,
+                                          }}
                                         >
                                           {
                                             // treatmentNameHeading
@@ -2873,13 +2846,14 @@ try {
                                           }{" "}
                                         </h3>
                                         <div className="action-icon">
-                                          <i className="fa-solid fa-trash"
+                                          <i
+                                            className="fa-solid fa-trash"
                                             onClick={() => {
                                               handleclickDeleteTreatment(
                                                 info.treatment_id,
                                               );
-                                            }}>
-                                          </i>
+                                            }}
+                                          ></i>
                                         </div>
                                       </div>
                                       <select
@@ -2958,22 +2932,22 @@ try {
                                           {!info?.Hospital_details?.some(
                                             (item) => item.hospital_Name,
                                           ) && (
-                                              <li className="nav-item">
-                                                <button
-                                                  className="nav-link"
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "hospital",
-                                                      info,
-                                                      info.treatment_name,
-                                                    )
-                                                  }
-                                                >
-                                                  + Add Hospital
-                                                </button>
-                                              </li>
-                                            )}
+                                            <li className="nav-item">
+                                              <button
+                                                className="nav-link"
+                                                onClick={(e) =>
+                                                  handleAction(
+                                                    e,
+                                                    "hospital",
+                                                    info,
+                                                    info.treatment_name,
+                                                  )
+                                                }
+                                              >
+                                                + Add Hospital
+                                              </button>
+                                            </li>
+                                          )}
 
                                           <li className="nav-item">
                                             <button
@@ -3036,7 +3010,9 @@ try {
                                       <div
                                         className={`collapse-icon ${openIndex === index ? "rotate" : ""}`}
                                         onClick={() =>
-                                          setOpenIndex(openIndex === index ? null : index)
+                                          setOpenIndex(
+                                            openIndex === index ? null : index,
+                                          )
                                         }
                                         aria-expanded={openIndex === index}
                                       >
@@ -3183,7 +3159,8 @@ try {
                                                             <div className="col-md-2 text-end">
                                                               <div className="action-icon">
                                                                 {item.hospital_Name && (
-                                                                  <i className="fa-solid fa-pen-to-square"
+                                                                  <i
+                                                                    className="fa-solid fa-pen-to-square"
                                                                     onClick={() =>
                                                                       handledeedit(
                                                                         info,
@@ -3194,7 +3171,8 @@ try {
                                                                 )}
 
                                                                 {item.hospital_Name && (
-                                                                  <i className="fa-solid fa-trash"
+                                                                  <i
+                                                                    className="fa-solid fa-trash"
                                                                     onClick={() =>
                                                                       handledelete(
                                                                         info,
@@ -3238,13 +3216,31 @@ try {
                                                   <ul className="free-list">
                                                     {freeServices.map(
                                                       (item, index) => (
-                                                        <li key={item._id || index}>
+                                                        <li
+                                                          key={
+                                                            item._id || index
+                                                          }
+                                                        >
                                                           <div className="row">
                                                             <div className="col-md-12">
                                                               <div className="para-main-div hosp-info">
-                                                                <p> {item.serviceName}</p>
+                                                                <p>
+                                                                  {" "}
+                                                                  {
+                                                                    item.serviceName
+                                                                  }
+                                                                </p>
                                                                 <div className="action-icon">
-                                                                  <i className="fa-solid fa-trash" onClick={() => EditFreeDelete(item, info, index,)}></i>
+                                                                  <i
+                                                                    className="fa-solid fa-trash"
+                                                                    onClick={() =>
+                                                                      EditFreeDelete(
+                                                                        item,
+                                                                        info,
+                                                                        index,
+                                                                      )
+                                                                    }
+                                                                  ></i>
                                                                 </div>
                                                               </div>
                                                             </div>
@@ -3298,19 +3294,19 @@ try {
                                                               <td>
                                                                 {item.startTime
                                                                   ? new Date(
-                                                                    item.startTime,
-                                                                  ).toLocaleDateString(
-                                                                    "en-GB",
-                                                                  )
+                                                                      item.startTime,
+                                                                    ).toLocaleDateString(
+                                                                      "en-GB",
+                                                                    )
                                                                   : "-"}
                                                               </td>
                                                               <td>
                                                                 {item.endTime
                                                                   ? new Date(
-                                                                    item.endTime,
-                                                                  ).toLocaleDateString(
-                                                                    "en-GB",
-                                                                  )
+                                                                      item.endTime,
+                                                                    ).toLocaleDateString(
+                                                                      "en-GB",
+                                                                    )
                                                                   : "-"}
                                                               </td>
                                                               <td>
@@ -3384,19 +3380,19 @@ try {
                                                               <td>
                                                                 {item?.date
                                                                   ? new Date(
-                                                                    item.date,
-                                                                  ).toLocaleDateString(
-                                                                    "en-GB",
-                                                                  )
+                                                                      item.date,
+                                                                    ).toLocaleDateString(
+                                                                      "en-GB",
+                                                                    )
                                                                   : "-"}
                                                               </td>
                                                               <td>
                                                                 {item.platform ==
-                                                                  "1"
+                                                                "1"
                                                                   ? "CRM"
                                                                   : "Hospital"}{" "}
                                                               </td>
-                                                             {/* <td>
+                                                              {/* <td>
   {item?.treatmentNoteImages?.length > 0 ? (
     <button
       className="btn btn-sm btn-primary"
@@ -3408,24 +3404,36 @@ try {
     "-"
   )}
 </td> */}
-<td>
-  {item?.treatmentNoteImages?.length > 0 ? (
-    item.treatmentNoteImages.map((img, i) => (
-      <button
-        key={i}
-        className="btn btn-sm btn-primary me-1"
-        onClick={() => {
-          const url = image + img;
-          window.open(url, "_blank");
-        }}
-      >
-        View 
-      </button>
-    ))
-  ) : (
-    "-"
-  )}
-</td>
+                                                              <td>
+                                                                {item
+                                                                  ?.treatmentNoteImages
+                                                                  ?.length > 0
+                                                                  ? item.treatmentNoteImages.map(
+                                                                      (
+                                                                        img,
+                                                                        i,
+                                                                      ) => (
+                                                                        <button
+                                                                          key={
+                                                                            i
+                                                                          }
+                                                                          className="btn btn-sm btn-primary me-1"
+                                                                          onClick={() => {
+                                                                            const url =
+                                                                              image +
+                                                                              img;
+                                                                            window.open(
+                                                                              url,
+                                                                              "_blank",
+                                                                            );
+                                                                          }}
+                                                                        >
+                                                                          View
+                                                                        </button>
+                                                                      ),
+                                                                    )
+                                                                  : "-"}
+                                                              </td>
 
                                                               <td>
                                                                 <div className="action-icon">
@@ -3464,7 +3472,7 @@ try {
                                         </div>
                                         <div className="col-md-12">
                                           {info?.appointments_details?.length >
-                                            0 ? (
+                                          0 ? (
                                             <div className="card patientreat">
                                               <div className="card-header service-list">
                                                 <h6>Appointment</h6>
@@ -3500,38 +3508,38 @@ try {
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                                "online"
+                                                              "online"
                                                                 ? item.vehicle_no
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                                "online"
+                                                              "online"
                                                                 ? item.driver_name
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                                "online"
+                                                              "online"
                                                                 ? item.driver_contact
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.mode !==
-                                                                "online"
+                                                              "online"
                                                                 ? item.pickup_time
                                                                 : "-"}
                                                             </td>
                                                             <td>
                                                               {item.appointment_Date
                                                                 ? new Date(
-                                                                  item.appointment_Date,
-                                                                )
-                                                                  .toISOString()
-                                                                  .slice(
-                                                                    0,
-                                                                    10,
+                                                                    item.appointment_Date,
                                                                   )
+                                                                    .toISOString()
+                                                                    .slice(
+                                                                      0,
+                                                                      10,
+                                                                    )
                                                                 : ""}
                                                             </td>
                                                             <td>
@@ -3539,7 +3547,7 @@ try {
                                                             </td>
                                                             <td>
                                                               {item.status ===
-                                                                "Complete" ? (
+                                                              "Complete" ? (
                                                                 <span className="badge bg-primary">
                                                                   Completed
                                                                 </span>
@@ -3623,7 +3631,7 @@ try {
                                                     <span>
                                                       <i className="fa fa-plus"></i>
                                                     </span>{" "}
-                                                        Add Attendant{" "}
+                                                    Add Attendant{" "}
                                                   </button>
                                                 </div>
                                               </div>
@@ -3712,57 +3720,133 @@ try {
                                               <div className="row gx-3 gy-3">
                                                 <div className="col-md-12">
                                                   <div className="table-responsive">
-                                                    <TableContainer component={Paper} style={{ overflowX: "auto" }}>
-                                                      <Table stickyHeader aria-label="attendant table" className="table-no-card">
+                                                    <TableContainer
+                                                      component={Paper}
+                                                      style={{
+                                                        overflowX: "auto",
+                                                      }}
+                                                    >
+                                                      <Table
+                                                        stickyHeader
+                                                        aria-label="attendant table"
+                                                        className="table-no-card"
+                                                      >
                                                         <TableHead>
                                                           <TableRow>
-                                                            <TableCell>Sr.No.</TableCell>
-                                                            <TableCell>Name</TableCell>
-                                                            <TableCell>Relation</TableCell>
-                                                            <TableCell>Contact</TableCell>
-                                                            <TableCell>Country</TableCell>
-                                                            <TableCell>Attendant Address</TableCell>
-                                                            <TableCell>Attendant ID Proof</TableCell>
+                                                            <TableCell>
+                                                              Sr.No.
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              Name
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              Relation
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              Contact
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              Country
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              Attendant Address
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              Attendant ID Proof
+                                                            </TableCell>
                                                           </TableRow>
                                                         </TableHead>
 
                                                         <TableBody>
-                                                          {attandantFilered.length === 0 ? (
+                                                          {attandantFilered.length ===
+                                                          0 ? (
                                                             <TableRow>
-                                                              <TableCell colSpan={7} align="center">
-                                                                No attendants found
+                                                              <TableCell
+                                                                colSpan={7}
+                                                                align="center"
+                                                              >
+                                                                No attendants
+                                                                found
                                                               </TableCell>
                                                             </TableRow>
                                                           ) : (
-                                                            attandantFilered.map((item, index) => (
-                                                              <TableRow key={item._id || index}>
-                                                                <TableCell>{index + 1}</TableCell>
-                                                                <TableCell>{item?.attendant_fullname || "N/A"}</TableCell>
-                                                                <TableCell>{item?.attendant_relation || "N/A"}</TableCell>
-                                                                <TableCell>{item?.attendant_contact || "N/A"}</TableCell>
-                                                                <TableCell>{item?.country || "N/A"}</TableCell>
-                                                                <TableCell>
-                                                                  {item?.attendant_address}
-                                                                </TableCell>
-                                                                <TableCell className="d-flex gap-2">
-                                                                  {item?.attendant_passport?.length > 0 ? (
-                                                                    item.attendant_passport.map((file, fIndex) => {
-                                                                      const filePath = typeof file === "object" ? file?.path : file;
-                                                                      return (
-                                                                        <div key={fIndex}>
-                                                                          <a href={`https://sisccltd.com/omca_crm/${filePath}`}
-                                                                            target="_blank" rel="noopener noreferrer" className="viewbtn">
-                                                                            View {item.attendant_passport.length > 1 ? fIndex + 1 : ""}
-                                                                          </a>
-                                                                        </div>
-                                                                      );
-                                                                    })
-                                                                  ) : (
-                                                                    "Not Uploaded"
-                                                                  )}
-                                                                </TableCell>
-                                                              </TableRow>
-                                                            ))
+                                                            attandantFilered.map(
+                                                              (item, index) => (
+                                                                <TableRow
+                                                                  key={
+                                                                    item._id ||
+                                                                    index
+                                                                  }
+                                                                >
+                                                                  <TableCell>
+                                                                    {index + 1}
+                                                                  </TableCell>
+                                                                  <TableCell>
+                                                                    {item?.attendant_fullname ||
+                                                                      "N/A"}
+                                                                  </TableCell>
+                                                                  <TableCell>
+                                                                    {item?.attendant_relation ||
+                                                                      "N/A"}
+                                                                  </TableCell>
+                                                                  <TableCell>
+                                                                    {item?.attendant_contact ||
+                                                                      "N/A"}
+                                                                  </TableCell>
+                                                                  <TableCell>
+                                                                    {item?.country ||
+                                                                      "N/A"}
+                                                                  </TableCell>
+                                                                  <TableCell>
+                                                                    {
+                                                                      item?.attendant_address
+                                                                    }
+                                                                  </TableCell>
+                                                                  <TableCell className="d-flex gap-2">
+                                                                    {item
+                                                                      ?.attendant_passport
+                                                                      ?.length >
+                                                                    0
+                                                                      ? item.attendant_passport.map(
+                                                                          (
+                                                                            file,
+                                                                            fIndex,
+                                                                          ) => {
+                                                                            const filePath =
+                                                                              typeof file ===
+                                                                              "object"
+                                                                                ? file?.path
+                                                                                : file;
+                                                                            return (
+                                                                              <div
+                                                                                key={
+                                                                                  fIndex
+                                                                                }
+                                                                              >
+                                                                                <a
+                                                                                  href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                                                  target="_blank"
+                                                                                  rel="noopener noreferrer"
+                                                                                  className="viewbtn"
+                                                                                >
+                                                                                  View{" "}
+                                                                                  {item
+                                                                                    .attendant_passport
+                                                                                    .length >
+                                                                                  1
+                                                                                    ? fIndex +
+                                                                                      1
+                                                                                    : ""}
+                                                                                </a>
+                                                                              </div>
+                                                                            );
+                                                                          },
+                                                                        )
+                                                                      : "Not Uploaded"}
+                                                                  </TableCell>
+                                                                </TableRow>
+                                                              ),
+                                                            )
                                                           )}
                                                         </TableBody>
                                                       </Table>
@@ -3840,7 +3924,7 @@ try {
                                                           Document
                                                         </TableCell>
                                                         {usrFount ===
-                                                          "Admin" ? (
+                                                        "Admin" ? (
                                                           <>
                                                             <TableCell>
                                                               PDF
@@ -3882,11 +3966,18 @@ try {
                                                               {item?.paid_to}
                                                             </TableCell>
                                                             <TableCell>
-                                                             {item?.paid_for
-  ?.split("_")
-  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-  .join(" ")
-}
+                                                              {item?.paid_for
+                                                                ?.split("_")
+                                                                .map(
+                                                                  (word) =>
+                                                                    word
+                                                                      .charAt(0)
+                                                                      .toUpperCase() +
+                                                                    word.slice(
+                                                                      1,
+                                                                    ),
+                                                                )
+                                                                .join(" ")}
                                                             </TableCell>
                                                             <TableCell>
                                                               {item?.notes}
@@ -3907,7 +3998,7 @@ try {
                                                             </TableCell>
 
                                                             {usrFount ===
-                                                              "Admin" ? (
+                                                            "Admin" ? (
                                                               <>
                                                                 <TableCell>
                                                                   <button
@@ -3917,9 +4008,9 @@ try {
                                                                         "/Admin/Patient-Pdfdetails",
                                                                         {
                                                                           state:
-                                                                          {
-                                                                            data: item?._id,
-                                                                          },
+                                                                            {
+                                                                              data: item?._id,
+                                                                            },
                                                                         },
                                                                       );
                                                                     }}
@@ -4038,13 +4129,13 @@ try {
                                                           </TableCell>
                                                           <TableCell>
                                                             {item?.platform ===
-                                                              1
+                                                            1
                                                               ? "CRM"
                                                               : "Hospital"}
                                                           </TableCell>
 
                                                           {usrFount ===
-                                                            "Admin" ? (
+                                                          "Admin" ? (
                                                             <>
                                                               {" "}
                                                               <TableCell>
@@ -4095,121 +4186,291 @@ try {
                                               <div className="treat-buttons">
                                                 <button
                                                   className="add-button"
-                                                  onClick={(e) =>
-                                                    handleClickOpen10(
-                                                      e,
-                                                      selectedTreatmentId,
-                                                    )
+                                                  onClick={
+                                                    (e) =>
+                                                      handleClickOpen1(
+                                                        e,
+                                                        info.treatment_id,
+                                                        info.Hospital_details,
+                                                      )
+                                                    //  handleClickOpen1(e, tId, hDetails);
                                                   }
                                                 >
                                                   <span>
                                                     <i className="fa fa-plus"></i>
                                                   </span>
-                                                Add Appointment
+                                                  Add Appointment
                                                 </button>
                                               </div>
                                             </div>
 
-                                            <div className="table-responsive">
-                                              <TableContainer component={Paper}>
-                                                <Table className="table-no-card">
-                                                  <TableHead>
-                                                    <TableRow>
-                                                      <TableCell>
-                                                        Treatment ID
-                                                      </TableCell>
-                                                      <TableCell>
-                                                        Report Title
-                                                      </TableCell>
-                                                      <TableCell>
-                                                        Report Date
-                                                      </TableCell>
-                                                      <TableCell>
-                                                        Added By
-                                                      </TableCell>
-
-                                                      {usrFount === "Admin" ? (
-                                                        <>
-                                                          {" "}
-                                                          <TableCell>
-                                                            Reports
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Action
-                                                          </TableCell>
-                                                        </>
-                                                      ) : (
-                                                        ""
-                                                      )}
-                                                    </TableRow>
-                                                  </TableHead>
-
-                                                  <TableBody>
-                                                    {reportsFilered1.map(
-                                                      (item) => (
-                                                        <TableRow
-                                                          key={item._id}
-                                                        >
-                                                          <TableCell>
-                                                            {item?.treatmentId}
-                                                          </TableCell>
-
-                                                          <TableCell>
-                                                            {item?.reportTitle}
-                                                          </TableCell>
-
-                                                          <TableCell>
-                                                            {new Date(
-                                                              item?.treatment_report_date,
-                                                            ).toLocaleDateString(
-                                                              "en-GB",
-                                                            )}
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            {item?.platform ===
-                                                              1
-                                                              ? "CRM"
-                                                              : "Hospital"}
-                                                          </TableCell>
-
-                                                          {usrFount ===
-                                                            "Admin" ? (
-                                                            <>
-                                                              {" "}
-                                                              <TableCell>
-                                                                <a
-                                                                  href={`${image}${item.treatmentReport}`}
-                                                                  target="_blank"
-                                                                  rel="noreferrer"
-                                                                >
-                                                                  Download
-                                                                  Report
-                                                                </a>
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                <i
-                                                                  className="fa-solid fa-trash text-danger"
-                                                                  style={{
-                                                                    cursor:
-                                                                      "pointer",
-                                                                  }}
-                                                                  onClick={() =>
-                                                                    handledeleteReport(
-                                                                      item,
-                                                                    )
+                                            <div className="col-md-12">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Appointment</h6>
+                                                  </div>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>ID</th>
+                                                            <th>Vehicle No</th>
+                                                            <th>Driver Name</th>
+                                                            <th>
+                                                              Driver Contact
+                                                            </th>
+                                                            <th>Pickup Time</th>
+                                                            <th>Date</th>
+                                                            <th>Notes</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {info.appointments_details?.map(
+                                                            (item) => (
+                                                              <tr
+                                                                key={
+                                                                  item.appointmentId
+                                                                }
+                                                              >
+                                                                <td>
+                                                                  {
+                                                                    item.appointmentId
                                                                   }
-                                                                ></i>
-                                                              </TableCell>
-                                                            </>
-                                                          ) : (
-                                                            ""
+                                                                </td>
+                                                                <td>
+                                                                  {item.mode !==
+                                                                  "online"
+                                                                    ? item.vehicle_no
+                                                                    : "-"}
+                                                                </td>
+                                                                <td>
+                                                                  {item.mode !==
+                                                                  "online"
+                                                                    ? item.driver_name
+                                                                    : "-"}
+                                                                </td>
+                                                                <td>
+                                                                  {item.mode !==
+                                                                  "online"
+                                                                    ? item.driver_contact
+                                                                    : "-"}
+                                                                </td>
+                                                                <td>
+                                                                  {item.mode !==
+                                                                  "online"
+                                                                    ? item.pickup_time
+                                                                    : "-"}
+                                                                </td>
+                                                                <td>
+                                                                  {item.appointment_Date
+                                                                    ? new Date(
+                                                                        item.appointment_Date,
+                                                                      )
+                                                                        .toISOString()
+                                                                        .slice(
+                                                                          0,
+                                                                          10,
+                                                                        )
+                                                                    : ""}
+                                                                </td>
+                                                                <td>
+                                                                  {item?.note}
+                                                                </td>
+                                                                <td>
+                                                                  {item.status ===
+                                                                  "Complete" ? (
+                                                                    <span className="badge bg-primary">
+                                                                      Completed
+                                                                    </span>
+                                                                  ) : (
+                                                                    <span className="badge bg-primary">
+                                                                      {
+                                                                        item.status
+                                                                      }
+                                                                    </span>
+                                                                  )}
+                                                                </td>
+                                                                <td className="action-icon">
+                                                                  <i
+                                                                    className="fa-solid fa-pen-to-square"
+                                                                    onClick={() => {
+                                                                      handleclickeditfunc(
+                                                                        item,
+                                                                      );
+                                                                    }}
+                                                                  ></i>
+                                                                  <i
+                                                                    className="fa-solid fa-trash"
+                                                                    onClick={() => {
+                                                                      handleclickeditdelete(
+                                                                        item,
+                                                                      );
+                                                                    }}
+                                                                  ></i>
+                                                                </td>
+                                                              </tr>
+                                                            ),
                                                           )}
-                                                        </TableRow>
-                                                      ),
-                                                    )}
-                                                  </TableBody>
-                                                </Table>
-                                              </TableContainer>
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  {activeSubTab === "Notes" &&
+                                    selectedTreatmentId && (
+                                      <div>
+                                        <div className="row">
+                                          <div className="col-md-12">
+                                            <div className="top-collpse">
+                                              <div className="treat-buttons">
+                                                <button
+                                                  className="add-button"
+                                                  onClick={
+                                                    (e) =>
+                                                      handleClickOpen1(
+                                                        e,
+                                                        info.treatment_id,
+                                                        info.Hospital_details,
+                                                      )
+                                                    //  handleClickOpen1(e, tId, hDetails);
+                                                  }
+                                                >
+                                                  <span>
+                                                    <i className="fa fa-plus"></i>
+                                                  </span>
+                                                  Add Appointment
+                                                </button>
+                                              </div>
+                                            </div>
+
+                                            <div className="col-md-12">
+                                              {info?.appointments_details
+                                                ?.length > 0 ? (
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Appointment</h6>
+                                                  </div>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>ID</th>
+                                                            <th>Vehicle No</th>
+                                                            <th>Driver Name</th>
+                                                            <th>
+                                                              Driver Contact
+                                                            </th>
+                                                            <th>Pickup Time</th>
+                                                            <th>Date</th>
+                                                            <th>Notes</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {info.appointments_details?.map(
+                                                            (item) => (
+                                                              <tr
+                                                                key={
+                                                                  item.appointmentId
+                                                                }
+                                                              >
+                                                                <td>
+                                                                  {
+                                                                    item.appointmentId
+                                                                  }
+                                                                </td>
+                                                                <td>
+                                                                  {item.mode !==
+                                                                  "online"
+                                                                    ? item.vehicle_no
+                                                                    : "-"}
+                                                                </td>
+                                                                <td>
+                                                                  {item.mode !==
+                                                                  "online"
+                                                                    ? item.driver_name
+                                                                    : "-"}
+                                                                </td>
+                                                                <td>
+                                                                  {item.mode !==
+                                                                  "online"
+                                                                    ? item.driver_contact
+                                                                    : "-"}
+                                                                </td>
+                                                                <td>
+                                                                  {item.mode !==
+                                                                  "online"
+                                                                    ? item.pickup_time
+                                                                    : "-"}
+                                                                </td>
+                                                                <td>
+                                                                  {item.appointment_Date
+                                                                    ? new Date(
+                                                                        item.appointment_Date,
+                                                                      )
+                                                                        .toISOString()
+                                                                        .slice(
+                                                                          0,
+                                                                          10,
+                                                                        )
+                                                                    : ""}
+                                                                </td>
+                                                                <td>
+                                                                  {item?.note}
+                                                                </td>
+                                                                <td>
+                                                                  {item.status ===
+                                                                  "Complete" ? (
+                                                                    <span className="badge bg-primary">
+                                                                      Completed
+                                                                    </span>
+                                                                  ) : (
+                                                                    <span className="badge bg-primary">
+                                                                      {
+                                                                        item.status
+                                                                      }
+                                                                    </span>
+                                                                  )}
+                                                                </td>
+                                                                <td className="action-icon">
+                                                                  <i
+                                                                    className="fa-solid fa-pen-to-square"
+                                                                    onClick={() => {
+                                                                      handleclickeditfunc(
+                                                                        item,
+                                                                      );
+                                                                    }}
+                                                                  ></i>
+                                                                  <i
+                                                                    className="fa-solid fa-trash"
+                                                                    onClick={() => {
+                                                                      handleclickeditdelete(
+                                                                        item,
+                                                                      );
+                                                                    }}
+                                                                  ></i>
+                                                                </td>
+                                                              </tr>
+                                                            ),
+                                                          )}
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              ) : (
+                                                ""
+                                              )}
                                             </div>
                                           </div>
                                         </div>
@@ -5009,7 +5270,7 @@ try {
                       </div>
                     </div>
                   </div>
-          
+
                   <div className="row">
                     <div className="col-6">
                       <div className="field-set">
@@ -5092,16 +5353,16 @@ try {
                     <div className="col-6">
                       <div className="field-set">
                         <label>
-                          Attendant Address<span className="text-danger">*</span>
+                          Attendant Address
+                          <span className="text-danger">*</span>
                         </label>
                         <div className="upload-input">
                           <input
-                             type="text"
+                            type="text"
                             name="attendant_address"
                             className="form-control"
                             value={filesData.attendant_address}
                             onChange={handleInputChange}
-                           
                           />
                         </div>
                       </div>
@@ -5231,18 +5492,16 @@ try {
                     </span>
                   </div>
                   <div className="field-set">
-  <label>
-    Upload Images
-  </label>
+                    <label>Upload Images</label>
 
-  <input
-    type="file"
-    multiple
-    accept="image/*"
-    className="form-control"
-    onChange={(e) => setImages([...e.target.files])}
-  />
-</div>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      className="form-control"
+                      onChange={(e) => setImages([...e.target.files])}
+                    />
+                  </div>
                   <div className="field-set">
                     <label>
                       Date<span className="text-danger">*</span>
@@ -5316,19 +5575,17 @@ try {
                   {noteErr && !note2 ? "Please Enter Your note" : ""}
                 </span>
               </div>
-                <div className="field-set">
-  <label>
-    Upload Images
-  </label>
+              <div className="field-set">
+                <label>Upload Images</label>
 
-  <input
-    type="file"
-    multiple
-    accept="image/*"
-    className="form-control"
-    onChange={(e) => setImages([...e.target.files])}
-  />
-</div>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  className="form-control"
+                  onChange={(e) => setImages([...e.target.files])}
+                />
+              </div>
               <div className="field-set">
                 <label>
                   Date<span className="text-danger">*</span>
@@ -5382,8 +5639,6 @@ try {
             >
               <Box>
                 <form id="contact-form" className="contact-form">
-                  {/* <div>{info.treatment_due_payment}</div> */}
-
                   <div className="field-set">
                     <label>
                       Add Performa Invoice<span className="text-danger"></span>
@@ -5404,7 +5659,6 @@ try {
                       onClick={() => {
                         handleAddTritmentPaymenttestsubmit();
                       }}
-                      // onClick={(e) => handleAddTritmentPayment(e)}
                       variant="contained"
                     >
                       Submit
