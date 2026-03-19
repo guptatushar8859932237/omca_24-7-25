@@ -9,11 +9,8 @@ import axios from "axios";
 import { image, baseurl } from "../../Basurl/Baseurl";
 import { GetAllStaffUser } from "../../reducer/StaffSlice";
 import { GetAllCountries2 } from "../../reducer/Countries";
-import { Autocomplete, TextField } from "@mui/material";
-
 import {
   FormControl,
-  InputLabel,
   MenuItem,
   OutlinedInput,
   Select,
@@ -62,6 +59,12 @@ export default function EditStaff() {
     gender: Yup.string()
       .oneOf(["Male", "Female", "Other"])
       .required("Gender is required"),
+    // isEdit: Yup.string()
+    //   .oneOf(["1", "0"])
+    //   .required("Edit Permission is required"),
+    // isDelete: Yup.string()
+    //   .oneOf(["1", "0"])
+    //   .required("Edit Delete is required"),
     profileImage: Yup.mixed().required("Profile image is required"),
     country: Yup.string().required("Country is required"),
     accessCountries: Yup.array().min(
@@ -130,6 +133,8 @@ export default function EditStaff() {
               dial_code: editStaff.dial_code || "",
               profileImage: editStaff.profileImage || null,
               roleStatuses: editStaff.roleStatuses || null,
+  //              isEdit: editStaff.isEdit || "0",   // FIXED
+  // isDelete: editStaff.isDelete || "0", // FIXED
               accessCountries: editStaff.accessCountries || [],
             }}
             validationSchema={validationSchema}
@@ -372,6 +377,45 @@ export default function EditStaff() {
                     </div>
                   </div>
 
+                  {/* <div className="col-sm-3">
+                    <div className="field-set gender-select">
+                      <label>Is Edit *</label>
+                      <br />
+                      <div className="form-check-inline">
+                        <Field type="radio" name="isEdit" value="1" /> Yes
+                      </div>
+                      <div className="form-check-inline">
+                        <Field type="radio" name="isEdit" value="0" />{" "}
+                        No
+                      </div>
+                    
+                      <ErrorMessage
+                        name="isEdit"
+                        component="div"
+                        className="text-danger"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-sm-3">
+                    <div className="field-set gender-select">
+                      <label>Is Delete *</label>
+                      <br />
+                      <div className="form-check-inline">
+                        <Field type="radio" name="isDelete" value="1" /> Yes
+                      </div>
+                      <div className="form-check-inline">
+                        <Field type="radio" name="isDelete" value="0" />{" "}
+                        No
+                      </div>
+                    
+                      <ErrorMessage
+                        name="isDelete"
+                        component="div"
+                        className="text-danger"
+                      />
+                    </div>
+                  </div> */}
                   <div className="col-sm-6">
                     <div className="field-set gender-select">
                       <label>Gender *</label>

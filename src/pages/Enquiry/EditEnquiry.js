@@ -26,6 +26,7 @@ export default function EditEnquiry() {
   const location = useLocation();
   const navigate = useNavigate();
   const { Enquiry, loading } = useSelector((state) => state.Enquiry);
+   const [previewImage, setPreviewImage] = useState(null);
   const { Treatment, error } = useSelector((state) => state.Treatment);
   const { Countries } = useSelector((state) => state.Countries);
   const [editenquiry, setEnquiry] = useState("");
@@ -519,7 +520,7 @@ export default function EditEnquiry() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Emergency Contact No<span className="text-danger">*</span></label>
+                          <label>Emergency Contact No<span className="text-danger"></span></label>
                           <div className="country-code">
                             <Field
                               className="form-control code-dial"
@@ -541,7 +542,7 @@ export default function EditEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Id Proof<span className="text-danger">*</span>{" "}
+                            Patient Id Proof<span className="text-danger"></span>{" "}
                             <span
                               className="text-danger"
                               data-bs-placement="right"
@@ -596,7 +597,7 @@ export default function EditEnquiry() {
                                           "pdf",
                                           "word",
                                           "excel",
-                                        ].includes(type) && "View File"}
+                                        ].includes(type) && "View"}
                                       </button>
                                     </div>
                                   );
@@ -613,27 +614,29 @@ export default function EditEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Profile<span className="text-danger">*</span>{" "}
+                            Patient Profile<span className="text-danger"></span>{" "}
                             <span
                               className="text-danger"
                               data-bs-placement="right"
                               data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, ) Max size: 2 MB per file"
                             >
                               (i)
                             </span>
                           </label>
-                          <input
+                          {/* <input
                             className="form-control"
                             type="file"
                             name="patient_Profile"
                             accept="image/*,application/pdf"
-                            onChange={(e) =>
-                              setFieldValue(
-                                "patient_Profile",
-                                e.currentTarget.files[0],
-                              )
-                            }
+                            onChange={(e) => {
+  const file = e.currentTarget.files[0];
+
+  if (file) {
+    setPreviewImage(URL.createObjectURL(file));
+    setFieldValue("patient_Profile", file);
+  }
+}}
                           />
                           <div className="engpatimg">
                             <div className="viewbtn">
@@ -643,7 +646,71 @@ export default function EditEnquiry() {
                                 View
                               </a>
                             </div>
-                          </div>
+                               <div className="engpatimg">
+                                                          {previewImage ? (
+                                                            <button
+                                                              type="button"
+                                                              className="viewbtn"
+                                                              onClick={() =>
+                                                                window.open(previewImage, "_blank")
+                                                              }
+                                                            >
+                                                              View
+                                                            </button>
+                                                          ) : editenquiry.patient_Profile ? (
+                                                            <button
+                                                              type="button"
+                                                              className="viewbtn"
+                                                              onClick={() =>
+                                                                window.open(
+                                                                  `${image}/${editenquiry.patient_Profile}`,
+                                                                  "_blank",
+                                                                )
+                                                              }
+                                                            >
+                                                              View
+                                                            </button>
+                                                          ) : null}
+                                                        </div>
+                          </div> */}
+                          <input
+  className="form-control"
+  type="file"
+  name="patient_Profile"
+  accept="image/*,application/pdf"
+  onChange={(e) => {
+    const file = e.currentTarget.files[0];
+
+    if (file) {
+      setPreviewImage(URL.createObjectURL(file));
+      setFieldValue("patient_Profile", file);
+    }
+  }}
+/>
+
+<div className="engpatimg">
+  {/* New Uploaded */}
+  {previewImage ? (
+    <button
+      type="button"
+      className="viewbtn"
+      onClick={() => window.open(previewImage, "_blank")}
+    >
+      View
+    </button>
+  ) : editenquiry?.patient_Profile ? (
+    /* Existing from API */
+    <button
+      type="button"
+      className="viewbtn"
+      onClick={() =>
+        window.open(`${imageUrl}${editenquiry.patient_Profile}`, "_blank")
+      }
+    >
+      View
+    </button>
+  ) : null}
+</div>
                           <ErrorMessage
                             name="patient_Profile"
                             component="div"
@@ -654,7 +721,7 @@ export default function EditEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Referral Name<span className="text-danger">*</span>
+                            Referral Name<span className="text-danger"></span>
                           </label>
                           <Field
                             className="form-control"

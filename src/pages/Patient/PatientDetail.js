@@ -52,9 +52,11 @@ function PatientDetail() {
   const [pickuptime, setPickuptime] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
   const [images, setImages] = useState([]);
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState(0);
   const [treatemntData1, setTreatemntData1] = useState([]);
+  const [getAttendeDetails, setGetAttendeDetails] = useState([]);
   const [errors, setErrors] = useState({});
+  // const [images, setImages] = useState([]);
   const [drivername, setDrivername] = useState("");
   // const { Countries } = useSelector((state) => state.Countries);
   const [showModal, setShowModal] = useState(false);
@@ -164,6 +166,9 @@ function PatientDetail() {
     getextraservice();
   }, []);
 
+  useEffect(() => {
+    getAttemdeData();
+  }, []);
   useEffect(() => {
     getTreatmentPlan();
   }, []);
@@ -689,7 +694,7 @@ function PatientDetail() {
       attendant_contact,
       Attende_passport,
       country,
-      Attende_photo,
+      attendant_address,
     } = filesData;
     if (
       !attendant_fullname?.trim() ||
@@ -697,7 +702,7 @@ function PatientDetail() {
       !attendant_contact?.trim() ||
       !country?.trim() ||
       !Attende_passport ||
-      !Attende_photo
+      !attendant_address
     ) {
       Swal.fire("All fields are mandatory!", "", "warning");
       return;
@@ -709,7 +714,7 @@ function PatientDetail() {
     formData.append("attendant_contact", attendant_contact);
     // formData.append("dial_code", filesData.dial_code);
     formData.append("country", filesData.country);
-    formData.append("attendant_image", filesData.Attende_photo);
+    formData.append("attendant_address", attendant_address);
     filesData.Attende_passport.forEach((file) => {
       formData.append("attendant_passport", file);
     });
@@ -865,43 +870,68 @@ function PatientDetail() {
     // console.log("All Services Sent to API:", allServices);/
   };
   const handleNotesdata = (e) => {
-    e.preventDefault();
-    setNoteErr({
-      note2: false,
-      date2: false,
-    });
+  e.preventDefault();
 
-    if (!note2) {
-      setAppointErr((prevState) => ({ ...prevState, note2: true }));
-    }
-    if (!date2) {
-      setAppointErr((prevState) => ({ ...prevState, date2: true }));
-    }
-    if (!note2 || !date2) {
-      return;
-    }
-    axios
-      .post(`${baseurl}add_treatment_notes/${treatmentId}`, {
-        note: note2,
-        date: date2,
-      })
-      .then((response) => {
-        // console.log(response);
-        if (response.status === 200) {
-          setOpen5(false);
-          Swal.fire("Success", "Notes added successfully!", "success");
-          dispatch(GetPatientTreatments({ id: location.state.patientId }));
-        }
-        setNote2("");
-        setDate2("");
-        setNoteErr(false);
-      })
-      .catch((error) => {
+  // reset errors
+  setNoteErr({
+    note2: false,
+    date2: false,
+  });
+
+  let hasError = false;
+
+  if (!note2) {
+    setNoteErr((prev) => ({ ...prev, note2: true }));
+    hasError = true;
+  }
+
+  if (!date2) {
+    setNoteErr((prev) => ({ ...prev, date2: true }));
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  // ✅ FormData for multiple images
+  const formData = new FormData();
+  formData.append("note", note2);
+  formData.append("date", date2);
+
+  // images state (array of files)
+  if (images && images.length > 0) {
+    images.forEach((img) => {
+      formData.append("treatmentNoteImages", img); // backend should use upload.array("images")
+    });
+  }
+
+  axios
+    .post(`${baseurl}add_treatment_notes/${treatmentId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((response) => {
+      if (response.status === 200) {
         setOpen5(false);
-        // console.log(error);
-        Swal.fire("Error", `${error?.response?.data?.message}`, "error");
+        Swal.fire("Success", "Notes added successfully!", "success");
+
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      }
+
+      // reset fields
+      setNote2("");
+      setDate2("");
+      setImages([]); // ✅ clear images
+      setNoteErr({
+        note2: false,
+        date2: false,
       });
-  };
+    })
+    .catch((error) => {
+      setOpen5(false);
+      Swal.fire("Error", `${error?.response?.data?.message}`, "error");
+    });
+};
   const handleAddTritmentPayment = async () => {
     try {
       const formData = new FormData();
@@ -1132,42 +1162,15 @@ function PatientDetail() {
       attachFile: file,
     }));
   };
-  //   const handleClickSubmit = async () => {
 
-  //   const formData = new FormData();
+  const handleViewImages = (images) => {
+  if (!images || images.length === 0) return;
 
-  //   formData.append("reportTitle", iniData.reportTitle);
-  //   formData.append("treatment_report_date", iniData.treatment_report_date);
-  //   formData.append("paid_to", iniData.paid_to);
-  //   formData.append("paid_for", iniData.paid_for);
-  //   formData.append("platform", 1);
-
-  //   // attach invoice
-  //   if (iniData.attachFile) {
-  //     formData.append("attachFile", iniData.attachFile);
-  //   }
-
-  //   // multiple reports
-  //   imagefile.forEach((file) => {
-  //     formData.append("treatmentReport", file);
-  //   });
-
-  //   for (let pair of formData.entries()) {
-  //     console.log(pair[0], pair[1]);
-  //   }
-
-  //   // API call
-  //   const response = await axios.post(
-  //     `${baseurl}addReports/${treatmentId}`,
-  //     formData,
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //     }
-  //   );
-
-  // };
+  images.forEach((img) => {
+    const url = image + img;
+    window.open(url, "_blank");
+  });
+};
   const handleClickSubmit = async () => {
     try {
       const formData = new FormData();
@@ -1446,7 +1449,7 @@ function PatientDetail() {
     setOpen1(true);
     setEditData(item);
     setStatuddropdown(item.mode);
-    setNote(item.disease_name || "");
+    setNote(item.note || "");
     setDate(item.appointment_Date || "");
     setAppHospital({
       hospital_id: item.hospital_id,
@@ -1517,13 +1520,11 @@ function PatientDetail() {
       const formattedDate = date
         ? new Date(date).toISOString().split("T")[0]
         : "";
-
       const payload = {
         hospitalId: appHospital,
         note: note,
         appointment_Date: formattedDate, // ✅ formatted date
         mode: statuddropdown,
-
         ...(statuddropdown === "offline" && {
           pickup_time: pickuptime,
           driver_name: drivername,
@@ -1531,9 +1532,7 @@ function PatientDetail() {
           vehicle_no: vehicalnumber,
         }),
       };
-
-      // console.log("Edit Payload:", payload);
-
+console.log(payload)
       const response = await axios.put(
         `${baseurl}edit_appointment/${appointmentid}`,
         payload,
@@ -1543,13 +1542,10 @@ function PatientDetail() {
           },
         },
       );
-
       if (response?.data?.success) {
         Swal.fire("Appointment updated successfully!", "", "success");
-
         setOpen1(false);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
-
         // reset form
         setNote("");
         setDate("");
@@ -1619,6 +1615,7 @@ function PatientDetail() {
     const payload = {
       note: note2,
       date: date2,
+      
     };
     try {
       const response = await axios.put(
@@ -2149,10 +2146,6 @@ function PatientDetail() {
     return tretment?.find((t) => t.treatment_id === selectedTreatmentId);
   };
 
-  const getSelectedTreatmentName = () => {
-    return getSelectedTreatmentInfo()?.treatment_name || "";
-  };
-
   const handleMainTabChange = (tab) => {
     setMainTab(tab);
     localStorage.setItem("patientMainTab", tab);
@@ -2160,43 +2153,6 @@ function PatientDetail() {
     setActiveSubTab("details");
   };
 
-  const handleBackToTreatmentList = () => {
-    setSelectedTreatmentId(null);
-    setActiveSubTab("details");
-  };
-
-  // const handleAction = (e, type, info, d) => {
-  //   console.log(e, type, info);
-  //   const tId = info.treatment_id;
-  //   const hDetails = info.Hospital_details;
-  //   const status = info.treatment_status;
-  //   const treatmentnmae = info.treatment_name;
-  //    setTreatmentIdFilter(treatmentnmae);
-  //   setSelectedTreatmentId(tId);
-  //   setTreatMentNAem(status);
-  //   setTreatmentNameHeading(d);
-  //   if (type === "attendant") {
-  //     setActiveSubTab("attendant");
-  //     handleclickAttandpDetails(tId);
-  //   } else if (type === "payment") {
-  //     setActiveSubTab("payment");
-  //     setTreatmentIdFilter(treatmentnmae);
-  //   } else if (type === "reports") {
-  //     setActiveSubTab("reports");
-  //   } else if (type === "hospital") {
-  //     handleClickOpen(e, tId);
-  //   } else if (type === "appointment") {
-  //     handleClickOpen1(e, tId, hDetails);
-  //   } else if (type === "notes") {
-  //     handleClickOpenNotes(e, tId, hDetails);
-  //   } else if (type === "services") {
-  //     penModal(info, tId);
-  //   }
-  // };
-
-  // const handleclickdeleteplan =(item)=>{
-  //   console.log(item)
-  // }
 
   const handleAction = (e, type, info, d) => {
     const tId = info.treatment_id;
@@ -2223,6 +2179,7 @@ function PatientDetail() {
     } else if (type === "hospital") {
       handleClickOpen(e, tId);
     } else if (type === "appointment") {
+      setActiveSubTab("Appointment")
       handleClickOpen1(e, tId, hDetails);
     } else if (type === "notes") {
       handleClickOpenNotes(e, tId, hDetails);
@@ -2297,32 +2254,6 @@ function PatientDetail() {
       // console.log(error);
     }
   };
-  // const getdataafterclick=(b,c,d)=>{
-  //   setDataB(b)
-  //   setDataC(c)
-  //   setDateD(d)
-  //   getDataapi3(c)
-  // }
-  // useEffect(() => {
-  //   getDataapi3();
-  // }, [dataC]);
-  // const getDataapi3 =async(c)=>{
-  //   try {
-  //   const response =await axios.get(`${baseurl}getAllTreatmentData/${location.state.patientId}/${dataC.treatment_id}`)
-  //   console.log(response.data.data)
-  //     setPaymentsFilered(response.data.data.payment_details)
-  //     setReportsFilered1(response.data.data.reports)
-  //     setAttandantFilered(response.data.data.attendants)
-  // } catch (error) {
-  //   console.log(error)
-  // }
-  // }
-  // const getdataafterclick = (b, c, d) => {
-  //   setDataB(b);
-  //   setDataC(c);
-  //   setDateD(d);
-  //   getDataapi3(c); // direct call with latest value
-  // };
 
   const getDataapi3 = async (tId) => {
     try {
@@ -2412,6 +2343,17 @@ function PatientDetail() {
       }
     });
   };
+
+  const getAttemdeData=async()=>{
+try {
+    const response = await axios.get(`${baseurl}getAttendeeDetails/${location.state.patientId}`)
+    if(response.data.success){
+      setGetAttendeDetails(response.data.data)
+    }
+} catch (error) {
+    console.log(error)
+}
+  }
   return (
     <>
       <div className="page-wrapper">
@@ -2496,20 +2438,16 @@ function PatientDetail() {
                             >
                               ⬅
                             </button>
-
                             {/* FILE VIEWER */}
                             {(() => {
                               const currentFile = kys?.[0]?.id_proof?.[currentIndex];
                               const fileUrl = currentFile
                                 ? `https://sisccltd.com/omca_crm/${currentFile}`
                                 : "";
-
                               const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
-
                               if (!currentFile) {
                                 return <p>No file available</p>;
                               }
-
                               return isPdf ? (
                                 <iframe
                                   src={fileUrl}
@@ -2530,8 +2468,6 @@ function PatientDetail() {
                                 />
                               );
                             })()}
-
-                            {/* NEXT BUTTON */}
                             <button
                               onClick={() =>
                                 setCurrentIndex((prev) =>
@@ -2543,15 +2479,12 @@ function PatientDetail() {
                             >
                               ➡
                             </button>
-
-                            {/* OPEN PDF IN NEW TAB */}
                             {(() => {
                               const currentFile = kys?.[0]?.id_proof?.[currentIndex];
                               const fileUrl = currentFile
                                 ? `https://sisccltd.com/omca_crm/${currentFile}`
                                 : "";
                               const isPdf = currentFile?.toLowerCase().endsWith(".pdf");
-
                               return (
                                 isPdf && (
                                   <div style={{ marginTop: "10px" }}>
@@ -2571,7 +2504,6 @@ function PatientDetail() {
                         </div>
                       )}
                       {/* {showModal && (
-                        
                         <div className="custom-modal">
                           <div className="modal-content">
                             <button
@@ -2580,7 +2512,6 @@ function PatientDetail() {
                             >
                               ✖
                             </button>
-
                             <button
                               onClick={() =>
                                 setCurrentIndex((prev) =>
@@ -2592,7 +2523,6 @@ function PatientDetail() {
                             >
                               ⬅
                             </button>
-
                             <img
                               src={`https://sisccltd.com/omca_crm/${kys[0].id_proof[currentIndex]}`}
                               alt="Document"
@@ -2733,6 +2663,16 @@ function PatientDetail() {
                   Treatment{" "}
                 </a>
               </li>
+              {/* <li className="nav-item">
+                <a
+                  className={`nav-link ${mainTab === "Attende" ? "active" : ""}`}
+                  href="#attendecontent"
+                  data-toggle="tab"
+                  onClick={() => handleMainTabChange("Attende")}
+                >
+                  Attende{" "}
+                </a>
+              </li> */}
             </ul>
             <div className="tab-content">
               <div
@@ -3423,6 +3363,7 @@ function PatientDetail() {
                                                         <th>Note</th>
                                                         <th>Date</th>
                                                         <th>Added By</th>
+                                                        <th>Images</th>
                                                         <th>Action</th>
                                                       </tr>
                                                     </thead>
@@ -3455,6 +3396,36 @@ function PatientDetail() {
                                                                   ? "CRM"
                                                                   : "Hospital"}{" "}
                                                               </td>
+                                                             {/* <td>
+  {item?.treatmentNoteImages?.length > 0 ? (
+    <button
+      className="btn btn-sm btn-primary"
+      onClick={() => handleViewImages(item.treatmentNoteImages)}
+    >
+      View
+    </button>
+  ) : (
+    "-"
+  )}
+</td> */}
+<td>
+  {item?.treatmentNoteImages?.length > 0 ? (
+    item.treatmentNoteImages.map((img, i) => (
+      <button
+        key={i}
+        className="btn btn-sm btn-primary me-1"
+        onClick={() => {
+          const url = image + img;
+          window.open(url, "_blank");
+        }}
+      >
+        View 
+      </button>
+    ))
+  ) : (
+    "-"
+  )}
+</td>
 
                                                               <td>
                                                                 <div className="action-icon">
@@ -3652,7 +3623,7 @@ function PatientDetail() {
                                                     <span>
                                                       <i className="fa fa-plus"></i>
                                                     </span>{" "}
-                                                    Add Attandant{" "}
+                                                        Add Attendant{" "}
                                                   </button>
                                                 </div>
                                               </div>
@@ -3750,7 +3721,7 @@ function PatientDetail() {
                                                             <TableCell>Relation</TableCell>
                                                             <TableCell>Contact</TableCell>
                                                             <TableCell>Country</TableCell>
-                                                            <TableCell>Attendant Photo</TableCell>
+                                                            <TableCell>Attendant Address</TableCell>
                                                             <TableCell>Attendant ID Proof</TableCell>
                                                           </TableRow>
                                                         </TableHead>
@@ -3770,19 +3741,10 @@ function PatientDetail() {
                                                                 <TableCell>{item?.attendant_relation || "N/A"}</TableCell>
                                                                 <TableCell>{item?.attendant_contact || "N/A"}</TableCell>
                                                                 <TableCell>{item?.country || "N/A"}</TableCell>
-
                                                                 <TableCell>
-                                                                  {item?.attendant_photo ? (
-                                                                    <a href={`https://sisccltd.com/omca_crm/${item.attendant_photo}`}
-                                                                      target="_blank" rel="noopener noreferrer" className="viewbtn">
-                                                                      View
-                                                                    </a>
-                                                                  ) : (
-                                                                    "Not Uploaded"
-                                                                  )}
+                                                                  {item?.attendant_address}
                                                                 </TableCell>
-
-                                                                <TableCell>
+                                                                <TableCell className="d-flex gap-2">
                                                                   {item?.attendant_passport?.length > 0 ? (
                                                                     item.attendant_passport.map((file, fIndex) => {
                                                                       const filePath = typeof file === "object" ? file?.path : file;
@@ -3920,7 +3882,11 @@ function PatientDetail() {
                                                               {item?.paid_to}
                                                             </TableCell>
                                                             <TableCell>
-                                                              {item?.paid_for}
+                                                             {item?.paid_for
+  ?.split("_")
+  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+  .join(" ")
+}
                                                             </TableCell>
                                                             <TableCell>
                                                               {item?.notes}
@@ -4120,6 +4086,135 @@ function PatientDetail() {
                                         </div>
                                       </div>
                                     )}
+                                  {activeSubTab === "Appointment" &&
+                                    selectedTreatmentId && (
+                                      <div>
+                                        <div className="row">
+                                          <div className="col-md-12">
+                                            <div className="top-collpse">
+                                              <div className="treat-buttons">
+                                                <button
+                                                  className="add-button"
+                                                  onClick={(e) =>
+                                                    handleClickOpen10(
+                                                      e,
+                                                      selectedTreatmentId,
+                                                    )
+                                                  }
+                                                >
+                                                  <span>
+                                                    <i className="fa fa-plus"></i>
+                                                  </span>
+                                                Add Appointment
+                                                </button>
+                                              </div>
+                                            </div>
+
+                                            <div className="table-responsive">
+                                              <TableContainer component={Paper}>
+                                                <Table className="table-no-card">
+                                                  <TableHead>
+                                                    <TableRow>
+                                                      <TableCell>
+                                                        Treatment ID
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        Report Title
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        Report Date
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        Added By
+                                                      </TableCell>
+
+                                                      {usrFount === "Admin" ? (
+                                                        <>
+                                                          {" "}
+                                                          <TableCell>
+                                                            Reports
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            Action
+                                                          </TableCell>
+                                                        </>
+                                                      ) : (
+                                                        ""
+                                                      )}
+                                                    </TableRow>
+                                                  </TableHead>
+
+                                                  <TableBody>
+                                                    {reportsFilered1.map(
+                                                      (item) => (
+                                                        <TableRow
+                                                          key={item._id}
+                                                        >
+                                                          <TableCell>
+                                                            {item?.treatmentId}
+                                                          </TableCell>
+
+                                                          <TableCell>
+                                                            {item?.reportTitle}
+                                                          </TableCell>
+
+                                                          <TableCell>
+                                                            {new Date(
+                                                              item?.treatment_report_date,
+                                                            ).toLocaleDateString(
+                                                              "en-GB",
+                                                            )}
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {item?.platform ===
+                                                              1
+                                                              ? "CRM"
+                                                              : "Hospital"}
+                                                          </TableCell>
+
+                                                          {usrFount ===
+                                                            "Admin" ? (
+                                                            <>
+                                                              {" "}
+                                                              <TableCell>
+                                                                <a
+                                                                  href={`${image}${item.treatmentReport}`}
+                                                                  target="_blank"
+                                                                  rel="noreferrer"
+                                                                >
+                                                                  Download
+                                                                  Report
+                                                                </a>
+                                                              </TableCell>
+                                                              <TableCell>
+                                                                <i
+                                                                  className="fa-solid fa-trash text-danger"
+                                                                  style={{
+                                                                    cursor:
+                                                                      "pointer",
+                                                                  }}
+                                                                  onClick={() =>
+                                                                    handledeleteReport(
+                                                                      item,
+                                                                    )
+                                                                  }
+                                                                ></i>
+                                                              </TableCell>
+                                                            </>
+                                                          ) : (
+                                                            ""
+                                                          )}
+                                                        </TableRow>
+                                                      ),
+                                                    )}
+                                                  </TableBody>
+                                                </Table>
+                                              </TableContainer>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
                                 </div>
                               </div>
                             );
@@ -4130,6 +4225,16 @@ function PatientDetail() {
                   </div>
                 </div>
               </div>
+              {/* <div
+                className={`tab-pane ${mainTab === "Attende" ? "show active" : ""}`}
+                id="attendecontent"
+              >
+                  <div className="card-box" >
+                              <div className="treatment-header">
+
+                              </div>
+                              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -4904,37 +5009,7 @@ function PatientDetail() {
                       </div>
                     </div>
                   </div>
-                  {/* <div className="field-set">
-  <div className="">
-    <label>
-      Country<span className="text-danger">*</span>
-    </label>
-
-    <Autocomplete
-      options={Countries || []}
-      getOptionLabel={(option) => option?.name || ""}
-      value={
-        Countries?.find(
-          (country) => country.name === filesData.country
-        ) || null
-      }
-      onChange={(event, newValue) => {
-        setFilesData({
-          ...filesData,
-          country: newValue?.name || "",
-          dial_code: newValue?.dial_code || "",
-        });
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Select Country"
-          size="small"
-        />
-      )}
-    />
-  </div>
-</div> */}
+          
                   <div className="row">
                     <div className="col-6">
                       <div className="field-set">
@@ -5017,16 +5092,16 @@ function PatientDetail() {
                     <div className="col-6">
                       <div className="field-set">
                         <label>
-                          Attendant Photo<span className="text-danger">*</span>
+                          Attendant Address<span className="text-danger">*</span>
                         </label>
                         <div className="upload-input">
                           <input
-                            type="file"
-                            accept="image/*"
+                             type="text"
+                            name="attendant_address"
                             className="form-control"
-                            onChange={(e) =>
-                              handleFileChange(e, "Attende_photo")
-                            }
+                            value={filesData.attendant_address}
+                            onChange={handleInputChange}
+                           
                           />
                         </div>
                       </div>
@@ -5156,6 +5231,19 @@ function PatientDetail() {
                     </span>
                   </div>
                   <div className="field-set">
+  <label>
+    Upload Images
+  </label>
+
+  <input
+    type="file"
+    multiple
+    accept="image/*"
+    className="form-control"
+    onChange={(e) => setImages([...e.target.files])}
+  />
+</div>
+                  <div className="field-set">
                     <label>
                       Date<span className="text-danger">*</span>
                     </label>
@@ -5228,6 +5316,19 @@ function PatientDetail() {
                   {noteErr && !note2 ? "Please Enter Your note" : ""}
                 </span>
               </div>
+                <div className="field-set">
+  <label>
+    Upload Images
+  </label>
+
+  <input
+    type="file"
+    multiple
+    accept="image/*"
+    className="form-control"
+    onChange={(e) => setImages([...e.target.files])}
+  />
+</div>
               <div className="field-set">
                 <label>
                   Date<span className="text-danger">*</span>

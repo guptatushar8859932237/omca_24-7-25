@@ -650,7 +650,7 @@ export default function AddEnquiry() {
                               className="text-danger"
                               data-bs-placement="right"
                               data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, )
                              Max size: 2 MB per file"
                             >
                               (i)

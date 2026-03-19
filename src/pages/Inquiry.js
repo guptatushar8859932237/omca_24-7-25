@@ -27,10 +27,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import NotesIcon from "@mui/icons-material/Notes";
-import FormHelperText from "@mui/material/FormHelperText";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-// import AssignmentAddIcon from '@mui/icons-material/AssignmentAdd';
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import axios from "axios";
 import { baseurl } from "../Basurl/Baseurl";
@@ -39,6 +36,9 @@ import { toast, ToastContainer } from "react-toastify";
 import { usePDF } from "react-to-pdf";
 import { GetAllHositalData } from "../reducer/HospitalSlice";
 import { Field } from "formik";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import { testForms } from "../reducer/FormsEnquiry";
 export default function Inquiry() {
   const { toPDF, targetRef } = usePDF({ filename: "inquiry.pdf" });
   const role = localStorage.getItem("Role");
@@ -60,8 +60,21 @@ export default function Inquiry() {
   const [report, setReport] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
   const dispatch = useDispatch();
+  const { testForms: formData } = useSelector((state) => state.testForms);
   const { Enquiry, loading, error } = useSelector((state) => state.Enquiry);
   const { hospital } = useSelector((state) => state.hospital);
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+  useEffect(() => {
+    dispatch(testForms());
+  }, [dispatch]);
+
+  const airAmbulanceData = formData?.data?.air_ambulance || [];
+  const ambulanceData = formData?.data?.ambulance_requests || [];
+  const treatmentData = formData?.data?.get_treatment_estimate || [];
   useEffect(() => {
     dispatch(GetAllHositalData());
     console.log(error, hospital);
@@ -94,12 +107,6 @@ export default function Inquiry() {
     dispatch(GetAllEnquiry());
     console.log(error, Enquiry);
   }, [dispatch]);
-  // useEffect(() => {
-  //   if (Enquiry) {
-  //     setRows(Enquiry);
-  //     setSearchApiData(Enquiry);
-  //   }
-  // }, [Enquiry]);
   useEffect(() => {
     if (Array.isArray(Enquiry) && Enquiry.length > 0) {
       const filtered = Enquiry.filter(
@@ -145,71 +152,22 @@ export default function Inquiry() {
       cancelButtonText: "Cancel",
       reverseButtons: true,
     });
-
-    // ❌ agar cancel kiya
     if (!result.isConfirmed) {
       return;
     }
-
-    // ✅ local state update
     setSeekerStatus((prev) => ({
       ...prev,
       [id]: value,
     }));
-
     try {
       await dispatch(EnquiryStatus({ id, status: Number(value) })).unwrap();
-
       Swal.fire("Success!", "Status updated successfully!", "success");
-
-      // 🔥 row remove locally
       setRows((prevRows) => prevRows.filter((item) => item.enquiryId !== id));
-
       dispatch(GetAllEnquiry());
     } catch (err) {
       Swal.fire("Error!", err?.message || "An error occurred", "error");
     }
   };
-
-  // const handleChange = async (event, id) => {
-  //   const { value } = event.target;
-
-  //   setSeekerStatus((prev) => ({
-  //     ...prev,
-  //     [id]: value,
-  //   }));
-
-  //   try {
-  //     await dispatch(EnquiryStatus({ id, status: Number(value) })).unwrap();
-
-  //     Swal.fire("Success!", "Status updated successfully!", "success");
-
-  //     // 🔥 REMOVE ROW LOCALLY
-  //     setRows((prevRows) => prevRows.filter((item) => item.enquiryId !== id));
-  //     dispatch(GetAllEnquiry());
-  //   } catch (err) {
-  //     Swal.fire("Error!", err?.message || "An error occurred", "error");
-  //   }
-  // };
-
-  // const handleChange = async (event, id) => {
-  //   const { value } = event.target;
-  //   setSeekerStatus((prev) => ({
-  //     ...prev,
-  //     [id]: value,
-  //   }));
-  //   try {
-  //     const result = await dispatch(
-  //       EnquiryStatus({ id, status: Number(value) })
-  //     ).unwrap();
-  //     Swal.fire("Success!", "Status updated successfully!", "success");
-  //     setTimeout(async () => {
-  //       await dispatch(GetAllEnquiry()).unwrap();
-  //     }, 500);
-  //   } catch (err) {
-  //     Swal.fire("Error!", err?.message || "An error occurred", "error");
-  //   }
-  // };
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_enquiries`, {
@@ -249,11 +207,6 @@ export default function Inquiry() {
       throw err;
     }
   };
-
-  //  const submitInputdata = (e) => {
-  //   const { name, value } = e.target;
-  //   setReport({ ...report, [name]: value });
-  // };
   const handleHospitalChange = (event, newValue) => {
     setReport((prev) => ({ ...prev, hospital: newValue }));
   };
@@ -280,37 +233,58 @@ export default function Inquiry() {
     }
   };
   const handleFilter = (event) => {
-    const value = event.target.value.toLowerCase();
-    setFilterValue(event.target.value);
-    setPage(0); // ⭐ RESET PAGE
+  const value = event.target.value.toLowerCase().trim();
+  setFilterValue(event.target.value);
+  setPage(0);
 
-    if (value === "") {
-      setRows(searchApiData);
-      return;
-    }
+  if (!value) {
+    setRows(searchApiData);
+    return;
+  }
 
-    const filterResult = searchApiData.filter((item) => {
-      const enquiryId = item.enquiryId?.toLowerCase() || "";
-      const email = item.email?.toLowerCase() || "";
-      const country = item.country?.toLowerCase() || "";
-      const name = item.name?.toLowerCase() || "";
-      const age = item.age?.toString().toLowerCase() || "";
-      const contact = item.emergency_contact?.toString().toLowerCase() || "";
-      const disease = item.disease_name?.toLowerCase() || "";
+  const filterResult = searchApiData.filter((item) => {
+    return (
+      String(item.enquiryId || "").toLowerCase().includes(value) ||
+      String(item.email || "").toLowerCase().includes(value) ||
+      String(item.country || "").toLowerCase().includes(value) ||
+      String(item.name || "").toLowerCase().includes(value) ||
+      String(item.age || "").toLowerCase().includes(value) ||
+      String(item.emergency_contact || "").toLowerCase().includes(value) ||
+      String(item.disease_name || "").toLowerCase().includes(value)
+    );
+  });
 
-      return (
-        enquiryId.includes(value) ||
-        email.includes(value) ||
-        country.includes(value) ||
-        name.includes(value) ||
-        age.includes(value) ||
-        contact.includes(value) ||
-        disease.includes(value)
-      );
-    });
+  setRows(filterResult);
+};
+  // const handleFilter = (event) => {
+  //   const value = event.target.value.toLowerCase();
+  //   setFilterValue(event.target.value);
+  //   setPage(0); // ⭐ RESET PAGE
 
-    setRows(filterResult);
-  };
+  //   if (value === "") {
+  //     setRows(searchApiData);
+  //     return;
+  //   }
+  //   const filterResult = searchApiData.filter((item) => {
+  //     const enquiryId = item.enquiryId?.toLowerCase() || "";
+  //     const email = item.email?.toLowerCase() || "";
+  //     const country = item.country?.toLowerCase() || "";
+  //     const name = item.name?.toLowerCase() || "";
+  //     const age = item.age?.toString().toLowerCase() || "";
+  //     const contact = item.emergency_contact?.toString().toLowerCase() || "";
+  //     const disease = item.disease_name?.toLowerCase() || "";
+  //     return (
+  //       enquiryId.includes(value) ||
+  //       email.includes(value) ||
+  //       country.includes(value) ||
+  //       name.includes(value) ||
+  //       age.includes(value) ||
+  //       contact.includes(value) ||
+  //       disease.includes(value)
+  //     );
+  //   });
+  //   setRows(filterResult);
+  // };
   const handleClearFilter = () => {
     setFilterValue("");
     setRows(searchApiData);
@@ -319,38 +293,6 @@ export default function Inquiry() {
   useEffect(() => {
     setPage(0);
   }, [rows]);
-  // const handleFilter = (event) => {
-  //   if (event.target.value === "") {
-  //     setRows(searchApiData);
-  //   } else {
-  //     const filterResult = searchApiData.filter((item) => {
-  //       const enquiryId = item.enquiryId?.toLowerCase() || "";
-  //       const emailMatches = item.email.toLowerCase();
-  //       const country = item.country.toLowerCase();
-  //       const name = item.name?.toLowerCase() || "";
-  //       const age = item.age?.toString().toLowerCase() || "";
-  //       const comtact = item.emergency_contact?.toString().toLowerCase() || "";
-  //       const disease_name = item.disease_name?.toLowerCase() || "";
-  //       const searchValue = event.target.value.toLowerCase();
-  //       return (
-  //         enquiryId.includes(searchValue) ||
-  //         age.includes(searchValue) ||
-  //         comtact.includes(searchValue) ||
-  //         country.includes(searchValue) ||
-  //         disease_name.includes(searchValue) ||
-  //         name.includes(searchValue) ||
-  //         emailMatches.includes(searchValue) ||
-  //         name.includes(searchValue)
-  //       );
-  //     });
-  //     setRows(filterResult);
-  //   }
-  //   setFilterValue(event.target.value);
-  // };
-  // const handleClearFilter = () => {
-  //   setFilterValue("");
-  //   setRows(searchApiData);
-  // };
   const [age, setAge] = React.useState("");
   const handleChange3 = (event) => {
     setAge(event.target.value);
@@ -466,33 +408,90 @@ export default function Inquiry() {
   };
 
   const handleRequestSort = (property) => {
-  const isAsc = orderBy === property && orderDirection === "asc";
-  const direction = isAsc ? "desc" : "asc";
+    const isAsc = orderBy === property && orderDirection === "asc";
+    const direction = isAsc ? "desc" : "asc";
 
-  setOrderDirection(direction);
-  setOrderBy(property);
+    setOrderDirection(direction);
+    setOrderBy(property);
 
-  const sortedData = [...rows].sort((a, b) => {
-    if (a[property] < b[property]) {
-      return direction === "asc" ? -1 : 1;
+    const sortedData = [...rows].sort((a, b) => {
+      if (a[property] < b[property]) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (a[property] > b[property]) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+
+    setRows(sortedData);
+  };
+  useEffect(() => {
+    let filtered = [];
+
+    switch (tabValue) {
+      case 0:
+        filtered = normalizeData(Enquiry || [], "enquiry");
+        break;
+
+      case 1:
+        filtered = normalizeData(ambulanceData, "ambulance");
+        break;
+
+      case 2:
+        filtered = normalizeData(airAmbulanceData, "air");
+        break;
+
+      case 3:
+        filtered = normalizeData(treatmentData, "treatment");
+        break;
+
+      default:
+        filtered = [];
     }
-    if (a[property] > b[property]) {
-      return direction === "asc" ? 1 : -1;
-    }
-    return 0;
-  });
 
-  setRows(sortedData);
-};
+    setRows(filtered);
+    setSearchApiData(filtered);
+  }, [tabValue, Enquiry, formData]);
+  const normalizeData = (data, type) => {
+    return data.map((item) => ({
+      enquiryId: item.enquiryId || item.id,
+      name: item.name || item.first_name,
+      email: item.email,
+      country: item.country || item.city,
+      emergency_contact: item.emergency_contact || item.phone,
+      disease_name: item.disease_name || item.services?.replaceAll("_", " "),
+      Enquiry_status: item.Enquiry_status || item.status,
+      raw: item, // full data for view popup
+    }));
+  };
   return (
     <>
       <div className="page-wrapper">
         <div className="content">
+          <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
+            <Tabs value={tabValue} onChange={handleTabChange}>
+              <Tab label="Enquiry" />
+              <Tab label="Ambulance Service" />
+              <Tab label="Air Medical Escort" />
+              <Tab label="Treatment Estimate" />
+            </Tabs>
+          </Box>
           <div className="row">
             <div className="col-md-12">
               <div className="country-top">
                 <div className="">
-                  <h4 className="page-title mb-0">Enquiries</h4>
+                  <h4 className="page-title mb-0">
+                    {tabValue === 0
+                      ? "Enquiries"
+                      : tabValue === 1
+                        ? "Ambulance Service"
+                        : tabValue === 2
+                          ? "Air Medical escort"
+                          : tabValue === 3
+                            ? "Treatment Estimate"
+                            : ""}
+                  </h4>
                 </div>
                 <div className="search-btn-main">
                   <div className="mr-3">
@@ -522,7 +521,8 @@ export default function Inquiry() {
                       }}
                     />
                   </div>
-                  <div className="">
+                  {
+                   tabValue===0?<div className="">
                     <div className="table-top-btn">
                       <Link to="/Admin/add-Enquiry" className="add-button">
                         <span>
@@ -556,7 +556,9 @@ export default function Inquiry() {
                         ""
                       )}
                     </div>
-                  </div>
+                  </div>:""
+                  }
+                  
                 </div>
               </div>
             </div>
@@ -579,47 +581,69 @@ export default function Inquiry() {
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
+                          {
+                            tabValue===0?
+                              <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "enquiryId"}
+                              direction={
+                                orderBy === "enquiryId" ? orderDirection : "asc"
+                              }
+                              onClick={() => handleRequestSort("enquiryId")}
+                            >
+                              Enquiry IDs
+                            </TableSortLabel>
+                          </TableCell>:""}
+                        
                           <TableCell>
-  <TableSortLabel
-    active={orderBy === "enquiryId"}
-    direction={orderBy === "enquiryId" ? orderDirection : "asc"}
-    onClick={() => handleRequestSort("enquiryId")}
-  >
-    Enquiry IDs
-  </TableSortLabel>
-</TableCell>
-                        <TableCell>
-  <TableSortLabel
-    active={orderBy === "name"}
-    direction={orderBy === "name" ? orderDirection : "asc"}
-    onClick={() => handleRequestSort("name")}
-  >
-    Name
-  </TableSortLabel>
-</TableCell>
+                            <TableSortLabel
+                              active={orderBy === "name"}
+                              direction={
+                                orderBy === "name" ? orderDirection : "asc"
+                              }
+                              onClick={() => handleRequestSort("name")}
+                            >
+                              Name
+                            </TableSortLabel>
+                          </TableCell>
                           {/* <TableCell>Email</TableCell> */}
-                        <TableCell>
-  <TableSortLabel
-    active={orderBy === "country"}
-    direction={orderBy === "country" ? orderDirection : "asc"}
-    onClick={() => handleRequestSort("country")}
-  >
-    Country
-  </TableSortLabel>
-</TableCell>
-                      <TableCell>
-  <TableSortLabel
-    active={orderBy === "emergency_contact"}
-    direction={orderBy === "emergency_contact" ? orderDirection : "asc"}
-    onClick={() => handleRequestSort("emergency_contact")}
-  >
-    Contact
-  </TableSortLabel>
-</TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "country"}
+                              direction={
+                                orderBy === "country" ? orderDirection : "asc"
+                              }
+                              onClick={() => handleRequestSort("country")}
+                            >
+                              Country
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "emergency_contact"}
+                              direction={
+                                orderBy === "emergency_contact"
+                                  ? orderDirection
+                                  : "asc"
+                              }
+                              onClick={() =>
+                                handleRequestSort("emergency_contact")
+                              }
+                            >
+                              Contact
+                            </TableSortLabel>
+                          </TableCell>
                           <TableCell>Disease name</TableCell>
                           <TableCell>Status</TableCell>
-                          <TableCell>Actions</TableCell>
-                          <TableCell>Notes</TableCell>
+                          {
+                            tabValue===0?
+                            <>
+                            <TableCell>Actions</TableCell>
+                            <TableCell>Notes</TableCell>
+                            </>
+                          :""
+                          }
+                        
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -647,7 +671,10 @@ export default function Inquiry() {
                                   ? i + 1
                                   : page * rowsPerPage + i + 1}
                               </TableCell>
-                              <TableCell>{info.enquiryId}</TableCell>
+                              {
+                                tabValue===0?
+                                <TableCell>{info.enquiryId}</TableCell>:""
+                              }
                               <TableCell
                                 style={{ cursor: "pointer" }}
                                 onClick={(e) => ViewDetail(e, info.enquiryId)}
@@ -714,6 +741,9 @@ export default function Inquiry() {
                                   </Select>
                                 </FormControl>
                               </TableCell>
+                               {
+                            tabValue===0?
+                            <>
                               <TableCell className="action-icon">
                                 <VisibilityIcon
                                   className="eye-icon"
@@ -723,13 +753,6 @@ export default function Inquiry() {
                                   className="fa-solid fa-pen-to-square"
                                   onClick={(e) => EditButton(e, info.enquiryId)}
                                 ></i>
-                                {/* <AssignmentIcon
-                                  className="eye-icon"
-                                  onClick={() => {
-                                    handleClickOpen2modla();
-                                  }}
-                                /> */}
-
                                 {localStorage.getItem("Role") === "Admin" && (
                                   <i
                                     className="fa-solid fa-trash"
@@ -745,6 +768,7 @@ export default function Inquiry() {
                                   }
                                 ></i>
                               </TableCell>
+                              </>:""}
                             </TableRow>
                           ))
                         ) : (

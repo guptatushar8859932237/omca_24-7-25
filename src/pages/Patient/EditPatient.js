@@ -498,7 +498,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Emergency Contact Number
-                              <span className="text-danger">*</span>
+                              <span className="text-danger"></span>
                             </label>
                             <div className="country-code">
                               <Field
@@ -521,7 +521,7 @@ export default function EditPatient() {
                         <div className="col-md-4">
                           <div className="field-set">
                             <label>
-                              Patient Id <span className="text-danger">*</span>
+                              Patient Id <span className="text-danger"></span>
                             </label>
                             <Field
                               className="form-control"
@@ -539,7 +539,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Patient ID Proof{" "}
-                              <span className="text-danger">*</span>
+                              <span className="text-danger"></span>
                             </label>
 
                             <input
@@ -639,7 +639,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Patient Profile
-                              <span className="text-danger">*</span>
+                              <span className="text-danger"></span>
                             </label>
                             <input
                               type="file"
@@ -685,7 +685,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Referral Name{" "}
-                              <span className="text-danger">*</span>
+                              <span className="text-danger"></span>
                             </label>
                             <Field
                               className="form-control"
