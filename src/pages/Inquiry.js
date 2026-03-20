@@ -140,6 +140,7 @@ export default function Inquiry() {
   };
 
   const handleChange = async (event, id) => {
+    console.log(event, id);
     const { value } = event.target;
 
     // confirmation alert
@@ -233,29 +234,43 @@ export default function Inquiry() {
     }
   };
   const handleFilter = (event) => {
-  const value = event.target.value.toLowerCase().trim();
-  setFilterValue(event.target.value);
-  setPage(0);
+    const value = event.target.value.toLowerCase().trim();
+    setFilterValue(event.target.value);
+    setPage(0);
 
-  if (!value) {
-    setRows(searchApiData);
-    return;
-  }
+    if (!value) {
+      setRows(searchApiData);
+      return;
+    }
 
-  const filterResult = searchApiData.filter((item) => {
-    return (
-      String(item.enquiryId || "").toLowerCase().includes(value) ||
-      String(item.email || "").toLowerCase().includes(value) ||
-      String(item.country || "").toLowerCase().includes(value) ||
-      String(item.name || "").toLowerCase().includes(value) ||
-      String(item.age || "").toLowerCase().includes(value) ||
-      String(item.emergency_contact || "").toLowerCase().includes(value) ||
-      String(item.disease_name || "").toLowerCase().includes(value)
-    );
-  });
+    const filterResult = searchApiData.filter((item) => {
+      return (
+        String(item.enquiryId || "")
+          .toLowerCase()
+          .includes(value) ||
+        String(item.email || "")
+          .toLowerCase()
+          .includes(value) ||
+        String(item.country || "")
+          .toLowerCase()
+          .includes(value) ||
+        String(item.name || "")
+          .toLowerCase()
+          .includes(value) ||
+        String(item.age || "")
+          .toLowerCase()
+          .includes(value) ||
+        String(item.emergency_contact || "")
+          .toLowerCase()
+          .includes(value) ||
+        String(item.disease_name || "")
+          .toLowerCase()
+          .includes(value)
+      );
+    });
 
-  setRows(filterResult);
-};
+    setRows(filterResult);
+  };
   // const handleFilter = (event) => {
   //   const value = event.target.value.toLowerCase();
   //   setFilterValue(event.target.value);
@@ -521,44 +536,48 @@ export default function Inquiry() {
                       }}
                     />
                   </div>
-                  {
-                   tabValue===0?<div className="">
-                    <div className="table-top-btn">
-                      <Link to="/Admin/add-Enquiry" className="add-button">
-                        <span>
-                          <i className="fa fa-plus"></i>
-                        </span>
-                        New Enquiry
-                      </Link>
-                      <button
-                        onClick={(e) => handleClickOpen3(e)}
-                        className="add-button"
-                      >
-                        <span>
-                          <i className="fa fa-file-excel-o mx-1"></i>
-                        </span>{" "}
-                        Import File
-                      </button>
-                      <button onClick={handleSampleFile} className="add-button">
-                        <span>
-                          <i className="fa fa-file"></i>
-                        </span>
-                        Export File
-                      </button>
-                      {role === "Admin" ? (
-                        <button onClick={donloadpdf} className="add-button">
+                  {tabValue === 0 ? (
+                    <div className="">
+                      <div className="table-top-btn">
+                        <Link to="/Admin/add-Enquiry" className="add-button">
                           <span>
-                            <i className="fa fa-file-pdf-o"></i>
+                            <i className="fa fa-plus"></i>
                           </span>
-                          pdf
+                          New Enquiry
+                        </Link>
+                        <button
+                          onClick={(e) => handleClickOpen3(e)}
+                          className="add-button"
+                        >
+                          <span>
+                            <i className="fa fa-file-excel-o mx-1"></i>
+                          </span>{" "}
+                          Import File
                         </button>
-                      ) : (
-                        ""
-                      )}
+                        <button
+                          onClick={handleSampleFile}
+                          className="add-button"
+                        >
+                          <span>
+                            <i className="fa fa-file"></i>
+                          </span>
+                          Export File
+                        </button>
+                        {role === "Admin" ? (
+                          <button onClick={donloadpdf} className="add-button">
+                            <span>
+                              <i className="fa fa-file-pdf-o"></i>
+                            </span>
+                            pdf
+                          </button>
+                        ) : (
+                          ""
+                        )}
+                      </div>
                     </div>
-                  </div>:""
-                  }
-                  
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>
@@ -581,20 +600,24 @@ export default function Inquiry() {
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
-                          {
-                            tabValue===0?
-                              <TableCell>
-                            <TableSortLabel
-                              active={orderBy === "enquiryId"}
-                              direction={
-                                orderBy === "enquiryId" ? orderDirection : "asc"
-                              }
-                              onClick={() => handleRequestSort("enquiryId")}
-                            >
-                              Enquiry IDs
-                            </TableSortLabel>
-                          </TableCell>:""}
-                        
+                          {tabValue === 0 ? (
+                            <TableCell>
+                              <TableSortLabel
+                                active={orderBy === "enquiryId"}
+                                direction={
+                                  orderBy === "enquiryId"
+                                    ? orderDirection
+                                    : "asc"
+                                }
+                                onClick={() => handleRequestSort("enquiryId")}
+                              >
+                                Enquiry IDs
+                              </TableSortLabel>
+                            </TableCell>
+                          ) : (
+                            ""
+                          )}
+
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "name"}
@@ -635,15 +658,14 @@ export default function Inquiry() {
                           </TableCell>
                           <TableCell>Disease name</TableCell>
                           <TableCell>Status</TableCell>
-                          {
-                            tabValue===0?
+                          {tabValue === 0 ? (
                             <>
-                            <TableCell>Actions</TableCell>
-                            <TableCell>Notes</TableCell>
+                              <TableCell>Actions</TableCell>
+                              <TableCell>Notes</TableCell>
                             </>
-                          :""
-                          }
-                        
+                          ) : (
+                            ""
+                          )}
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -671,13 +693,17 @@ export default function Inquiry() {
                                   ? i + 1
                                   : page * rowsPerPage + i + 1}
                               </TableCell>
-                              {
-                                tabValue===0?
-                                <TableCell>{info.enquiryId}</TableCell>:""
-                              }
+                              {tabValue === 0 ? (
+                                <TableCell>{info.enquiryId}</TableCell>
+                              ) : (
+                                ""
+                              )}
                               <TableCell
                                 style={{ cursor: "pointer" }}
-                                onClick={(e) => ViewDetail(e, info.enquiryId)}
+                                onClick={(e) =>
+                                  tabValue === 0 &&
+                                  ViewDetail(e, info.enquiryId)
+                                }
                               >
                                 {info.name}
                               </TableCell>
@@ -741,34 +767,41 @@ export default function Inquiry() {
                                   </Select>
                                 </FormControl>
                               </TableCell>
-                               {
-                            tabValue===0?
-                            <>
-                              <TableCell className="action-icon">
-                                <VisibilityIcon
-                                  className="eye-icon"
-                                  onClick={(e) => ViewDetail(e, info.enquiryId)}
-                                />
-                                <i
-                                  className="fa-solid fa-pen-to-square"
-                                  onClick={(e) => EditButton(e, info.enquiryId)}
-                                ></i>
-                                {localStorage.getItem("Role") === "Admin" && (
-                                  <i
-                                    className="fa-solid fa-trash"
-                                    onClick={() => handledelete(info)}
-                                  ></i>
-                                )}
-                              </TableCell>
-                              <TableCell className="action-icon">
-                                <i
-                                  className="fa-solid fa-notes-medical"
-                                  onClick={(e) =>
-                                    handleClickOpen2(e, info.enquiryId)
-                                  }
-                                ></i>
-                              </TableCell>
-                              </>:""}
+                              {tabValue === 0 ? (
+                                <>
+                                  <TableCell className="action-icon">
+                                    <VisibilityIcon
+                                      className="eye-icon"
+                                      onClick={(e) =>
+                                        ViewDetail(e, info.enquiryId)
+                                      }
+                                    />
+                                    <i
+                                      className="fa-solid fa-pen-to-square"
+                                      onClick={(e) =>
+                                        EditButton(e, info.enquiryId)
+                                      }
+                                    ></i>
+                                    {localStorage.getItem("Role") ===
+                                      "Admin" && (
+                                      <i
+                                        className="fa-solid fa-trash"
+                                        onClick={() => handledelete(info)}
+                                      ></i>
+                                    )}
+                                  </TableCell>
+                                  <TableCell className="action-icon">
+                                    <i
+                                      className="fa-solid fa-notes-medical"
+                                      onClick={(e) =>
+                                        handleClickOpen2(e, info.enquiryId)
+                                      }
+                                    ></i>
+                                  </TableCell>
+                                </>
+                              ) : (
+                                ""
+                              )}
                             </TableRow>
                           ))
                         ) : (

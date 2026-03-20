@@ -52,7 +52,6 @@ export default function EditPatient() {
     gender: Yup.string().required("Gender is required"),
     patientNumber: Yup.string().required("Patient ID is required"),
     created_at: Yup.string().required("Date is required"),
-    patientDisease: Yup.string().required("Disease is required"),
     passport_num: Yup.string().required("Passport number is required"),
     email: Yup.string()
       .email("Invalid email address")
@@ -539,7 +538,14 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Patient ID Proof{" "}
-                              <span className="text-danger">*</span>
+                            <span
+                              className="text-danger"
+                              data-bs-placement="right"
+                              data-bs-toggle="tooltip"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
+                            >
+                              (i)
+                            </span>   <span className="text-danger">*</span>
                             </label>
 
                             <input
@@ -614,7 +620,15 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Patient Profile
-                              <span className="text-danger">*</span>
+                              <span
+                              className="text-danger"
+                              data-bs-placement="right"
+                              data-bs-toggle="tooltip"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif )
+                             Max size: 2 MB per file"
+                            >
+                              (i)
+                            </span> <span className="text-danger">*</span>
                             </label>
                             <input
                               type="file"
@@ -685,11 +699,7 @@ export default function EditPatient() {
                               type="text"
                               name="patientDisease"
                             />
-                            <ErrorMessage
-                              name="patientDisease"
-                              component="div"
-                              className="text-danger"
-                            />
+                           
                           </div>
                         </div>
                         <div className="col-md-4">

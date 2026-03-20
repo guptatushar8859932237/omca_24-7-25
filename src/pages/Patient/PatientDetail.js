@@ -16,11 +16,7 @@ import TextField from "@mui/material/TextField";
 import Swal from "sweetalert2";
 import Autocomplete from "@mui/material/Autocomplete";
 import { AppointmentForPatient } from "../../reducer/PatientTreatmentSlice";
-import {
-  AdminBaseUrl,
-  baseurl,
-  image,
-} from "../../Basurl/Baseurl";
+import { AdminBaseUrl, baseurl, image } from "../../Basurl/Baseurl";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
 import axios from "axios";
@@ -49,6 +45,8 @@ function PatientDetail() {
   const [openIndex, setOpenIndex] = useState(0);
   const [treatemntData1, setTreatemntData1] = useState([]);
   const [getAttendeDetails, setGetAttendeDetails] = useState([]);
+  const [reportsappointment, setReportsappointment] = useState([]);
+  const [reportsNotes, setReportsNotes] = useState([]);
   const [errors, setErrors] = useState({});
   // const [images, setImages] = useState([]);
   const [drivername, setDrivername] = useState("");
@@ -241,7 +239,7 @@ function PatientDetail() {
     setIShospitalArray(listhospital);
   };
   const handleClickOpenNotes = (e, tretmentId, listhospital) => {
-    // console.log(e.target.value, treatmentId, listhospital);
+    console.log(e.target.value, treatmentId, listhospital);
     setOpen5(true);
     setOpenNotes(true);
     setTreatmentId(tretmentId);
@@ -2147,6 +2145,35 @@ function PatientDetail() {
     setActiveSubTab("details");
   };
 
+  const handleAction1 = (e, type, info, d) => {
+    console.log(e, type, info, d);
+    const tId = info.treatment_id;
+    const hDetails = info.Hospital_details;
+    const status = info.treatment_status;
+    const treatmentName = info.treatment_name;
+    setSelectedTreatmentId(tId);
+    setTreatMentNAem(status);
+    setTreatmentNameHeading(d);
+    setTreatmentIdFilter(treatmentName);
+    console.log(tId);
+    getDataapi3(tId);
+    if (type === "attendant") {
+      setActiveSubTab("attendant");
+      handleclickAttandpDetails(tId);
+    } else if (type === "payment") {
+      setActiveSubTab("payment");
+    } else if (type === "reports") {
+      setActiveSubTab("reports");
+    } else if (type === "hospital") {
+      handleClickOpen(e, tId);
+    } else if (type === "Appointment") {
+      setActiveSubTab("Appointment");
+    } else if (type === "Notes") {
+      setActiveSubTab("Notes");
+    } else if (type === "services") {
+      penModal(info, tId);
+    }
+  };
   const handleAction = (e, type, info, d) => {
     console.log(e, type, info, d);
     const tId = info.treatment_id;
@@ -2168,10 +2195,10 @@ function PatientDetail() {
       setActiveSubTab("reports");
     } else if (type === "hospital") {
       handleClickOpen(e, tId);
-    } else if (type === "appointment") {
+    } else if (type === "Appointment") {
       setActiveSubTab("Appointment");
-    } else if (type === "notes") {
-      handleClickOpenNotes(e, tId, hDetails);
+    } else if (type === "Notes") {
+      setActiveSubTab("Notes");
     } else if (type === "services") {
       penModal(info, tId);
     }
@@ -2267,8 +2294,11 @@ function PatientDetail() {
           attendant_passport: passport,
         };
       });
+      console.log(data);
       setPaymentsFilered(data.payment_details);
       setReportsFilered1(data.reports);
+      setReportsappointment(data.appointment);
+      setReportsNotes(data.notes);
       setAttandantFilered(normalizedAttendants);
     } catch (error) {
       console.log(error);
@@ -2951,13 +2981,21 @@ function PatientDetail() {
 
                                           <li className="nav-item">
                                             <button
-                                              className="nav-link"
+                                              className={`nav-link ${activeSubTab === "Appointment" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                              // onClick={(e) =>
+                                              //   handleAction1(
+                                              //     e,
+                                              //     "Appointment",
+                                              //     info,
+                                              //     info.treatment_name,
+                                              //   )
+                                              // }
                                               onClick={(e) =>
-                                                handleAction(
+                                                handleClickOpen1(
                                                   e,
-                                                  "appointment",
-                                                  info,
-                                                  info.treatment_name,
+                                                  "Appointment",
+                                                  info.treatment_id,
+                                                  info.Hospital_details,
                                                 )
                                               }
                                             >
@@ -2966,13 +3004,12 @@ function PatientDetail() {
                                           </li>
                                           <li className="nav-item">
                                             <button
-                                              className="nav-link"
+                                              className={`nav-link ${activeSubTab === "Notes" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
                                               onClick={(e) =>
-                                                handleAction(
+                                                handleClickOpenNotes(
                                                   e,
-                                                  "notes",
-                                                  info,
-                                                  info.treatment_name,
+                                                  info.treatment_id,
+                                                  info.Hospital_details,
                                                 )
                                               }
                                             >
@@ -2996,17 +3033,6 @@ function PatientDetail() {
                                           </li>
                                         </ul>
                                       </div>
-                                      {/* <div
-                                        className="collapse-icon"
-                                        onClick={() =>
-                                          setOpenIndex(
-                                            openIndex === index ? null : index,
-                                          )
-                                        }
-                                        aria-expanded={openIndex === index}
-                                      >
-                                        <i class="fa-solid fa-chevron-down"></i>
-                                      </div> */}
                                       <div
                                         className={`collapse-icon ${openIndex === index ? "rotate" : ""}`}
                                         onClick={() =>
@@ -3471,121 +3497,109 @@ function PatientDetail() {
                                           )}
                                         </div>
                                         <div className="col-md-12">
-                                          {info?.appointments_details?.length >
-                                          0 ? (
-                                            <div className="card patientreat">
-                                              <div className="card-header service-list">
-                                                <h6>Appointment</h6>
-                                              </div>
-                                              <div className="card-body">
-                                                <div className="table-responsive table-no-card">
-                                                  <table className="table-card w-100">
-                                                    <thead>
-                                                      <tr>
-                                                        <th>ID</th>
-                                                        <th>Vehicle No</th>
-                                                        <th>Driver Name</th>
-                                                        <th>Driver Contact</th>
-                                                        <th>Pickup Time</th>
-                                                        <th>Date</th>
-                                                        <th>Notes</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                      </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                      {info.appointments_details?.map(
-                                                        (item) => (
-                                                          <tr
-                                                            key={
-                                                              item.appointmentId
-                                                            }
-                                                          >
-                                                            <td>
-                                                              {
-                                                                item.appointmentId
-                                                              }
-                                                            </td>
-                                                            <td>
-                                                              {item.mode !==
-                                                              "online"
-                                                                ? item.vehicle_no
-                                                                : "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item.mode !==
-                                                              "online"
-                                                                ? item.driver_name
-                                                                : "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item.mode !==
-                                                              "online"
-                                                                ? item.driver_contact
-                                                                : "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item.mode !==
-                                                              "online"
-                                                                ? item.pickup_time
-                                                                : "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item.appointment_Date
-                                                                ? new Date(
-                                                                    item.appointment_Date,
-                                                                  )
-                                                                    .toISOString()
-                                                                    .slice(
-                                                                      0,
-                                                                      10,
-                                                                    )
-                                                                : ""}
-                                                            </td>
-                                                            <td>
-                                                              {item?.note}
-                                                            </td>
-                                                            <td>
-                                                              {item.status ===
-                                                              "Complete" ? (
-                                                                <span className="badge bg-primary">
-                                                                  Completed
-                                                                </span>
-                                                              ) : (
-                                                                <span className="badge bg-primary">
-                                                                  {item.status}
-                                                                </span>
-                                                              )}
-                                                            </td>
-                                                            <td className="action-icon">
-                                                              <i
-                                                                className="fa-solid fa-pen-to-square"
-                                                                onClick={() => {
-                                                                  handleclickeditfunc(
-                                                                    item,
-                                                                  );
-                                                                }}
-                                                              ></i>
-                                                              <i
-                                                                className="fa-solid fa-trash"
-                                                                onClick={() => {
-                                                                  handleclickeditdelete(
-                                                                    item,
-                                                                  );
-                                                                }}
-                                                              ></i>
-                                                            </td>
-                                                          </tr>
-                                                        ),
-                                                      )}
-                                                    </tbody>
-                                                  </table>
-                                                </div>
+                                          <div className="card patientreat">
+                                            <div className="card-header service-list">
+                                              <h6>Appointment</h6>
+                                            </div>
+                                            <div className="card-body">
+                                              <div className="table-responsive table-no-card">
+                                                <table className="table-card w-100">
+                                                  <thead>
+                                                    <tr>
+                                                      <th>ID</th>
+                                                      <th>Vehicle No</th>
+                                                      <th>Driver Name</th>
+                                                      <th>Driver Contact</th>
+                                                      <th>Pickup Time</th>
+                                                      <th>Date</th>
+                                                      <th>Notes</th>
+                                                      <th>Status</th>
+                                                      <th>Action</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {reportsappointment?.map(
+                                                      (item) => (
+                                                        <tr
+                                                          key={
+                                                            item.appointmentId
+                                                          }
+                                                        >
+                                                          <td>
+                                                            {item.appointmentId}
+                                                          </td>
+                                                          <td>
+                                                            {item.mode !==
+                                                            "online"
+                                                              ? item.vehicle_no
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item.mode !==
+                                                            "online"
+                                                              ? item.driver_name
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item.mode !==
+                                                            "online"
+                                                              ? item.driver_contact
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item.mode !==
+                                                            "online"
+                                                              ? item.pickup_time
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item.appointment_Date
+                                                              ? new Date(
+                                                                  item.appointment_Date,
+                                                                )
+                                                                  .toISOString()
+                                                                  .slice(0, 10)
+                                                              : ""}
+                                                          </td>
+                                                          <td>{item?.note}</td>
+                                                          <td>
+                                                            {item.status ===
+                                                            "Complete" ? (
+                                                              <span className="badge bg-primary">
+                                                                Completed
+                                                              </span>
+                                                            ) : (
+                                                              <span className="badge bg-primary">
+                                                                {item.status}
+                                                              </span>
+                                                            )}
+                                                          </td>
+                                                          <td className="action-icon">
+                                                            <i
+                                                              className="fa-solid fa-pen-to-square"
+                                                              onClick={() => {
+                                                                handleclickeditfunc(
+                                                                  item,
+                                                                );
+                                                              }}
+                                                            ></i>
+                                                            <i
+                                                              className="fa-solid fa-trash"
+                                                              onClick={() => {
+                                                                handleclickeditdelete(
+                                                                  item,
+                                                                );
+                                                              }}
+                                                            ></i>
+                                                          </td>
+                                                        </tr>
+                                                      ),
+                                                    )}
+                                                  </tbody>
+                                                </table>
                                               </div>
                                             </div>
-                                          ) : (
-                                            ""
-                                          )}
+                                          </div>
                                         </div>
                                       </div>
                                       <hr></hr>
@@ -4184,18 +4198,7 @@ function PatientDetail() {
                                           <div className="col-md-12">
                                             <div className="top-collpse">
                                               <div className="treat-buttons">
-                                                <button
-                                                  className="add-button"
-                                                  onClick={
-                                                    (e) =>
-                                                      handleClickOpen1(
-                                                        e,
-                                                        info.treatment_id,
-                                                        info.Hospital_details,
-                                                      )
-                                                    //  handleClickOpen1(e, tId, hDetails);
-                                                  }
-                                                >
+                                                <button className="add-button">
                                                   <span>
                                                     <i className="fa fa-plus"></i>
                                                   </span>
@@ -4203,127 +4206,11 @@ function PatientDetail() {
                                                 </button>
                                               </div>
                                             </div>
-
-                                            <div className="col-md-12">
-                                                <div className="card patientreat">
-                                                  <div className="card-header service-list">
-                                                    <h6>Appointment</h6>
-                                                  </div>
-                                                  <div className="card-body">
-                                                    <div className="table-responsive table-no-card">
-                                                      <table className="table-card w-100">
-                                                        <thead>
-                                                          <tr>
-                                                            <th>ID</th>
-                                                            <th>Vehicle No</th>
-                                                            <th>Driver Name</th>
-                                                            <th>
-                                                              Driver Contact
-                                                            </th>
-                                                            <th>Pickup Time</th>
-                                                            <th>Date</th>
-                                                            <th>Notes</th>
-                                                            <th>Status</th>
-                                                            <th>Action</th>
-                                                          </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                          {info.appointments_details?.map(
-                                                            (item) => (
-                                                              <tr
-                                                                key={
-                                                                  item.appointmentId
-                                                                }
-                                                              >
-                                                                <td>
-                                                                  {
-                                                                    item.appointmentId
-                                                                  }
-                                                                </td>
-                                                                <td>
-                                                                  {item.mode !==
-                                                                  "online"
-                                                                    ? item.vehicle_no
-                                                                    : "-"}
-                                                                </td>
-                                                                <td>
-                                                                  {item.mode !==
-                                                                  "online"
-                                                                    ? item.driver_name
-                                                                    : "-"}
-                                                                </td>
-                                                                <td>
-                                                                  {item.mode !==
-                                                                  "online"
-                                                                    ? item.driver_contact
-                                                                    : "-"}
-                                                                </td>
-                                                                <td>
-                                                                  {item.mode !==
-                                                                  "online"
-                                                                    ? item.pickup_time
-                                                                    : "-"}
-                                                                </td>
-                                                                <td>
-                                                                  {item.appointment_Date
-                                                                    ? new Date(
-                                                                        item.appointment_Date,
-                                                                      )
-                                                                        .toISOString()
-                                                                        .slice(
-                                                                          0,
-                                                                          10,
-                                                                        )
-                                                                    : ""}
-                                                                </td>
-                                                                <td>
-                                                                  {item?.note}
-                                                                </td>
-                                                                <td>
-                                                                  {item.status ===
-                                                                  "Complete" ? (
-                                                                    <span className="badge bg-primary">
-                                                                      Completed
-                                                                    </span>
-                                                                  ) : (
-                                                                    <span className="badge bg-primary">
-                                                                      {
-                                                                        item.status
-                                                                      }
-                                                                    </span>
-                                                                  )}
-                                                                </td>
-                                                                <td className="action-icon">
-                                                                  <i
-                                                                    className="fa-solid fa-pen-to-square"
-                                                                    onClick={() => {
-                                                                      handleclickeditfunc(
-                                                                        item,
-                                                                      );
-                                                                    }}
-                                                                  ></i>
-                                                                  <i
-                                                                    className="fa-solid fa-trash"
-                                                                    onClick={() => {
-                                                                      handleclickeditdelete(
-                                                                        item,
-                                                                      );
-                                                                    }}
-                                                                  ></i>
-                                                                </td>
-                                                              </tr>
-                                                            ),
-                                                          )}
-                                                        </tbody>
-                                                      </table>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                            </div>
                                           </div>
                                         </div>
                                       </div>
                                     )}
+
                                   {activeSubTab === "Notes" &&
                                     selectedTreatmentId && (
                                       <div>
@@ -4331,146 +4218,65 @@ function PatientDetail() {
                                           <div className="col-md-12">
                                             <div className="top-collpse">
                                               <div className="treat-buttons">
-                                                <button
-                                                  className="add-button"
-                                                  onClick={
-                                                    (e) =>
-                                                      handleClickOpen1(
-                                                        e,
-                                                        info.treatment_id,
-                                                        info.Hospital_details,
-                                                      )
-                                                    //  handleClickOpen1(e, tId, hDetails);
-                                                  }
-                                                >
+                                                <button className="add-button">
                                                   <span>
                                                     <i className="fa fa-plus"></i>
                                                   </span>
-                                                  Add Appointment
+                                                  Add Note
                                                 </button>
                                               </div>
                                             </div>
 
                                             <div className="col-md-12">
-                                              {info?.appointments_details
-                                                ?.length > 0 ? (
-                                                <div className="card patientreat">
-                                                  <div className="card-header service-list">
-                                                    <h6>Appointment</h6>
-                                                  </div>
-                                                  <div className="card-body">
-                                                    <div className="table-responsive table-no-card">
-                                                      <table className="table-card w-100">
-                                                        <thead>
-                                                          <tr>
-                                                            <th>ID</th>
-                                                            <th>Vehicle No</th>
-                                                            <th>Driver Name</th>
-                                                            <th>
-                                                              Driver Contact
-                                                            </th>
-                                                            <th>Pickup Time</th>
-                                                            <th>Date</th>
-                                                            <th>Notes</th>
-                                                            <th>Status</th>
-                                                            <th>Action</th>
-                                                          </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                          {info.appointments_details?.map(
-                                                            (item) => (
-                                                              <tr
-                                                                key={
-                                                                  item.appointmentId
-                                                                }
-                                                              >
-                                                                <td>
-                                                                  {
-                                                                    item.appointmentId
-                                                                  }
-                                                                </td>
-                                                                <td>
-                                                                  {item.mode !==
-                                                                  "online"
-                                                                    ? item.vehicle_no
-                                                                    : "-"}
-                                                                </td>
-                                                                <td>
-                                                                  {item.mode !==
-                                                                  "online"
-                                                                    ? item.driver_name
-                                                                    : "-"}
-                                                                </td>
-                                                                <td>
-                                                                  {item.mode !==
-                                                                  "online"
-                                                                    ? item.driver_contact
-                                                                    : "-"}
-                                                                </td>
-                                                                <td>
-                                                                  {item.mode !==
-                                                                  "online"
-                                                                    ? item.pickup_time
-                                                                    : "-"}
-                                                                </td>
-                                                                <td>
-                                                                  {item.appointment_Date
-                                                                    ? new Date(
-                                                                        item.appointment_Date,
-                                                                      )
-                                                                        .toISOString()
-                                                                        .slice(
-                                                                          0,
-                                                                          10,
-                                                                        )
-                                                                    : ""}
-                                                                </td>
-                                                                <td>
-                                                                  {item?.note}
-                                                                </td>
-                                                                <td>
-                                                                  {item.status ===
-                                                                  "Complete" ? (
-                                                                    <span className="badge bg-primary">
-                                                                      Completed
-                                                                    </span>
-                                                                  ) : (
-                                                                    <span className="badge bg-primary">
-                                                                      {
-                                                                        item.status
-                                                                      }
-                                                                    </span>
-                                                                  )}
-                                                                </td>
-                                                                <td className="action-icon">
-                                                                  <i
-                                                                    className="fa-solid fa-pen-to-square"
-                                                                    onClick={() => {
-                                                                      handleclickeditfunc(
-                                                                        item,
-                                                                      );
-                                                                    }}
-                                                                  ></i>
-                                                                  <i
-                                                                    className="fa-solid fa-trash"
-                                                                    onClick={() => {
-                                                                      handleclickeditdelete(
-                                                                        item,
-                                                                      );
-                                                                    }}
-                                                                  ></i>
-                                                                </td>
-                                                              </tr>
-                                                            ),
-                                                          )}
-                                                        </tbody>
-                                                      </table>
-                                                    </div>
+                                              <div className="card patientreat">
+                                                <div className="card-header service-list">
+                                                  <h6>Notes</h6>
+                                                </div>
+                                                <div className="card-body">
+                                                  <div className="table-responsive table-no-card">
+                                                    <table className="table-card w-100">
+                                                      <thead>
+                                                        <tr>
+                                                          <th>Date</th>
+                                                          <th>Note</th>
+                                                          <th>Added By</th>
+                                                          <th>Action</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        {/* Add your notes mapping here
+                    {/* Example: */}
+                                                        {reportsNotes?.map(
+                                                          (note, index) => (
+                                                            <tr key={index}>
+                                                              <td>
+                                                                {new Date(
+                                                                  note.date,
+                                                                ).toLocaleDateString(
+                                                                  "en-GB",
+                                                                )}
+                                                              </td>
+                                                              <td>
+                                                                {note.note}
+                                                              </td>
+                                                              <td>
+                                                                {note.platform ===
+                                                                1
+                                                                  ? "CRM"
+                                                                  : "Hospital"}
+                                                              </td>
+                                                              <td className="action-icon">
+                                                                <i className="fa-solid fa-pen-to-square"></i>
+                                                                <i className="fa-solid fa-trash"></i>
+                                                              </td>
+                                                            </tr>
+                                                          ),
+                                                        )}
+                                                      </tbody>
+                                                    </table>
                                                   </div>
                                                 </div>
-                                              ) : (
-                                                ""
-                                              )}
+                                              </div>
                                             </div>
                                           </div>
                                         </div>

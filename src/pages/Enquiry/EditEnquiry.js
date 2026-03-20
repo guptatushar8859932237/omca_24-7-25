@@ -619,7 +619,7 @@ export default function EditEnquiry() {
                               className="text-danger"
                               data-bs-placement="right"
                               data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif, ) Max size: 2 MB per file"
+                              title="Accept only (.jpeg, .jpg, .png, .jfif ) Max size: 2 MB per file"
                             >
                               (i)
                             </span>

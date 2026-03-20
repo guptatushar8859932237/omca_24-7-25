@@ -19,11 +19,11 @@ export default function GerGeneralEnquiry() {
     "Flight Service",
     "Pickup and Drop",
     // "VISA",
-    "Ambulance Services",
-    "Air Medical Escort",
+    // "Ambulance Services",
+    // "Air Medical Escort",
     "Test Form",
     "Contact Us",
-    "Treatment Estimate",
+    // "Treatment Estimate",
   ];
   const pages = [
     <MedicalVisa />,
@@ -32,11 +32,11 @@ export default function GerGeneralEnquiry() {
     <FlightSrvices />,
     <PickUpanddrops />,
     // <Vil />,
-    <Hotel />,
-    <AirAmbulance />,
+    // <Hotel />,
+    // <AirAmbulance />,
     <TestForm />,
     <NursinfCare />,
-    <Labstests />,
+    // <Labstests />,
   ];
   return (
     <div className="page-wrapper">
