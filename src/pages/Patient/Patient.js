@@ -765,7 +765,7 @@ const handleRequestSort = (property) => {
                                         info.patientId,
                                         info.enquiryId,
                                         info.id,
-                                        info.patient_disease[0].treatment_id,
+                                        // info.patient_disease[0].treatment_id,
                                       )
                                     }
                                     title={info.patient_name}
@@ -886,8 +886,8 @@ const handleRequestSort = (property) => {
                                               info.patientId,
                                               info.enquiryId,
                                               info.id,
-                                              info.patient_disease[0]
-                                                .treatment_id,
+                                              // info.patient_disease[0]
+                                              //   .treatment_id,
                                             )
                                           }
                                         />

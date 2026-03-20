@@ -30,7 +30,7 @@ import Button from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import axios from "axios";
-import { baseurl } from "../Basurl/Baseurl";
+import { AdminBaseUrl, baseurl } from "../Basurl/Baseurl";
 import { Autocomplete, OutlinedInput, Pagination, Stack } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import { usePDF } from "react-to-pdf";
@@ -103,6 +103,12 @@ export default function Inquiry() {
   const handleClickOpen3 = (e) => {
     setOpen3(true);
   };
+  const statusMap = {
+  1: "Confirmed",
+  2: "Hold",
+  3: "Follow-Up",
+  4: "Dead",
+};
   useEffect(() => {
     dispatch(GetAllEnquiry());
     console.log(error, Enquiry);
@@ -139,36 +145,191 @@ export default function Inquiry() {
     });
   };
 
-  const handleChange = async (event, id) => {
-    console.log(event, id);
-    const { value } = event.target;
+  const sendToPatientAPI = async (type, data) => {
+  try {
+    const response = await axios.post(
+      `${baseurl}createPatientFromExternal`,
+      {
+        enquiry_type: type,
+        data: data,
+      }
+    );
 
-    // confirmation alert
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you really want to update the status?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, update it!",
-      cancelButtonText: "Cancel",
-      reverseButtons: true,
-    });
-    if (!result.isConfirmed) {
-      return;
+    if (response.data.success) {
+      Swal.fire("Success!", `${type} converted to patient`, "success");
     }
-    setSeekerStatus((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
+  } catch (error) {
+    console.log(error);
+    Swal.fire("Error!", "Something went wrong", "error");
+  }
+};
+const handleChangtype = async (e, b) => {
+  const value = e?.value || e?.target?.value;
+console.log(tabValue)
+  const data = {
+    id: b?.id,
+    model: tabValue===1?"AmbulanceRequest":tabValue===2?"AirAmbulance":tabValue===3?"PatientQuery":"",
+    status: statusMap[value], // number (1,2,3,4)
+    // status_text: statusMap[value], // ✅ string (Confirmed, Hold...)
+  };
+
+  try {
+    const response = await axios.post(
+      `${AdminBaseUrl}update_user_request_status`,
+      data
+    );
+
+    dispatch(testForms());
+
+    if (response?.data?.success) {
+      // Swal.fire("Success", "Status Updated Successfully", "success");
+    }
+  } catch (error) {
+    console.log(error);
+    Swal.fire("Error", "Something went wrong", "error");
+  }
+};
+// const handleChangtype = async (e, b) => {
+//   console.log(e, b);
+
+//  const data = {
+//   id: b?.id,
+//   model: "Medical",
+//   status: e?.value || e?.target?.value
+// };
+
+//   try {
+//     const response = await axios.post(
+//       `${AdminBaseUrl}update_user_request_status`,
+//       data
+//     );
+//   dispatch(testForms());
+//     if (response?.data?.success) {
+//       Swal.fire("Success", "Status Updated Successfully", "success");
+//     }
+
+//   } catch (error) {
+//     console.log(error);
+
+//     Swal.fire("Error", "Something went wrong", "error");
+//   }
+// };
+const handleChange = async (event, id, tabValue, data) => {
+  const { value } = event.target;
+
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "Do you really want to update / convert?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  });
+
+  if (!result.isConfirmed) return;
+
+  // ✅ TAB 0 → Enquiry Status Update
+  if (tabValue === 0) {
     try {
-      await dispatch(EnquiryStatus({ id, status: Number(value) })).unwrap();
-      Swal.fire("Success!", "Status updated successfully!", "success");
-      setRows((prevRows) => prevRows.filter((item) => item.enquiryId !== id));
+      setSeekerStatus((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
+
+      await dispatch(
+        EnquiryStatus({
+          id,
+          status: Number(value),
+          enquiry_type: "OMCA Enquiry",
+        })
+      ).unwrap();
+
+      Swal.fire("Success!", "Status updated!", "success");
       dispatch(GetAllEnquiry());
     } catch (err) {
-      Swal.fire("Error!", err?.message || "An error occurred", "error");
+      Swal.fire("Error!", err?.message || "Error", "error");
     }
-  };
+  }
+
+  // ✅ TAB 1 → Ambulance
+  if (tabValue === 1) {
+    await sendToPatientAPI("Ambulance Service", data.raw);
+
+    // 🔥 NEW ADD
+    await handleChangtype({ value }, data.raw);
+  }
+
+  // ✅ TAB 2 → Air Ambulance
+  if (tabValue === 2) {
+    await sendToPatientAPI("Air Medical Escort", data.raw);
+
+    // 🔥 NEW ADD
+    await handleChangtype({ value }, data.raw);
+  }
+
+  // ✅ TAB 3 → Treatment Estimate
+  if (tabValue === 3) {
+    await sendToPatientAPI("Treatment Estimate", data.raw);
+
+    // 🔥 NEW ADD
+    await handleChangtype({ value }, data.raw);
+  }
+};
+const handleExternalTabs = async (type, value, data) => {
+  await sendToPatientAPI(type, data.raw);
+  await handleChangtype({ value }, data.raw);
+};
+//  const handleChange = async (event, id, tabValue, data) => {
+//   const { value } = event.target;
+
+//   // CONFIRM POPUP
+//   const result = await Swal.fire({
+//     title: "Are you sure?",
+//     text: "Do you really want to update / convert?",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonText: "Yes",
+//   });
+
+//   if (!result.isConfirmed) return;
+
+//   // ✅ TAB 0 → Enquiry Status Update
+//   if (tabValue === 0) {
+//     try {
+//       setSeekerStatus((prev) => ({
+//         ...prev,
+//         [id]: value,
+//       }));
+
+//       await dispatch(
+//         EnquiryStatus({
+//           id,
+//           status: Number(value),
+//           enquiry_type: "OMCA Enquiry",
+//         })
+//       ).unwrap();
+
+//       Swal.fire("Success!", "Status updated!", "success");
+//       dispatch(GetAllEnquiry());
+//     } catch (err) {
+//       Swal.fire("Error!", err?.message || "Error", "error");
+//     }
+//   }
+
+//   // ✅ TAB 1 → Ambulance
+//   if (tabValue === 1) {
+//     sendToPatientAPI("Ambulance Service", data.raw);
+//   }
+
+//   // ✅ TAB 2 → Air Ambulance
+//   if (tabValue === 2) {
+//     sendToPatientAPI("Air Medical Escort", data.raw);
+//   }
+
+//   // ✅ TAB 3 → Treatment Estimate
+//   if (tabValue === 3) {
+//     sendToPatientAPI("Treatment Estimate", data.raw);
+//   }
+// };
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_enquiries`, {
@@ -738,7 +899,7 @@ export default function Inquiry() {
                                                 : ""
                                     }
                                     onChange={(e) =>
-                                      handleChange(e, info.enquiryId)
+                                      handleChange(e, info.enquiryId,tabValue,info)
                                     }
                                     displayEmpty
                                     inputProps={{

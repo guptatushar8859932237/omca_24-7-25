@@ -14,10 +14,12 @@ import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { baseurl, image } from "../../Basurl/Baseurl";
 import axios from "axios";
+import { Autocomplete, TextField } from "@mui/material";
+import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 export default function EditPatient() {
   const navigate = useNavigate();
   const location = useLocation();
-
+const { Treatment } = useSelector((state) => state.Treatment);
   const dispatch = useDispatch();
   const [previewImage, setPreviewImage] = useState(null);
   const { patient, loading, error } = useSelector((state) => state.patient);
@@ -29,6 +31,9 @@ export default function EditPatient() {
     dispatch(GetAllCountries());
     // console.log(error, Countries);
   }, [dispatch]);
+  useEffect(() => {
+  dispatch(GetAllTreatment());
+}, [dispatch]);
   useEffect(() => {
     dispatch(GetAllPatients());
     console.log(error, patient);
@@ -52,6 +57,7 @@ export default function EditPatient() {
     gender: Yup.string().required("Gender is required"),
     patientNumber: Yup.string().required("Patient ID is required"),
     created_at: Yup.string().required("Date is required"),
+    patientDisease: Yup.string().required("Disease is required"),
     passport_num: Yup.string().required("Passport number is required"),
     email: Yup.string()
       .email("Invalid email address")
@@ -61,7 +67,7 @@ export default function EditPatient() {
         /^[0-9]{8,15}$/,
         "Emergency Contact Number be Digit and between 8-15 digits",
       )
-      .required("Contact number is required"),
+      ,
     patient_relation_no: Yup.string().matches(
       /^[0-9]{8,15}$/,
       "Patient Relation Number be Digit and between 8-15 digits",
@@ -145,6 +151,8 @@ export default function EditPatient() {
                     address: ispatient?.address || "",
                     patientDisease:
                       ispatient?.patient_disease?.[0]?.disease_name || "",
+                    disease_id:
+                      ispatient?.patient_disease?.[0]?.id || "",
                     created_at: ispatient?.createdAt
                       ? ispatient.createdAt.split("T")[0]
                       : "",
@@ -497,7 +505,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Emergency Contact Number
-                              <span className="text-danger">*</span>
+                              <span className="text-danger"></span>
                             </label>
                             <div className="country-code">
                               <Field
@@ -538,14 +546,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Patient ID Proof{" "}
-                            <span
-                              className="text-danger"
-                              data-bs-placement="right"
-                              data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
-                            >
-                              (i)
-                            </span>   <span className="text-danger">*</span>
+                              <span className="text-danger"></span>
                             </label>
 
                             <input
@@ -620,15 +621,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Patient Profile
-                              <span
-                              className="text-danger"
-                              data-bs-placement="right"
-                              data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif )
-                             Max size: 2 MB per file"
-                            >
-                              (i)
-                            </span> <span className="text-danger">*</span>
+                              <span className="text-danger"></span>
                             </label>
                             <input
                               type="file"
@@ -674,7 +667,7 @@ export default function EditPatient() {
                           <div className="field-set">
                             <label>
                               Referral Name{" "}
-                              <span className="text-danger">*</span>
+                              <span className="text-danger"></span>
                             </label>
                             <Field
                               className="form-control"
@@ -688,7 +681,7 @@ export default function EditPatient() {
                             />
                           </div>
                         </div>
-                        <div className="col-md-4">
+                        {/* <div className="col-md-4">
                           <div className="field-set">
                             <label>
                               Treatment Name
@@ -699,9 +692,56 @@ export default function EditPatient() {
                               type="text"
                               name="patientDisease"
                             />
-                           
+                                <ErrorMessage
+                                  name="patientDisease"
+                                  component="div"
+                                  className="text-danger"
+                                />
                           </div>
-                        </div>
+                        </div> */}
+                        <div className="col-md-4">
+  <div className="field-set">
+    <label>
+      Treatment Name
+      <span className="text-danger"></span>
+    </label>
+
+    <Autocomplete
+      options={Treatment || []}
+      getOptionLabel={(option) => option.name || ""}
+      value={
+        Treatment?.find(
+          (item) => item.name === values.patientDisease
+        ) || null
+      }
+      onChange={(e, value) => {
+        setFieldValue("patientDisease", value?.name || "");
+        setFieldValue("disease_id", value?.id || "");
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          placeholder="Select Treatment"
+          error={Boolean(
+            values.patientDisease === "" &&
+            basicSchema?.fields?.patientDisease
+          )}
+        />
+      )}
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          padding: "0px",
+        },
+      }}
+    />
+
+    <ErrorMessage
+      name="patientDisease"
+      component="div"
+      className="text-danger"
+    />
+  </div>
+</div>
                         <div className="col-md-4">
                           <div className="field-set">
                             <label>

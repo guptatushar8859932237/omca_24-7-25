@@ -20,7 +20,6 @@ const allowedTypes = [
   "application/vnd.ms-excel",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ];
-
 export default function AddEnquiry() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
