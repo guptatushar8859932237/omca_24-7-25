@@ -3876,11 +3876,12 @@ const getDataapi3 = async (tId) => {
  selectedTreatmentId === info.treatment_id && (
   <div className="col-md-12">
     <div className="card patientreat">
-      <div className="card-header service-list">
+      <div className="card-header service-list d-flex justify-content-between">
+        <div>
         <h6>Appointment</h6>
-      </div>
-{/* handleClickOpen1 */}
- <button
+        </div>
+        <div>
+     <button
                                                   className="add-button"
                                                   onClick={(e) =>
                                                     handleClickOpen1(
@@ -3895,6 +3896,10 @@ const getDataapi3 = async (tId) => {
                                                   </span>
                                                   Add Appointment
                                                 </button>
+        </div>
+      </div>
+{/* handleClickOpen1 */}
+
       <div className="card-body">
         <div className="table-responsive table-no-card">
           <table className="table-card w-100">
