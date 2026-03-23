@@ -153,7 +153,6 @@
 //   //           setRows(response.data.data); // Show filtered patients in table
 //   //         }
 
-
 //   //         if (response.data.download_link) {
 //   //           const link = document.createElement("a");
 //   //           link.href = `${baseu11}${response.data.download_link}`;
@@ -227,7 +226,6 @@
 //     Swal.fire("Error", errorMessage, "error");
 //   }
 // };
-
 
 //   const downloadPdf = async () => {
 //       const maxRows = rows.length || 1;
@@ -634,7 +632,7 @@ export default function Reports() {
   };
   const { hospital } = useSelector((state) => state.hospital);
   useEffect(() => {
-    getReportData()
+    getReportData();
     dispatch(GetAllHositalData());
     console.log(error, hospital);
   }, [dispatch]);
@@ -839,10 +837,16 @@ export default function Reports() {
                             },
                           }}
                         >
-                          <MenuItem value="" className="custmselect">Select Country</MenuItem>
+                          <MenuItem value="" className="custmselect">
+                            Select Country
+                          </MenuItem>
                           {Countries && Countries.length > 0 ? (
                             Countries.map((con, idx) => (
-                              <MenuItem className="custmselect" key={idx} value={con.name}>
+                              <MenuItem
+                                className="custmselect"
+                                key={idx}
+                                value={con.name}
+                              >
                                 {con.name}
                               </MenuItem>
                             ))
@@ -855,11 +859,13 @@ export default function Reports() {
                   </div>
                   <div className="col-md-3">
                     <div className="field-set">
-                      <label>Treatment Name<span className="text-danger">*</span></label>
+                      <label>
+                        Treatment Name<span className="text-danger">*</span>
+                      </label>
                       <FormControl fullWidth size="small">
-                        {/* <Select
+                        <Select
                           name="treatment"
-                          value={report.treatment}
+                          // value={report.treatment || ""}
                           onChange={submitInputdata}
                           displayEmpty
                           input={
@@ -873,52 +879,25 @@ export default function Reports() {
                             },
                           }}
                         >
-                          <MenuItem value="" className="custmselect">Select Treatment</MenuItem>
+                          <MenuItem value="" className="custmselect">
+                            Select Treatment
+                          </MenuItem>
                           {treatmentname && treatmentname.length > 0 ? (
                             treatmentname.map((item, index) => (
-                              <MenuItem key={index} value={item.course_name}>
+                              <MenuItem key={index} value={item.name}>
                                 {item.name}
-                              <MenuItem className="custmselect" key={index} value={item.course_name}>
-                                {item.course_name}
                               </MenuItem>
                             ))
                           ) : (
                             <MenuItem disabled>
                               No treatments available
                             </MenuItem>
-                          }
-                        </Select> */}
-                        <Select
-  name="treatment"
-  value={report.treatment || ""}
-  onChange={submitInputdata}
-  displayEmpty
-  input={<OutlinedInput placeholder="Select Treatment" />}
-  sx={{ height: 40 }}
-  className="select-treatment"
-  MenuProps={{
-    PaperProps: {
-      style: { maxHeight: 200 },
-    },
-  }}
->
-  <MenuItem value="" className="custmselect">
-    Select Treatment
-  </MenuItem>
-
-  {treatmentname && treatmentname.length > 0 ? (
-    treatmentname.map((item, index) => (
-      <MenuItem key={index} value={item.course_name}>
-        {item.course_name}
-      </MenuItem>
-    ))
-  ) : (
-    <MenuItem disabled>No treatments available</MenuItem>
-  )}
-</Select>
+                          )}
+                        </Select>
                       </FormControl>
                     </div>
                   </div>
+                  Reports
                   <div className="col-md-3">
                     <div className="field-set">
                       <label>
@@ -926,7 +905,6 @@ export default function Reports() {
                       </label>
                       <FormControl fullWidth size="small">
                         <Select
-
                           name="hospital"
                           value={report.hospital}
                           onChange={submitInputdata}
@@ -942,10 +920,16 @@ export default function Reports() {
                             },
                           }}
                         >
-                          <MenuItem className="custmselect" value="">Select Hospital</MenuItem>
+                          <MenuItem className="custmselect" value="">
+                            Select Hospital
+                          </MenuItem>
                           {hospital && hospital.length > 0 ? (
                             hospital.map((item, index) => (
-                              <MenuItem className="custmselect" key={index} value={item.name}>
+                              <MenuItem
+                                className="custmselect"
+                                key={index}
+                                value={item.name}
+                              >
                                 {item.name}
                               </MenuItem>
                             ))
@@ -1032,42 +1016,46 @@ export default function Reports() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.length > 0 ? (
-                        rows
-                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                          .map((info, i) => {
-                            console.log(info);
-                            return (
-                              <>
-                                <TableRow
-                                  role="checkbox"
-                                  tabIndex={-1}
-                                  key={info.patientId}
-                                >
-                                  <TableCell>
-                                    {page * rowsPerPage + i + 1}
-                                  </TableCell>
-                                  <TableCell>{info.patientId}</TableCell>
-                                  <TableCell>{info.patient_name}</TableCell>
-                                  <TableCell>
-                                    {info.emergency_contact
-                                      ? info.emergency_contact
-                                      : info.emergency_contact_no}
-                                  </TableCell>
-                                  <TableCell>{info.email}</TableCell>
-                                  <TableCell>
-                                    {new Date(info.createdAt).toLocaleDateString(
-                                      "en-GB",
-                                    )}
-                                  </TableCell>
-                                  <TableCell>{info.country}</TableCell>
-                                  <TableCell>
-                                    {info.patient_disease[0].disease_name}
-                                  </TableCell>
-                                </TableRow>
-                              </>
-                            );
-                          })) : ""}
+                      {rows.length > 0
+                        ? rows
+                            .slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
+                            .map((info, i) => {
+                              console.log(info);
+                              return (
+                                <>
+                                  <TableRow
+                                    role="checkbox"
+                                    tabIndex={-1}
+                                    key={info.patientId}
+                                  >
+                                    <TableCell>
+                                      {page * rowsPerPage + i + 1}
+                                    </TableCell>
+                                    <TableCell>{info.patientId}</TableCell>
+                                    <TableCell>{info.patient_name}</TableCell>
+                                    <TableCell>
+                                      {info.emergency_contact
+                                        ? info.emergency_contact
+                                        : info.emergency_contact_no}
+                                    </TableCell>
+                                    <TableCell>{info.email}</TableCell>
+                                    <TableCell>
+                                      {new Date(
+                                        info.createdAt,
+                                      ).toLocaleDateString("en-GB")}
+                                    </TableCell>
+                                    <TableCell>{info.country}</TableCell>
+                                    <TableCell>
+                                      {info.patient_disease[0].disease_name}
+                                    </TableCell>
+                                  </TableRow>
+                                </>
+                              );
+                            })
+                        : ""}
                     </TableBody>
                   </Table>
                   <Stack spacing={2} alignItems="end" marginTop={2}>

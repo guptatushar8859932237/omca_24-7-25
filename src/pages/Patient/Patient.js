@@ -405,14 +405,11 @@ export default function Patient() {
 const handleRequestSort = (property) => {
   const isAsc = orderBy === property && order === "asc";
   const direction = isAsc ? "desc" : "asc";
-
   setOrder(direction);
   setOrderBy(property);
-
   const sortedRows = [...rows].sort((a, b) => {
     let valueA = "";
     let valueB = "";
-
     if (property === "patient_disease") {
       valueA = a.patient_disease?.map(d => d.disease_name).join(", ") || "";
       valueB = b.patient_disease?.map(d => d.disease_name).join(", ") || "";
@@ -420,12 +417,10 @@ const handleRequestSort = (property) => {
       valueA = a[property] || "";
       valueB = b[property] || "";
     }
-
     return direction === "asc"
       ? valueA.localeCompare(valueB)
       : valueB.localeCompare(valueA);
   });
-
   setRows(sortedRows);
 };
   // const handleRequestSort = (property) => {
@@ -499,7 +494,6 @@ const handleRequestSort = (property) => {
                             <MenuItem value="" disabled>
                               <em>Select Filter</em>
                             </MenuItem>
-
                             <MenuItem
                               disabled
                               style={{ fontWeight: "bold", color: "#666" }}
@@ -517,7 +511,6 @@ const handleRequestSort = (property) => {
                             <MenuItem value="Local Case">Local Case</MenuItem>
                             <MenuItem value="Follow Up">Follow Up</MenuItem>
                             <MenuItem value="Passed Away">Passed Away</MenuItem>
-
                             <MenuItem
                               disabled
                               style={{ fontWeight: "bold", color: "#666" }}
