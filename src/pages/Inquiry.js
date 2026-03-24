@@ -137,13 +137,25 @@ export default function Inquiry() {
       },
     });
   };
-  const ViewDetail = (e, id) => {
-    navigate("/Admin/Enquiry-Detail", {
-      state: {
-        enquiryId: id,
-      },
-    });
-  };
+  // const ViewDetail = (e, id) => {
+  //   navigate("/Admin/Enquiry-Detail", {
+  //     state: {
+  //       enquiryId: id,
+  //     },
+  //   });
+  // };
+  const ViewDetail = (e, id, type) => {
+    console.log(e,id,type)
+    if(tabValue===0){
+      navigate("/Admin/Enquiry-Detail", {
+        state: {
+          enquiryId: id,
+          type: type, // 🔥 NEW
+        }
+      })
+    }
+
+};
   const sendToPatientAPI = async (type, data) => {
     try {
       const response = await axios.post(`${baseurl}createPatientFromExternal`, {
@@ -768,7 +780,6 @@ export default function Inquiry() {
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
-                          {tabValue === 0 ? (
                             <TableCell>
                               <TableSortLabel
                                 active={orderBy === "enquiryId"}
@@ -782,10 +793,6 @@ export default function Inquiry() {
                                 Enquiry IDs
                               </TableSortLabel>
                             </TableCell>
-                          ) : (
-                            ""
-                          )}
-
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "name"}
@@ -826,9 +833,9 @@ export default function Inquiry() {
                           </TableCell>
                           <TableCell>Disease name</TableCell>
                           <TableCell>Status</TableCell>
+                          <TableCell>Actions</TableCell>
                           {tabValue === 0 ? (
                             <>
-                              <TableCell>Actions</TableCell>
                               <TableCell>Notes</TableCell>
                             </>
                           ) : (
@@ -861,11 +868,7 @@ export default function Inquiry() {
                                   ? i + 1
                                   : page * rowsPerPage + i + 1}
                               </TableCell>
-                              {tabValue === 0 ? (
                                 <TableCell>{info.enquiryId}</TableCell>
-                              ) : (
-                                ""
-                              )}
                               <TableCell
                                 style={{ cursor: "pointer" }}
                                 onClick={(e) =>
@@ -940,41 +943,52 @@ export default function Inquiry() {
                                   </Select>
                                 </FormControl>
                               </TableCell>
-                              {tabValue === 0 ? (
-                                <>
-                                  <TableCell className="action-icon">
-                                    <VisibilityIcon
-                                      className="eye-icon"
-                                      onClick={(e) =>
-                                        ViewDetail(e, info.enquiryId)
-                                      }
-                                    />
-                                    <i
-                                      className="fa-solid fa-pen-to-square"
-                                      onClick={(e) =>
-                                        EditButton(e, info.enquiryId)
-                                      }
-                                    ></i>
-                                    {localStorage.getItem("Role") ===
-                                      "Admin" && (
-                                      <i
-                                        className="fa-solid fa-trash"
-                                        onClick={() => handledelete(info)}
-                                      ></i>
-                                    )}
-                                  </TableCell>
-                                  <TableCell className="action-icon">
-                                    <i
-                                      className="fa-solid fa-notes-medical"
-                                      onClick={(e) =>
-                                        handleClickOpen2(e, info.enquiryId)
-                                      }
-                                    ></i>
-                                  </TableCell>
-                                </>
-                              ) : (
-                                ""
-                              )}
+                            <TableCell className="action-icon">
+  {/* ✅ VIEW (ALL TABS) */}
+  <VisibilityIcon
+    className="eye-icon"
+    onClick={(e) =>
+      ViewDetail(
+        e,
+        info.enquiryId,
+        tabValue === 0
+          ? "enquiry"
+          : tabValue === 1
+          ? "ambulance"
+          : tabValue === 2
+          ? "air"
+          : "treatment"
+      )
+    }
+  />
+
+  {/* ✅ ONLY FOR ENQUIRY TAB */}
+  {tabValue === 0 && (
+    <>
+      <i
+        className="fa-solid fa-pen-to-square"
+        onClick={(e) => EditButton(e, info.enquiryId)}
+      ></i>
+
+      {localStorage.getItem("Role") === "Admin" && (
+        <i
+          className="fa-solid fa-trash"
+          onClick={() => handledelete(info)}
+        ></i>
+      )}
+    </>
+  )}
+</TableCell>
+
+{/* ✅ NOTES ONLY FOR ENQUIRY */}
+{tabValue === 0 && (
+  <TableCell className="action-icon">
+    <i
+      className="fa-solid fa-notes-medical"
+      onClick={(e) => handleClickOpen2(e, info.enquiryId)}
+    ></i>
+  </TableCell>
+)}
                             </TableRow>
                           ))
                         ) : (
