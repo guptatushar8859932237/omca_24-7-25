@@ -137,26 +137,27 @@ export default function Inquiry() {
       },
     });
   };
-  // const ViewDetail = (e, id) => {
-  //   navigate("/Admin/Enquiry-Detail", {
-  //     state: {
-  //       enquiryId: id,
-  //     },
-  //   });
-  // };
-  const ViewDetail = (e, id, type) => {
-    console.log(e,id,type)
-    if(tabValue===0){
-      navigate("/Admin/Enquiry-Detail", {
-        state: {
-          enquiryId: id,
-          type: type, // 🔥 NEW
-        }
-      })
-    }
+ const ViewDetail = (e, type, info) => {
+  console.log(e,type, info)
+  const routeMap = {
+    0: "/Admin/Enquiry-Detail",
+    1: "/Admin/Enquiry-DetailAmbulance",
+    2: "/Admin/airambulanceview",
+    3: "/Admin/medicalescortservice",
+  };
 
+  const path = routeMap[type];
+  if (!path) return;
+
+  navigate(path, {
+    state: {
+      id: type === 0 ? info.enquiryId : info.id, // ✅ FIX
+      enquiryId: info.enquiryId, // optional
+      type: type,
+    },
+  });
 };
-  const sendToPatientAPI = async (type, data) => {
+ const sendToPatientAPI = async (type, data) => {
     try {
       const response = await axios.post(`${baseurl}createPatientFromExternal`, {
         enquiry_type: type,
@@ -200,30 +201,7 @@ export default function Inquiry() {
       Swal.fire("Error", "Something went wrong", "error");
     }
   };
-  // const handleChangtype = async (e, b) => {
-  //   console.log(e, b);
-  //  const data = {
-  //   id: b?.id,
-  //   model: "Medical",
-  //   status: e?.value || e?.target?.value
-  // };
-  //   try {
-  //     const response = await axios.post(
-  //       `${AdminBaseUrl}update_user_request_status`,
-  //       data
-  //     );
-  //   dispatch(testForms());
-  //     if (response?.data?.success) {
-  //       Swal.fire("Success", "Status Updated Successfully", "success");
-  //     }
-
-  //   } catch (error) {
-  //     console.log(error);
-
-  //     Swal.fire("Error", "Something went wrong", "error");
-  //   }
-  // };
-  const handleChange = async (event, id, tabValue, data) => {
+ const handleChange = async (event, id, tabValue, data) => {
     const { value } = event.target;
     console.log(data, value);
     const result = await Swal.fire({
@@ -292,62 +270,6 @@ export default function Inquiry() {
       await handleChangtype({ value }, data.raw);
     }
   };
-  const handleExternalTabs = async (type, value, data) => {
-    await sendToPatientAPI(type, data.raw);
-    await handleChangtype({ value }, data.raw);
-  };
-  //  const handleChange = async (event, id, tabValue, data) => {
-  //   const { value } = event.target;
-
-  //   // CONFIRM POPUP
-  //   const result = await Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "Do you really want to update / convert?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "Yes",
-  //   });
-
-  //   if (!result.isConfirmed) return;
-
-  //   // ✅ TAB 0 → Enquiry Status Update
-  //   if (tabValue === 0) {
-  //     try {
-  //       setSeekerStatus((prev) => ({
-  //         ...prev,
-  //         [id]: value,
-  //       }));
-
-  //       await dispatch(
-  //         EnquiryStatus({
-  //           id,
-  //           status: Number(value),
-  //           enquiry_type: "OMCA Enquiry",
-  //         })
-  //       ).unwrap();
-
-  //       Swal.fire("Success!", "Status updated!", "success");
-  //       dispatch(GetAllEnquiry());
-  //     } catch (err) {
-  //       Swal.fire("Error!", err?.message || "Error", "error");
-  //     }
-  //   }
-
-  //   // ✅ TAB 1 → Ambulance
-  //   if (tabValue === 1) {
-  //     sendToPatientAPI("Ambulance Service", data.raw);
-  //   }
-
-  //   // ✅ TAB 2 → Air Ambulance
-  //   if (tabValue === 2) {
-  //     sendToPatientAPI("Air Medical Escort", data.raw);
-  //   }
-
-  //   // ✅ TAB 3 → Treatment Estimate
-  //   if (tabValue === 3) {
-  //     sendToPatientAPI("Treatment Estimate", data.raw);
-  //   }
-  // };
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_enquiries`, {
@@ -450,35 +372,6 @@ export default function Inquiry() {
 
     setRows(filterResult);
   };
-  // const handleFilter = (event) => {
-  //   const value = event.target.value.toLowerCase();
-  //   setFilterValue(event.target.value);
-  //   setPage(0); // ⭐ RESET PAGE
-
-  //   if (value === "") {
-  //     setRows(searchApiData);
-  //     return;
-  //   }
-  //   const filterResult = searchApiData.filter((item) => {
-  //     const enquiryId = item.enquiryId?.toLowerCase() || "";
-  //     const email = item.email?.toLowerCase() || "";
-  //     const country = item.country?.toLowerCase() || "";
-  //     const name = item.name?.toLowerCase() || "";
-  //     const age = item.age?.toString().toLowerCase() || "";
-  //     const contact = item.emergency_contact?.toString().toLowerCase() || "";
-  //     const disease = item.disease_name?.toLowerCase() || "";
-  //     return (
-  //       enquiryId.includes(value) ||
-  //       email.includes(value) ||
-  //       country.includes(value) ||
-  //       name.includes(value) ||
-  //       age.includes(value) ||
-  //       contact.includes(value) ||
-  //       disease.includes(value)
-  //     );
-  //   });
-  //   setRows(filterResult);
-  // };
   const handleClearFilter = () => {
     setFilterValue("");
     setRows(searchApiData);
@@ -656,6 +549,7 @@ export default function Inquiry() {
       emergency_contact: item.emergency_contact || item.phone,
       disease_name: item.disease_name || item.services?.replaceAll("_", " "),
       Enquiry_status: item.Enquiry_status || item.status,
+      id: item.id || item.id,
       raw: item, // full data for view popup
     }));
   };
@@ -793,6 +687,8 @@ export default function Inquiry() {
                                 Enquiry IDs
                               </TableSortLabel>
                             </TableCell>
+                         
+
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "name"}
@@ -871,10 +767,7 @@ export default function Inquiry() {
                                 <TableCell>{info.enquiryId}</TableCell>
                               <TableCell
                                 style={{ cursor: "pointer" }}
-                                onClick={(e) =>
-                                  tabValue === 0 &&
-                                  ViewDetail(e, info.enquiryId)
-                                }
+                               onClick={(e) => ViewDetail(e, tabValue, info)}
                               >
                                 {info.name}
                               </TableCell>
@@ -943,52 +836,48 @@ export default function Inquiry() {
                                   </Select>
                                 </FormControl>
                               </TableCell>
-                            <TableCell className="action-icon">
-  {/* ✅ VIEW (ALL TABS) */}
-  <VisibilityIcon
-    className="eye-icon"
-    onClick={(e) =>
-      ViewDetail(
-        e,
-        info.enquiryId,
-        tabValue === 0
-          ? "enquiry"
-          : tabValue === 1
-          ? "ambulance"
-          : tabValue === 2
-          ? "air"
-          : "treatment"
-      )
-    }
-  />
-
-  {/* ✅ ONLY FOR ENQUIRY TAB */}
-  {tabValue === 0 && (
-    <>
-      <i
-        className="fa-solid fa-pen-to-square"
-        onClick={(e) => EditButton(e, info.enquiryId)}
-      ></i>
-
-      {localStorage.getItem("Role") === "Admin" && (
-        <i
-          className="fa-solid fa-trash"
-          onClick={() => handledelete(info)}
-        ></i>
-      )}
-    </>
-  )}
-</TableCell>
-
-{/* ✅ NOTES ONLY FOR ENQUIRY */}
-{tabValue === 0 && (
-  <TableCell className="action-icon">
-    <i
-      className="fa-solid fa-notes-medical"
-      onClick={(e) => handleClickOpen2(e, info.enquiryId)}
-    ></i>
-  </TableCell>
-)}
+                             
+                                  <TableCell className="action-icon">
+                                    <VisibilityIcon
+                                      className="eye-icon"
+                                     onClick={(e) => ViewDetail(e, tabValue, info)}
+                                    />
+                                     {tabValue === 0 ? (
+                                <>
+                                    <i
+                                      className="fa-solid fa-pen-to-square"
+                                      onClick={(e) =>
+                                        EditButton(e, info.enquiryId)
+                                      }
+                                    ></i>
+                            
+                                    {localStorage.getItem("Role") ===
+                                      "Admin" && (
+                                      <i
+                                        className="fa-solid fa-trash"
+                                        onClick={() => handledelete(info)}
+                                      ></i>
+                                    )}
+                                             </>
+                              ) : (
+                                ""
+                              )}
+                                  </TableCell>
+                                    {tabValue === 0 ? (
+                                <>
+                                  <TableCell className="action-icon">
+                                    <i
+                                      className="fa-solid fa-notes-medical"
+                                      onClick={(e) =>
+                                        handleClickOpen2(e, info.enquiryId)
+                                      }
+                                    ></i>
+                                  </TableCell>
+                                                   </>
+                              ) : (
+                                ""
+                              )}
+                               
                             </TableRow>
                           ))
                         ) : (

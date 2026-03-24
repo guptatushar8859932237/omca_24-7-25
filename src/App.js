@@ -58,6 +58,10 @@ import EditCurrency from "./pages/Currency/EditCurrency";
 import GerGeneralEnquiry from "./pages/Genera Enquiry/GerGeneralEnquiry";
 import EditPatientTreatment from "./pages/Patient/EditPatientTreatment";
 import IdleLogout from "./Idlegout";
+import Ambulanceserviceview from "./pages/Enquiry/Ambulanceserviceview";
+import EnquiryDetailAmbulance from "./pages/Enquiry/EnquiryDetailAmbulance";
+import Airambulanceview from "./pages/Enquiry/Airambulanceview";
+import Medicalescortservice from "./pages/Enquiry/Medicalescortservice";
 function App() {
   console.log("22/04/25");
   return (
@@ -229,6 +233,26 @@ function App() {
                 index
                 path="/Admin/Enquiry-Detail"
                 element={<EnquiryDetail />}
+              />
+              <Route
+                index
+                path="/Admin/Enquiry-DetailAmbulance"
+                element={<EnquiryDetailAmbulance />}
+              />
+              <Route
+                index
+                path="/Admin/airambulanceview"
+                element={<Airambulanceview />}
+              />
+              <Route
+                index
+                path="/Admin/medicalescortservice"
+                element={<Medicalescortservice />}
+              />
+              <Route
+                index
+                path="/Admin/Ambulance-Detail"
+                element={<Ambulanceserviceview />}
               />
             </Route>
           </Routes>
