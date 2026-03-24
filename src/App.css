@@ -6290,7 +6290,7 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
 .treat-id h3 {
   color: var(--bs-heading-color);
   margin-bottom: 5px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
 }
 .add-button1:hover {
@@ -7207,10 +7207,10 @@ input:checked + .slider:before {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 20px 0px !important;
+  padding: 0px 0px 16px !important;
 }
 .service-list h6 {
-  font-size: 14px;
+  font-size: 14px !important;
   margin: 0px;
 }
 .table-card tbody tr td {
@@ -7512,11 +7512,12 @@ input:checked + .slider:before {
 
 /* When .collapse.show exists right after .treat-card */
 .treat-card:has(+ .collapse.show) {
-  border-bottom: 1px solid #cccccc;
+  /* border-bottom: 1px solid #cccccc; */
   padding-bottom: 20px;
 }
 .top-collpse {
-  margin: 20px 0px;
+  padding: 20px 0px;
+  border-top: 1px solid #ccc;
 }
 .collapse-icon i {
   transition: transform 0.3s ease;
@@ -7548,6 +7549,32 @@ input:checked + .slider:before {
   color: var(--bs-text-color);
   padding: 0;
 }
-.staffpermiss{
+.staffpermiss {
   gap: 8px;
+}
+
+/* ====================================surbhi(24-03-26)====================================== */
+.customstylecard {
+  margin: 0;
+  border: 1px solid #ccc;
+  box-shadow: unset;
+}
+.customstylecard .card-header h6 {
+  margin: 0;
+  font-size: 16px;
+}
+.customstylecard .card-header {
+  border-bottom: 1px solid #ccc;
+  padding: 16px;
+  background-color: #f5f5f5;
+}
+.service-list i {
+  vertical-align: middle;
+  height: 17px;
+  color: var(--bs-primary-color);
+}
+.customstylecard .card-footer {
+  border-top: 1px solid #ccc;
+  padding: 10px;
+  background-color: unset;
 }
