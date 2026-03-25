@@ -2703,7 +2703,6 @@
 //                                             </button>
 //                                           </li>
 
-
 //                                           <li className="nav-item">
 //                                             <button
 //                                               className="nav-link"
@@ -3889,7 +3888,6 @@
 //                                                               "-"
 //                                                             )}
 //                                                           </td>
-
 
 //                                                           <td>
 //                                                             <div className="action-icon">
@@ -5623,6 +5621,7 @@ function PatientDetail() {
     paid_amount: "",
     paymentMethod: "",
     payment_Date: "",
+    notes: "",
   });
   const usrFount = localStorage.getItem("Role");
   useEffect(() => {
@@ -5827,7 +5826,7 @@ function PatientDetail() {
   const gettreatment11 = async () => {
     try {
       const response = await axios.post(`${baseurl}treatment_list`);
-    } catch (error) { }
+    } catch (error) {}
   };
   useEffect(() => {
     gettreatment();
@@ -5895,6 +5894,7 @@ function PatientDetail() {
     }
   };
   const deletePaymentInvoice = async (item) => {
+    console.log(item);
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -5922,9 +5922,9 @@ function PatientDetail() {
           },
         );
         if (response.data?.success) {
-          Swal.fire("Deleted!", "Payment has been deleted.", "success");
-          getDataapi3(dataC);
+          getDataapi3(selectedTreatmentId);
           dispatch(GetPatientTreatments({ id: location.state.patientId }));
+          Swal.fire("Deleted!", "Payment has been deleted.", "success");
         } else {
           toast.error("Failed to delete Payment");
         }
@@ -5963,7 +5963,7 @@ function PatientDetail() {
         );
         if (response.data?.success) {
           Swal.fire("Deleted!", "Report has been deleted.", "success");
-          getDataapi3(dataC);
+          getDataapi3(selectedTreatmentId);
         } else {
           toast.error("Failed to delete report");
         }
@@ -6109,7 +6109,7 @@ function PatientDetail() {
       if (rresponse.data.success === "true") {
         setDataHospital(rresponse.data.data);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   useEffect(() => {
     getdataApi();
@@ -6287,7 +6287,7 @@ function PatientDetail() {
       .then((response) => {
         if (response.status === 200) {
           setOpen5(false);
-          getDataapi3(treatmentId)
+          getDataapi3(treatmentId);
           Swal.fire("Success", "Notes added successfully!", "success");
           dispatch(GetPatientTreatments({ id: location.state.patientId }));
         }
@@ -6369,7 +6369,7 @@ function PatientDetail() {
       Swal.fire("Success!", "Status updated successfully!", "success");
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
       return response.data;
-    } catch (err) { }
+    } catch (err) {}
   };
   const handleChangeDetails = async (event, id) => {
     try {
@@ -6619,7 +6619,7 @@ function PatientDetail() {
     }
   };
   const handledelete = async (info) => {
-    console.log(info)
+    console.log(info);
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -6935,7 +6935,7 @@ function PatientDetail() {
         },
       );
       if (response.data.success) {
-        getDataapi3(treatmentIDservice)
+        getDataapi3(treatmentIDservice);
         Swal.fire({
           icon: "success",
           title: "Updated!",
@@ -7079,7 +7079,7 @@ function PatientDetail() {
 
         setHospitlID(updatedList);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const validateForm = () => {
     const newErrors = {};
@@ -7220,9 +7220,9 @@ function PatientDetail() {
       if (response.data.success) {
         setTreatemntData1(response.data.data);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
-  const handleclickApprove = (hospitalids, b) => { };
+  const handleclickApprove = (hospitalids, b) => {};
   const approveReject = async (info, hospitalId, status) => {
     const payload = { status };
     try {
@@ -7638,59 +7638,58 @@ function PatientDetail() {
     }
   };
 
-  const handleclickopencharge =(info)=>{
-    setTreatmentIdCharge(info.treatment_id)
-    setOpenmodalCharge(true)
-  }
-  const handleclickclosecharge =()=>{
-    setOpenmodalCharge(false)
-  }
-  const addhospitalChare =(e)=>{
-    const {name,value}=e.target
-setHospitalCharge({...hospitalCharge,[name]:value})
-  }
-  const addchargeapiHospital = async () => {
-  const payload = {
-    service_name: hospitalCharge.service_name,
-    price: hospitalCharge.price,
-    date: hospitalCharge.date,
+  const handleclickopencharge = (info) => {
+    setTreatmentIdCharge(info.treatment_id);
+    setOpenmodalCharge(true);
   };
+  const handleclickclosecharge = () => {
+    setOpenmodalCharge(false);
+  };
+  const addhospitalChare = (e) => {
+    const { name, value } = e.target;
+    setHospitalCharge({ ...hospitalCharge, [name]: value });
+  };
+  const addchargeapiHospital = async () => {
+    const payload = {
+      service_name: hospitalCharge.service_name,
+      price: hospitalCharge.price,
+      date: hospitalCharge.date,
+    };
 
-  try {
-    const response = await axios.post(
-      `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
-      payload, // ✅ data goes here
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+    try {
+      const response = await axios.post(
+        `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
+        payload, // ✅ data goes here
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      }
-    );
+      );
 
-    console.log(response.data);
-handleclickclosecharge()
-setHospitalCharge("")
-dispatch(GetPatientTreatments({ id: location.state.patientId }));
-    // ✅ Success Swal
-    Swal.fire({
-      icon: "success",
-      title: "Success",
-      text: "Hospital charge added successfully!",
-      confirmButtonColor: "#3085d6",
-    });
+      console.log(response.data);
+      handleclickclosecharge();
+      setHospitalCharge("");
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      // ✅ Success Swal
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Hospital charge added successfully!",
+        confirmButtonColor: "#3085d6",
+      });
+    } catch (error) {
+      console.log(error);
 
-  } catch (error) {
-    console.log(error);
-
-    // ❌ Error Swal
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error?.response?.data?.message || "Something went wrong!",
-      confirmButtonColor: "#d33",
-    });
-  }
-};
+      // ❌ Error Swal
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error?.response?.data?.message || "Something went wrong!",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -7950,7 +7949,10 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
               </li> */}
             </ul>
             <div className="tab-content">
-              <div className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`} id="about-cont123" >
+              <div
+                className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`}
+                id="about-cont123"
+              >
                 <div className="main-tab-hd justify-content-end">
                   <div className="">
                     <button onClick={PlanTreatmentPopUp} className="add-button">
@@ -8001,28 +8003,28 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                                <span
-                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                                >
-                                                  {item.status}
-                                                </span>
-                                              )}
+                                              <span
+                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                              >
+                                                {item.status}
+                                              </span>
+                                            )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                              <button
-                                                className="add-button"
-                                                onClick={() =>
-                                                  approveReject(
-                                                    info,
-                                                    item.id,
-                                                    "Approved",
-                                                  )
-                                                }
-                                              >
-                                                Approve
-                                              </button>
-                                            )}
+                                            <button
+                                              className="add-button"
+                                              onClick={() =>
+                                                approveReject(
+                                                  info,
+                                                  item.id,
+                                                  "Approved",
+                                                )
+                                              }
+                                            >
+                                              Approve
+                                            </button>
+                                          )}
                                         </div>
                                       ))}
                                     </div>
@@ -8081,7 +8083,10 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                   </div>
                 </div>
               </div>
-              <div className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`} id="about-cont">
+              <div
+                className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`}
+                id="about-cont"
+              >
                 <div>
                   <div className="main-tab-hd">
                     <div className="main-tab-hd d-flex justify-content-end w-100">
@@ -8112,11 +8117,11 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                             "notes",
                           ].includes(activeSubTab)
                             ? tretment?.filter(
-                              (item) =>
-                                item.treatment_id === selectedTreatmentId,
-                            )
+                                (item) =>
+                                  item.treatment_id === selectedTreatmentId,
+                              )
                             : tretment
-                          )?.map((  info, index) => {
+                          )?.map((info, index) => {
                             return (
                               <div className="card-box" id="accordion">
                                 <div className="treat-card">
@@ -8233,7 +8238,6 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                             </button>
                                           </li>
 
-
                                           <li className="nav-item">
                                             <button
                                               className="nav-link"
@@ -8267,22 +8271,22 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                           {!info?.Hospital_details?.some(
                                             (item) => item.hospital_Name,
                                           ) && (
-                                              <li className="nav-item">
-                                                <button
-                                                  className="nav-link"
-                                                  onClick={(e) =>
-                                                    handleAction(
-                                                      e,
-                                                      "hospital",
-                                                      info,
-                                                      info.treatment_name,
-                                                    )
-                                                  }
-                                                >
-                                                  + Add Hospital
-                                                </button>
-                                              </li>
-                                            )}
+                                            <li className="nav-item">
+                                              <button
+                                                className="nav-link"
+                                                onClick={(e) =>
+                                                  handleAction(
+                                                    e,
+                                                    "hospital",
+                                                    info,
+                                                    info.treatment_name,
+                                                  )
+                                                }
+                                              >
+                                                + Add Hospital
+                                              </button>
+                                            </li>
+                                          )}
                                           <li className="nav-item">
                                             <button
                                               className="nav-link"
@@ -8314,7 +8318,9 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                     </div>
                                   </div>
                                 </div>
-                                <div className={`collapse ${openIndex === index ? "show" : ""}`}>
+                                <div
+                                  className={`collapse ${openIndex === index ? "show" : ""}`}
+                                >
                                   {activeSubTab === "details" ? (
                                     <>
                                       <div className="row gx-3 gy-3">
@@ -8322,7 +8328,27 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                         <div className="col-md-12">
                                           <div className="card customstylecard">
                                             <div className="card-header">
-                                              <h6>Hospital Name:<span>{" "}{info?.hospital?.details?.hospital_Name}</span></h6>
+                                              <h6>
+                                                Hospital Name:
+                                                <span>
+                                                  {" "}
+                                                  {
+                                                    info?.hospital?.details
+                                                      ?.hospital_Name
+                                                  }
+                                                </span>{" "}
+                                                <span className="text-danger">
+                                                  {info?.hospital?.details
+                                                    ?.hospital_Name && (
+                                                    <i
+                                                      className="fa-solid fa-trash"
+                                                      onClick={() =>
+                                                        handledelete(info)
+                                                      }
+                                                    ></i>
+                                                  )}
+                                                </span>{" "}
+                                              </h6>
                                             </div>
                                             <div className="card-body">
                                               <div className="row gx-3 gy-3">
@@ -8330,9 +8356,6 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                   <div className="card patientreat">
                                                     <div className="card-header service-list">
                                                       <h6>Treatment</h6>
-                                                     {info?.hospital?.details?.hospital_Name && (
-  <i className="fa-solid fa-trash" onClick={() => handledelete(info)}></i>
-)}
                                                     </div>
                                                     <div className="card-body">
                                                       <div className="table-responsive table-no-card">
@@ -8346,36 +8369,59 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                               <th>Action</th>
                                                             </tr>
                                                           </thead>
-                                                         <tbody>
-                                                           
-                                                                  <tr key={index}>
-                                                                    <td>{info?.treatment_name || "-"}</td>
-                                                                    <td>{info?.treatment_course_fee || "-"}</td>
-                                                                    <td>
-                                                                        {new Date(info.treatment_created_at).toLocaleDateString("en-GB")}
-                                                                    </td>
-                                                             <td>
-  {info.treatment_created_at
-    ? new Date(info.treatment_created_at).toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "-"}
-</td>
-                                                                    <td>
-                                                                      <div className="action-icon">
-                                                                          <i className="fa-solid fa-pen-to-square me-2" style={{ cursor: "pointer" }}
-                                                                          onClick={() => { handleclickEdAppointment(info) }}
-                                                                          ></i>
-                                                                        {/* {item?.hospital_Name && (
+                                                          <tbody>
+                                                            <tr key={index}>
+                                                              <td>
+                                                                {info?.treatment_name ||
+                                                                  "-"}
+                                                              </td>
+                                                              <td>
+                                                                {info?.treatment_course_fee ||
+                                                                  "-"}
+                                                              </td>
+                                                              <td>
+                                                                {new Date(
+                                                                  info.treatment_created_at,
+                                                                ).toLocaleDateString(
+                                                                  "en-GB",
+                                                                )}
+                                                              </td>
+                                                              <td>
+                                                                {info.treatment_created_at
+                                                                  ? new Date(
+                                                                      info.treatment_created_at,
+                                                                    ).toLocaleTimeString(
+                                                                      "en-US",
+                                                                      {
+                                                                        hour: "2-digit",
+                                                                        minute:
+                                                                          "2-digit",
+                                                                      },
+                                                                    )
+                                                                  : "-"}
+                                                              </td>
+                                                              <td>
+                                                                <div className="action-icon">
+                                                                  <i
+                                                                    className="fa-solid fa-pen-to-square me-2"
+                                                                    style={{
+                                                                      cursor:
+                                                                        "pointer",
+                                                                    }}
+                                                                    onClick={() => {
+                                                                      handleclickEdAppointment(
+                                                                        info,
+                                                                      );
+                                                                    }}
+                                                                  ></i>
+                                                                  {/* {item?.hospital_Name && (
                                                                           <i className="fa-solid fa-trash" style={{ cursor: "pointer" }}
                                                                             onClick={() => handledelete(info, item)}
                                                                           ></i>
                                                                         )} */}
-                                                                      </div>
-                                                                    </td>
-                                                                  </tr>
-                                                           
+                                                                </div>
+                                                              </td>
+                                                            </tr>
                                                           </tbody>
                                                         </table>
                                                       </div>
@@ -8386,10 +8432,19 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                   <div className="card patientreat">
                                                     <div className="card-header service-list d-flex justify-content-between">
                                                       <div>
-                                                      <h6>Charges</h6>
+                                                        <h6>Charges</h6>
                                                       </div>
                                                       <div>
-                                                     <button className="add-button" onClick={()=>{handleclickopencharge(info)}}>Add Change</button>
+                                                        <button
+                                                          className="add-button"
+                                                          onClick={() => {
+                                                            handleclickopencharge(
+                                                              info,
+                                                            );
+                                                          }}
+                                                        >
+                                                          Add Charge
+                                                        </button>
                                                       </div>
                                                     </div>
                                                     <div className="card-body">
@@ -8397,46 +8452,96 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                         <table className="table-card w-100">
                                                           <thead>
                                                             <tr>
-                                                              <th>Service Name</th>
+                                                              <th>
+                                                                Service Name
+                                                              </th>
                                                               <th>Price</th>
                                                               <th>Date</th>
-                                                              <th>Action</th>
+                                                              {/* <th>Action</th> */}
                                                             </tr>
                                                           </thead>
                                                           <tbody>
-                                                            {info?.hospital?.charges?.length > 0 ? (
-                                                              info?.hospital?.charges?.map((item, index) => {
-                                                                const createdAt = item?.date;
+                                                            {info?.hospital
+                                                              ?.charges
+                                                              ?.length > 0 ? (
+                                                              info?.hospital?.charges?.map(
+                                                                (
+                                                                  item,
+                                                                  index,
+                                                                ) => {
+                                                                  const createdAt =
+                                                                    item?.date;
 
-                                                                return (
-                                                                  <tr key={index}>
-                                                                    <td>{item?.service_name || "-"}</td>
-                                                                    <td>{item?.price || "-"}</td>
-                                                                    <td>
-                                                                      {createdAt
-                                                                        ? new Date(createdAt).toLocaleDateString("en-GB")
-                                                                        : "-"}
-                                                                    </td>
-                                                                    <td>
-                                                                      <div className="action-icon">
-                                                                        {item?.hospital_Name && (
-                                                                          <i className="fa-solid fa-pen-to-square me-2" style={{ cursor: "pointer" }}
-                                                                            onClick={() => handledeedit(info, item)}
-                                                                          ></i>
-                                                                        )}
-                                                                        {item?.hospital_Name && (
-                                                                          <i className="fa-solid fa-trash" style={{ cursor: "pointer" }}
-                                                                            onClick={() => handledelete(info, item)}
-                                                                          ></i>
-                                                                        )}
-                                                                      </div>
-                                                                    </td>
-                                                                  </tr>
-                                                                );
-                                                              })
+                                                                  return (
+                                                                    <tr
+                                                                      key={
+                                                                        index
+                                                                      }
+                                                                    >
+                                                                      <td>
+                                                                        {item?.service_name ||
+                                                                          "-"}
+                                                                      </td>
+                                                                      <td>
+                                                                        {item?.price ||
+                                                                          "-"}
+                                                                      </td>
+                                                                      <td>
+                                                                        {createdAt
+                                                                          ? new Date(
+                                                                              createdAt,
+                                                                            ).toLocaleDateString(
+                                                                              "en-GB",
+                                                                            )
+                                                                          : "-"}
+                                                                      </td>
+                                                                      {/* <td>
+                                                                        <div className="action-icon">
+                                                                          {item?.hospital_Name && (
+                                                                            <i
+                                                                              className="fa-solid fa-pen-to-square me-2"
+                                                                              style={{
+                                                                                cursor:
+                                                                                  "pointer",
+                                                                              }}
+                                                                              onClick={() =>
+                                                                                handledeedit(
+                                                                                  info,
+                                                                                  item,
+                                                                                )
+                                                                              }
+                                                                            ></i>
+                                                                          )}
+                                                                          {item?.hospital_Name && (
+                                                                            <i
+                                                                              className="fa-solid fa-trash"
+                                                                              style={{
+                                                                                cursor:
+                                                                                  "pointer",
+                                                                              }}
+                                                                              onClick={() =>
+                                                                                handledelete(
+                                                                                  info,
+                                                                                  item,
+                                                                                )
+                                                                              }
+                                                                            ></i>
+                                                                          )}
+                                                                        </div>
+                                                                      </td> */}
+                                                                    </tr>
+                                                                  );
+                                                                },
+                                                              )
                                                             ) : (
                                                               <tr>
-                                                                <td colSpan="4" style={{ textAlign: "center" }}>
+                                                                <td
+                                                                  colSpan="4"
+                                                                  style={{
+                                                                    textAlign:
+                                                                      "center",
+                                                                  }}
+                                                                >
                                                                   No Data Found
                                                                 </td>
                                                               </tr>
@@ -8456,7 +8561,12 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                     <h6 className="mb-0">
                                                       Total Amount:
                                                     </h6>
-                                                    <p>{info?.hospital?.totalAmount}</p>
+                                                    <p>
+                                                      {
+                                                        info?.hospital
+                                                          ?.totalAmount
+                                                      }
+                                                    </p>
                                                   </div>
                                                 </div>
                                                 <div className="col-md-12">
@@ -8464,7 +8574,12 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                     <h6 className="mb-0">
                                                       Due Amount:
                                                     </h6>
-                                                    <p>{info?.hospital?.dueAmount}</p>
+                                                    <p>
+                                                      {
+                                                        info?.hospital
+                                                          ?.dueAmount
+                                                      }
+                                                    </p>
                                                   </div>
                                                 </div>
                                               </div>
@@ -8481,132 +8596,137 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                               <div className="row gx-3 gy-3">
                                                 {/* extra-service */}
                                                 <div className="col-md-6">
-                                                
-                                                    <div className="card patientreat">
-                                                      <div className="card-header service-list">
-                                                        <h6>Extra Services</h6>
-                                                      </div>
-                                                      <div className="card-body">
-                                                        <div className="table-responsive table-no-card">
-                                                          <table className="table-card w-100">
-                                                            <thead>
-                                                              <tr>
-                                                                <th>Service Name</th>
-                                                                <th>Price</th>
-                                                                <th>Valid From</th>
-                                                                <th>Valid To</th>
-                                                                <th>Action</th>
-                                                              </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                              {info?.omca?.extraServices?.map(
-                                                                (item, index) => {
-                                                                  if (!item.price)
-                                                                    return null;
-                                                                  return (
-                                                                    <tr
-                                                                      key={
-                                                                        item._id ||
-                                                                        item.service_type
+                                                  <div className="card patientreat">
+                                                    <div className="card-header service-list">
+                                                      <h6>Extra Services</h6>
+                                                    </div>
+                                                    <div className="card-body">
+                                                      <div className="table-responsive table-no-card">
+                                                        <table className="table-card w-100">
+                                                          <thead>
+                                                            <tr>
+                                                              <th>
+                                                                Service Name
+                                                              </th>
+                                                              <th>Price</th>
+                                                              <th>
+                                                                Valid From
+                                                              </th>
+                                                              <th>Valid To</th>
+                                                              <th>Action</th>
+                                                            </tr>
+                                                          </thead>
+                                                          <tbody>
+                                                            {info?.omca?.extraServices?.map(
+                                                              (item, index) => {
+                                                                if (!item.price)
+                                                                  return null;
+                                                                return (
+                                                                  <tr
+                                                                    key={
+                                                                      item._id ||
+                                                                      item.service_type
+                                                                    }
+                                                                  >
+                                                                    <td>
+                                                                      {item.serviceName ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {
+                                                                        item.price
                                                                       }
-                                                                    >
-                                                                      <td>
-                                                                        {item.serviceName ||
-                                                                          "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        {item.price}
-                                                                      </td>
-                                                                      <td>
-                                                                        {item.startTime
-                                                                          ? new Date(
+                                                                    </td>
+                                                                    <td>
+                                                                      {item.startTime
+                                                                        ? new Date(
                                                                             item.startTime,
                                                                           ).toLocaleDateString(
                                                                             "en-GB",
                                                                           )
-                                                                          : "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        {item.endTime
-                                                                          ? new Date(
+                                                                        : "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {item.endTime
+                                                                        ? new Date(
                                                                             item.endTime,
                                                                           ).toLocaleDateString(
                                                                             "en-GB",
                                                                           )
-                                                                          : "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        <div className="action-icon">
-                                                                          <i
-                                                                            className="fa-solid fa-pen-to-square"
-                                                                            onClick={() => {
-                                                                              hadnlcecEditModal(
-                                                                                item,
-                                                                                info,
-                                                                              );
-                                                                            }}
-                                                                          ></i>
-                                                                          <i
-                                                                            className="fa-solid fa-trash"
-                                                                            onClick={() => {
-                                                                              handledeltePatientserveice(
-                                                                                item,
-                                                                                info,
-                                                                                index,
-                                                                              );
-                                                                            }}
-                                                                          ></i>
-                                                                        </div>
-                                                                      </td>
-                                                                    </tr>
-                                                                  );
-                                                                },
-                                                              )}
-                                                            </tbody>
-                                                          </table>
-                                                        </div>
+                                                                        : "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      <div className="action-icon">
+                                                                        <i
+                                                                          className="fa-solid fa-pen-to-square"
+                                                                          onClick={() => {
+                                                                            hadnlcecEditModal(
+                                                                              item,
+                                                                              info,
+                                                                            );
+                                                                          }}
+                                                                        ></i>
+                                                                        <i
+                                                                          className="fa-solid fa-trash"
+                                                                          onClick={() => {
+                                                                            handledeltePatientserveice(
+                                                                              item,
+                                                                              info,
+                                                                              index,
+                                                                            );
+                                                                          }}
+                                                                        ></i>
+                                                                      </div>
+                                                                    </td>
+                                                                  </tr>
+                                                                );
+                                                              },
+                                                            )}
+                                                          </tbody>
+                                                        </table>
                                                       </div>
                                                     </div>
-                                                 
+                                                  </div>
                                                 </div>
                                                 <div className="col-md-6">
-                                                
-                                                    <div className="card patientreat">
-                                                      <div className="card-header service-list">
-                                                        <h6>Free Services</h6>
-                                                      </div>
-                                                      <div className="card-body">
-                                                        <div className="table-responsive table-no-card">
-                                                          <table className="table-card w-100">
-                                                            <thead>
-                                                              <tr>
-                                                                <th>Service Name</th>
-                                                                {/* <th>Price</th> */}
-                                                                <th>Duration</th>
-                                                                {/* <th>Valid To</th>
+                                                  <div className="card patientreat">
+                                                    <div className="card-header service-list">
+                                                      <h6>Free Services</h6>
+                                                    </div>
+                                                    <div className="card-body">
+                                                      <div className="table-responsive table-no-card">
+                                                        <table className="table-card w-100">
+                                                          <thead>
+                                                            <tr>
+                                                              <th>
+                                                                Service Name
+                                                              </th>
+                                                              {/* <th>Price</th> */}
+                                                              <th>Duration</th>
+                                                              {/* <th>Valid To</th>
                                                                 <th>Action</th> */}
-                                                              </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                              {info?.omca?.freeServices?.map(
-                                                                (item, index) => {
-                                                                  
-                                                                  return (
-                                                                    <tr
-                                                                      key={index}
-                                                                    >
-                                                                      <td>
-                                                                        {item.serviceName ||
-                                                                          "-"}
-                                                                      </td>
-                                                                      {/* <td>
+                                                            </tr>
+                                                          </thead>
+                                                          <tbody>
+                                                            {info?.omca?.freeServices?.map(
+                                                              (item, index) => {
+                                                                return (
+                                                                  <tr
+                                                                    key={index}
+                                                                  >
+                                                                    <td>
+                                                                      {item.serviceName ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    {/* <td>
                                                                         {item.price}
                                                                       </td> */}
-                                                                      <td>
-                                                                        {item.duration
-                                                                         }
-                                                                      </td>
-                                                                      {/* <td>
+                                                                    <td>
+                                                                      {
+                                                                        item.duration
+                                                                      }
+                                                                    </td>
+                                                                    {/* <td>
                                                                         {item.endTime
                                                                           ? new Date(
                                                                             item.endTime,
@@ -8638,18 +8758,17 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                                           ></i>
                                                                         </div>
                                                                       </td> */}
-                                                                    </tr>
-                                                                  );
-                                                                },
-                                                              )}
-                                                            </tbody>
-                                                          </table>
-                                                        </div>
+                                                                  </tr>
+                                                                );
+                                                              },
+                                                            )}
+                                                          </tbody>
+                                                        </table>
                                                       </div>
                                                     </div>
-                                                 
+                                                  </div>
                                                 </div>
-                                                    {/* <div className="col-md-6">
+                                                {/* <div className="col-md-6">
                                                       <div className="card patientreat">
                                                         <div className="card-header service-list action-icon">
                                                           <h6>Free Services</h6>
@@ -8703,7 +8822,9 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                     <h6 className="mb-0">
                                                       Total Amount:
                                                     </h6>
-                                                    <p>{info.omca?.totalAmount}</p>
+                                                    <p>
+                                                      {info.omca?.totalAmount}
+                                                    </p>
                                                   </div>
                                                 </div>
                                                 <div className="col-md-12">
@@ -8711,7 +8832,9 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                     <h6 className="mb-0">
                                                       Due Amount:
                                                     </h6>
-                                                    <p>{info.omca?.dueAmount}</p>
+                                                    <p>
+                                                      {info.omca?.dueAmount}
+                                                    </p>
                                                   </div>
                                                 </div>
                                               </div>
@@ -8736,43 +8859,71 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                       <th>Paid For</th>
                                                       <th>Notes</th>
                                                       <th>Document</th>
-                                                     
                                                     </tr>
                                                   </thead>
                                                   <tbody>
-                                                    {info.pharmacy?.payments?.length > 0 ? (
-                                                      info.pharmacy?.payments?.map((item) => (
-                                                        <tr key={item._id}>
-                                                          <td>
-                                                            {item?.payment_Date
-                                                              ? new Date(item.payment_Date).toLocaleDateString("en-GB")
-                                                              : "-"}
-                                                          </td>
-                                                          <td>{item?.paymentMethod || "-"}</td>
-                                                          <td>{item?.paid_amount || "-"}</td>
-                                                          <td>{item?.paid_to || "-"}</td>
-                                                          <td>
-                                                            {item?.paid_for
-                                                              ? item.paid_for
-                                                                .split("_")
-                                                                .map(
-                                                                  (word) =>
-                                                                    word.charAt(0).toUpperCase() + word.slice(1)
-                                                                )
-                                                                .join(" ")
-                                                              : "-"}
-                                                          </td>
-                                                          <td>{item?.notes || "-"}</td>
-                                                          <td className="action-btn">
-                                                            {item?.attachFile ? (
-                                                              <a href={`https://sisccltd.com/omca_crm/${item.attachFile}`} target="_blank" rel="noopener noreferrer">
-                                                                <i className="fa fa-eye"></i>
-                                                              </a>
-                                                            ) : (
-                                                              "-"
-                                                            )}
-                                                          </td>
-                                                          {/* {usrFount === "Admin" && (
+                                                    {info.pharmacy?.payments
+                                                      ?.length > 0 ? (
+                                                      info.pharmacy?.payments?.map(
+                                                        (item) => (
+                                                          <tr key={item._id}>
+                                                            <td>
+                                                              {item?.payment_Date
+                                                                ? new Date(
+                                                                    item.payment_Date,
+                                                                  ).toLocaleDateString(
+                                                                    "en-GB",
+                                                                  )
+                                                                : "-"}
+                                                            </td>
+                                                            <td>
+                                                              {item?.paymentMethod ||
+                                                                "-"}
+                                                            </td>
+                                                            <td>
+                                                              {item?.paid_amount ||
+                                                                "-"}
+                                                            </td>
+                                                            <td>
+                                                              {item?.paid_to ||
+                                                                "-"}
+                                                            </td>
+                                                            <td>
+                                                              {item?.paid_for
+                                                                ? item.paid_for
+                                                                    .split("_")
+                                                                    .map(
+                                                                      (word) =>
+                                                                        word
+                                                                          .charAt(
+                                                                            0,
+                                                                          )
+                                                                          .toUpperCase() +
+                                                                        word.slice(
+                                                                          1,
+                                                                        ),
+                                                                    )
+                                                                    .join(" ")
+                                                                : "-"}
+                                                            </td>
+                                                            <td>
+                                                              {item?.notes ||
+                                                                "-"}
+                                                            </td>
+                                                            <td className="action-btn">
+                                                              {item?.attachFile ? (
+                                                                <a
+                                                                  href={`https://sisccltd.com/omca_crm/${item.attachFile}`}
+                                                                  target="_blank"
+                                                                  rel="noopener noreferrer"
+                                                                >
+                                                                  <i className="fa fa-eye"></i>
+                                                                </a>
+                                                              ) : (
+                                                                "-"
+                                                              )}
+                                                            </td>
+                                                            {/* {usrFount === "Admin" && (
                                                             <>
                                                               <td>
                                                                 <button className="add-button"
@@ -8791,11 +8942,21 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                               </td>
                                                             </>
                                                           )} */}
-                                                        </tr>
-                                                      ))
+                                                          </tr>
+                                                        ),
+                                                      )
                                                     ) : (
                                                       <tr>
-                                                        <td colSpan={usrFount === "Admin" ? 9 : 7} style={{ textAlign: "center" }}>
+                                                        <td
+                                                          colSpan={
+                                                            usrFount === "Admin"
+                                                              ? 9
+                                                              : 7
+                                                          }
+                                                          style={{
+                                                            textAlign: "center",
+                                                          }}
+                                                        >
                                                           No Data Found
                                                         </td>
                                                       </tr>
@@ -8811,17 +8972,22 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                     <h6 className="mb-0">
                                                       Total Amount:
                                                     </h6>
-                                                    <p>{info.pharmacy?.totalAmount}</p>
+                                                    <p>
+                                                      {
+                                                        info.pharmacy
+                                                          ?.totalAmount
+                                                      }
+                                                    </p>
                                                   </div>
                                                 </div>
-                                                <div className="col-md-12">
+                                                {/* <div className="col-md-12">
                                                   <div className="total-amount">
                                                     <h6 className="mb-0">
                                                       Due Amount:
                                                     </h6>
                                                     <p>{info.treatment_due_payment}</p>
                                                   </div>
-                                                </div>
+                                                </div> */}
                                               </div>
                                             </div>
                                           </div>
@@ -8896,7 +9062,7 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
 
                                                       <TableBody>
                                                         {attandantFilered.length ===
-                                                          0 ? (
+                                                        0 ? (
                                                           <TableRow>
                                                             <TableCell
                                                               colSpan={7}
@@ -8942,43 +9108,42 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                                 <TableCell className="d-flex gap-2">
                                                                   {item
                                                                     ?.attendant_passport
-                                                                    ?.length >
-                                                                    0
+                                                                    ?.length > 0
                                                                     ? item.attendant_passport.map(
-                                                                      (
-                                                                        file,
-                                                                        fIndex,
-                                                                      ) => {
-                                                                        const filePath =
-                                                                          typeof file ===
+                                                                        (
+                                                                          file,
+                                                                          fIndex,
+                                                                        ) => {
+                                                                          const filePath =
+                                                                            typeof file ===
                                                                             "object"
-                                                                            ? file?.path
-                                                                            : file;
-                                                                        return (
-                                                                          <div
-                                                                            key={
-                                                                              fIndex
-                                                                            }
-                                                                          >
-                                                                            <a
-                                                                              href={`https://sisccltd.com/omca_crm/${filePath}`}
-                                                                              target="_blank"
-                                                                              rel="noopener noreferrer"
-                                                                              className="viewbtn"
+                                                                              ? file?.path
+                                                                              : file;
+                                                                          return (
+                                                                            <div
+                                                                              key={
+                                                                                fIndex
+                                                                              }
                                                                             >
-                                                                              View{" "}
-                                                                              {item
-                                                                                .attendant_passport
-                                                                                .length >
+                                                                              <a
+                                                                                href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="viewbtn"
+                                                                              >
+                                                                                View{" "}
+                                                                                {item
+                                                                                  .attendant_passport
+                                                                                  .length >
                                                                                 1
-                                                                                ? fIndex +
-                                                                                1
-                                                                                : ""}
-                                                                            </a>
-                                                                          </div>
-                                                                        );
-                                                                      },
-                                                                    )
+                                                                                  ? fIndex +
+                                                                                    1
+                                                                                  : ""}
+                                                                              </a>
+                                                                            </div>
+                                                                          );
+                                                                        },
+                                                                      )
                                                                     : "Not Uploaded"}
                                                                 </TableCell>
                                                               </TableRow>
@@ -9060,7 +9225,7 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                           Document
                                                         </TableCell>
                                                         {usrFount ===
-                                                          "Admin" ? (
+                                                        "Admin" ? (
                                                           <>
                                                             <TableCell>
                                                               PDF
@@ -9075,105 +9240,125 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                       </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                      {paymentsFilered.map(
-                                                        (item) => (
-                                                          <TableRow
-                                                            key={item._id}
-                                                          >
-                                                            <TableCell>
-                                                              {new Date(
-                                                                item?.payment_Date,
-                                                              ).toLocaleDateString(
-                                                                "en-GB",
-                                                              )}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                              {
-                                                                item?.paymentMethod
-                                                              }
-                                                            </TableCell>
+                                                      {paymentsFilered &&
+                                                      paymentsFilered.length >
+                                                        0 ? (
+                                                        paymentsFilered.map(
+                                                          (item) => (
+                                                            <TableRow
+                                                              key={item._id}
+                                                            >
+                                                              <TableCell>
+                                                                {new Date(
+                                                                  item?.payment_Date,
+                                                                ).toLocaleDateString(
+                                                                  "en-GB",
+                                                                )}
+                                                              </TableCell>
+                                                              <TableCell>
+                                                                {
+                                                                  item?.paymentMethod
+                                                                }
+                                                              </TableCell>
 
-                                                            <TableCell>
-                                                              {
-                                                                item?.paid_amount
-                                                              }
-                                                            </TableCell>
-                                                            <TableCell>
-                                                              {item?.paid_to}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                              {item?.paid_for
-                                                                ?.split("_")
-                                                                .map(
-                                                                  (word) =>
-                                                                    word
-                                                                      .charAt(0)
-                                                                      .toUpperCase() +
-                                                                    word.slice(
-                                                                      1,
-                                                                    ),
-                                                                )
-                                                                .join(" ")}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                              {item?.notes}
-                                                            </TableCell>
+                                                              <TableCell>
+                                                                {
+                                                                  item?.paid_amount
+                                                                }
+                                                              </TableCell>
+                                                              <TableCell>
+                                                                {item?.paid_to}
+                                                              </TableCell>
+                                                              <TableCell>
+                                                                {item?.paid_for
+                                                                  ?.split("_")
+                                                                  .map(
+                                                                    (word) =>
+                                                                      word
+                                                                        .charAt(
+                                                                          0,
+                                                                        )
+                                                                        .toUpperCase() +
+                                                                      word.slice(
+                                                                        1,
+                                                                      ),
+                                                                  )
+                                                                  .join(" ")}
+                                                              </TableCell>
+                                                              <TableCell>
+                                                                {item?.notes}
+                                                              </TableCell>
 
-                                                            <TableCell className="action-btn">
-                                                              {item?.attachFile ? (
-                                                                <a
-                                                                  href={`https://sisccltd.com/omca_crm/${item.attachFile}`}
-                                                                  target="_blank"
-                                                                  rel="noopener noreferrer"
-                                                                >
-                                                                  <i className="fa fa-eye"></i>
-                                                                </a>
-                                                              ) : (
-                                                                "-"
-                                                              )}
-                                                            </TableCell>
-
-                                                            {usrFount ===
-                                                              "Admin" ? (
-                                                              <>
-                                                                <TableCell>
-                                                                  <button
-                                                                    className="add-button"
-                                                                    onClick={() => {
-                                                                      navigate(
-                                                                        "/Admin/Patient-Pdfdetails",
-                                                                        {
-                                                                          state:
-                                                                          {
-                                                                            data: item?._id,
-                                                                          },
-                                                                        },
-                                                                      );
-                                                                    }}
+                                                              <TableCell className="action-btn">
+                                                                {item?.attachFile ? (
+                                                                  <a
+                                                                    href={`https://sisccltd.com/omca_crm/${item.attachFile}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
                                                                   >
-                                                                    <i className="fa fa-download"></i>
-                                                                  </button>
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                  <i
-                                                                    className="fa-solid fa-trash text-danger"
-                                                                    style={{
-                                                                      cursor:
-                                                                        "pointer",
-                                                                    }}
-                                                                    onClick={() =>
-                                                                      deletePaymentInvoice(
-                                                                        item,
-                                                                      )
-                                                                    }
-                                                                  ></i>
-                                                                </TableCell>
-                                                              </>
-                                                            ) : (
-                                                              ""
-                                                            )}
-                                                          </TableRow>
-                                                        ),
+                                                                    <i className="fa fa-eye"></i>
+                                                                  </a>
+                                                                ) : (
+                                                                  "-"
+                                                                )}
+                                                              </TableCell>
+
+                                                              {usrFount ===
+                                                              "Admin" ? (
+                                                                <>
+                                                                  <TableCell>
+                                                                    <button
+                                                                      className="add-button"
+                                                                      onClick={() => {
+                                                                        navigate(
+                                                                          "/Admin/Patient-Pdfdetails",
+                                                                          {
+                                                                            state:
+                                                                              {
+                                                                                data: item?._id,
+                                                                              },
+                                                                          },
+                                                                        );
+                                                                      }}
+                                                                    >
+                                                                      <i className="fa fa-download"></i>
+                                                                    </button>
+                                                                  </TableCell>
+                                                                  <TableCell>
+                                                                    <i
+                                                                      className="fa-solid fa-trash text-danger"
+                                                                      style={{
+                                                                        cursor:
+                                                                          "pointer",
+                                                                      }}
+                                                                      onClick={() =>
+                                                                        deletePaymentInvoice(
+                                                                          item,
+                                                                        )
+                                                                      }
+                                                                    ></i>
+                                                                  </TableCell>
+                                                                </>
+                                                              ) : (
+                                                                ""
+                                                              )}
+                                                            </TableRow>
+                                                          ),
+                                                        )
+                                                      ) : (
+                                                        <TableRow>
+                                                          <TableCell
+                                                            colSpan={
+                                                              usrFount ===
+                                                              "Admin"
+                                                                ? 9
+                                                                : 7
+                                                            }
+                                                            align="center"
+                                                          >
+                                                            No Data Found
+                                                          </TableCell>
+                                                        </TableRow>
                                                       )}
                                                     </TableBody>
                                                   </Table>
@@ -9243,67 +9428,88 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                   </TableHead>
 
                                                   <TableBody>
-                                                    {reportsFilered1.map(
-                                                      (item) => (
-                                                        <TableRow
-                                                          key={item._id}
-                                                        >
-                                                          <TableCell>
-                                                            {item?.treatmentId}
-                                                          </TableCell>
+                                                    {reportsFilered1 &&
+                                                    reportsFilered1.length >
+                                                      0 ? (
+                                                      reportsFilered1.map(
+                                                        (item) => (
+                                                          <TableRow
+                                                            key={item._id}
+                                                          >
+                                                            <TableCell>
+                                                              {
+                                                                item?.treatmentId
+                                                              }
+                                                            </TableCell>
 
-                                                          <TableCell>
-                                                            {item?.reportTitle}
-                                                          </TableCell>
+                                                            <TableCell>
+                                                              {
+                                                                item?.reportTitle
+                                                              }
+                                                            </TableCell>
 
-                                                          <TableCell>
-                                                            {new Date(
-                                                              item?.treatment_report_date,
-                                                            ).toLocaleDateString(
-                                                              "en-GB",
-                                                            )}
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            {item?.platform ===
+                                                            <TableCell>
+                                                              {new Date(
+                                                                item?.treatment_report_date,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              {item?.platform ===
                                                               1
-                                                              ? "CRM"
-                                                              : "Hospital"}
-                                                          </TableCell>
+                                                                ? "CRM"
+                                                                : "Hospital"}
+                                                            </TableCell>
 
-                                                          {usrFount ===
+                                                            {usrFount ===
                                                             "Admin" ? (
-                                                            <>
-                                                              {" "}
-                                                              <TableCell>
-                                                                <a
-                                                                  href={`${image}${item.treatmentReport}`}
-                                                                  target="_blank"
-                                                                  rel="noreferrer"
-                                                                >
-                                                                  Download
-                                                                  Report
-                                                                </a>
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                <i
-                                                                  className="fa-solid fa-trash text-danger"
-                                                                  style={{
-                                                                    cursor:
-                                                                      "pointer",
-                                                                  }}
-                                                                  onClick={() =>
-                                                                    handledeleteReport(
-                                                                      item,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              </TableCell>
-                                                            </>
-                                                          ) : (
-                                                            ""
-                                                          )}
-                                                        </TableRow>
-                                                      ),
+                                                              <>
+                                                                {" "}
+                                                                <TableCell>
+                                                                  <a
+                                                                    href={`${image}${item.treatmentReport}`}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                  >
+                                                                    Download
+                                                                    Report
+                                                                  </a>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  <i
+                                                                    className="fa-solid fa-trash text-danger"
+                                                                    style={{
+                                                                      cursor:
+                                                                        "pointer",
+                                                                    }}
+                                                                    onClick={() =>
+                                                                      handledeleteReport(
+                                                                        item,
+                                                                      )
+                                                                    }
+                                                                  ></i>
+                                                                </TableCell>
+                                                              </>
+                                                            ) : (
+                                                              ""
+                                                            )}
+                                                          </TableRow>
+                                                        ),
+                                                      )
+                                                    ) : (
+                                                      <TableRow>
+                                                        <TableCell
+                                                          colSpan={
+                                                            usrFount === "Admin"
+                                                              ? 6
+                                                              : 4
+                                                          }
+                                                          align="center"
+                                                        >
+                                                          No Data Found
+                                                        </TableCell>
+                                                      </TableRow>
                                                     )}
                                                   </TableBody>
                                                 </Table>
@@ -9315,7 +9521,7 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                     )}
                                   {activeSubTab === "appointment" &&
                                     selectedTreatmentId ===
-                                    info.treatment_id && (
+                                      info.treatment_id && (
                                       <div className="row">
                                         <div className="col-md-12">
                                           <div className="top-collpse">
@@ -9353,7 +9559,7 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                               </thead>
                                               <tbody>
                                                 {appointmentTabel.length ===
-                                                  0 ? (
+                                                0 ? (
                                                   <tr>
                                                     <td
                                                       colSpan="8"
@@ -9371,35 +9577,35 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                            "online"
+                                                          "online"
                                                             ? item.vehicle_no
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                            "online"
+                                                          "online"
                                                             ? item.driver_name
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                            "online"
+                                                          "online"
                                                             ? item.driver_contact
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.mode !==
-                                                            "online"
+                                                          "online"
                                                             ? item.pickup_time
                                                             : "-"}
                                                         </td>
                                                         <td>
                                                           {item.appointment_Date
                                                             ? new Date(
-                                                              item.appointment_Date,
-                                                            )
-                                                              .toISOString()
-                                                              .slice(0, 10)
+                                                                item.appointment_Date,
+                                                              )
+                                                                .toISOString()
+                                                                .slice(0, 10)
                                                             : ""}
                                                         </td>
                                                         <td>{item.note}</td>
@@ -9420,7 +9626,7 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                     )}
                                   {activeSubTab === "notes" &&
                                     selectedTreatmentId ===
-                                    info.treatment_id && (
+                                      info.treatment_id && (
                                       <div className="col-md-12">
                                         <div className="card patientreat">
                                           <div className="card-header service-list d-flex justify-content-between">
@@ -9432,8 +9638,11 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                 <button
                                                   className="add-button"
                                                   onClick={(e) =>
-                                                    handleClickOpenNotes(e, selectedTreatmentId,
-                                                      info,)
+                                                    handleClickOpenNotes(
+                                                      e,
+                                                      selectedTreatmentId,
+                                                      info,
+                                                    )
                                                   }
                                                 >
                                                   <span>
@@ -9471,36 +9680,45 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                                                           <td>
                                                             {item?.date
                                                               ? new Date(
-                                                                item.date,
-                                                              ).toLocaleDateString(
-                                                                "en-GB",
-                                                              )
+                                                                  item.date,
+                                                                ).toLocaleDateString(
+                                                                  "en-GB",
+                                                                )
                                                               : "-"}
                                                           </td>
                                                           <td>
                                                             {item.platform ==
-                                                              "1"
+                                                            "1"
                                                               ? "CRM"
                                                               : "Hospital"}{" "}
                                                           </td>
                                                           <td>
-                                                            {item?.treatmentNoteImages?.length > 0 ? (
-                                                              item.treatmentNoteImages.map((img, index) => (
-                                                                <button
-                                                                  key={index}
-                                                                  className="btn btn-sm btn-primary me-1"
-                                                                  onClick={() =>
-                                                                    window.open(`https://sisccltd.com/omca_crm/${img}`, "_blank")
-                                                                  }
-                                                                >
-                                                                  View
-                                                                </button>
-                                                              ))
-                                                            ) : (
-                                                              "-"
-                                                            )}
+                                                            {item
+                                                              ?.treatmentNoteImages
+                                                              ?.length > 0
+                                                              ? item.treatmentNoteImages.map(
+                                                                  (
+                                                                    img,
+                                                                    index,
+                                                                  ) => (
+                                                                    <button
+                                                                      key={
+                                                                        index
+                                                                      }
+                                                                      className="btn btn-sm btn-primary me-1"
+                                                                      onClick={() =>
+                                                                        window.open(
+                                                                          `https://sisccltd.com/omca_crm/${img}`,
+                                                                          "_blank",
+                                                                        )
+                                                                      }
+                                                                    >
+                                                                      View
+                                                                    </button>
+                                                                  ),
+                                                                )
+                                                              : "-"}
                                                           </td>
-
 
                                                           <td>
                                                             <div className="action-icon">
@@ -9540,8 +9758,7 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                             );
                           })}
                         </>
-                      )
-                      }
+                      )}
                     </div>
                   </div>
                 </div>
@@ -9549,7 +9766,7 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
             </div>
           </div>
         </div>
-      </div >
+      </div>
       <React.Fragment>
         <Dialog
           fullWidth
@@ -9985,7 +10202,7 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
                       value={treatmentId}
                     />
                   </div>
-                
+
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"
@@ -11030,55 +11247,50 @@ dispatch(GetPatientTreatments({ id: location.state.patientId }));
               className="contact-form"
             >
               <Box>
-                  <div className="field-set">
-                    <label>
-                      Service Name<span className="text-danger"></span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="service_name"
-                        onChange={addhospitalChare}
-                      />
-                    </div>
+                <div className="field-set">
+                  <label>
+                    Service Name<span className="text-danger"></span>
+                  </label>
+                  <div className="upload-input">
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="service_name"
+                      onChange={addhospitalChare}
+                    />
                   </div>
-                  <div className="field-set">
-                    <label>
-                      Price<span className="text-danger"></span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="number"
-                        className="form-control"
-                        name="price"
-                        onChange={addhospitalChare}
-                      />
-                    </div>
+                </div>
+                <div className="field-set">
+                  <label>
+                    Price<span className="text-danger"></span>
+                  </label>
+                  <div className="upload-input">
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="price"
+                      onChange={addhospitalChare}
+                    />
                   </div>
-                  <div className="field-set">
-                    <label>
-                      Date<span className="text-danger"></span>
-                    </label>
-                    <div className="upload-input">
-                      <input
-                        type="date"
-                        className="form-control"
-                        name="service_name"
-                      
-                        onChange={addhospitalChare}
-                      />
-                    </div>
+                </div>
+                <div className="field-set">
+                  <label>
+                    Date<span className="text-danger"></span>
+                  </label>
+                  <div className="upload-input">
+                    <input
+                      type="date"
+                      className="form-control"
+                      name="service_name"
+                      onChange={addhospitalChare}
+                    />
                   </div>
-                  <DialogActions className="submit-main">
-                    <Button
-                     
-                      onClick={ addchargeapiHospital}
-                      variant="contained"
-                    >
-                      Submit
-                    </Button>
-                  </DialogActions>
+                </div>
+                <DialogActions className="submit-main">
+                  <Button onClick={addchargeapiHospital} variant="contained">
+                    Submit
+                  </Button>
+                </DialogActions>
               </Box>
             </Box>
           </DialogContent>
