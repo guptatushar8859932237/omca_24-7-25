@@ -1913,7 +1913,7 @@ images.forEach((img) => {
   };
   const handleAction = (e, type, info, d) => {
     const tId = info.treatment_id;
-    const hDetails = info.Hospital_details;
+    // const hDetails = info?.Hospital_details;
     const status = info.treatment_status;
     const treatmentName = info.treatment_name;
 
@@ -1921,7 +1921,7 @@ images.forEach((img) => {
     setTreatMentNAem(status);
     setTreatmentNameHeading(d);
     setTreatmentIdFilter(treatmentName);
-    setHospitalDetails(hDetails);
+    // setHospitalDetails(hDetails);
     getDataapi3(tId);
     console.log(e, type, info, d);
     if (type === "attendant") {
@@ -1947,7 +1947,7 @@ images.forEach((img) => {
   //   const handleAction = (e, type, info, d) => {
   //     console.log(e, type, info, d);
   //     const tId = info.treatment_id;
-  //     const hDetails = info.Hospital_details;
+  //     const hDetails = info?.Hospital_details;
   //     const status = info.treatment_status;
   //     const treatmentName = info.treatment_name;
   //     setSelectedTreatmentId(tId);
@@ -2740,7 +2740,7 @@ images.forEach((img) => {
                                              Notes
                                             </button>
                                           </li>
-                                          {!info?.Hospital_details?.some(
+                                          {/* {!info?.Hospital_details?.some(
                                             (item) => item.hospital_Name,
                                           ) && (
                                             <li className="nav-item">
@@ -2758,7 +2758,7 @@ images.forEach((img) => {
                                                 + Add Hospital
                                               </button>
                                             </li>
-                                          )}
+                                          )} */}
                                           <li className="nav-item">
                                             <button
                                               className="nav-link"
@@ -2895,7 +2895,7 @@ images.forEach((img) => {
                                             <div className="card-header service-list">
                                               <h6>Hospital </h6>
                                             </div>
-                                            <div className="card-body">
+                                            {/* <div className="card-body">
                                               <ul className="trment-list">
                                                 {info?.Hospital_details.map(
                                                   (item, index) => {
@@ -2905,7 +2905,7 @@ images.forEach((img) => {
                                                         <li key={index}>
                                                           <div className="row align-items-center">
                                                             {/* Left Content */}
-                                                            <div className="col-md-10">
+                                                            {/* <div className="col-md-10">
                                                               <div className="para-main-div">
                                                                 <p className="mb-1">
                                                                   <strong>
@@ -2925,7 +2925,7 @@ images.forEach((img) => {
                                                             </div>
 
                                                             {/* Right Icons */}
-                                                            <div className="col-md-2 text-end">
+                                                            {/* <div className="col-md-2 text-end">
                                                               <div className="action-icon">
                                                                 {item.hospital_Name && (
                                                                   <i
@@ -2959,7 +2959,7 @@ images.forEach((img) => {
                                                   },
                                                 )}
                                               </ul>
-                                            </div>
+                                            </div> */}  
                                           </div>
                                         </div>
                                         {(() => {
