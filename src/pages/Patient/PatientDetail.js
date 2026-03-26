@@ -5605,6 +5605,7 @@ function PatientDetail() {
   const [treatmentIDa, setTreatmentIDa] = useState(null);
   const [enqId, setEnqId] = useState("");
   const [nodaestInput, setNodaestInput] = useState("");
+  const [treatmentChargeid, setTreatmentChargeid] = useState("");
   const [gettreatmentserID, setGettreatmentserID] = useState("");
   const [serviceData, setServiceData] = useState([]);
   const [payment_details, setPayment_details] = useState([]);
@@ -5619,6 +5620,7 @@ function PatientDetail() {
   const [appointErr, setAppointErr] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
   const [oeditappp, setOeditappp] = useState(false);
+  const [isEditT, setIsEditT] = useState(false);
   const [treatmentuser, setTreatmentuser] = useState([]);
   const [noteErr, setNoteErr] = useState(false);
   const [data, setData] = useState({
@@ -7432,9 +7434,20 @@ function PatientDetail() {
     }
   };
   const handledeedit = (a, b) => {
+    console.log(a,b)
+    setTreatmentChargeid(a.treatment_id)
     // console.log(a, b);
-    setTreatmentIDa(a);
-    setDataImperial(true);
+    setIsEditT(true)
+    setHospitalCharge({
+      id:b._id,
+      service_name:b.service_name,
+      price:b.price,
+       date: b.date
+        ? new Date(b.date).toISOString().split("T")[0]
+        : "",
+    });
+    setOpenmodalCharge(true)
+    // setDataImperial(true);
   };
   const dataIwemperial = () => {
     setDataImperial(false);
@@ -7746,11 +7759,56 @@ function PatientDetail() {
     setOpenmodalCharge(true);
   };
   const handleclickclosecharge = () => {
+    setIsEditT(false)
+    setHospitalCharge('')
     setOpenmodalCharge(false);
   };
   const addhospitalChare = (e) => {
     const { name, value } = e.target;
     setHospitalCharge({ ...hospitalCharge, [name]: value });
+  };
+  const addchargeapiHedithspital = async () => {
+    const payload = {
+       charge_id : hospitalCharge.id,
+      service_name: hospitalCharge.service_name,
+      price: hospitalCharge.price,
+      date: hospitalCharge.date,
+    };
+
+    try {
+      const response = await axios.put(
+        `${baseurl}editHospitalServiceCharge/${treatmentChargeid}`,
+        payload, // ✅ data goes here
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      console.log(response.data);
+      handleclickclosecharge();
+      setTreatmentChargeid("")
+      setHospitalCharge("");
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      // ✅ Success Swal
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Hospital charge Edit successfully!",
+        confirmButtonColor: "#3085d6",
+      });
+    } catch (error) {
+      console.log(error);
+
+      // ❌ Error Swal
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error?.response?.data?.message || "Something went wrong!",
+        confirmButtonColor: "#d33",
+      });
+    }
   };
   const addchargeapiHospital = async () => {
     const payload = {
@@ -7793,6 +7851,56 @@ function PatientDetail() {
       });
     }
   };
+
+const handledeedit123222 = async (info, index) => {
+  console.log(info, index);
+
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "You want to delete this hospital charge!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3b3b3b",
+    confirmButtonText: "Yes, delete it!",
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const response = await axios.delete(
+      `${baseurl}deleteHospitalServiceCharge/${info.treatment_id}`,
+      {
+        data: {
+          index: index, // ✅ IMPORTANT
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (response?.data?.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Hospital charge deleted successfully!",
+      });
+
+      // 🔥 refresh
+      getDataapi3(info.treatment_id);
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+    }
+  } catch (error) {
+    console.log(error);
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error?.response?.data?.message || "Something went wrong!",
+    });
+  }
+};
   return (
     <>
       <div className="page-wrapper">
@@ -8619,9 +8727,9 @@ function PatientDetail() {
                                                                                   "pointer",
                                                                               }}
                                                                               onClick={() =>
-                                                                                handledelete(
+                                                                                handledeedit123222(
                                                                                   info,
-                                                                                  item,
+                                                                                  index,
                                                                                 )
                                                                               }
                                                                             ></i>
@@ -11378,7 +11486,7 @@ function PatientDetail() {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>Add Hospital Charge</h6>
+              <h6>{isEditT===true?"Edit":"Add"} Hospital Charge</h6>
             </div>
             <div className="cross-icon" onClick={handleclickclosecharge}>
               <i class="fa-solid fa-xmark"></i>
@@ -11405,6 +11513,8 @@ function PatientDetail() {
                       type="text"
                       className="form-control"
                       name="service_name"
+                      value={hospitalCharge.service_name}
+
                       onChange={addhospitalChare}
                     />
                   </div>
@@ -11418,6 +11528,7 @@ function PatientDetail() {
                       type="number"
                       className="form-control"
                       name="price"
+                         value={hospitalCharge.price}
                         onKeyPress={handkekeypreees}
                       onChange={addhospitalChare}
                     />
@@ -11429,17 +11540,22 @@ function PatientDetail() {
                   </label>
                   <div className="upload-input">
                     <input
-                      type="date"
-                      className="form-control"
-                      name="date"
-                      onChange={addhospitalChare}
-                    />
+  type="date"
+  className="form-control"
+  name="date"
+  value={hospitalCharge.date || ""}
+  onChange={addhospitalChare}
+/>
                   </div>
                 </div>
                 <DialogActions className="submit-main">
+                {isEditT===true?
+                  <Button onClick={addchargeapiHedithspital} variant="contained">
+                    Edit Charge
+                  </Button>:
                   <Button onClick={addchargeapiHospital} variant="contained">
                     Submit
-                  </Button>
+                  </Button>}
                 </DialogActions>
               </Box>
             </Box>
