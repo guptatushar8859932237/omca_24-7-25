@@ -712,7 +712,7 @@ export default function Inquiry() {
                               Country
                             </TableSortLabel>
                           </TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             <TableSortLabel
                               active={orderBy === "emergency_contact"}
                               direction={
@@ -726,8 +726,8 @@ export default function Inquiry() {
                             >
                               Contact
                             </TableSortLabel>
-                          </TableCell>
-                          <TableCell>Disease name</TableCell>
+                          </TableCell> */}
+                          {/* <TableCell>Disease name</TableCell> */}
                           <TableCell>Status</TableCell>
                           <TableCell>Actions</TableCell>
                           {tabValue === 0 ? (
@@ -773,13 +773,13 @@ export default function Inquiry() {
                               </TableCell>
                               {/* <TableCell>{info.email}</TableCell> */}
                               <TableCell>{info.country}</TableCell>
-                              <TableCell>{info.emergency_contact}</TableCell>
+                              {/* <TableCell>{info.emergency_contact}</TableCell> */}
                               {/* <TableCell title={info.disease_name}> */}
-                              <TableCell title={info.disease_name}>
+                              {/* <TableCell title={info.disease_name}>
                                 {info.disease_name?.length > 10
                                   ? info.disease_name.slice(0, 10) + "..."
                                   : info.disease_name}
-                              </TableCell>
+                              </TableCell> */}
                               <TableCell>
                                 <FormControl
                                   sx={{ m: 1, minWidth: 120 }}

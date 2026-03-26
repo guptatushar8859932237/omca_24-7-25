@@ -277,9 +277,9 @@ export default function EditEnquiry() {
                       formData.append("patient_id_proof", file);
                     });
                   }
-                  if (values.patient_Profile) {
-                    formData.append("patient_Profile", values.patient_Profile);
-                  }
+                  if (values.patient_Profile instanceof File) {
+  formData.append("patient_Profile", values.patient_Profile);
+}
                   if (
                     values.patient_relation_id &&
                     values.patient_relation_id.length > 0

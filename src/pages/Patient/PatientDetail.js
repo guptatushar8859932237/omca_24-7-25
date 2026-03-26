@@ -5515,7 +5515,7 @@ function PatientDetail() {
   const [openIndex, setOpenIndex] = useState(0);
   const [treatemntData1, setTreatemntData1] = useState([]);
   const [getAttendeDetails, setGetAttendeDetails] = useState([]);
-  const [hospitalDetails, setHospitalDetails] = useState([]);
+  const [hospitalDetails, setHospitalDetails] = useState({});
   const [errors, setErrors] = useState({});
   const [drivername, setDrivername] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -5581,6 +5581,10 @@ function PatientDetail() {
   const [hospitalId, setHospitalId] = useState("");
   const [notesTable, setNotesTable] = useState([]);
   const [valuedata, setValuedata] = useState("");
+  const [hospitalData, setHospitalData] = useState({
+  hospital_id: "",
+  hospital_Name: "",
+});
   const [treatmentId, setTreatmentId] = useState("");
   const [hospitalcharge, sethospitalharge] = useState("");
   const [hospitlID, setHospitlID] = useState([]);
@@ -5988,14 +5992,9 @@ function PatientDetail() {
       vehicalnumber: false,
       drivercontact: false,
       pickuptime: false,
-      appHospital: false,
       hospitalcharge: false,
     });
     let hasError = false;
-    if (!appHospital) {
-      setAppointErr((prev) => ({ ...prev, appHospital: true }));
-      hasError = true;
-    }
     if (!note) {
       setAppointErr((prev) => ({ ...prev, note: true }));
       hasError = true;
@@ -6021,7 +6020,7 @@ function PatientDetail() {
       const result = await dispatch(
         AppointmentForPatient({
           patientId: location.state.patientId,
-          hospitalId: appHospital,
+          hospitalId: hospitalData.hospital_id,
           treatment_id: treatmentId,
           note: note,
           mode: statuddropdown,
@@ -6056,13 +6055,8 @@ function PatientDetail() {
     setAppointErr({
       note: false,
       date: false,
-      appHospital: false,
     });
     let hasError = false;
-    if (!appHospital) {
-      setAppointErr((prev) => ({ ...prev, appHospital: true }));
-      hasError = true;
-    }
     if (!note) {
       setAppointErr((prev) => ({ ...prev, note: true }));
       hasError = true;
@@ -6078,7 +6072,7 @@ function PatientDetail() {
       const result = await dispatch(
         AppointmentForPatient({
           patientId: location.state.patientId,
-          hospitalId: appHospital,
+          hospitalId: hospitalData.hospital_id,
           treatment_id: treatmentId,
           note: note,
           mode: statuddropdown,
@@ -6806,6 +6800,7 @@ function PatientDetail() {
         },
       );
       if (response.data?.success) {
+          getDataapi3(selectedTreatmentId)          
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         Swal.fire(
           "Deleted!",
@@ -6822,57 +6817,150 @@ function PatientDetail() {
     }
   };
   const handleExtraButton = async () => {
-    try {
-      const formattedDate = date
-        ? new Date(date).toISOString().split("T")[0]
-        : "";
-      const payload = {
-        hospitalId: appHospital,
-        note: note,
-        appointment_Date: formattedDate, // ✅ formatted date
-        mode: statuddropdown,
-        ...(statuddropdown === "offline" && {
-          pickup_time: pickuptime,
-          driver_name: drivername,
-          driver_contact: drivercontact,
-          vehicle_no: vehicalnumber,
-        }),
-      };
-      console.log(payload);
-      const response = await axios.put(
-        `${baseurl}edit_appointment/${appointmentid}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
-      );
-      if (response?.data?.success) {
-        Swal.fire("Appointment updated successfully!", "", "success");
-        setOpen1(false);
-        dispatch(GetPatientTreatments({ id: location.state.patientId }));
-        // reset form
-        setNote("");
-        setDate("");
-        setPickuptime("");
-        setDrivername("");
-        setDrivercontact("");
-        setVehicalnumber("");
-        setAppHospital(null);
-        setEdited(false);
-        setAppointErr(false);
-      } else {
-        Swal.fire("Update failed!", "", "error");
-      }
-    } catch (err) {
-      Swal.fire(
-        "Error!",
-        err?.response?.data?.message || err?.message || "Something went wrong",
-        "error",
-      );
+  try {
+    const formattedDate = date
+      ? new Date(date).toISOString().split("T")[0]
+      : "";
+
+    // 🔥 COMMON VALIDATION (for both)
+    if (!hospitalData?.hospital_id) {
+      return Swal.fire("Please select hospital", "", "warning");
     }
-  };
+
+    if (!note) {
+      return Swal.fire("Note is required", "", "warning");
+    }
+
+    if (!formattedDate) {
+      return Swal.fire("Date is required", "", "warning");
+    }
+
+    if (!statuddropdown) {
+      return Swal.fire("Mode is required", "", "warning");
+    }
+
+    // 🔥 OFFLINE VALIDATION
+    if (statuddropdown === "offline") {
+      if (!pickuptime) {
+        return Swal.fire("Pickup time is required", "", "warning");
+      }
+      if (!drivername) {
+        return Swal.fire("Driver name is required", "", "warning");
+      }
+    }
+
+    // 🔥 ONLINE VALIDATION (if needed add more)
+    if (statuddropdown === "online") {
+      // example: you can enforce something extra here
+      // if (!someField) return Swal.fire("Required", "", "warning");
+    }
+
+    const payload = {
+      hospitalId: hospitalData.hospital_id,
+      note: note,
+      appointment_Date: formattedDate,
+      mode: statuddropdown,
+      ...(statuddropdown === "offline" && {
+        pickup_time: pickuptime,
+        driver_name: drivername,
+        driver_contact: drivercontact,
+        vehicle_no: vehicalnumber,
+      }),
+    };
+
+    console.log(payload);
+
+    const response = await axios.put(
+      `${baseurl}edit_appointment/${appointmentid}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (response?.data?.success) {
+      Swal.fire("Appointment updated successfully!", "", "success");
+      setOpen1(false);
+
+      getDataapi3(selectedTreatmentId);
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+
+      // reset
+      setNote("");
+      setDate("");
+      setPickuptime("");
+      setDrivername("");
+      setDrivercontact("");
+      setVehicalnumber("");
+      setAppHospital(null);
+      setEdited(false);
+      setAppointErr(false);
+    } else {
+      Swal.fire("Update failed!", "", "error");
+    }
+  } catch (err) {
+    Swal.fire(
+      "Error!",
+      err?.response?.data?.message || err?.message || "Something went wrong",
+      "error"
+    );
+  }
+};
+  // const handleExtraButton = async () => {
+  //   try {
+  //     const formattedDate = date
+  //       ? new Date(date).toISOString().split("T")[0]
+  //       : "";
+  //     const payload = {
+  //       hospitalId: hospitalData.hospital_id,
+  //       note: note,
+  //       appointment_Date: formattedDate, // ✅ formatted date
+  //       mode: statuddropdown,
+  //       ...(statuddropdown === "offline" && {
+  //         pickup_time: pickuptime,
+  //         driver_name: drivername,
+  //         driver_contact: drivercontact,
+  //         vehicle_no: vehicalnumber,
+  //       }),
+  //     };
+  //     console.log(payload);
+  //     const response = await axios.put(
+  //       `${baseurl}edit_appointment/${appointmentid}`,
+  //       payload,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       },
+  //     );
+  //     if (response?.data?.success) {
+  //       Swal.fire("Appointment updated successfully!", "", "success");
+  //       setOpen1(false);
+  //       getDataapi3(selectedTreatmentId)
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //       // reset form
+  //       setNote("");
+  //       setDate("");
+  //       setPickuptime("");
+  //       setDrivername("");
+  //       setDrivercontact("");
+  //       setVehicalnumber("");
+  //       setAppHospital(null);
+  //       setEdited(false);
+  //       setAppointErr(false);
+  //     } else {
+  //       Swal.fire("Update failed!", "", "error");
+  //     }
+  //   } catch (err) {
+  //     Swal.fire(
+  //       "Error!",
+  //       err?.response?.data?.message || err?.message || "Something went wrong",
+  //       "error",
+  //     );
+  //   }
+  // };
   const handleClicexportPayment = async (a, b) => {
     try {
       const response = await axios.get(`${baseurl}exportTreatmentExcel/${b}`, {
@@ -6992,6 +7080,8 @@ function PatientDetail() {
           timer: 1500,
           showConfirmButton: false,
         });
+
+        getDataapi3(b.treatment_id)
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         handleCloseEditModal(); // or close delete modal if you have one
       } else {
@@ -7011,6 +7101,13 @@ function PatientDetail() {
       });
     }
   };
+
+  const handleKeyPress = (e) => {
+  if (!/[0-9]/.test(e.key)) {
+    e.preventDefault();
+  }
+};
+
   const EditFreeDelete = async (a, b, c) => {
     const confirmResult = await Swal.fire({
       title: "Are you sure?",
@@ -7032,6 +7129,7 @@ function PatientDetail() {
         },
       );
       if (response.data.success) {
+          dispatch(GetPatientTreatments({ id: location.state.patientId }));
         Swal.fire({
           icon: "success",
           title: "Deleted!",
@@ -7388,8 +7486,13 @@ function PatientDetail() {
     setActiveSubTab("details");
   };
   const handleAction = (e, type, info, d) => {
+    console.log(e,type,info,d)
     const tId = info.treatment_id;
-    const hDetails = info.Hospital_details;
+    const hDetails = info.hospital.details;
+      setHospitalData({
+      hospital_id: info.hospital.details.hospital_id,
+      hospital_Name: info.hospital.details.hospital_Name,
+    });
     const status = info.treatment_status;
     const treatmentName = info.treatment_name;
 
@@ -8337,17 +8440,15 @@ function PatientDetail() {
                                                       ?.hospital_Name
                                                   }
                                                 </span>{" "}
-                                                <span className="text-danger">
-                                                  {info?.hospital?.details
-                                                    ?.hospital_Name && (
-                                                    <i
-                                                      className="fa-solid fa-trash"
-                                                      onClick={() =>
-                                                        handledelete(info)
-                                                      }
-                                                    ></i>
-                                                  )}
-                                                </span>{" "}
+                                               <span className="text-danger">
+  {info?.hospital?.details?.hospital_Name &&
+    info?.hospital?.charges?.length === 0 && (
+      <i
+        className="fa-solid fa-trash"
+        onClick={() => handledelete(info)}
+      ></i>
+    )}
+</span>
                                               </h6>
                                             </div>
                                             <div className="card-body">
@@ -8457,7 +8558,7 @@ function PatientDetail() {
                                                               </th>
                                                               <th>Price</th>
                                                               <th>Date</th>
-                                                              {/* <th>Action</th> */}
+                                                              <th>Action</th>
                                                             </tr>
                                                           </thead>
                                                           <tbody>
@@ -8495,9 +8596,8 @@ function PatientDetail() {
                                                                             )
                                                                           : "-"}
                                                                       </td>
-                                                                      {/* <td>
+                                                                      <td>
                                                                         <div className="action-icon">
-                                                                          {item?.hospital_Name && (
                                                                             <i
                                                                               className="fa-solid fa-pen-to-square me-2"
                                                                               style={{
@@ -8511,8 +8611,7 @@ function PatientDetail() {
                                                                                 )
                                                                               }
                                                                             ></i>
-                                                                          )}
-                                                                          {item?.hospital_Name && (
+                                                                          
                                                                             <i
                                                                               className="fa-solid fa-trash"
                                                                               style={{
@@ -8526,9 +8625,8 @@ function PatientDetail() {
                                                                                 )
                                                                               }
                                                                             ></i>
-                                                                          )}
                                                                         </div>
-                                                                      </td> */}
+                                                                      </td>
                                                                     </tr>
                                                                   );
                                                                 },
@@ -8616,11 +8714,11 @@ function PatientDetail() {
                                                               <th>Action</th>
                                                             </tr>
                                                           </thead>
-                                                          <tbody>
-                                                            {info?.omca?.extraServices?.map(
-                                                              (item, index) => {
-                                                                if (!item.price)
-                                                                  return null;
+                                                        <tbody>
+  {info?.omca?.extraServices &&
+  info.omca.extraServices.filter((item) => item.price).length > 0 ? (
+    info.omca.extraServices.map((item, index) => {
+      if (!item.price) return null;
                                                                 return (
                                                                   <tr
                                                                     key={
@@ -8681,8 +8779,14 @@ function PatientDetail() {
                                                                   </tr>
                                                                 );
                                                               },
-                                                            )}
-                                                          </tbody>
+                                                            ) ) : (
+    <tr>
+      <td colSpan="5" style={{ textAlign: "center" }}>
+        No Data Found
+      </td>
+    </tr>
+  )}
+</tbody>
                                                         </table>
                                                       </div>
                                                     </div>
@@ -8703,14 +8807,14 @@ function PatientDetail() {
                                                               </th>
                                                               {/* <th>Price</th> */}
                                                               <th>Duration</th>
-                                                              {/* <th>Valid To</th>
-                                                                <th>Action</th> */}
+                                                              {/* <th>Valid To</th>*/}
+                                                                <th>Action</th> 
                                                             </tr>
                                                           </thead>
-                                                          <tbody>
-                                                            {info?.omca?.freeServices?.map(
-                                                              (item, index) => {
-                                                                return (
+                                                        <tbody>
+  {info?.omca?.freeServices && info.omca.freeServices.length > 0 ? (
+    info.omca.freeServices.map((item, index) => {
+      return (
                                                                   <tr
                                                                     key={index}
                                                                   >
@@ -8718,26 +8822,16 @@ function PatientDetail() {
                                                                       {item.serviceName ||
                                                                         "-"}
                                                                     </td>
-                                                                    {/* <td>
-                                                                        {item.price}
-                                                                      </td> */}
+                                                                    
                                                                     <td>
                                                                       {
                                                                         item.duration
                                                                       }
                                                                     </td>
-                                                                    {/* <td>
-                                                                        {item.endTime
-                                                                          ? new Date(
-                                                                            item.endTime,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
-                                                                          : "-"}
-                                                                      </td>
+                                                                   
                                                                       <td>
                                                                         <div className="action-icon">
-                                                                          <i
+                                                                          {/* <i
                                                                             className="fa-solid fa-pen-to-square"
                                                                             onClick={() => {
                                                                               hadnlcecEditModal(
@@ -8745,7 +8839,7 @@ function PatientDetail() {
                                                                                 info,
                                                                               );
                                                                             }}
-                                                                          ></i>
+                                                                          ></i> */}
                                                                           <i
                                                                             className="fa-solid fa-trash"
                                                                             onClick={() => {
@@ -8757,12 +8851,18 @@ function PatientDetail() {
                                                                             }}
                                                                           ></i>
                                                                         </div>
-                                                                      </td> */}
+                                                                      </td>
                                                                   </tr>
-                                                                );
-                                                              },
-                                                            )}
-                                                          </tbody>
+                                                                );})
+                                                              
+                                                             ) : (
+    <tr>
+      <td colSpan={3} style={{ textAlign: "center" }}>
+        No Data Found
+      </td>
+    </tr>
+  )}
+</tbody>
                                                         </table>
                                                       </div>
                                                     </div>
@@ -9555,6 +9655,7 @@ function PatientDetail() {
                                                   <th>Date</th>
                                                   <th>Notes</th>
                                                   <th>Status</th>
+                                                  <th>Action</th>
                                                 </tr>
                                               </thead>
                                               <tbody>
@@ -9614,6 +9715,31 @@ function PatientDetail() {
                                                             {item.status}
                                                           </span>
                                                         </td>
+                                                        <td>
+                                                          
+                                                           <td>
+                                                            <div className="action-icon">
+                                                              <i
+                                                                className="fa-solid fa-pen-to-square"
+                                                                onClick={() =>
+                                                                  handleclickeditfunc(
+                                                                    item,
+                                                                    info,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                              <i
+                                                                className="fa-solid fa-trash"
+                                                                onClick={() =>
+                                                                  handleclickeditdelete(
+                                                                    item,
+                                                                    info,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                            </div>
+                                                          </td>
+                                                        </td>
                                                       </tr>
                                                     ),
                                                   )
@@ -9646,7 +9772,7 @@ function PatientDetail() {
                                                   }
                                                 >
                                                   <span>
-                                                    <i className="fa fa-plus"></i>
+                                                    <i className="fa fa-plus text-white"></i>
                                                   </span>
                                                   Add Notes
                                                 </button>
@@ -9658,17 +9784,17 @@ function PatientDetail() {
                                               <table className="table-card w-100">
                                                 <thead>
                                                   <tr>
-                                                    <th>Date</th>
                                                     <th>Note</th>
+                                                    <th>Date</th>
                                                     <th>Added By</th>
                                                     <th>Images</th>
                                                     <th>Action</th>
                                                   </tr>
                                                 </thead>
-                                                <tbody>
-                                                  {notesTable?.map(
-                                                    (item, index) => {
-                                                      return (
+                                             <tbody>
+  {notesTable && notesTable.length > 0 ? (
+    notesTable.map((item, index) => {
+      return (
                                                         <tr
                                                           key={
                                                             item._id || index
@@ -9744,9 +9870,15 @@ function PatientDetail() {
                                                           </td>
                                                         </tr>
                                                       );
-                                                    },
-                                                  )}
-                                                </tbody>
+                                                    })
+  ) : (
+    <tr>
+      <td colSpan="5" style={{ textAlign: "center" }}>
+        No Data Found
+      </td>
+    </tr>
+  )}
+</tbody>
                                               </table>
                                             </div>
                                           </div>
@@ -10290,7 +10422,7 @@ function PatientDetail() {
                       {" "}
                       Hospital<span className="text-danger">*</span>
                     </label>
-                    <Autocomplete
+                    {/* <Autocomplete
                       disablePortal
                       options={ishospitalArray || []}
                       getOptionLabel={(option) => option.hospital_Name || ""}
@@ -10310,7 +10442,23 @@ function PatientDetail() {
                           },
                         },
                       }}
-                    />
+                    /> */}
+                    <TextField
+  fullWidth
+  value={hospitalData.hospital_Name || ""}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    const matchedHospital = ishospitalArray.find(
+      (item) => item.hospital_Name === value
+    );
+
+    setHospitalData({
+      hospital_Name: value,
+      hospital_id: matchedHospital ? matchedHospital.hospital_id : "",
+    });
+  }}
+/>
                   </div>
                   <div className="field-set">
                     <label>
@@ -11005,6 +11153,7 @@ function PatientDetail() {
                       type="text"
                       placeholder="paid amount"
                       className="form-control"
+                      onKeyPress={handleKeyPress}
                       name="paid_amount"
                       required=""
                       onChange={AddpaymentOnchnage}
@@ -11269,6 +11418,7 @@ function PatientDetail() {
                       type="number"
                       className="form-control"
                       name="price"
+                        onKeyPress={handkekeypreees}
                       onChange={addhospitalChare}
                     />
                   </div>
@@ -11281,7 +11431,7 @@ function PatientDetail() {
                     <input
                       type="date"
                       className="form-control"
-                      name="service_name"
+                      name="date"
                       onChange={addhospitalChare}
                     />
                   </div>
