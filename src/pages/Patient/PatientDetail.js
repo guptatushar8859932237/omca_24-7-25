@@ -557,6 +557,7 @@ function PatientDetail() {
         AppointmentForPatient({
           patientId: location.state.patientId,
           hospitalId: hospitalData.hospital_id,
+          hospital_Name: hospitalData.hospital_Name,
           treatment_id: treatmentId,
           note: note,
           mode: statuddropdown,
@@ -609,6 +610,7 @@ function PatientDetail() {
         AppointmentForPatient({
           patientId: location.state.patientId,
           hospitalId: hospitalData.hospital_id,
+           hospital_Name: hospitalData.hospital_Name,
           treatment_id: treatmentId,
           note: note,
           mode: statuddropdown,
@@ -1053,10 +1055,6 @@ function PatientDetail() {
   if (!iniData.treatment_report_date) {
     return Swal.fire("Error", "Report Date is required", "error");
   }
-
-  // if (!iniData.attachFile) {
-  //   return Swal.fire("Error", "Attach File is required", "error");
-  // }
 
   if (!imagefile || imagefile.length === 0) {
     return Swal.fire("Error", "At least one Treatment Report image is required", "error");
@@ -5345,7 +5343,7 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                     />
 
                     <span style={{ color: "red" }}>
-                      {appointErr && !note ? "*Please Enter Your date" : ""}
+                      {appointErr && !date ? "*Please Enter Your date" : ""}
                     </span>
                   </div>
                   {statuddropdown === "offline" ? (
@@ -6330,7 +6328,7 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
               <Box>
                 <div className="field-set">
                   <label>
-                    Service Name<span className="text-danger"></span>
+                    Pharmacy Name<span className="text-danger"></span>
                   </label>
                   <div className="upload-input">
                     <input
