@@ -210,7 +210,7 @@ type:"AmbulanceRequest"
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Bleeding or Trauma Details<span className="text-danger">*</span></label>
+                      <label>Bleeding or Trauma Details<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="email"
@@ -470,21 +470,17 @@ type:"AmbulanceRequest"
                   </div>
                   <br></br>
                     <h4 className="page-title font-bold">Reports </h4>
-                <td>
+              <td>
   {row?.reports?.length > 0 ? (
     row.reports.map((rep, index) =>
-      rep.report ? (
+      rep?.report ? (
         <button
           key={index}
+          type="button"
           className="btn btn-sm btn-primary me-1"
-          onClick={() =>
-            window.open(
-              `${rep.report}`,
-              "_blank"
-            )
-          }
+          onClick={() => window.open(rep.report, "_blank")}
         >
-          View Report
+          View
         </button>
       ) : null
     )

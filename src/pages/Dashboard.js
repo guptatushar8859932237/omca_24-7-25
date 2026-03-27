@@ -520,7 +520,7 @@ export default function Dashboard() {
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                       >
-                        {chartView}
+                       {chartView === "all" ? "All" : chartView}
                       </button>
                       <ul
                         className="dropdown-menu"
@@ -1077,7 +1077,7 @@ export default function Dashboard() {
                   <div className="card apointment-card">
                     <div className="card-header">
                       <div className="d-flex justify-content-between align-items-center">
-                        <h5 className="mb-0">Appointments per {chartView}</h5>
+                        <h5 className="mb-0">Appointments per {chartView === "all" ? "All" : chartView}</h5>
                         <div className="dropdown">
                           <button
                             className="submit-btn dropdown-toggle"
@@ -1086,7 +1086,7 @@ export default function Dashboard() {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            {chartView}
+                           {chartView === "all" ? "All" : chartView}
                           </button>
                           <ul
                             className="dropdown-menu"
@@ -1164,7 +1164,7 @@ export default function Dashboard() {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            {chartView}
+                           {chartView === "all" ? "All" : chartView}
                           </button>
                           <ul
                             className="dropdown-menu"
@@ -1252,7 +1252,7 @@ export default function Dashboard() {
                   <div className="card treatment-status-card">
                     <div className="card-header">
                       <div className="d-flex justify-content-between align-items-center">
-                        <h5 className="mb-0">Treatments per {chartView}</h5>
+                        <h5 className="mb-0">Treatments per{chartView === "all" ? "All" : chartView}</h5>
                         <div className="dropdown">
                           <button
                             className="submit-btn dropdown-toggle"
@@ -1261,7 +1261,7 @@ export default function Dashboard() {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            {chartView}
+                           {chartView === "all" ? "All" : chartView}
                           </button>
                           <ul
                             className="dropdown-menu"
@@ -1349,7 +1349,7 @@ export default function Dashboard() {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            {chartView}
+                          {chartView === "all" ? "All" : chartView}
                           </button>
                           <ul
                             className="dropdown-menu"
@@ -1422,7 +1422,7 @@ export default function Dashboard() {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            {chartView}
+                           {chartView === "all" ? "All" : chartView}
                           </button>
                           <ul
                             className="dropdown-menu"
@@ -1519,7 +1519,7 @@ export default function Dashboard() {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            {chartView}
+                           {chartView === "all" ? "All" : chartView}
                           </button>
                           <ul
                             className="dropdown-menu"

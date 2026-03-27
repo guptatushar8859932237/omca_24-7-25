@@ -208,7 +208,7 @@ export default function Medicalescortservice() {
                   <div className="col-md-4">
                     <div className="field-set">
                       <label>
-                        Description<span className="text-danger">*</span>
+                        Description<span className="text-danger"></span>
                       </label>
                       <input
                         class="form-control"
@@ -261,21 +261,17 @@ export default function Medicalescortservice() {
 
                   <br></br>
                     <h4 className="page-title font-bold">Reports </h4>
-                <td>
-  {row?.reports?.length > 0 ? (
+              <td>
+  {Array.isArray(row?.reports) && row.reports.length > 0 ? (
     row.reports.map((rep, index) =>
-      rep.report ? (
+      rep?.report ? (
         <button
           key={index}
+          type="button"
           className="btn btn-sm btn-primary me-1"
-          onClick={() =>
-            window.open(
-              `${rep.report}`,
-              "_blank"
-            )
-          }
+          onClick={() => window.open(rep.report, "_blank")}
         >
-          View Report
+          View 
         </button>
       ) : null
     )

@@ -234,15 +234,17 @@ export default function Inquiry() {
           console.log(response.data);
           if (response.data.success) {
             console.log(response.data);
-          }
-        }
-        await dispatch(
+             await dispatch(
           EnquiryStatus({
             id,
             status: Number(value),
             enquiry_type: "OMCA Enquiry",
+            user_id:response.data.data.id
           }),
         ).unwrap();
+          }
+        }
+       
         Swal.fire("Success!", "Status updated!", "success");
         dispatch(GetAllEnquiry());
       } catch (err) {
