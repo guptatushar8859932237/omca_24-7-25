@@ -80,7 +80,7 @@ type:"AirAmbulance"
                       style={{ cursor: "pointer" }}
                     ></i>
                   </span>
-                  View Enquiry
+                  View Air Medical Escort Enquiry
                 </h4>
               </div>
             </div>
@@ -448,7 +448,7 @@ type:"AirAmbulance"
         <button
           key={index}
           type="button"
-          className="btn btn-sm btn-primary me-1"
+          className="btn btn-sm btn-primary me-1 my-2"
           onClick={() => window.open(rep.report, "_blank")}
         >
           View

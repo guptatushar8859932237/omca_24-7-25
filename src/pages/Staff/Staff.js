@@ -181,6 +181,7 @@ export default function Staff() {
                 <TableCell>Name</TableCell>
                 <TableCell>Role</TableCell>
                 <TableCell>Email</TableCell>
+                <TableCell>Date/Time</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
@@ -207,6 +208,11 @@ export default function Staff() {
                   <TableCell>{info.name}</TableCell>
                   <TableCell>{info.role}</TableCell>
                   <TableCell>{info.email}</TableCell>
+                  <TableCell>{new Date(info.createdAt).toLocaleDateString("en-GB")}/{new Date(info.createdAt).toLocaleTimeString('en-GB', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: true,
+})}</TableCell>
                  <TableCell>
                               {   
                                    <label className="active-switch">

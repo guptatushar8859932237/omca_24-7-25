@@ -84,7 +84,7 @@ type:"AmbulanceRequest"
                       style={{ cursor: "pointer" }}
                     ></i>
                   </span>
-                  View Enquiry
+                  View Ambulance Service Enquiry
                 </h4>
               </div>
             </div>
@@ -477,7 +477,7 @@ type:"AmbulanceRequest"
         <button
           key={index}
           type="button"
-          className="btn btn-sm btn-primary me-1"
+          className="btn btn-sm btn-primary me-1 my-2"
           onClick={() => window.open(rep.report, "_blank")}
         >
           View

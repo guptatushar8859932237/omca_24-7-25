@@ -35,7 +35,7 @@ const FilePreview = ({ file }) => {
       className="btn btn-outline-primary btn-sm"
       onClick={() => window.open(fileUrl, "_blank")}
     >
-      View Document
+      View 
     </button>
   );
 };
@@ -87,7 +87,7 @@ export default function Medicalescortservice() {
                       style={{ cursor: "pointer" }}
                     ></i>
                   </span>
-                  View Enquiry
+                  View Medical Escort Enquiry
                 </h4>
               </div>
             </div>
@@ -268,7 +268,7 @@ export default function Medicalescortservice() {
         <button
           key={index}
           type="button"
-          className="btn btn-sm btn-primary me-1"
+          className="btn btn-sm btn-primary me-1 my-2"
           onClick={() => window.open(rep.report, "_blank")}
         >
           View 

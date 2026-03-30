@@ -114,9 +114,9 @@ function PatientDetail() {
   const [notesTable, setNotesTable] = useState([]);
   const [valuedata, setValuedata] = useState("");
   const [hospitalData, setHospitalData] = useState({
-  hospital_id: "",
-  hospital_Name: "",
-});
+    hospital_id: "",
+    hospital_Name: "",
+  });
   const [treatmentId, setTreatmentId] = useState("");
   const [hospitalcharge, sethospitalharge] = useState("");
   const [hospitlID, setHospitlID] = useState([]);
@@ -610,7 +610,7 @@ function PatientDetail() {
         AppointmentForPatient({
           patientId: location.state.patientId,
           hospitalId: hospitalData.hospital_id,
-           hospital_Name: hospitalData.hospital_Name,
+          hospital_Name: hospitalData.hospital_Name,
           treatment_id: treatmentId,
           note: note,
           mode: statuddropdown,
@@ -1047,68 +1047,72 @@ function PatientDetail() {
     });
   };
   const handleClickSubmit = async () => {
-  // 🔥 VALIDATION START
-  if (!iniData.reportTitle) {
-    return Swal.fire("Error", "Report Title is required", "error");
-  }
+    // 🔥 VALIDATION START
+    if (!iniData.reportTitle) {
+      return Swal.fire("Error", "Report Title is required", "error");
+    }
 
-  if (!iniData.treatment_report_date) {
-    return Swal.fire("Error", "Report Date is required", "error");
-  }
+    if (!iniData.treatment_report_date) {
+      return Swal.fire("Error", "Report Date is required", "error");
+    }
 
-  if (!imagefile || imagefile.length === 0) {
-    return Swal.fire("Error", "At least one Treatment Report image is required", "error");
-  }
-  // 🔥 VALIDATION END
+    if (!imagefile || imagefile.length === 0) {
+      return Swal.fire(
+        "Error",
+        "At least one Treatment Report image is required",
+        "error",
+      );
+    }
+    // 🔥 VALIDATION END
 
-  try {
-    const formData = new FormData();
-    formData.append("reportTitle", iniData.reportTitle);
-    formData.append("treatment_report_date", iniData.treatment_report_date);
-    formData.append("platform", 1);
+    try {
+      const formData = new FormData();
+      formData.append("reportTitle", iniData.reportTitle);
+      formData.append("treatment_report_date", iniData.treatment_report_date);
+      formData.append("platform", 1);
 
-    formData.append("attachFile", iniData.attachFile);
+      formData.append("attachFile", iniData.attachFile);
 
-    imagefile.forEach((file) => {
-      formData.append("treatmentReport", file);
-    });
-
-    const response = await axios.post(
-      `${baseurl}addReports/${treatmentId}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-
-    if (response?.data?.success) {
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Report Added Successfully!",
+      imagefile.forEach((file) => {
+        formData.append("treatmentReport", file);
       });
 
-      handleClose10();
-      getDataapi3(treatmentId);
-    } else {
+      const response = await axios.post(
+        `${baseurl}addReports/${treatmentId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      if (response?.data?.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Report Added Successfully!",
+        });
+
+        handleClose10();
+        getDataapi3(treatmentId);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response?.data?.message || "Failed to add report",
+        });
+      }
+    } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: response?.data?.message || "Failed to add report",
+        text:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
       });
     }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text:
-        error?.response?.data?.message ||
-        "Something went wrong. Please try again.",
-    });
-  }
-};
+  };
   // const handleClickSubmit = async () => {
   //   try {
   //     const formData = new FormData();
@@ -1401,7 +1405,7 @@ function PatientDetail() {
         },
       );
       if (response.data?.success) {
-          getDataapi3(selectedTreatmentId)          
+        getDataapi3(selectedTreatmentId);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         Swal.fire(
           "Deleted!",
@@ -1418,97 +1422,97 @@ function PatientDetail() {
     }
   };
   const handleExtraButton = async () => {
-  try {
-    const formattedDate = date
-      ? new Date(date).toISOString().split("T")[0]
-      : "";
+    try {
+      const formattedDate = date
+        ? new Date(date).toISOString().split("T")[0]
+        : "";
 
-    // 🔥 COMMON VALIDATION (for both)
-    if (!hospitalData?.hospital_id) {
-      return Swal.fire("Please select hospital", "", "warning");
-    }
-
-    if (!note) {
-      return Swal.fire("Note is required", "", "warning");
-    }
-
-    if (!formattedDate) {
-      return Swal.fire("Date is required", "", "warning");
-    }
-
-    if (!statuddropdown) {
-      return Swal.fire("Mode is required", "", "warning");
-    }
-
-    // 🔥 OFFLINE VALIDATION
-    if (statuddropdown === "offline") {
-      if (!pickuptime) {
-        return Swal.fire("Pickup time is required", "", "warning");
+      // 🔥 COMMON VALIDATION (for both)
+      if (!hospitalData?.hospital_id) {
+        return Swal.fire("Please select hospital", "", "warning");
       }
-      if (!drivername) {
-        return Swal.fire("Driver name is required", "", "warning");
+
+      if (!note) {
+        return Swal.fire("Note is required", "", "warning");
       }
-    }
 
-    // 🔥 ONLINE VALIDATION (if needed add more)
-    if (statuddropdown === "online") {
-      // example: you can enforce something extra here
-      // if (!someField) return Swal.fire("Required", "", "warning");
-    }
+      if (!formattedDate) {
+        return Swal.fire("Date is required", "", "warning");
+      }
 
-    const payload = {
-      hospitalId: hospitalData.hospital_id,
-      note: note,
-      appointment_Date: formattedDate,
-      mode: statuddropdown,
-      ...(statuddropdown === "offline" && {
-        pickup_time: pickuptime,
-        driver_name: drivername,
-        driver_contact: drivercontact,
-        vehicle_no: vehicalnumber,
-      }),
-    };
+      if (!statuddropdown) {
+        return Swal.fire("Mode is required", "", "warning");
+      }
 
-    console.log(payload);
+      // 🔥 OFFLINE VALIDATION
+      if (statuddropdown === "offline") {
+        if (!pickuptime) {
+          return Swal.fire("Pickup time is required", "", "warning");
+        }
+        if (!drivername) {
+          return Swal.fire("Driver name is required", "", "warning");
+        }
+      }
 
-    const response = await axios.put(
-      `${baseurl}edit_appointment/${appointmentid}`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // 🔥 ONLINE VALIDATION (if needed add more)
+      if (statuddropdown === "online") {
+        // example: you can enforce something extra here
+        // if (!someField) return Swal.fire("Required", "", "warning");
+      }
+
+      const payload = {
+        hospitalId: hospitalData.hospital_id,
+        note: note,
+        appointment_Date: formattedDate,
+        mode: statuddropdown,
+        ...(statuddropdown === "offline" && {
+          pickup_time: pickuptime,
+          driver_name: drivername,
+          driver_contact: drivercontact,
+          vehicle_no: vehicalnumber,
+        }),
+      };
+
+      console.log(payload);
+
+      const response = await axios.put(
+        `${baseurl}edit_appointment/${appointmentid}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
+      );
+
+      if (response?.data?.success) {
+        Swal.fire("Appointment updated successfully!", "", "success");
+        setOpen1(false);
+
+        getDataapi3(selectedTreatmentId);
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+
+        // reset
+        setNote("");
+        setDate("");
+        setPickuptime("");
+        setDrivername("");
+        setDrivercontact("");
+        setVehicalnumber("");
+        setAppHospital(null);
+        setEdited(false);
+        setAppointErr(false);
+      } else {
+        Swal.fire("Update failed!", "", "error");
       }
-    );
-
-    if (response?.data?.success) {
-      Swal.fire("Appointment updated successfully!", "", "success");
-      setOpen1(false);
-
-      getDataapi3(selectedTreatmentId);
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
-
-      // reset
-      setNote("");
-      setDate("");
-      setPickuptime("");
-      setDrivername("");
-      setDrivercontact("");
-      setVehicalnumber("");
-      setAppHospital(null);
-      setEdited(false);
-      setAppointErr(false);
-    } else {
-      Swal.fire("Update failed!", "", "error");
+    } catch (err) {
+      Swal.fire(
+        "Error!",
+        err?.response?.data?.message || err?.message || "Something went wrong",
+        "error",
+      );
     }
-  } catch (err) {
-    Swal.fire(
-      "Error!",
-      err?.response?.data?.message || err?.message || "Something went wrong",
-      "error"
-    );
-  }
-};
+  };
   // const handleExtraButton = async () => {
   //   try {
   //     const formattedDate = date
@@ -1682,7 +1686,7 @@ function PatientDetail() {
           showConfirmButton: false,
         });
 
-        getDataapi3(b.treatment_id)
+        getDataapi3(b.treatment_id);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         handleCloseEditModal(); // or close delete modal if you have one
       } else {
@@ -1704,10 +1708,10 @@ function PatientDetail() {
   };
 
   const handleKeyPress = (e) => {
-  if (!/[0-9]/.test(e.key)) {
-    e.preventDefault();
-  }
-};
+    if (!/[0-9]/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
 
   const EditFreeDelete = async (a, b, c) => {
     const confirmResult = await Swal.fire({
@@ -1730,7 +1734,7 @@ function PatientDetail() {
         },
       );
       if (response.data.success) {
-          dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
         Swal.fire({
           icon: "success",
           title: "Deleted!",
@@ -2033,19 +2037,17 @@ function PatientDetail() {
     }
   };
   const handledeedit = (a, b) => {
-    console.log(a,b)
-    setTreatmentChargeid(a.treatment_id)
+    console.log(a, b);
+    setTreatmentChargeid(a.treatment_id);
     // console.log(a, b);
-    setIsEditT(true)
+    setIsEditT(true);
     setHospitalCharge({
-      id:b._id,
-      service_name:b.service_name,
-      price:b.price,
-       date: b.date
-        ? new Date(b.date).toISOString().split("T")[0]
-        : "",
+      id: b._id,
+      service_name: b.service_name,
+      price: b.price,
+      date: b.date ? new Date(b.date).toISOString().split("T")[0] : "",
     });
-    setOpenmodalCharge(true)
+    setOpenmodalCharge(true);
     // setDataImperial(true);
   };
   const dataIwemperial = () => {
@@ -2098,10 +2100,10 @@ function PatientDetail() {
     setActiveSubTab("details");
   };
   const handleAction = (e, type, info, d) => {
-    console.log(e,type,info,d)
+    console.log(e, type, info, d);
     const tId = info.treatment_id;
     const hDetails = info.hospital.details;
-      setHospitalData({
+    setHospitalData({
       hospital_id: info.hospital.details.hospital_id,
       hospital_Name: info.hospital.details.hospital_Name,
     });
@@ -2266,70 +2268,67 @@ function PatientDetail() {
   //     }
   //   };
 
-  const handleclickpharmacycharge =(info)=>{
-    console.log(info)
-    setTreatmntidPharmacy(info.treatment_id)
-    setOpenPharmacyModal(true)
-    setPharmacyadd(false)
-  }
-const deletepharmacy = async (info, index) => {
-  console.log(info);
+  const handleclickpharmacycharge = (info) => {
+    console.log(info);
+    setTreatmntidPharmacy(info.treatment_id);
+    setOpenPharmacyModal(true);
+    setPharmacyadd(false);
+  };
+  const deletepharmacy = async (info, index) => {
+    console.log(info);
 
-  // 🔥 Confirmation popup
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "You want to delete this pharmacy charge!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-    cancelButtonText: "Cancel",
-  });
+    // 🔥 Confirmation popup
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this pharmacy charge!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
 
-  // ❌ If user cancels → stop
-  if (!result.isConfirmed) return;
+    // ❌ If user cancels → stop
+    if (!result.isConfirmed) return;
 
-  try {
-    const response = await axios.delete(
-      `${baseurl}deletePharmacyCharge/${info.treatment_id}`,
-      {
-        data: { index: index },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+    try {
+      const response = await axios.delete(
+        `${baseurl}deletePharmacyCharge/${info.treatment_id}`,
+        {
+          data: { index: index },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      }
-    );
-    dispatch(GetPatientTreatments({ id: location.state.patientId }));
-    // ✅ Success Swal
-    Swal.fire({
-      title: "Deleted!",
-      text:
-        response?.data?.message ||
-        "Pharmacy charge deleted successfully",
-      icon: "success",
-    });
+      );
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      // ✅ Success Swal
+      Swal.fire({
+        title: "Deleted!",
+        text: response?.data?.message || "Pharmacy charge deleted successfully",
+        icon: "success",
+      });
 
-    // 🔄 Optional: refresh data
-    // getPharmacyData();
+      // 🔄 Optional: refresh data
+      // getPharmacyData();
+    } catch (error) {
+      console.log(error);
 
-  } catch (error) {
-    console.log(error);
-
-    // ❌ Error Swal
-    Swal.fire({
-      title: "Error!",
-      text:
-        error?.response?.data?.message ||
-        "Failed to delete, please try again",
-      icon: "error",
-    });
-  }
-};
-  const handleclickpcloseacycharge =()=>{
-    setOpenPharmacyModal(false)
-         setOpenPharmacyModal(false)
-             setPharmacyadd(false)
- setPharmacyvalue(false);
-  }
+      // ❌ Error Swal
+      Swal.fire({
+        title: "Error!",
+        text:
+          error?.response?.data?.message ||
+          "Failed to delete, please try again",
+        icon: "error",
+      });
+    }
+  };
+  const handleclickpcloseacycharge = () => {
+    setOpenPharmacyModal(false);
+    setOpenPharmacyModal(false);
+    setPharmacyadd(false);
+    setPharmacyvalue(false);
+  };
   const getDataapi3 = async (tId) => {
     try {
       const response = await axios.get(
@@ -2413,8 +2412,8 @@ const deletepharmacy = async (info, index) => {
     setOpenmodalCharge(true);
   };
   const handleclickclosecharge = () => {
-    setIsEditT(false)
-    setHospitalCharge('')
+    setIsEditT(false);
+    setHospitalCharge("");
     setOpenmodalCharge(false);
   };
   const addhospitalChare = (e) => {
@@ -2423,7 +2422,7 @@ const deletepharmacy = async (info, index) => {
   };
   const addchargeapiHedithspital = async () => {
     const payload = {
-       charge_id : hospitalCharge.id,
+      charge_id: hospitalCharge.id,
       service_name: hospitalCharge.service_name,
       price: parseInt(hospitalCharge.price),
       date: hospitalCharge.date,
@@ -2442,7 +2441,7 @@ const deletepharmacy = async (info, index) => {
 
       console.log(response.data);
       handleclickclosecharge();
-      setTreatmentChargeid("")
+      setTreatmentChargeid("");
       setHospitalCharge("");
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
       // ✅ Success Swal
@@ -2506,172 +2505,172 @@ const deletepharmacy = async (info, index) => {
     }
   };
 
-const handledeedit123222 = async (info, index) => {
-  console.log(info, index);
+  const handledeedit123222 = async (info, index) => {
+    console.log(info, index);
 
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "You want to delete this hospital charge!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3b3b3b",
-    confirmButtonText: "Yes, delete it!",
-  });
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this hospital charge!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3b3b3b",
+      confirmButtonText: "Yes, delete it!",
+    });
 
-  if (!result.isConfirmed) return;
+    if (!result.isConfirmed) return;
 
-  try {
-    const response = await axios.delete(
-      `${baseurl}deleteHospitalServiceCharge/${info.treatment_id}`,
-      {
-        data: {
-          index: index, // ✅ IMPORTANT
+    try {
+      const response = await axios.delete(
+        `${baseurl}deleteHospitalServiceCharge/${info.treatment_id}`,
+        {
+          data: {
+            index: index, // ✅ IMPORTANT
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+      );
+
+      if (response?.data?.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Hospital charge deleted successfully!",
+        });
+
+        // 🔥 refresh
+        getDataapi3(info.treatment_id);
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
       }
-    );
+    } catch (error) {
+      console.log(error);
 
-    if (response?.data?.success) {
       Swal.fire({
-        icon: "success",
-        title: "Deleted!",
-        text: "Hospital charge deleted successfully!",
+        icon: "error",
+        title: "Error",
+        text: error?.response?.data?.message || "Something went wrong!",
       });
-
-      // 🔥 refresh
-      getDataapi3(info.treatment_id);
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
     }
-  } catch (error) {
-    console.log(error);
-
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error?.response?.data?.message || "Something went wrong!",
-    });
-  }
-};
-
-// pharmacy 
-
-const addhosppharmacyhare =(e)=>{
-  const {name,value}=e.target
-  setPharmacyvalue({...pharmacyvalue,[name]:value})
-}
-
-const addchargeapipharmacy = async () => {
-  const payload={
-    service_name:pharmacyvalue.service_name ,
-  price: pharmacyvalue.price,
-  date: pharmacyvalue.date
-  }
-  try {
-    const response = await axios.post(
-      `${baseurl}addPharmacyCharge/${treatmntidPharmacy}`,payload, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ token added
-        },
-      }
-    );
-     getDataapi3(treatmntidPharmacy);
-     setPharmacyvalue("")
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
-handleclickpcloseacycharge()
-    // ✅ Success
-    Swal.fire({
-      title: "Success!",
-      text: response?.data?.message || "Charge added successfully",
-      icon: "success",
-    });
-
-  } catch (error) {
-    console.log(error);
-
-    // ❌ Error
-    Swal.fire({
-      title: "Error!",
-      text:
-        error?.response?.data?.message ||
-        "Something went wrong, please try again",
-      icon: "error",
-    });
-  }
-};
-  const handleeditpharmacycharge =(item,info)=>{
-    console.log(item,info)
-     setTreatmntidPharmacy(info.treatment_id)
-    setOpenPharmacyModal(true)
-        setPharmacyadd(true)
- setPharmacyvalue({
-  service_name: item.service_name,
-  price: item.price,
-  date: item.date ? item.date.split("T")[0] : "",
-  _id:item._id
-});
-  }
-
-// const editpaharmacy=async()=>{
-//   const payload={
-//  service_name: pharmacyvalue.service_name,
-//   price: pharmacyvalue.price,
-//   date: pharmacyvalue.date ? pharmacyvalue.date.split("T")[0] : "",
-//   _id:pharmacyvalue._id
-//   }
-// try {
-//   const response =await axios.put(`${baseurl}editPharmacyCharge/${treatmntidPharmacy}`,payload)
-// } catch (error) {
-  
-// }
-// }
-const editpaharmacy = async () => {
-  const payload = {
-    service_name: pharmacyvalue.service_name,
-    price: parseInt(pharmacyvalue.price),
-    date: pharmacyvalue.date, // ✅ already YYYY-MM-DD hona chahiye
-    charge_id: pharmacyvalue._id,
   };
 
-  try {
-    const response = await axios.put(
-      `${baseurl}editPharmacyCharge/${treatmntidPharmacy}`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+  // pharmacy
+
+  const addhosppharmacyhare = (e) => {
+    const { name, value } = e.target;
+    setPharmacyvalue({ ...pharmacyvalue, [name]: value });
+  };
+
+  const addchargeapipharmacy = async () => {
+    const payload = {
+      service_name: pharmacyvalue.service_name,
+      price: pharmacyvalue.price,
+      date: pharmacyvalue.date,
+    };
+    try {
+      const response = await axios.post(
+        `${baseurl}addPharmacyCharge/${treatmntidPharmacy}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ token added
+          },
         },
-      }
-    );
-setPharmacyvalue("")
- setOpenPharmacyModal(false)
-        setPharmacyadd(false)
-dispatch(GetPatientTreatments({id:location.state.patientId}))
-    // ✅ Success Swal
-    Swal.fire({
-      title: "Success!",
-      text: response?.data?.message || "Pharmacy updated successfully",
-      icon: "success",
+      );
+      getDataapi3(treatmntidPharmacy);
+      setPharmacyvalue("");
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      handleclickpcloseacycharge();
+      // ✅ Success
+      Swal.fire({
+        title: "Success!",
+        text: response?.data?.message || "Charge added successfully",
+        icon: "success",
+      });
+    } catch (error) {
+      console.log(error);
+
+      // ❌ Error
+      Swal.fire({
+        title: "Error!",
+        text:
+          error?.response?.data?.message ||
+          "Something went wrong, please try again",
+        icon: "error",
+      });
+    }
+  };
+  const handleeditpharmacycharge = (item, info) => {
+    console.log(item, info);
+    setTreatmntidPharmacy(info.treatment_id);
+    setOpenPharmacyModal(true);
+    setPharmacyadd(true);
+    setPharmacyvalue({
+      service_name: item.service_name,
+      price: item.price,
+      date: item.date ? item.date.split("T")[0] : "",
+      _id: item._id,
     });
+  };
 
-    // 🔄 Optional: refresh data
-    // getPharmacyData();
+  // const editpaharmacy=async()=>{
+  //   const payload={
+  //  service_name: pharmacyvalue.service_name,
+  //   price: pharmacyvalue.price,
+  //   date: pharmacyvalue.date ? pharmacyvalue.date.split("T")[0] : "",
+  //   _id:pharmacyvalue._id
+  //   }
+  // try {
+  //   const response =await axios.put(`${baseurl}editPharmacyCharge/${treatmntidPharmacy}`,payload)
+  // } catch (error) {
 
-  } catch (error) {
-    console.log(error);
+  // }
+  // }
+  const editpaharmacy = async () => {
+    const payload = {
+      service_name: pharmacyvalue.service_name,
+      price: parseInt(pharmacyvalue.price),
+      date: pharmacyvalue.date, // ✅ already YYYY-MM-DD hona chahiye
+      charge_id: pharmacyvalue._id,
+    };
 
-    // ❌ Error Swal
-    Swal.fire({
-      title: "Error!",
-      text:
-        error?.response?.data?.message ||
-        "Failed to update, please try again",
-      icon: "error",
-    });
-  }
-};
+    try {
+      const response = await axios.put(
+        `${baseurl}editPharmacyCharge/${treatmntidPharmacy}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      setPharmacyvalue("");
+      setOpenPharmacyModal(false);
+      setPharmacyadd(false);
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      // ✅ Success Swal
+      Swal.fire({
+        title: "Success!",
+        text: response?.data?.message || "Pharmacy updated successfully",
+        icon: "success",
+      });
+
+      // 🔄 Optional: refresh data
+      // getPharmacyData();
+    } catch (error) {
+      console.log(error);
+
+      // ❌ Error Swal
+      Swal.fire({
+        title: "Error!",
+        text:
+          error?.response?.data?.message ||
+          "Failed to update, please try again",
+        icon: "error",
+      });
+    }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -3319,15 +3318,19 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                       ?.hospital_Name
                                                   }
                                                 </span>{" "}
-                                               <span className="text-danger">
-  {info?.hospital?.details?.hospital_Name &&
-    info?.hospital?.charges?.length === 0 && (
-      <i
-        className="fa-solid fa-trash"
-        onClick={() => handledelete(info)}
-      ></i>
-    )}
-</span>
+                                                <span className="text-danger">
+                                                  {info?.hospital?.details
+                                                    ?.hospital_Name &&
+                                                    info?.hospital?.charges
+                                                      ?.length === 0 && (
+                                                      <i
+                                                        className="fa-solid fa-trash"
+                                                        onClick={() =>
+                                                          handledelete(info)
+                                                        }
+                                                      ></i>
+                                                    )}
+                                                </span>
                                               </h6>
                                             </div>
                                             <div className="card-body">
@@ -3477,33 +3480,33 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                                       </td>
                                                                       <td>
                                                                         <div className="action-icon">
-                                                                            <i
-                                                                              className="fa-solid fa-pen-to-square me-2"
-                                                                              style={{
-                                                                                cursor:
-                                                                                  "pointer",
-                                                                              }}
-                                                                              onClick={() =>
-                                                                                handledeedit(
-                                                                                  info,
-                                                                                  item,
-                                                                                )
-                                                                              }
-                                                                            ></i>
-                                                                          
-                                                                            <i
-                                                                              className="fa-solid fa-trash"
-                                                                              style={{
-                                                                                cursor:
-                                                                                  "pointer",
-                                                                              }}
-                                                                              onClick={() =>
-                                                                                handledeedit123222(
-                                                                                  info,
-                                                                                  index,
-                                                                                )
-                                                                              }
-                                                                            ></i>
+                                                                          <i
+                                                                            className="fa-solid fa-pen-to-square me-2"
+                                                                            style={{
+                                                                              cursor:
+                                                                                "pointer",
+                                                                            }}
+                                                                            onClick={() =>
+                                                                              handledeedit(
+                                                                                info,
+                                                                                item,
+                                                                              )
+                                                                            }
+                                                                          ></i>
+
+                                                                          <i
+                                                                            className="fa-solid fa-trash"
+                                                                            style={{
+                                                                              cursor:
+                                                                                "pointer",
+                                                                            }}
+                                                                            onClick={() =>
+                                                                              handledeedit123222(
+                                                                                info,
+                                                                                index,
+                                                                              )
+                                                                            }
+                                                                          ></i>
                                                                         </div>
                                                                       </td>
                                                                     </tr>
@@ -3593,79 +3596,97 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                               <th>Action</th>
                                                             </tr>
                                                           </thead>
-                                                        <tbody>
-  {info?.omca?.extraServices &&
-  info.omca.extraServices.filter((item) => item.price).length > 0 ? (
-    info.omca.extraServices.map((item, index) => {
-      if (!item.price) return null;
-                                                                return (
-                                                                  <tr
-                                                                    key={
-                                                                      item._id ||
-                                                                      item.service_type
-                                                                    }
-                                                                  >
-                                                                    <td>
-                                                                      {item.serviceName ||
-                                                                        "-"}
-                                                                    </td>
-                                                                    <td>
-                                                                      {
-                                                                        item.price
+                                                          <tbody>
+                                                            {info?.omca
+                                                              ?.extraServices &&
+                                                            info.omca.extraServices.filter(
+                                                              (item) =>
+                                                                item.price,
+                                                            ).length > 0 ? (
+                                                              info.omca.extraServices.map(
+                                                                (
+                                                                  item,
+                                                                  index,
+                                                                ) => {
+                                                                  if (
+                                                                    !item.price
+                                                                  )
+                                                                    return null;
+                                                                  return (
+                                                                    <tr
+                                                                      key={
+                                                                        item._id ||
+                                                                        item.service_type
                                                                       }
-                                                                    </td>
-                                                                    <td>
-                                                                      {item.startTime
-                                                                        ? new Date(
-                                                                            item.startTime,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
-                                                                        : "-"}
-                                                                    </td>
-                                                                    <td>
-                                                                      {item.endTime
-                                                                        ? new Date(
-                                                                            item.endTime,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
-                                                                        : "-"}
-                                                                    </td>
-                                                                    <td>
-                                                                      <div className="action-icon">
-                                                                        <i
-                                                                          className="fa-solid fa-pen-to-square"
-                                                                          onClick={() => {
-                                                                            hadnlcecEditModal(
-                                                                              item,
-                                                                              info,
-                                                                            );
-                                                                          }}
-                                                                        ></i>
-                                                                        <i
-                                                                          className="fa-solid fa-trash"
-                                                                          onClick={() => {
-                                                                            handledeltePatientserveice(
-                                                                              item,
-                                                                              info,
-                                                                              index,
-                                                                            );
-                                                                          }}
-                                                                        ></i>
-                                                                      </div>
-                                                                    </td>
-                                                                  </tr>
-                                                                );
-                                                              },
-                                                            ) ) : (
-    <tr>
-      <td colSpan="5" style={{ textAlign: "center" }}>
-        No Data Found
-      </td>
-    </tr>
-  )}
-</tbody>
+                                                                    >
+                                                                      <td>
+                                                                        {item.serviceName ||
+                                                                          "-"}
+                                                                      </td>
+                                                                      <td>
+                                                                        {
+                                                                          item.price
+                                                                        }
+                                                                      </td>
+                                                                      <td>
+                                                                        {item.startTime
+                                                                          ? new Date(
+                                                                              item.startTime,
+                                                                            ).toLocaleDateString(
+                                                                              "en-GB",
+                                                                            )
+                                                                          : "-"}
+                                                                      </td>
+                                                                      <td>
+                                                                        {item.endTime
+                                                                          ? new Date(
+                                                                              item.endTime,
+                                                                            ).toLocaleDateString(
+                                                                              "en-GB",
+                                                                            )
+                                                                          : "-"}
+                                                                      </td>
+                                                                      <td>
+                                                                        <div className="action-icon">
+                                                                          <i
+                                                                            className="fa-solid fa-pen-to-square"
+                                                                            onClick={() => {
+                                                                              hadnlcecEditModal(
+                                                                                item,
+                                                                                info,
+                                                                              );
+                                                                            }}
+                                                                          ></i>
+                                                                          <i
+                                                                            className="fa-solid fa-trash"
+                                                                            onClick={() => {
+                                                                              handledeltePatientserveice(
+                                                                                item,
+                                                                                info,
+                                                                                index,
+                                                                              );
+                                                                            }}
+                                                                          ></i>
+                                                                        </div>
+                                                                      </td>
+                                                                    </tr>
+                                                                  );
+                                                                },
+                                                              )
+                                                            ) : (
+                                                              <tr>
+                                                                <td
+                                                                  colSpan="5"
+                                                                  style={{
+                                                                    textAlign:
+                                                                      "center",
+                                                                  }}
+                                                                >
+                                                                  No Data Found
+                                                                </td>
+                                                              </tr>
+                                                            )}
+                                                          </tbody>
                                                         </table>
                                                       </div>
                                                     </div>
@@ -3687,27 +3708,37 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                               {/* <th>Price</th> */}
                                                               <th>Duration</th>
                                                               {/* <th>Valid To</th>*/}
-                                                                <th>Action</th> 
+                                                              <th>Action</th>
                                                             </tr>
                                                           </thead>
-                                                        <tbody>
-  {info?.omca?.freeServices && info.omca.freeServices.length > 0 ? (
-    info.omca.freeServices.map((item, index) => {
-      return (
-                                                                  <tr
-                                                                    key={index}
-                                                                  >
-                                                                    <td>
-                                                                      {item.serviceName ||
-                                                                        "-"}
-                                                                    </td>
-                                                                    
-                                                                    <td>
-                                                                      {
-                                                                        item.duration
+                                                          <tbody>
+                                                            {info?.omca
+                                                              ?.freeServices &&
+                                                            info.omca
+                                                              .freeServices
+                                                              .length > 0 ? (
+                                                              info.omca.freeServices.map(
+                                                                (
+                                                                  item,
+                                                                  index,
+                                                                ) => {
+                                                                  return (
+                                                                    <tr
+                                                                      key={
+                                                                        index
                                                                       }
-                                                                    </td>
-                                                                   
+                                                                    >
+                                                                      <td>
+                                                                        {item.serviceName ||
+                                                                          "-"}
+                                                                      </td>
+
+                                                                      <td>
+                                                                        {
+                                                                          item.duration
+                                                                        }
+                                                                      </td>
+
                                                                       <td>
                                                                         <div className="action-icon">
                                                                           {/* <i
@@ -3731,17 +3762,24 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                                           ></i>
                                                                         </div>
                                                                       </td>
-                                                                  </tr>
-                                                                );})
-                                                              
-                                                             ) : (
-    <tr>
-      <td colSpan={3} style={{ textAlign: "center" }}>
-        No Data Found
-      </td>
-    </tr>
-  )}
-</tbody>
+                                                                    </tr>
+                                                                  );
+                                                                },
+                                                              )
+                                                            ) : (
+                                                              <tr>
+                                                                <td
+                                                                  colSpan={3}
+                                                                  style={{
+                                                                    textAlign:
+                                                                      "center",
+                                                                  }}
+                                                                >
+                                                                  No Data Found
+                                                                </td>
+                                                              </tr>
+                                                            )}
+                                                          </tbody>
                                                         </table>
                                                       </div>
                                                     </div>
@@ -3825,19 +3863,19 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                           <div className="card customstylecard">
                                             <div className="card-header d-flex justify-content-between">
                                               <div>
-                                              <h6>Pharmacy</h6>
+                                                <h6>Pharmacy</h6>
                                               </div>
                                               <div>
-                                                  <button
-                                                          className="add-button"
-                                                          onClick={() => {
-                                                            handleclickpharmacycharge(
-                                                              info,
-                                                            );
-                                                          }}
-                                                        >
-                                                          Add Charge
-                                                        </button>
+                                                <button
+                                                  className="add-button"
+                                                  onClick={() => {
+                                                    handleclickpharmacycharge(
+                                                      info,
+                                                    );
+                                                  }}
+                                                >
+                                                  Add Charge
+                                                </button>
                                               </div>
                                             </div>
                                             <div className="card-body">
@@ -3852,12 +3890,12 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                     </tr>
                                                   </thead>
                                                   <tbody>
-                                                    {info?.pharmacy?.pharmacyCharges
+                                                    {info?.pharmacy
+                                                      ?.pharmacyCharges
                                                       ?.length > 0 ? (
                                                       info.pharmacy?.pharmacyCharges?.map(
-                                                        (item,index) => (
+                                                        (item, index) => (
                                                           <tr key={item._id}>
-                                                           
                                                             <td>
                                                               {item?.service_name ||
                                                                 "-"}
@@ -3867,27 +3905,39 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                                 "-"}
                                                             </td>
                                                             <td>
-                                                              {new Date(item?.date).toLocaleDateString("en-GB") ||
-                                                                "-"}
+                                                              {new Date(
+                                                                item?.date,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              ) || "-"}
                                                             </td>
-                                                          <td>
-                                                               <div className="action-icon">
-                                                                        <i
-                                                                          className="fa-solid fa-pen-to-square"
-                                                                          onClick={() => {
-                                                                            handleeditpharmacycharge(
-                                                                              item,
-                                                                              info,
-                                                                            );
-                                                                          }}
-                                                                        ></i>
-                                                             
-                                                                <i className="fa-solid fa-trash text-danger"
-                                                                  style={{ cursor: "pointer" }}
-                                                                  onClick={() => deletepharmacy(info,index)}
+                                                            <td>
+                                                              <div className="action-icon">
+                                                                <i
+                                                                  className="fa-solid fa-pen-to-square"
+                                                                  onClick={() => {
+                                                                    handleeditpharmacycharge(
+                                                                      item,
+                                                                      info,
+                                                                    );
+                                                                  }}
                                                                 ></i>
-                                                                 </div>
-                                                              </td>
+
+                                                                <i
+                                                                  className="fa-solid fa-trash text-danger"
+                                                                  style={{
+                                                                    cursor:
+                                                                      "pointer",
+                                                                  }}
+                                                                  onClick={() =>
+                                                                    deletepharmacy(
+                                                                      info,
+                                                                      index,
+                                                                    )
+                                                                  }
+                                                                ></i>
+                                                              </div>
+                                                            </td>
                                                           </tr>
                                                         ),
                                                       )
@@ -3931,7 +3981,12 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                     <h6 className="mb-0">
                                                       Due Amount:
                                                     </h6>
-                                                    <p>{info?.pharmacy?.dueAmount}</p>
+                                                    <p>
+                                                      {
+                                                        info?.pharmacy
+                                                          ?.dueAmount
+                                                      }
+                                                    </p>
                                                   </div>
                                                 </div>
                                               </div>
@@ -4562,8 +4617,7 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                           </span>
                                                         </td>
                                                         <td>
-                                                          
-                                                           <td>
+                                                          <td>
                                                             <div className="action-icon">
                                                               <i
                                                                 className="fa-solid fa-pen-to-square"
@@ -4637,94 +4691,102 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                                                     <th>Action</th>
                                                   </tr>
                                                 </thead>
-                                             <tbody>
-  {notesTable && notesTable.length > 0 ? (
-    notesTable.map((item, index) => {
-      return (
-                                                        <tr
-                                                          key={
-                                                            item._id || index
-                                                          }
-                                                        >
-                                                          <td>
-                                                            {item.note || "-"}
-                                                          </td>
-                                                          <td>
-                                                            {item?.date
-                                                              ? new Date(
-                                                                  item.date,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                )
-                                                              : "-"}
-                                                          </td>
-                                                          <td>
-                                                            {item.platform ==
-                                                            "1"
-                                                              ? "CRM"
-                                                              : "Hospital"}{" "}
-                                                          </td>
-                                                          <td>
-                                                            {item
-                                                              ?.treatmentNoteImages
-                                                              ?.length > 0
-                                                              ? item.treatmentNoteImages.map(
-                                                                  (
-                                                                    img,
-                                                                    index,
-                                                                  ) => (
-                                                                    <button
-                                                                      key={
-                                                                        index
-                                                                      }
-                                                                      className="btn btn-sm btn-primary me-1"
-                                                                      onClick={() =>
-                                                                        window.open(
-                                                                          `https://sisccltd.com/omca_crm/${img}`,
-                                                                          "_blank",
-                                                                        )
-                                                                      }
-                                                                    >
-                                                                      View
-                                                                    </button>
-                                                                  ),
-                                                                )
-                                                              : "-"}
-                                                          </td>
+                                                <tbody>
+                                                  {notesTable &&
+                                                  notesTable.length > 0 ? (
+                                                    notesTable.map(
+                                                      (item, index) => {
+                                                        return (
+                                                          <tr
+                                                            key={
+                                                              item._id || index
+                                                            }
+                                                          >
+                                                            <td>
+                                                              {item.note || "-"}
+                                                            </td>
+                                                            <td>
+                                                              {item?.date
+                                                                ? new Date(
+                                                                    item.date,
+                                                                  ).toLocaleDateString(
+                                                                    "en-GB",
+                                                                  )
+                                                                : "-"}
+                                                            </td>
+                                                            <td>
+                                                              {item.platform ==
+                                                              "1"
+                                                                ? "CRM"
+                                                                : "Hospital"}{" "}
+                                                            </td>
+                                                            <td>
+                                                              {item
+                                                                ?.treatmentNoteImages
+                                                                ?.length > 0
+                                                                ? item.treatmentNoteImages.map(
+                                                                    (
+                                                                      img,
+                                                                      index,
+                                                                    ) => (
+                                                                      <button
+                                                                        key={
+                                                                          index
+                                                                        }
+                                                                        className="btn btn-sm btn-primary me-1"
+                                                                        onClick={() =>
+                                                                          window.open(
+                                                                            `https://sisccltd.com/omca_crm/${img}`,
+                                                                            "_blank",
+                                                                          )
+                                                                        }
+                                                                      >
+                                                                        View
+                                                                      </button>
+                                                                    ),
+                                                                  )
+                                                                : "-"}
+                                                            </td>
 
-                                                          <td>
-                                                            <div className="action-icon">
-                                                              <i
-                                                                className="fa-solid fa-pen-to-square"
-                                                                onClick={() =>
-                                                                  EditButton(
-                                                                    item,
-                                                                    info,
-                                                                  )
-                                                                }
-                                                              ></i>
-                                                              <i
-                                                                className="fa-solid fa-trash"
-                                                                onClick={() =>
-                                                                  EditDelete(
-                                                                    item,
-                                                                    info,
-                                                                  )
-                                                                }
-                                                              ></i>
-                                                            </div>
-                                                          </td>
-                                                        </tr>
-                                                      );
-                                                    })
-  ) : (
-    <tr>
-      <td colSpan="5" style={{ textAlign: "center" }}>
-        No Data Found
-      </td>
-    </tr>
-  )}
-</tbody>
+                                                            <td>
+                                                              <div className="action-icon">
+                                                                <i
+                                                                  className="fa-solid fa-pen-to-square"
+                                                                  onClick={() =>
+                                                                    EditButton(
+                                                                      item,
+                                                                      info,
+                                                                    )
+                                                                  }
+                                                                ></i>
+                                                                <i
+                                                                  className="fa-solid fa-trash"
+                                                                  onClick={() =>
+                                                                    EditDelete(
+                                                                      item,
+                                                                      info,
+                                                                    )
+                                                                  }
+                                                                ></i>
+                                                              </div>
+                                                            </td>
+                                                          </tr>
+                                                        );
+                                                      },
+                                                    )
+                                                  ) : (
+                                                    <tr>
+                                                      <td
+                                                        colSpan="5"
+                                                        style={{
+                                                          textAlign: "center",
+                                                        }}
+                                                      >
+                                                        No Data Found
+                                                      </td>
+                                                    </tr>
+                                                  )}
+                                                </tbody>
                                               </table>
                                             </div>
                                           </div>
@@ -5290,21 +5352,23 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                       }}
                     /> */}
                     <TextField
-  fullWidth
-  value={hospitalData.hospital_Name || ""}
-  onChange={(e) => {
-    const value = e.target.value;
+                      fullWidth
+                      value={hospitalData.hospital_Name || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
 
-    const matchedHospital = ishospitalArray.find(
-      (item) => item.hospital_Name === value
-    );
+                        const matchedHospital = ishospitalArray.find(
+                          (item) => item.hospital_Name === value,
+                        );
 
-    setHospitalData({
-      hospital_Name: value,
-      hospital_id: matchedHospital ? matchedHospital.hospital_id : "",
-    });
-  }}
-/>
+                        setHospitalData({
+                          hospital_Name: value,
+                          hospital_id: matchedHospital
+                            ? matchedHospital.hospital_id
+                            : "",
+                        });
+                      }}
+                    />
                   </div>
                   <div className="field-set">
                     <label>
@@ -6144,7 +6208,7 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                   <DialogActions className="submit-main">
                     <Button
                       // type="submit"
-                      onClick={ handleClickSubmit}
+                      onClick={handleClickSubmit}
                       variant="contained"
                     >
                       Submit
@@ -6223,7 +6287,7 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>{isEditT===true?"Edit":"Add"} Hospital Charge</h6>
+              <h6>{isEditT === true ? "Edit" : "Add"} Hospital Charge</h6>
             </div>
             <div className="cross-icon" onClick={handleclickclosecharge}>
               <i class="fa-solid fa-xmark"></i>
@@ -6251,7 +6315,6 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                       className="form-control"
                       name="service_name"
                       value={hospitalCharge.service_name}
-
                       onChange={addhospitalChare}
                     />
                   </div>
@@ -6265,8 +6328,8 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                       type="number"
                       className="form-control"
                       name="price"
-                         value={hospitalCharge.price}
-                        onKeyPress={handkekeypreees}
+                      value={hospitalCharge.price}
+                      onKeyPress={handkekeypreees}
                       onChange={addhospitalChare}
                     />
                   </div>
@@ -6277,22 +6340,27 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                   </label>
                   <div className="upload-input">
                     <input
-  type="date"
-  className="form-control"
-  name="date"
-  value={hospitalCharge.date || ""}
-  onChange={addhospitalChare}
-/>
+                      type="date"
+                      className="form-control"
+                      name="date"
+                      value={hospitalCharge.date || ""}
+                      onChange={addhospitalChare}
+                    />
                   </div>
                 </div>
                 <DialogActions className="submit-main">
-                {isEditT===true?
-                  <Button onClick={addchargeapiHedithspital} variant="contained">
-                    Edit Charge
-                  </Button>:
-                  <Button onClick={addchargeapiHospital} variant="contained">
-                    Submit
-                  </Button>}
+                  {isEditT === true ? (
+                    <Button
+                      onClick={addchargeapiHedithspital}
+                      variant="contained"
+                    >
+                      Edit Charge
+                    </Button>
+                  ) : (
+                    <Button onClick={addchargeapiHospital} variant="contained">
+                      Submit
+                    </Button>
+                  )}
                 </DialogActions>
               </Box>
             </Box>
@@ -6308,7 +6376,7 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>{pharmacyadd===true?"Edit":"Add"} Pharmacy Charge</h6>
+              <h6>{pharmacyadd === true ? "Edit" : "Add"} Pharmacy Charge</h6>
             </div>
             <div className="cross-icon" onClick={handleclickpcloseacycharge}>
               <i class="fa-solid fa-xmark"></i>
@@ -6336,7 +6404,6 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                       className="form-control"
                       name="service_name"
                       value={pharmacyvalue.service_name}
-
                       onChange={addhosppharmacyhare}
                     />
                   </div>
@@ -6350,8 +6417,8 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                       type="number"
                       className="form-control"
                       name="price"
-                         value={pharmacyvalue.price}
-                        onKeyPress={handkekeypreees}
+                      value={pharmacyvalue.price}
+                      onKeyPress={handkekeypreees}
                       onChange={addhosppharmacyhare}
                     />
                   </div>
@@ -6362,22 +6429,24 @@ dispatch(GetPatientTreatments({id:location.state.patientId}))
                   </label>
                   <div className="upload-input">
                     <input
-  type="date"
-  className="form-control"
-  name="date"
-  value={pharmacyvalue.date || ""}
-  onChange={addhosppharmacyhare}
-/>
+                      type="date"
+                      className="form-control"
+                      name="date"
+                      value={pharmacyvalue.date || ""}
+                      onChange={addhosppharmacyhare}
+                    />
                   </div>
                 </div>
                 <DialogActions className="submit-main">
-                {pharmacyadd===true?
-                  <Button onClick={editpaharmacy} variant="contained">
-                    Edit Charge
-                  </Button>:
-                  <Button onClick={addchargeapipharmacy} variant="contained">
-                    Submit
-                  </Button>}
+                  {pharmacyadd === true ? (
+                    <Button onClick={editpaharmacy} variant="contained">
+                      Edit Charge
+                    </Button>
+                  ) : (
+                    <Button onClick={addchargeapipharmacy} variant="contained">
+                      Submit
+                    </Button>
+                  )}
                 </DialogActions>
               </Box>
             </Box>
