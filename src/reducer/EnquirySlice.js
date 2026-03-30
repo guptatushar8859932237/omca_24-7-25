@@ -192,7 +192,7 @@ export const EnquiryStatus = createAsyncThunk(
       console.log(object)
       const response = await axios.post(
         `${baseurl}update_Enquiry_status/${object.id}`,
-        { status: object.status,enquiry_type:object.enquiry_type }, // Ensure you're passing the correct payload
+        { status: object.status,enquiry_type:object.enquiry_type,user_id:object.user_id }, // Ensure you're passing the correct payload
         {
           headers: {
             Authorization: `Bearer ${token}`,

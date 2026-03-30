@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
-import avtar from "../../img/avtarImg.jpg"
+import avtar from "../../img/avtarImg.jpg";
 // 🔹 file type check
 const getFileType = (file) => {
   const ext = file.split(".").pop().toLowerCase();
@@ -35,7 +35,7 @@ const FilePreview = ({ file }) => {
       className="btn btn-outline-primary btn-sm"
       onClick={() => window.open(fileUrl, "_blank")}
     >
-      View Document
+      View 
     </button>
   );
 };
@@ -44,13 +44,16 @@ export default function Medicalescortservice() {
   const location = useLocation();
   const [row, setRows] = useState("");
   console.log(location.state);
-  const fetchJobTitles =async () => {
-    const payload ={
-       id:location.state.id,
-type:"PatientQuery"
-    }
-   await axios
-      .post(`https://yellowcabsanfrancisco.com/omca/api/crm/other_enquiry_details`,payload)
+  const fetchJobTitles = async () => {
+    const payload = {
+      id: location.state.id,
+      type: "PatientQuery",
+    };
+    await axios
+      .post(
+        `https://yellowcabsanfrancisco.com/omca/api/crm/other_enquiry_details`,
+        payload,
+      )
       .then((response) => {
         if (response.data.success) {
           console.log(response.data);
@@ -84,17 +87,18 @@ type:"PatientQuery"
                       style={{ cursor: "pointer" }}
                     ></i>
                   </span>
-                  View Enquiry
+                  View Medical Escort Enquiry
                 </h4>
               </div>
             </div>
             <div class="main_content">
               <form>
                 <div class="row">
-                 
                   <div class="col-md-4">
                     <div className="field-set">
-                      <label>Enquiry Id<span className="text-danger"></span></label>
+                      <label>
+                        Enquiry Id<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -103,9 +107,11 @@ type:"PatientQuery"
                       />
                     </div>
                   </div>
-                   <div class="col-md-4">
+                  <div class="col-md-4">
                     <div className="field-set">
-                      <label>Treatment<span className="text-danger"></span></label>
+                      <label>
+                        Treatment<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -114,9 +120,11 @@ type:"PatientQuery"
                       />
                     </div>
                   </div>
-                   <div className="col-md-4">
+                  <div className="col-md-4">
                     <div className="field-set">
-                      <label>Country<span className="text-danger"></span></label>
+                      <label>
+                        Country<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -125,9 +133,12 @@ type:"PatientQuery"
                       />
                     </div>
                   </div>
-                   <div className="col-md-4">
+                  <div className="col-md-4">
                     <div className="field-set">
-                      <label> Name<span className="text-danger"></span></label>
+                      <label>
+                        {" "}
+                        Name<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -136,9 +147,11 @@ type:"PatientQuery"
                       />
                     </div>
                   </div>
-                   <div className="col-md-4">
+                  <div className="col-md-4">
                     <div className="field-set">
-                      <label>Email<span className="text-danger"></span></label>
+                      <label>
+                        Email<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -147,9 +160,10 @@ type:"PatientQuery"
                       />
                     </div>
                   </div>
-                   <div className="col-md-4">
+                  <div className="col-md-4">
                     <div className="field-set">
-                      <label>Phone Number
+                      <label>
+                        Phone Number
                         <span className="text-danger"></span>
                       </label>
                       <div className="country-code">
@@ -168,9 +182,11 @@ type:"PatientQuery"
                       </div>
                     </div>
                   </div>
-                   <div className="col-md-4">
+                  <div className="col-md-4">
                     <div className="field-set">
-                      <label> WhatsApp Number
+                      <label>
+                        {" "}
+                        WhatsApp Number
                         <span className="text-danger"></span>
                       </label>
                       <div className="country-code">
@@ -191,7 +207,9 @@ type:"PatientQuery"
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Description<span className="text-danger">*</span></label>
+                      <label>
+                        Description<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="email"
@@ -200,24 +218,68 @@ type:"PatientQuery"
                       />
                     </div>
                   </div>
-               <div className="col-md-4">
-  <div className="field-set">
-    <label>
-      Image <span className="text-danger">*</span>
-    </label>
-    <br></br>
-    {row?.image && (
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() => window.open(row.image, "_blank")}
-      >
-        View Image
-      </button>
-    )}
-  </div>
-</div>
+                    <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Passport Number<span className="text-danger"></span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.passport_number}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Treating In Country<span className="text-danger"></span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.treating_in_country}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  {/* <div className="col-md-4">
+                    <div className="field-set">
+                      <label>
+                        Image <span className="text-danger">*</span>
+                      </label>
+                      <br></br>
+                      {row?.image && (
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => window.open(row.image, "_blank")}
+                        >
+                          View Image
+                        </button>
+                      )}
+                    </div>
+                  </div> */}
                 </div>
+
+                  <br></br>
+                    <h4 className="page-title font-bold">Reports </h4>
+              <td>
+  {Array.isArray(row?.reports) && row.reports.length > 0 ? (
+    row.reports.map((rep, index) =>
+      rep?.report ? (
+        <button
+          key={index}
+          type="button"
+          className="btn btn-sm btn-primary me-1 my-2"
+          onClick={() => window.open(rep.report, "_blank")}
+        >
+          View 
+        </button>
+      ) : null
+    )
+  ) : (
+    "-"
+  )}
+</td>
+
               </form>
             </div>
           </div>

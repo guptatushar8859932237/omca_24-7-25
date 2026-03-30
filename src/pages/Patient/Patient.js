@@ -659,7 +659,7 @@ const handleRequestSort = (property) => {
                               Patient Name
                             </TableSortLabel>
                           </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
   <TableSortLabel
     active={orderBy === "patient_disease"}
     direction={orderBy === "patient_disease" ? order : "asc"}
@@ -667,8 +667,26 @@ const handleRequestSort = (property) => {
   >
     Patient Disease
   </TableSortLabel>
-</TableCell>
+</TableCell> */}
                           <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "treatingIn"}
+                              direction={orderBy === "treatingIn" ? order : "asc"}
+                              onClick={() => handleRequestSort("treatingIn")}
+                            >
+                              Treating In
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "createdAt"}
+                              direction={orderBy === "createdAt" ? order : "asc"}
+                              onClick={() => handleRequestSort("createdAt")}
+                            >
+                              Date/Time
+                            </TableSortLabel>
+                          </TableCell>
+                          {/* <TableCell>
                             <TableSortLabel
                               active={orderBy === "country"}
                               direction={orderBy === "country" ? order : "asc"}
@@ -676,7 +694,7 @@ const handleRequestSort = (property) => {
                             >
                               Country
                             </TableSortLabel>
-                          </TableCell>
+                          </TableCell> */}
                           {showActions === true ? (
                             <>
                              <TableCell>
@@ -768,7 +786,7 @@ const handleRequestSort = (property) => {
                                         "..."
                                       : info.patient_name}
                                   </TableCell>
-                                  <TableCell
+                                  {/* <TableCell
                                     style={{ cursor: "pointer" }}
                                     title={info.patient_disease
                                       ?.map((d) => d.disease_name)
@@ -783,8 +801,13 @@ const handleRequestSort = (property) => {
                                         ? diseases.substring(0, 15) + "..."
                                         : diseases;
                                     })()}
-                                  </TableCell>
-                                  <TableCell>{info.country}</TableCell>
+                                  </TableCell> */}
+                                  <TableCell>{info.treatingIn}</TableCell>
+                                  <TableCell>{new Date(info.createdAt).toLocaleDateString('en-GB')}/{new Date(info.createdAt).toLocaleTimeString('en-GB', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: true,})}</TableCell>
+                                  {/* <TableCell>{info.country}</TableCell> */}
 
                                   {showActions === true ? (
                                     <>

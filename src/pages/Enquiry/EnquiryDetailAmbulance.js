@@ -84,7 +84,7 @@ type:"AmbulanceRequest"
                       style={{ cursor: "pointer" }}
                     ></i>
                   </span>
-                  View Enquiry
+                  View Ambulance Service Enquiry
                 </h4>
               </div>
             </div>
@@ -147,6 +147,28 @@ type:"AmbulanceRequest"
                       />
                     </div>
                   </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Passport Number<span className="text-danger"></span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.passport_number}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="field-set">
+                      <label>Treating In Country<span className="text-danger"></span></label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        value={row.treating_in_country}
+                        readonly=""
+                      />
+                    </div>
+                  </div>
 
                   <br></br>
 
@@ -188,7 +210,7 @@ type:"AmbulanceRequest"
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Bleeding or Trauma Details<span className="text-danger">*</span></label>
+                      <label>Bleeding or Trauma Details<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="email"
@@ -446,7 +468,26 @@ type:"AmbulanceRequest"
                       />
                     </div>
                   </div>
-                 
+                  <br></br>
+                    <h4 className="page-title font-bold">Reports </h4>
+              <td>
+  {row?.reports?.length > 0 ? (
+    row.reports.map((rep, index) =>
+      rep?.report ? (
+        <button
+          key={index}
+          type="button"
+          className="btn btn-sm btn-primary me-1 my-2"
+          onClick={() => window.open(rep.report, "_blank")}
+        >
+          View
+        </button>
+      ) : null
+    )
+  ) : (
+    "-"
+  )}
+</td>
                 </div>
                
                 

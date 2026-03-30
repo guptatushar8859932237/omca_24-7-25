@@ -26,7 +26,7 @@ export default function EditEnquiry() {
   const location = useLocation();
   const navigate = useNavigate();
   const { Enquiry, loading } = useSelector((state) => state.Enquiry);
-   const [previewImage, setPreviewImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const { Treatment, error } = useSelector((state) => state.Treatment);
   const { Countries } = useSelector((state) => state.Countries);
   const [editenquiry, setEnquiry] = useState("");
@@ -57,9 +57,9 @@ export default function EditEnquiry() {
       .uppercase()
       .matches(
         /^[A-Z0-9]{7,15}$/,
-        "Passport number must be 7–15 characters (letters & digits only)",)
+        "Passport number must be 7–15 characters (letters & digits only)",
+      )
       .required("Passport number is required"),
-    treatingIn: Yup.string().required("Treating In is required"),
     gender: Yup.string()
       .oneOf(["Male", "Female", "Others"])
       .required("Gender is required"),
@@ -70,17 +70,37 @@ export default function EditEnquiry() {
     patient_emergency_contact_no: Yup.string()
       .matches(/^[0-9]+$/, "Only digits are allowed")
       .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
-    patient_relation_no: Yup.string().when("has_relation", {
-      is: true,
-      then: (schema) =>
-        schema
-          .matches(/^[0-9]+$/, "Only digits are allowed")
-          .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+   patient_relation_no: Yup.string().when("has_relation", (hasRelation, schema) => {
+  if (hasRelation) {
+    return schema
+      .transform((value) => (value ? value.trim() : ""))
+      .test(
+        "valid-number",
+        "Please enter a valid numeric contact number",
+        function (value) {
+          if (!value) return true; // empty allowed
+          return /^[0-9]{8,15}$/.test(value);
+        }
+      );
+  }
+  return schema.notRequired();
+}),
+    // patient_relation_no: Yup.string().when("has_relation", {
+    //   is: true,
+    //   then: (schema) =>
+    //     schema
+    //       .matches(/^[0-9]+$/, "Only digits are allowed")
+    //       .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
+    //   otherwise: (schema) => schema.notRequired(),
+    // }),
     patient_relation: Yup.string().when("has_relation", {
       is: true,
       then: (schema) => schema.required("Attendant Relationship is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+    patient_relation_name: Yup.string().when("has_relation", {
+      is: true,
+      then: (schema) => schema.required("Attendant Name is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
     patient_relation_id: Yup.array().when("has_relation", {
@@ -277,7 +297,7 @@ export default function EditEnquiry() {
                       formData.append("patient_id_proof", file);
                     });
                   }
-                  if (values.patient_Profile) {
+                  if (values.patient_Profile instanceof File) {
                     formData.append("patient_Profile", values.patient_Profile);
                   }
                   if (
@@ -375,7 +395,7 @@ export default function EditEnquiry() {
                         <div className="field-set">
                           <label>
                             {" "}
-                            Phone No. / WhatsApp 
+                            Phone No. / WhatsApp
                             <span className="text-danger">*</span>
                           </label>
                           <div className="country-code">
@@ -520,7 +540,10 @@ export default function EditEnquiry() {
                       </div>
                       <div className="col-md-4">
                         <div className="field-set">
-                          <label>Emergency Contact No<span className="text-danger"></span></label>
+                          <label>
+                            Emergency Contact No
+                            <span className="text-danger"></span>
+                          </label>
                           <div className="country-code">
                             <Field
                               className="form-control code-dial"
@@ -542,7 +565,8 @@ export default function EditEnquiry() {
                       <div className="col-md-4">
                         <div className="field-set">
                           <label>
-                            Patient Id Proof<span className="text-danger"></span>{" "}
+                            Patient Id Proof
+                            <span className="text-danger"></span>{" "}
                             <span
                               className="text-danger"
                               data-bs-placement="right"
@@ -674,43 +698,48 @@ export default function EditEnquiry() {
                                                         </div>
                           </div> */}
                           <input
-  className="form-control"
-  type="file"
-  name="patient_Profile"
-  accept="image/*,application/pdf"
-  onChange={(e) => {
-    const file = e.currentTarget.files[0];
+                            className="form-control"
+                            type="file"
+                            name="patient_Profile"
+                            accept="image/*,application/pdf"
+                            onChange={(e) => {
+                              const file = e.currentTarget.files[0];
 
-    if (file) {
-      setPreviewImage(URL.createObjectURL(file));
-      setFieldValue("patient_Profile", file);
-    }
-  }}
-/>
+                              if (file) {
+                                setPreviewImage(URL.createObjectURL(file));
+                                setFieldValue("patient_Profile", file);
+                              }
+                            }}
+                          />
 
-<div className="engpatimg">
-  {/* New Uploaded */}
-  {previewImage ? (
-    <button
-      type="button"
-      className="viewbtn"
-      onClick={() => window.open(previewImage, "_blank")}
-    >
-      View
-    </button>
-  ) : editenquiry?.patient_Profile ? (
-    /* Existing from API */
-    <button
-      type="button"
-      className="viewbtn"
-      onClick={() =>
-        window.open(`${imageUrl}${editenquiry.patient_Profile}`, "_blank")
-      }
-    >
-      View
-    </button>
-  ) : null}
-</div>
+                          <div className="engpatimg">
+                            {/* New Uploaded */}
+                            {previewImage ? (
+                              <button
+                                type="button"
+                                className="viewbtn"
+                                onClick={() =>
+                                  window.open(previewImage, "_blank")
+                                }
+                              >
+                                View
+                              </button>
+                            ) : editenquiry?.patient_Profile ? (
+                              /* Existing from API */
+                              <button
+                                type="button"
+                                className="viewbtn"
+                                onClick={() =>
+                                  window.open(
+                                    `${imageUrl}${editenquiry.patient_Profile}`,
+                                    "_blank",
+                                  )
+                                }
+                              >
+                                View
+                              </button>
+                            ) : null}
+                          </div>
                           <ErrorMessage
                             name="patient_Profile"
                             component="div"
@@ -749,10 +778,7 @@ export default function EditEnquiry() {
                               ) || null
                             }
                             onChange={(e, value) => {
-                              setFieldValue(
-                                "disease_name",
-                                value?.name || "",
-                              );
+                              setFieldValue("disease_name", value?.name || "");
                               setFieldValue(
                                 "treatment_course_id",
                                 value?.course_id || null,
@@ -784,9 +810,9 @@ export default function EditEnquiry() {
                         <div className="field-set">
                           <label>
                             Treating In Country
-                            <span className="text-danger">*</span>
+                            <span className="text-danger"></span>
                           </label>
-                          <Field name="treatingIn" >
+                          <Field name="treatingIn">
                             {({ field, form: { setFieldValue }, meta }) => (
                               <FormControl
                                 fullWidth
@@ -799,10 +825,7 @@ export default function EditEnquiry() {
                                     const selected = Countries.find(
                                       (c) => c.name === e.target.value,
                                     );
-                                    setFieldValue(
-                                      "treatingIn",
-                                      e.target.value,
-                                    );
+                                    setFieldValue("treatingIn", e.target.value);
                                   }}
                                   MenuProps={{
                                     PaperProps: {
@@ -821,11 +844,6 @@ export default function EditEnquiry() {
                                     </MenuItem>
                                   ))}
                                 </Select>
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
-                                />
                               </FormControl>
                             )}
                           </Field>
@@ -893,7 +911,7 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Contact Number
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <div className="country-code">
                                 <Field
@@ -944,7 +962,7 @@ export default function EditEnquiry() {
                                 {Array.isArray(
                                   editenquiry.patient_relation_id,
                                 ) &&
-                                  editenquiry.patient_relation_id.length > 0 ? (
+                                editenquiry.patient_relation_id.length > 0 ? (
                                   editenquiry.patient_relation_id.map(
                                     (file, index) => {
                                       const fileUrl = `${imageUrl}${file}`;
@@ -979,7 +997,8 @@ export default function EditEnquiry() {
                                     },
                                   )
                                 ) : (
-                                  <img src={avtar} alt="default" />
+                                  ""
+                                  // <img src={avtar} alt="default" />
                                 )}
                               </div>
                               <ErrorMessage
@@ -993,7 +1012,7 @@ export default function EditEnquiry() {
                             <div className="field-set">
                               <label>
                                 Attendant Address
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"

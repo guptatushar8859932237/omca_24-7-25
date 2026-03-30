@@ -65,9 +65,9 @@ export default function Inquiry() {
   const { hospital } = useSelector((state) => state.hospital);
   const [tabValue, setTabValue] = useState(0);
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
+  // const handleTabChange = (event, newValue) => {
+  //   setTabValue(newValue);
+  // };
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
@@ -126,6 +126,12 @@ export default function Inquiry() {
     }
   }, [Enquiry]);
 
+  useEffect(() => {
+  const savedTab = localStorage.getItem("tabenquiry");
+  if (savedTab !== null) {
+    setTabValue(Number(savedTab));
+  }
+}, []);
   console.log(searchApiData);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -145,10 +151,10 @@ export default function Inquiry() {
     2: "/Admin/airambulanceview",
     3: "/Admin/medicalescortservice",
   };
-
   const path = routeMap[type];
   if (!path) return;
-
+  console.log(type)
+localStorage.setItem("tabenquiry",type)
   navigate(path, {
     state: {
       id: type === 0 ? info.enquiryId : info.id, // ✅ FIX
@@ -201,6 +207,11 @@ export default function Inquiry() {
       Swal.fire("Error", "Something went wrong", "error");
     }
   };
+
+    const handleTabChange = (event, newValue) => {
+  setTabValue(newValue);
+  localStorage.setItem("tabenquiry", newValue);
+};
  const handleChange = async (event, id, tabValue, data) => {
     const { value } = event.target;
     console.log(data, value);
@@ -234,15 +245,17 @@ export default function Inquiry() {
           console.log(response.data);
           if (response.data.success) {
             console.log(response.data);
-          }
-        }
-        await dispatch(
+             await dispatch(
           EnquiryStatus({
             id,
             status: Number(value),
             enquiry_type: "OMCA Enquiry",
+            user_id:response.data.data.id
           }),
         ).unwrap();
+          }
+        }
+       
         Swal.fire("Success!", "Status updated!", "success");
         dispatch(GetAllEnquiry());
       } catch (err) {
@@ -546,9 +559,11 @@ export default function Inquiry() {
       name: item.name || item.first_name,
       email: item.email,
       country: item.country || item.city,
+      treatingIn: item.treatingIn || item.treating_in_country || "",
       emergency_contact: item.emergency_contact || item.phone,
       disease_name: item.disease_name || item.services?.replaceAll("_", " "),
       Enquiry_status: item.Enquiry_status || item.status,
+      date: item.created_at || item.created_at,
       id: item.id || item.id,
       raw: item, // full data for view popup
     }));
@@ -703,6 +718,17 @@ export default function Inquiry() {
                           {/* <TableCell>Email</TableCell> */}
                           <TableCell>
                             <TableSortLabel
+                              active={orderBy === "treatingIn"}
+                              direction={
+                                orderBy === "treatingIn" ? orderDirection : "asc"
+                              }
+                              onClick={() => handleRequestSort("treatingIn")}
+                            >
+                              Treating In
+                            </TableSortLabel>
+                          </TableCell>
+                          {/* <TableCell>
+                            <TableSortLabel
                               active={orderBy === "country"}
                               direction={
                                 orderBy === "country" ? orderDirection : "asc"
@@ -710,24 +736,24 @@ export default function Inquiry() {
                               onClick={() => handleRequestSort("country")}
                             >
                               Country
-                            </TableSortLabel>
-                          </TableCell>
+                            </TableSortLabel> */}
+                          {/* </TableCell> */}
                           <TableCell>
                             <TableSortLabel
-                              active={orderBy === "emergency_contact"}
+                              active={orderBy === "date"}
                               direction={
-                                orderBy === "emergency_contact"
+                                orderBy === "date"
                                   ? orderDirection
                                   : "asc"
                               }
                               onClick={() =>
-                                handleRequestSort("emergency_contact")
+                                handleRequestSort("date")
                               }
                             >
-                              Contact
+                              Date / Time
                             </TableSortLabel>
                           </TableCell>
-                          <TableCell>Disease name</TableCell>
+                          {/* <TableCell>Disease name</TableCell> */}
                           <TableCell>Status</TableCell>
                           <TableCell>Actions</TableCell>
                           {tabValue === 0 ? (
@@ -772,14 +798,20 @@ export default function Inquiry() {
                                 {info.name}
                               </TableCell>
                               {/* <TableCell>{info.email}</TableCell> */}
-                              <TableCell>{info.country}</TableCell>
-                              <TableCell>{info.emergency_contact}</TableCell>
+                              <TableCell>{info.treatingIn}</TableCell>
+                              {/* <TableCell>{info.country}</TableCell> */}
+                              <TableCell>{new Date(info.date).toLocaleDateString('en-GB')}/{new Date(info.date).toLocaleTimeString('en-GB', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: true,
+})}</TableCell>
+                              {/* <TableCell>{info.treatingIn}</TableCell> */}
                               {/* <TableCell title={info.disease_name}> */}
-                              <TableCell title={info.disease_name}>
+                              {/* <TableCell title={info.disease_name}>
                                 {info.disease_name?.length > 10
                                   ? info.disease_name.slice(0, 10) + "..."
                                   : info.disease_name}
-                              </TableCell>
+                              </TableCell> */}
                               <TableCell>
                                 <FormControl
                                   sx={{ m: 1, minWidth: 120 }}
@@ -935,7 +967,7 @@ export default function Inquiry() {
                 flexDirection: "column",
                 width: "fit-content",
               }}
-              className="contact-form"
+              className="Date / Time-form"
             >
               <Box>
                 <form id="contact-form" className="contact-form">

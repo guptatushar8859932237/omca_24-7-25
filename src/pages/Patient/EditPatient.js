@@ -51,13 +51,15 @@ const { Treatment } = useSelector((state) => state.Treatment);
   const basicSchema = Yup.object().shape({
     patient_name: Yup.string().required("Patient name is required"),
     age: Yup.number()
-      .required("Age is required")
-      .min(0, "Age cannot be less than 0")
-      .max(120, "Age cannot exceed 120"),
+  .typeError("Age must be a number")
+  .required("Age is required")
+  .integer("Age must be a whole number") // ❌ no decimal
+  .moreThan(0, "Age must be greater than 0") // 🔥 blocks 0 & negative
+  .max(120, "Age cannot exceed 120"),
     gender: Yup.string().required("Gender is required"),
     patientNumber: Yup.string().required("Patient ID is required"),
     created_at: Yup.string().required("Date is required"),
-    patientDisease: Yup.string().required("Disease is required"),
+    // patientDisease: Yup.string().required("Disease is required"),
     passport_num: Yup.string().required("Passport number is required"),
     email: Yup.string()
       .email("Invalid email address")
@@ -274,7 +276,7 @@ const { Treatment } = useSelector((state) => state.Treatment);
                     }
                   }}
                 >
-                  {({ isSubmitting, values, setFieldValue }) => (
+                  {({ isSubmitting, values, setFieldValue,errors, touched  }) => (
                     <Form>
                       <div className="row">
                         <div className="col-md-4">
@@ -699,7 +701,7 @@ const { Treatment } = useSelector((state) => state.Treatment);
                                 />
                           </div>
                         </div> */}
-                        <div className="col-md-4">
+                        {/* <div className="col-md-4">
   <div className="field-set">
     <label>
       Treatment Name
@@ -741,6 +743,39 @@ const { Treatment } = useSelector((state) => state.Treatment);
       className="text-danger"
     />
   </div>
+</div> */}
+ <div className="col-md-4">
+   <div className="field-set">
+   <label>
+                              Treatment Name<span className="text-danger"></span>
+                            </label>
+<Autocomplete
+  options={Treatment || []}
+  getOptionLabel={(option) => option.name || ""}
+  value={
+    Treatment?.find(
+      (item) => item.name === values.patientDisease
+    ) || null
+  }
+  onChange={(e, value) => {
+    setFieldValue("patientDisease", value?.name || "");
+    setFieldValue("disease_id", value?.id || "");
+  }}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      placeholder="Select Treatment"
+      error={Boolean(touched.patientDisease && errors.patientDisease)}
+      helperText={touched.patientDisease && errors.patientDisease}
+    />
+  )}
+  sx={{
+    "& .MuiOutlinedInput-root": {
+      padding: "0px",
+    },
+  }}
+/>
+</div>
 </div>
                         <div className="col-md-4">
                           <div className="field-set">
