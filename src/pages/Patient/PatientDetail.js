@@ -3883,7 +3883,7 @@ function PatientDetail() {
                                                 <table className="table-card w-100">
                                                   <thead>
                                                     <tr>
-                                                      <th>Service Name</th>
+                                                      <th>Pharmacy Name</th>
                                                       <th>Price</th>
                                                       <th>Date</th>
                                                       <th>Action</th>
@@ -6085,6 +6085,7 @@ function PatientDetail() {
                       <option>Select</option>
                       <option value="Cash">Cash</option>
                       <option value="UPI">Online via UPI</option>
+                      <option value="Via Net Banking">Via Net Banking</option>
                       <option value="Credit/Debit Card">
                         Debit Card / Credit Card
                       </option>
