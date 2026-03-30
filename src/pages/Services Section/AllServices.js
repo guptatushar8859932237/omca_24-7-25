@@ -20,6 +20,7 @@ import { useSelector, useDispatch } from "react-redux";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { GetAllServices, ActiveService } from "../../reducer/ServiceSlice";
 import axios from "axios";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import { baseurl } from "../../Basurl/Baseurl";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { usePDF } from "react-to-pdf";
@@ -36,7 +37,8 @@ export default function AllServices() {
   const [searchApiData, setSearchApiData] = useState([]);
   const [activeToggleLoading, setActiveToggleLoading] = useState(null);
   const [pdfRowLimit, setPdfRowLimit] = useState(null);
-
+const [orderBy, setOrderBy] = useState("");
+const [orderDirection, setOrderDirection] = useState("asc");
   const { Service, loading, error } = useSelector((state) => state.Service);
   useEffect(() => {
     dispatch(GetAllServices());
@@ -83,6 +85,88 @@ export default function AllServices() {
     }
   }
 };
+
+const handleSort = (field) => {
+  const isAsc = orderBy === field && orderDirection === "asc";
+  const direction = isAsc ? "desc" : "asc";
+
+  setOrderBy(field);
+  setOrderDirection(direction);
+
+  const sortedData = [...rows].sort((a, b) => {
+    let valA = a[field];
+    let valB = b[field];
+
+    // ✅ Date sorting
+    if (field === "createdAt" || field === "deletedAt") {
+      return direction === "asc"
+        ? new Date(valA) - new Date(valB)
+        : new Date(valB) - new Date(valA);
+    }
+
+    // ✅ Price (NUMBER FIX 🔥)
+    if (field === "price") {
+      return direction === "asc"
+        ? Number(valA) - Number(valB)
+        : Number(valB) - Number(valA);
+    }
+
+    // ✅ Boolean (status)
+    if (field === "isActive") {
+      return direction === "asc"
+        ? Number(valA) - Number(valB)
+        : Number(valB) - Number(valA);
+    }
+
+    // ✅ String
+    if (typeof valA === "string") {
+      return direction === "asc"
+        ? valA.localeCompare(valB)
+        : valB.localeCompare(valA);
+    }
+
+    return 0;
+  });
+
+  setRows(sortedData);
+};
+// const handleSort = (field) => {
+//     const isAsc = orderBy === field && orderDirection === "asc";
+//     const direction = isAsc ? "desc" : "asc";
+
+//     setOrderBy(field);
+//     setOrderDirection(direction);
+
+//     const sortedData = [...rows].sort((a, b) => {
+//       let valA = a[field];
+//       let valB = b[field];
+
+//       // ✅ Date sorting
+//       if (field === "createdAt") {
+//         return direction === "asc"
+//           ? new Date(valA) - new Date(valB)
+//           : new Date(valB) - new Date(valA);
+//       }
+
+//       // ✅ Boolean sorting (status)
+//       if (field === "status") {
+//         return direction === "asc"
+//           ? Number(valA) - Number(valB)
+//           : Number(valB) - Number(valA);
+//       }
+
+//       // ✅ String sorting
+//       if (typeof valA === "string") {
+//         return direction === "asc"
+//           ? valA.localeCompare(valB)
+//           : valB.localeCompare(valA);
+//       }
+
+//       return 0;
+//     });
+
+//     setRows(sortedData);
+//   };
   // const handleDelete = async (e, serviceId) => {
   //   e.preventDefault();
   //   const response = await axios.delete(
@@ -341,14 +425,63 @@ useEffect(() => {
 </>
                         :""
                        }
-                        <TableCell>Service ID</TableCell>
-                        <TableCell>Service Name</TableCell>
-                        <TableCell>Price</TableCell>
-                        <TableCell>Duration</TableCell>
-                        <TableCell>Description</TableCell>
+<TableCell>
+  <TableSortLabel
+    active={orderBy === "serviceId"}
+    direction={orderBy === "serviceId" ? orderDirection : "asc"}
+    onClick={() => handleSort("serviceId")}
+  >
+    Service ID
+  </TableSortLabel>
+</TableCell>
+                        {/* <TableCell>Service Name</TableCell> */}
+                             <TableCell>
+  <TableSortLabel
+    active={orderBy === "serviceName"}
+    direction={orderBy === "serviceName" ? orderDirection : "asc"}
+    onClick={() => handleSort("serviceName")}
+  >
+    Service Name
+  </TableSortLabel>
+</TableCell>
+                      <TableCell>
+  <TableSortLabel
+    active={orderBy === "price"}
+    direction={orderBy === "price" ? orderDirection : "asc"}
+    onClick={() => handleSort("price")}
+  >
+    Price
+  </TableSortLabel>
+</TableCell>
+                     <TableCell>
+  <TableSortLabel
+    active={orderBy === "duration"}
+    direction={orderBy === "duration" ? orderDirection : "asc"}
+    onClick={() => handleSort("duration")}
+  >
+    Duration
+  </TableSortLabel>
+</TableCell>
+                         <TableCell>
+  <TableSortLabel
+    active={orderBy === "description"}
+    direction={orderBy === "description" ? orderDirection : "asc"}
+    onClick={() => handleSort("description")}
+  >
+    Description
+  </TableSortLabel>
+</TableCell>
                        {
 showActions ===true?<>
-                        <TableCell>Status</TableCell>
+                       <TableCell>
+  <TableSortLabel
+    active={orderBy === "isActive"}
+    direction={orderBy === "isActive" ? orderDirection : "asc"}
+    onClick={() => handleSort("isActive")}
+  >
+    Status
+  </TableSortLabel>
+</TableCell>
                         <TableCell>Action</TableCell>
 </>
                         :""

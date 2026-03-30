@@ -18,6 +18,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Pagination from "@mui/material/Pagination";
 import TextField from "@mui/material/TextField";
+import TableSortLabel from "@mui/material/TableSortLabel";
+
 export default function Staff() {
   const role = localStorage.getItem("Role");
   const navigate = useNavigate();
@@ -26,6 +28,9 @@ export default function Staff() {
   const [rows, setRows] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
+  const [orderBy, setOrderBy] = useState("");
+  const [orderDirection, setOrderDirection] = useState("asc");
+
   const rowsPerPage = 10;
   const [pdfRowLimit, setPdfRowLimit] = useState(null);
   const { staff, loading, error } = useSelector((state) => state.staff);
@@ -122,6 +127,43 @@ export default function Staff() {
     link.click();
     document.body.removeChild(link);
   };
+   const handleSort = (field) => {
+    const isAsc = orderBy === field && orderDirection === "asc";
+    const direction = isAsc ? "desc" : "asc";
+
+    setOrderBy(field);
+    setOrderDirection(direction);
+
+    const sortedData = [...rows].sort((a, b) => {
+      let valA = a[field];
+      let valB = b[field];
+
+      // ✅ Date sorting
+      if (field === "createdAt") {
+        return direction === "asc"
+          ? new Date(valA) - new Date(valB)
+          : new Date(valB) - new Date(valA);
+      }
+
+      // ✅ Boolean sorting (status)
+      if (field === "status") {
+        return direction === "asc"
+          ? Number(valA) - Number(valB)
+          : Number(valB) - Number(valA);
+      }
+
+      // ✅ String sorting
+      if (typeof valA === "string") {
+        return direction === "asc"
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
+      }
+
+      return 0;
+    });
+
+    setRows(sortedData);
+  };
   const handleGeneratePDF = () => {
     Swal.fire({
       title: "Enter number of rows",
@@ -178,11 +220,52 @@ export default function Staff() {
               <TableRow>
                 <TableCell>Sr.No.</TableCell>
                 <TableCell>Image</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Role</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Date/Time</TableCell>
-                <TableCell>Status</TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === "name"}
+                    direction={orderDirection}
+                    onClick={() => handleSort("name")}
+                  >
+                    Name
+                  </TableSortLabel>
+                </TableCell>
+                 <TableCell>
+                  <TableSortLabel
+                    active={orderBy === "role"}
+                    direction={orderDirection}
+                    onClick={() => handleSort("role")}
+                  >
+                    Role
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === "email"}
+                    direction={orderDirection}
+                    onClick={() => handleSort("email")}
+                  >
+                    Email
+                  </TableSortLabel>
+                </TableCell>
+                                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === "createdAt"}
+                    direction={orderDirection}
+                    onClick={() => handleSort("createdAt")}
+                  >
+                    Date/Time
+                  </TableSortLabel>
+                </TableCell>
+               <TableCell>
+                  <TableSortLabel
+                    active={orderBy === "status"}
+                    direction={orderDirection}
+                    onClick={() => handleSort("status")}
+                  >
+                    Status
+                  </TableSortLabel>
+                </TableCell>
+
                 <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>

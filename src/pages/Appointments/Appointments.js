@@ -16,6 +16,7 @@ import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import IconButton from "@mui/material/IconButton";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import ClearIcon from "@mui/icons-material/Clear";
 import { toast, ToastContainer } from "react-toastify";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -39,6 +40,11 @@ export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
   const [page, setPage] = useState(0);
+  const [orderByCRM, setOrderByCRM] = useState("");
+const [orderDirectionCRM, setOrderDirectionCRM] = useState("asc");
+
+const [orderByAPP, setOrderByAPP] = useState("");
+const [orderDirectionAPP, setOrderDirectionAPP] = useState("asc");
   const [pageAPP, setPageAPP] = useState(0);
 const [rowsPerPageAPP] = useState(10);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -279,6 +285,61 @@ const handleClose = () => setOpen(false);
       <p>{value || "-"}</p>
     </div>
   );
+
+
+const sortData = (data, field, direction) => {
+  return [...data].sort((a, b) => {
+    let valA = a[field];
+    let valB = b[field];
+
+    // ✅ Date fields
+    if (
+      field === "appointment_Date" ||
+      field === "apt_on"
+    ) {
+      return direction === "asc"
+        ? new Date(valA) - new Date(valB)
+        : new Date(valB) - new Date(valA);
+    }
+
+    // ✅ Number fields
+    if (field === "paid_amount") {
+      return direction === "asc"
+        ? Number(valA) - Number(valB)
+        : Number(valB) - Number(valA);
+    }
+
+    // ✅ String fields
+    if (typeof valA === "string") {
+      return direction === "asc"
+        ? valA.localeCompare(valB)
+        : valB.localeCompare(valA);
+    }
+
+    return 0;
+  });
+};
+const handleSortCRM = (field) => {
+  const isAsc = orderByCRM === field && orderDirectionCRM === "asc";
+  const direction = isAsc ? "desc" : "asc";
+
+  setOrderByCRM(field);
+  setOrderDirectionCRM(direction);
+
+  const sorted = sortData(appointments, field, direction);
+  setAppointments(sorted);
+};
+const handleSortAPP = (field) => {
+  const isAsc = orderByAPP === field && orderDirectionAPP === "asc";
+  const direction = isAsc ? "desc" : "asc";
+
+  setOrderByAPP(field);
+  setOrderDirectionAPP(direction);
+
+  const sorted = sortData(dataApp, field, direction);
+  setDataApp(sorted);
+};
+
   return (
     <>
       <div className="page-wrapper">
@@ -378,13 +439,71 @@ const handleClose = () => setOpen(false);
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
-                          <TableCell>Patient ID</TableCell>
-                          <TableCell>Patient Name</TableCell>
-                          <TableCell>Disease Name</TableCell>
-                          <TableCell>Appointment ID</TableCell>
-                          <TableCell>Appointment Date</TableCell>
-                          <TableCell>Hospital name</TableCell>
-                          <TableCell>Status</TableCell>
+                         <TableCell>
+  <TableSortLabel
+    active={orderByCRM === "patientId"}
+    direction={orderByCRM === "patientId" ? orderDirectionCRM : "asc"}
+    onClick={() => handleSortCRM("patientId")}
+  >
+    Patient ID
+  </TableSortLabel>
+</TableCell>
+                        <TableCell>
+  <TableSortLabel
+    active={orderByCRM === "patientName"}
+    direction={orderByCRM === "patientName" ? orderDirectionCRM : "asc"}
+    onClick={() => handleSortCRM("patientName")}
+  >
+    Patient Name
+  </TableSortLabel>
+</TableCell>
+                          {/* <TableCell>Disease Name</TableCell> */}
+                        <TableCell>
+  <TableSortLabel
+    active={orderByCRM === "disease_name"}
+    direction={orderByCRM === "disease_name" ? orderDirectionCRM : "asc"}
+    onClick={() => handleSortCRM("disease_name")}
+  >
+Disease Name
+  </TableSortLabel>
+</TableCell>
+                        <TableCell>
+  <TableSortLabel
+    active={orderByCRM === "patientName"}
+    direction={orderByCRM === "patientName" ? orderDirectionCRM : "asc"}
+    onClick={() => handleSortCRM("patientName")}
+  >
+ Appointment Id
+  </TableSortLabel>
+</TableCell>
+                        <TableCell>
+  <TableSortLabel
+    active={orderByCRM === "appointment_Date"}
+    direction={orderByCRM === "appointment_Date" ? orderDirectionCRM : "asc"}
+    onClick={() => handleSortCRM("appointment_Date")}
+  >
+    Appointment Date
+  </TableSortLabel>
+</TableCell>
+                      <TableCell>
+  <TableSortLabel
+    active={orderByCRM === "Hospital_name"}
+    direction={orderByCRM === "Hospital_name" ? orderDirectionCRM : "asc"}
+    onClick={() => handleSortCRM("Hospital_name")}
+  >
+    Hospital Name
+  </TableSortLabel>
+</TableCell>
+                      <TableCell>
+  <TableSortLabel
+    active={orderByCRM === "appointement_status"}
+    direction={orderByCRM === "appointement_status" ? orderDirectionCRM : "asc"}
+    onClick={() => handleSortCRM("appointement_status")}
+  >
+   Status
+  </TableSortLabel>
+</TableCell>
+                          {/* <TableCell>Status</TableCell> */}
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -524,12 +643,62 @@ const handleClose = () => setOpen(false);
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
-                          <TableCell>Patient Name</TableCell>
-                          <TableCell>Patient email</TableCell>
-                          <TableCell>City</TableCell>
-                          <TableCell>Disease  </TableCell>
-                          <TableCell>Appointment Date</TableCell>
-                          <TableCell>Paid Amount</TableCell>
+                             <TableCell>
+  <TableSortLabel
+    active={orderByAPP === "name"}
+    direction={orderByAPP === "name" ? orderDirectionAPP : "asc"}
+    onClick={() => handleSortAPP("name")}
+  >
+ Name
+  </TableSortLabel>
+</TableCell>
+                          {/* <TableCell>Patient email</TableCell> */}
+                                                <TableCell>
+  <TableSortLabel
+    active={orderByAPP === "email"}
+    direction={orderByAPP === "email" ? orderDirectionAPP : "asc"}
+    onClick={() => handleSortAPP("email")}
+  >
+ Email
+  </TableSortLabel>
+</TableCell>
+                                                <TableCell>
+  <TableSortLabel
+    active={orderByAPP === "city"}
+    direction={orderByAPP === "city" ? orderDirectionAPP : "asc"}
+    onClick={() => handleSortAPP("city")}
+  >
+ City
+  </TableSortLabel>
+</TableCell>
+                                   <TableCell>
+  <TableSortLabel
+    active={orderByAPP === "health_issue"}
+    direction={orderByAPP === "health_issue" ? orderDirectionAPP : "asc"}
+    onClick={() => handleSortAPP("health_issue")}
+  >
+Disease Name
+  </TableSortLabel>
+</TableCell>
+                         <TableCell>
+  <TableSortLabel
+    active={orderByAPP === "apt_on"}
+    direction={orderByAPP === "apt_on" ? orderDirectionAPP : "asc"}
+    onClick={() => handleSortAPP("apt_on")}
+  >
+    Appointment Date
+  </TableSortLabel>
+</TableCell>
+
+                         <TableCell>
+  <TableSortLabel
+    active={orderByAPP === "paid_amount"}
+    direction={orderByAPP === "paid_amount" ? orderDirectionAPP : "asc"}
+    onClick={() => handleSortAPP("paid_amount")}
+  >
+    Paid Amount
+  </TableSortLabel>
+</TableCell>
                           <TableCell>Action</TableCell>
                         </TableRow>
                       </TableHead>
