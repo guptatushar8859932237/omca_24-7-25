@@ -43,12 +43,16 @@ function PatientDetail() {
   const [vehicalnumber, setVehicalnumber] = useState("");
   const [images, setImages] = useState([]);
   const [openIndex, setOpenIndex] = useState(0);
+  const [selectedAttendants, setSelectedAttendants] = useState([]);
   const [treatemntData1, setTreatemntData1] = useState([]);
   const [getAttendeDetails, setGetAttendeDetails] = useState([]);
+  const [attandantnew, setAttandantnew] = useState([]);
   const [hospitalDetails, setHospitalDetails] = useState({});
   const [errors, setErrors] = useState({});
   const [drivername, setDrivername] = useState("");
   const [pharmacyadd, setPharmacyadd] = useState(false);
+  const [attendedeaisledit, setAttendedeaisledit] = useState(false);
+  const [popupopenattande, setPopupopenattande] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [notesID, setNotesID] = useState("");
@@ -278,6 +282,8 @@ function PatientDetail() {
   };
   const handleClose2 = () => {
     setOpen2(false);
+    setFilesData("")
+    setAttendedeaisledit(false)
   };
   const handleClose3 = () => {
     setOpen3(false);
@@ -480,6 +486,45 @@ function PatientDetail() {
     }
   };
 
+  const handleDelete212 = async (item) => {
+    console.log(item)
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-primary",
+        cancelButton: "btn btn-secondary",
+      },
+      buttonsStyling: false,
+    });
+    const result = await swalWithBootstrapButtons.fire({
+      title: "Are you sure?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true,
+    });
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `${baseurl}deleteTreatmentAttendee/${item}`,
+        );
+        if (response.data?.success) {
+          Swal.fire("Deleted!", "Report has been deleted.", "success");
+          getDataapi3(selectedTreatmentId);
+        } else {
+          toast.error("Failed to delete report");
+        }
+      } catch (error) {
+        console.error("Delete report error:", error);
+        toast.error("Something went wrong");
+      }
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      swalWithBootstrapButtons.fire({
+        title: "Cancelled",
+        icon: "error",
+      });
+    }
+  };
   const handledeleteReport = async (item) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -685,7 +730,7 @@ function PatientDetail() {
     console.log(filesData);
     try {
       const response = await axios.post(
-        `${baseurl}addAttendeeDetails/${attendId}`,
+        `${baseurl}addAttendeeDetails/${location.state.patientId}`,
         formData,
         {
           headers: {
@@ -694,9 +739,10 @@ function PatientDetail() {
         },
       );
       if (response.data.success) {
-        getDataapi3(attendId);
+        // getDataapi3(attendId);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         setOpen2(false);
+        getattendantnewai()
         Swal.fire("Attendant  Details Added Successfully!", "", "success");
         setFilesData({
           attendant_fullname: "",
@@ -714,6 +760,272 @@ function PatientDetail() {
       );
     }
   };
+  // const editatednde = async (e) => {
+  //   e.preventDefault();
+   
+  //   const formData = new FormData();
+  //   formData.append("attendant_fullname", filesData.attendant_fullname);
+  //   formData.append("attendant_relation", filesData.attendant_relation);
+  //   formData.append("attendant_contact",  filesData.attendant_contact);
+  //   formData.append("country", filesData.country);
+  //   formData.append("attendant_address",  filesData.attendant_address);
+  //   filesData.Attende_passport.forEach((file) => {
+  //     formData.append("attendant_passport", file);
+  //   });
+  //   console.log(filesData);
+  //   try {
+  //     const response = await axios.post(
+  //       `${baseurl}updateAttendeeDetails/69ca0b6c31c45f1f6613d126`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       },
+  //     );
+  //     if (response.data.success) {
+  //       // getDataapi3(attendId);
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //       setOpen2(false);
+  //       Swal.fire("Attendant  Details Added Successfully!", "", "success");
+  //       setFilesData({
+  //         attendant_fullname: "",
+  //         attendant_relation: "",
+  //         attendant_contact: "",
+  //         Attende_passport: null,
+  //         Attende_photo: null,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     Swal.fire(
+  //       "Error!",
+  //       error?.response?.data?.message || error.message,
+  //       "error",
+  //     );
+  //   }
+  // };
+// const editatednde = async (e) => {
+//   e.preventDefault();
+
+//   const formData = new FormData();
+
+//   formData.append("attendant_fullname", filesData.attendant_fullname);
+//   formData.append("attendant_relation", filesData.attendant_relation);
+//   formData.append("attendant_contact", filesData.attendant_contact);
+//   formData.append("country", filesData.country);
+//   formData.append("attendant_address", filesData.attendant_address);
+
+//   // ✅ SAFE CHECK
+//   if (filesData?.Attende_passport && filesData.Attende_passport.length > 0) {
+//     filesData.Attende_passport.forEach((file) => {
+//       formData.append("attendant_passport", file);
+//     });
+//   }
+
+//   try {
+//     const response = await axios.put(
+//       `${baseurl}updateAttendeeDetails/${filesData._id}`,
+//       formData,
+//       {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       }
+//     );
+
+//     if (response.data.success) {
+//       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+//       getattendantnewai()
+//       setOpen2(false);
+
+//       Swal.fire("Attendant Details Updated Successfully!", "", "success");
+
+//       setFilesData({
+//         attendant_fullname: "",
+//         attendant_relation: "",
+//         attendant_contact: "",
+//         Attende_passport: null,
+//         Attende_photo: null,
+//       });
+//     }
+//   } catch (error) {
+//     Swal.fire(
+//       "Error!",
+//       error?.response?.data?.message || error.message,
+//       "error"
+//     );
+//   }
+// };
+// const editatednde = async (e) => {
+//   e.preventDefault();
+
+//   const {
+//     attendant_fullname,
+//     attendant_relation,
+//     attendant_contact,
+//     country,
+//     attendant_address,
+//   } = filesData;
+
+//   // ✅ Validation
+//   if (!attendant_fullname?.trim()) {
+//     return Swal.fire("Error!", "Attendant fullname is required", "error");
+//   }
+
+//   if (!attendant_relation?.trim()) {
+//     return Swal.fire("Error!", "Attendant relation is required", "error");
+//   }
+
+//   if (!attendant_contact?.toString().trim()) {
+//     return Swal.fire("Error!", "Attendant contact is required", "error");
+//   }
+
+//   if (!country?.trim()) {
+//     return Swal.fire("Error!", "Country is required", "error");
+//   }
+
+//   if (!attendant_address?.trim()) {
+//     return Swal.fire("Error!", "Attendant address is required", "error");
+//   }
+
+
+//   // ✅ If all valid → proceed
+//   const formData = new FormData();
+
+//   formData.append("attendant_fullname", attendant_fullname);
+//   formData.append("attendant_relation", attendant_relation);
+//   formData.append("attendant_contact", attendant_contact);
+//   formData.append("country", country);
+//   formData.append("attendant_address", attendant_address);
+
+//   filesData.Attende_passport.forEach((file) => {
+//     formData.append("attendant_passport", file);
+//   });
+
+//   try {
+//     const response = await axios.put(
+//       `${baseurl}updateAttendeeDetails/${filesData._id}`,
+//       formData,
+//       {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       }
+//     );
+
+//     if (response.data.success) {
+//       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+//       getattendantnewai();
+//       setOpen2(false);
+
+//       Swal.fire("Success!", "Attendant Details Updated Successfully!", "success");
+
+//       setFilesData({
+//         attendant_fullname: "",
+//         attendant_relation: "",
+//         attendant_contact: "",
+//         country: "",
+//         attendant_address: "",
+//         Attende_passport: null,
+//         Attende_photo: null,
+//       });
+//     }
+//   } catch (error) {
+//     Swal.fire(
+//       "Error!",
+//       error?.response?.data?.message || error.message,
+//       "error"
+//     );
+//   }
+// };
+
+const editatednde = async (e) => {
+  e.preventDefault();
+  const {
+    attendant_fullname,
+    attendant_relation,
+    attendant_contact,
+    country,
+    attendant_address,
+  } = filesData;
+  if (!attendant_fullname?.trim()) {
+    return Swal.fire("Error!", "Attendant fullname is required", "error");
+  }
+  if (!attendant_relation?.trim()) {
+    return Swal.fire("Error!", "Attendant relation is required", "error");
+  }
+  if (!attendant_contact?.toString().trim()) {
+    return Swal.fire("Error!", "Attendant contact is required", "error");
+  }
+  if (!country?.trim()) {
+    return Swal.fire("Error!", "Country is required", "error");
+  }
+  if (!attendant_address?.trim()) {
+    return Swal.fire("Error!", "Attendant address is required", "error");
+  }
+  const formData = new FormData();
+  formData.append("attendant_fullname", attendant_fullname);
+  formData.append("attendant_relation", attendant_relation);
+  formData.append("attendant_contact", attendant_contact);
+  formData.append("country", country);
+  formData.append("attendant_address", attendant_address);
+
+  // ✅ Optional passport
+  if (filesData?.Attende_passport && filesData.Attende_passport.length > 0) {
+    filesData.Attende_passport.forEach((file) => {
+      formData.append("attendant_passport", file);
+    });
+  }
+
+  try {
+    const response = await axios.put(
+      `${baseurl}updateAttendeeDetails/${filesData._id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    if (response.data.success) {
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      getattendantnewai();
+      setOpen2(false);
+
+      Swal.fire("Success!", "Attendant Details Updated Successfully!", "success");
+
+      setFilesData({
+        attendant_fullname: "",
+        attendant_relation: "",
+        attendant_contact: "",
+        country: "",
+        attendant_address: "",
+        Attende_passport: null,
+        Attende_photo: null,
+      });
+    }
+  } catch (error) {
+    Swal.fire(
+      "Error!",
+      error?.response?.data?.message || error.message,
+      "error"
+    );
+  }
+};
+  useEffect(()=>{
+  getattendantnewai()
+  },[])
+
+  const getattendantnewai = async()=>{
+    try {
+        const response = await axios.get(`${baseurl}getAttendeeDetails/${location.state.patientId}`)
+      setAttandantnew(response.data.data)  
+      } catch (error) {
+      console.log(error)
+    }
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFilesData((prev) => ({
@@ -2671,6 +2983,160 @@ function PatientDetail() {
       });
     }
   };
+
+  const handleclickopenpopup = ()=>{
+    setPopupopenattande(true)
+  }
+  const handlecliclosepup = ()=>{
+    setPopupopenattande(false)
+  }
+  // const handleassignAtendent =(e)=>{
+  //   e.preventDefault()
+  //   console.log(selectedAttendants)
+  // }
+//   const handleassignAtendent = async () => {
+//     console.log(selectedAttendants)
+//   const payload = {
+//     AttendeeIds: selectedAttendants,
+//   };
+
+//   try {
+//     const response = await axios.post(`${baseurl}treatmentAssignAttendee/${selectedTreatmentId}`,payload);
+
+//     // ✅ Success Swal
+//     Swal.fire({
+//       icon: "success",
+//       title: "Success",
+//       text: "Attendees assigned successfully!",
+//       timer: 2000,
+//       showConfirmButton: false,
+//     });
+
+//   } catch (error) {
+//     // ❌ Error Swal
+//     Swal.fire({
+//       icon: "error",
+//       title: "Error",
+//       text: error?.response?.data?.message || "Something went wrong!",
+//     });
+//   }
+// };
+const handleassignAtendent = async () => {
+  try {
+    // 🔍 Validation
+    if (!selectedAttendants || selectedAttendants.length === 0) {
+      return Swal.fire({
+        icon: "warning",
+        title: "No Selection",
+        text: "Please select at least one attendant!",
+      });
+    }
+
+    // ⚠️ Confirmation Popup
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to assign selected attendants?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, assign",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
+
+    const payload = {
+      AttendeeIds: selectedAttendants,
+    };
+
+    // 🚀 API Call
+    const response = await axios.post(
+      `${baseurl}treatmentAssignAttendee/${selectedTreatmentId}`,
+      payload
+    );
+handlecliclosepup()
+getDataapi3(selectedTreatmentId)
+    // ✅ Success Swal
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Attendees assigned successfully!",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
+    // 🔄 Optional Reset
+    setSelectedAttendants([]);
+
+  } catch (error) {
+    console.error(error);
+
+    // ❌ Error Swal
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text:
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong!",
+    });
+  }
+};
+
+const handleEdit =(item)=>{
+  setFilesData(item)
+  console.log(item)
+  setOpen2(true)
+  setAttendedeaisledit(true)
+}
+// const handleDelete=(item)=>{
+//   const response = await  axios.delete(`${baseurl}deleteTreatmentAttendee/${item._id}`)
+
+// }
+
+const handleDeletetrtrtrtr = async (item) => {
+  try {
+    // 🔔 Confirmation Popup
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this attendee?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
+
+    // 🚀 API Call
+    await axios.delete(
+      `${baseurl}deleteAttendee/${item?._id}`
+    );
+
+    // ✅ Success Swal
+    getattendantnewai()
+  //  dispatch(GetPatientTreatments({id:location.state.patientId}))  // 👈 call your API again
+    Swal.fire({
+      icon: "success",
+      title: "Deleted!",
+      text: "Attendee deleted successfully.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    // ❌ Error Swal
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text:
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong!",
+    });
+  }
+};
   return (
     <>
       <div className="page-wrapper">
@@ -3996,6 +4462,9 @@ function PatientDetail() {
                                                 overflowX: "auto",
                                               }}
                                             >
+                                              <div className="d-flex justify-content-end">
+                                              <buttton   className="add-button my-1" onClick={handleclickopenpopup}>Assign Attendent</buttton>
+                                              </div>
                                               <Table
                                                 stickyHeader
                                                 aria-label="attendant table"
@@ -4003,7 +4472,6 @@ function PatientDetail() {
                                               >
                                                 <TableHead>
                                                   <TableRow>
-                                                    <TableCell></TableCell>
                                                     <TableCell>
                                                       Name
                                                     </TableCell>
@@ -4017,10 +4485,13 @@ function PatientDetail() {
                                                       Country
                                                     </TableCell>
                                                     <TableCell>
-                                                      Attendant Photo
+                                                     Address
                                                     </TableCell>
                                                     <TableCell>
                                                       Attendant ID Proof
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      Action
                                                     </TableCell>
                                                   </TableRow>
                                                 </TableHead>
@@ -4046,28 +4517,32 @@ function PatientDetail() {
                                                             index
                                                           }
                                                         >
-                                                          <TableCell>
+                                                          {/* <TableCell>
                                                             <div className="form-check">
                                                               <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" />
                                                             </div>
-                                                          </TableCell>
+                                                          </TableCell> */}
                                                           <TableCell>
-                                                            {item?.attendant_fullname ||
+                                                            {item?.AttendeeId?.attendant_fullname ||
                                                               "N/A"}
                                                           </TableCell>
                                                           <TableCell>
-                                                            {item?.attendant_relation ||
+                                                            {item?.AttendeeId?.attendant_relation ||
                                                               "N/A"}
                                                           </TableCell>
                                                           <TableCell>
-                                                            {item?.attendant_contact ||
+                                                            {item?.AttendeeId?.attendant_contact ||
                                                               "N/A"}
                                                           </TableCell>
                                                           <TableCell>
-                                                            {item?.country ||
+                                                            {item?.AttendeeId?.country ||
                                                               "N/A"}
                                                           </TableCell>
-                                                          <TableCell className="action-btn">
+                                                          <TableCell>
+                                                            {item?.AttendeeId?.attendant_address ||
+                                                              "N/A"}
+                                                          </TableCell>
+                                                          {/* <TableCell className="action-btn">
                                                             {item?.attachFile ? (
                                                               <a
                                                                 href={`https://sisccltd.com/omca_crm/${item.attachFile}`}
@@ -4079,48 +4554,65 @@ function PatientDetail() {
                                                             ) : (
                                                               "-"
                                                             )}
+                                                          </TableCell> */}
+                                                          {/* <TableCell> 
+                                                          {Array.isArray(item?.AttendeeId?.attendant_passport) &&
+ item?.AttendeeId?.attendant_passport.length > 0 ? (
+   item?.AttendeeId?.attendant_passport.map((file, index) => {
+      const filePath =
+        typeof file === "object" ? file?.path : file;
+
+      return (
+        <div key={index}>
+          <a
+            href={`https://sisccltd.com/omca_crm/${filePath}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="viewbtn"
+          >
+            View {item?.AttendeeId?.attendant_passport.length > 1 ? index + 1 : ""}
+          </a>
+        </div>
+      );
+    })
+  ) : (
+    "Not Uploaded"
+  )}
+</TableCell> */}
+
+<TableCell>
+  <div className="d-flex flex-wrap gap-2">
+    {Array.isArray(item?.AttendeeId?.attendant_passport) &&
+    item.AttendeeId.attendant_passport.length > 0 ? (
+      item.AttendeeId.attendant_passport.map((file, index) => {
+        const filePath =
+          typeof file === "object" ? file?.path : file;
+
+        return (
+          <a
+            key={index}
+            href={`https://sisccltd.com/omca_crm/${filePath}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-sm btn-primary"
+          >
+            View{" "}
+            
+          </a>
+        );
+      })
+    ) : (
+      <span>Not Uploaded</span>
+    )}
+  </div>
+</TableCell>
+ <TableCell>
+                                                            <i
+                        className="fa fa-trash ms-2 text-danger"  style={{cursor:"pointer"}}
+                        onClick={() => handleDelete212(item?._id)}
+                      ></i>
                                                           </TableCell>
-                                                          <TableCell className="d-flex gap-2">
-                                                            {item
-                                                              ?.attendant_passport
-                                                              ?.length > 0
-                                                              ? item.attendant_passport.map(
-                                                                (
-                                                                  file,
-                                                                  fIndex,
-                                                                ) => {
-                                                                  const filePath =
-                                                                    typeof file ===
-                                                                      "object"
-                                                                      ? file?.path
-                                                                      : file;
-                                                                  return (
-                                                                    <div
-                                                                      key={
-                                                                        fIndex
-                                                                      }
-                                                                    >
-                                                                      <a
-                                                                        href={`https://sisccltd.com/omca_crm/${filePath}`}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="viewbtn"
-                                                                      >
-                                                                        View{" "}
-                                                                        {item
-                                                                          .attendant_passport
-                                                                          .length >
-                                                                          1
-                                                                          ? fIndex +
-                                                                          1
-                                                                          : ""}
-                                                                      </a>
-                                                                    </div>
-                                                                  );
-                                                                },
-                                                              )
-                                                              : "Not Uploaded"}
-                                                          </TableCell>
+
                                                         </TableRow>
                                                       ),
                                                     )
@@ -4130,11 +4622,11 @@ function PatientDetail() {
                                             </TableContainer>
                                           </div>
                                         </div>
-                                        <div className="col-md-12">
+                                        {/* <div className="col-md-12">
                                           <div className="mt-3 text-end">
                                             <button className="add-button">Submit</button>
                                           </div>
-                                        </div>
+                                        </div> */}
                                       </div>
                                     </>
                                   )}
@@ -4819,11 +5311,14 @@ function PatientDetail() {
                                 <TableCell>
                                   Attendant ID Proof
                                 </TableCell>
+                                <TableCell>
+                                  Action
+                                </TableCell>
                               </TableRow>
                             </TableHead>
 
                             <TableBody>
-                              {attandantFilered.length ===
+                              {attandantnew.length ===
                                 0 ? (
                                 <TableRow>
                                   <TableCell
@@ -4835,7 +5330,7 @@ function PatientDetail() {
                                   </TableCell>
                                 </TableRow>
                               ) : (
-                                attandantFilered.map(
+                                attandantnew.map(
                                   (item, index) => (
                                     <TableRow
                                       key={
@@ -4908,6 +5403,16 @@ function PatientDetail() {
                                           )
                                           : "Not Uploaded"}
                                       </TableCell>
+                                      <TableCell className="action-icon">
+                                                         <i
+                                                           className="fa fa-edit"
+                                                           onClick={() => handleEdit(item)}
+                                                         ></i>
+                                                           <i
+                                                             className="fa fa-trash ms-2"
+                                                             onClick={() => handleDeletetrtrtrtr(item)}
+                                                           ></i>
+                                                       </TableCell>
                                     </TableRow>
                                   ),
                                 )
@@ -5640,7 +6145,7 @@ function PatientDetail() {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>Add Attendant Details</h6>
+              <h6>{attendedeaisledit===true?"Edit":"Add"} Attendant Details</h6>
             </div>
             <div className="cross-icon" onClick={handleClose2}>
               <i class="fa-solid fa-xmark"></i>
@@ -5793,13 +6298,30 @@ function PatientDetail() {
                     </div>
                   </div>
                   <DialogActions className="submit-main">
-                    <Button
+                    {/* <Button
                       type="submit"
                       onClick={handleKysDetail}
                       variant="contained"
                     >
                       Submit
+                    </Button> */}
+                {
+                  attendedeaisledit===true?
+                   <Button
+                      type="submit"
+                      onClick={editatednde}
+                      variant="contained"
+                    >
+                      Edit Attendant
+                    </Button>:
+                     <Button
+                      onClick={handleKysDetail}
+                      variant="contained"
+                    >
+                      Submit
                     </Button>
+                }    
+               
                   </DialogActions>
                 </form>
               </Box>
@@ -6617,6 +7139,75 @@ function PatientDetail() {
                     <Button
                       type="submit"
                       onClick={(e) => handleKysDetailnotes(e)}
+                      variant="contained"
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={popupopenattande}
+          onClose={handlecliclosepup}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Assign Attendant</h6>
+            </div>
+            <div className="cross-icon" onClick={handlecliclosepup}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Select Attendent<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+
+<Autocomplete
+  multiple
+  options={attandantnew}
+  disableCloseOnSelect
+  getOptionLabel={(option) => option.attendant_fullname || ""}
+  onChange={(event, newValue) => {
+    const ids = newValue.map((item) => item._id); // 👈 extract _id
+    setSelectedAttendants(ids); // 👈 sirf IDs store
+  }}
+  renderOption={(props, option, { selected }) => (
+    <li {...props}>
+      <Checkbox checked={selected} style={{ marginRight: 8 }} />
+      {option.attendant_fullname}
+    </li>
+  )}
+  renderInput={(params) => (
+    <TextField {...params} label="Select Attendants" />
+  )}
+/>
+                    </div>
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      onClick={ handleassignAtendent}
                       variant="contained"
                     >
                       Submit
