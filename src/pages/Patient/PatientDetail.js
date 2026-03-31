@@ -5363,7 +5363,7 @@ const handleDeletetrtrtrtr = async (item) => {
                                         }
                                       </TableCell>
                                       <TableCell className="d-flex gap-2">
-                                        {item
+                                        {item   
                                           ?.attendant_passport
                                           ?.length > 0
                                           ? item.attendant_passport.map(
@@ -6118,7 +6118,6 @@ const handleDeletetrtrtrtr = async (item) => {
                         Submit
                       </Button>
                     )}
-
                     {edited && (
                       <Button
                         type="button" // 🔥 IMPORTANT
@@ -6264,7 +6263,7 @@ const handleDeletetrtrtrtr = async (item) => {
                       <div className="field-set">
                         <label>
                           Attendant Id Proof
-                          <span className="text-danger">*</span>
+                          <span className="text-danger">{attendedeaisledit===true?"":"*"}</span>
                         </label>
                         <div className="upload-input">
                           <input
