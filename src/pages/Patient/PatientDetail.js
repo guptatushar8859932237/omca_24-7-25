@@ -366,7 +366,7 @@ function PatientDetail() {
   const gettreatment11 = async () => {
     try {
       const response = await axios.post(`${baseurl}treatment_list`);
-    } catch (error) {}
+    } catch (error) { }
   };
   useEffect(() => {
     gettreatment();
@@ -641,7 +641,7 @@ function PatientDetail() {
       if (rresponse.data.success === "true") {
         setDataHospital(rresponse.data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   useEffect(() => {
     getdataApi();
@@ -901,7 +901,7 @@ function PatientDetail() {
       Swal.fire("Success!", "Status updated successfully!", "success");
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
       return response.data;
-    } catch (err) {}
+    } catch (err) { }
   };
   const handleChangeDetails = async (event, id) => {
     try {
@@ -1782,7 +1782,7 @@ function PatientDetail() {
 
         setHospitlID(updatedList);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const validateForm = () => {
     const newErrors = {};
@@ -1923,9 +1923,9 @@ function PatientDetail() {
       if (response.data.success) {
         setTreatemntData1(response.data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
-  const handleclickApprove = (hospitalids, b) => {};
+  const handleclickApprove = (hospitalids, b) => { };
   const approveReject = async (info, hospitalId, status) => {
     const payload = { status };
     try {
@@ -2705,7 +2705,7 @@ function PatientDetail() {
                                 ? `${image}${ispatient?.patient_Profile}`
                                 : avtar
                             }
-                            className="pro-img"
+                            className="pro-img" alt=""
                           />
                         </div>
                         <input
@@ -2918,22 +2918,19 @@ function PatientDetail() {
                   Treatment{" "}
                 </a>
               </li>
-              {/* <li className="nav-item">
+              <li className="nav-item">
                 <a
                   className={`nav-link ${mainTab === "Attende" ? "active" : ""}`}
                   href="#attendecontent"
                   data-toggle="tab"
                   onClick={() => handleMainTabChange("Attende")}
                 >
-                  Attende{" "}
+                  Attendants
                 </a>
-              </li> */}
+              </li>
             </ul>
             <div className="tab-content">
-              <div
-                className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`}
-                id="about-cont123"
-              >
+              <div className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`} id="about-cont123">
                 <div className="main-tab-hd justify-content-end">
                   <div className="">
                     <button onClick={PlanTreatmentPopUp} className="add-button">
@@ -2984,28 +2981,28 @@ function PatientDetail() {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                              <span
-                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                              >
-                                                {item.status}
-                                              </span>
-                                            )}
+                                                <span
+                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                                >
+                                                  {item.status}
+                                                </span>
+                                              )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                            <button
-                                              className="add-button"
-                                              onClick={() =>
-                                                approveReject(
-                                                  info,
-                                                  item.id,
-                                                  "Approved",
-                                                )
-                                              }
-                                            >
-                                              Approve
-                                            </button>
-                                          )}
+                                              <button
+                                                className="add-button"
+                                                onClick={() =>
+                                                  approveReject(
+                                                    info,
+                                                    item.id,
+                                                    "Approved",
+                                                  )
+                                                }
+                                              >
+                                                Approve
+                                              </button>
+                                            )}
                                         </div>
                                       ))}
                                     </div>
@@ -3064,194 +3061,183 @@ function PatientDetail() {
                   </div>
                 </div>
               </div>
-              <div
-                className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`}
-                id="about-cont"
-              >
-                <div>
-                  <div className="main-tab-hd">
-                    <div className="main-tab-hd d-flex justify-content-end w-100">
-                      <button
-                        onClick={PatientDetailButton}
-                        className="add-button"
-                      >
-                        <span>
-                          <i className="fa fa-plus"></i>
-                        </span>{" "}
-                        Add Treatment
-                      </button>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-12">
-                      {tretment?.length === 0 ? (
-                        <p className="text-center">
-                          No Treatment Added for this patients
-                        </p>
-                      ) : (
-                        <>
-                          {([
-                            "payment",
-                            "reports",
-                            "attendant",
-                            "appointment",
-                            "notes",
-                          ].includes(activeSubTab)
-                            ? tretment?.filter(
-                                (item) =>
-                                  item.treatment_id === selectedTreatmentId,
-                              )
-                            : tretment
-                          )?.map((info, index) => {
-                            return (
-                              <div className="card-box" id="accordion">
-                                <div className="treat-card">
-                                  <div className="sectabmain">
-                                    <div className="treat-id">
-                                      <div className="mngetreatment">
-                                        <h3
+              <div className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`} id="about-cont">
+                <div className="main-tab-hd d-flex justify-content-end w-100">
+                  <button onClick={PatientDetailButton} className="add-button">
+                    <span><i className="fa fa-plus"></i></span>{" "}
+                    Add Treatment
+                  </button>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    {tretment?.length === 0 ? (
+                      <p className="text-center">
+                        No Treatment Added for this patients
+                      </p>
+                    ) : (
+                      <>
+                        {([
+                          "payment",
+                          "reports",
+                          "attendant",
+                          "appointment",
+                          "notes",
+                        ].includes(activeSubTab)
+                          ? tretment?.filter(
+                            (item) =>
+                              item.treatment_id === selectedTreatmentId,
+                          )
+                          : tretment
+                        )?.map((info, index) => {
+                          return (
+                            <div className="card-box" id="accordion">
+                              <div className="treat-card">
+                                <div className="sectabmain">
+                                  <div className="treat-id">
+                                    <div className="mngetreatment">
+                                      <h3
+                                        onClick={() => {
+                                          setActiveSubTab("details");
+                                          setSelectedTreatmentId(
+                                            info.treatment_id,
+                                          );
+                                        }}
+                                        style={{
+                                          cursor: "pointer",
+                                          margin: 0,
+                                        }}
+                                      >
+                                        {
+                                          // treatmentNameHeading
+                                          // === ""
+                                          //   ?
+                                          //   info.treatment_name
+                                          //   : treatmentNameHeading
+                                          activeSubTab === "details"
+                                            ? info.treatment_name
+                                            : treatmentIdFilter === ""
+                                              ? info.treatment_name
+                                              : treatmentNameHeading
+                                        }{" "}
+                                      </h3>
+                                      <div className="action-icon">
+                                        <i
+                                          className="fa-solid fa-trash"
                                           onClick={() => {
-                                            setActiveSubTab("details");
-                                            setSelectedTreatmentId(
+                                            handleclickDeleteTreatment(
                                               info.treatment_id,
                                             );
                                           }}
-                                          style={{
-                                            cursor: "pointer",
-                                            margin: 0,
-                                          }}
-                                        >
-                                          {
-                                            // treatmentNameHeading
-                                            // === ""
-                                            //   ?
-                                            //   info.treatment_name
-                                            //   : treatmentNameHeading
-                                            activeSubTab === "details"
-                                              ? info.treatment_name
-                                              : treatmentIdFilter === ""
-                                                ? info.treatment_name
-                                                : treatmentNameHeading
-                                          }{" "}
-                                        </h3>
-                                        <div className="action-icon">
-                                          <i
-                                            className="fa-solid fa-trash"
-                                            onClick={() => {
-                                              handleclickDeleteTreatment(
-                                                info.treatment_id,
+                                        ></i>
+                                      </div>
+                                    </div>
+                                    <select
+                                      className="form-select form-select-sm"
+                                      value={info.treatment_status || ""}
+                                      onChange={(e) =>
+                                        handleStatusChange(
+                                          info.treatment_id,
+                                          e.target.value,
+                                        )
+                                      }
+                                    >
+                                      <option value="">Select Status</option>
+                                      <option value="Assigned to Hospital">
+                                        Assigned to Hospital
+                                      </option>
+                                      <option value="In Process">
+                                        In Process
+                                      </option>
+                                      <option value="Completed">
+                                        Completed
+                                      </option>
+                                      <option value="Cancelled">
+                                        Cancelled
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div className="accor-icon">
+                                    <div className="">
+                                      <ul className="nav nav-tabs treat-tabs">
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeSubTab === "attendant" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                            onClick={(e) => {
+                                              handleAction(
+                                                e,
+                                                "attendant",
+                                                info,
+                                                info.treatment_name,
                                               );
                                             }}
-                                          ></i>
-                                        </div>
-                                      </div>
-                                      <select
-                                        className="form-select form-select-sm"
-                                        value={info.treatment_status || ""}
-                                        onChange={(e) =>
-                                          handleStatusChange(
-                                            info.treatment_id,
-                                            e.target.value,
-                                          )
-                                        }
-                                      >
-                                        <option value="">Select Status</option>
-                                        <option value="Assigned to Hospital">
-                                          Assigned to Hospital
-                                        </option>
-                                        <option value="In Process">
-                                          In Process
-                                        </option>
-                                        <option value="Completed">
-                                          Completed
-                                        </option>
-                                        <option value="Cancelled">
-                                          Cancelled
-                                        </option>
-                                      </select>
-                                    </div>
-                                    <div className="accor-icon">
-                                      <div className="">
-                                        <ul className="nav nav-tabs treat-tabs">
-                                          <li className="nav-item">
-                                            <button
-                                              className={`nav-link ${activeSubTab === "attendant" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
-                                              onClick={(e) => {
-                                                handleAction(
-                                                  e,
-                                                  "attendant",
-                                                  info,
-                                                  info.treatment_name,
-                                                );
-                                              }}
-                                            >
-                                              Add Attendant
-                                            </button>
-                                          </li>
-                                          <li className="nav-item">
-                                            <button
-                                              className={`nav-link ${activeSubTab === "payment" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
-                                              onClick={(e) => {
-                                                handleAction(
-                                                  e,
-                                                  "payment",
-                                                  info,
-                                                  info.treatment_name,
-                                                );
-                                              }}
-                                            >
-                                              Payment Details
-                                            </button>
-                                          </li>
-                                          <li className="nav-item">
-                                            <button
-                                              className={`nav-link ${activeSubTab === "reports" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
-                                              onClick={(e) => {
-                                                handleAction(
-                                                  e,
-                                                  "reports",
-                                                  info,
-                                                  info.treatment_name,
-                                                );
-                                              }}
-                                            >
-                                              Reports
-                                            </button>
-                                          </li>
+                                          >
+                                            Assign Attendant
+                                          </button>
+                                        </li>
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeSubTab === "payment" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                            onClick={(e) => {
+                                              handleAction(
+                                                e,
+                                                "payment",
+                                                info,
+                                                info.treatment_name,
+                                              );
+                                            }}
+                                          >
+                                            Payment Details
+                                          </button>
+                                        </li>
+                                        <li className="nav-item">
+                                          <button
+                                            className={`nav-link ${activeSubTab === "reports" && selectedTreatmentId === info.treatment_id ? "active" : ""}`}
+                                            onClick={(e) => {
+                                              handleAction(
+                                                e,
+                                                "reports",
+                                                info,
+                                                info.treatment_name,
+                                              );
+                                            }}
+                                          >
+                                            Reports
+                                          </button>
+                                        </li>
 
-                                          <li className="nav-item">
-                                            <button
-                                              className="nav-link"
-                                              onClick={(e) =>
-                                                handleAction(
-                                                  e,
-                                                  "appointment",
-                                                  info,
-                                                  info.treatment_name,
-                                                )
-                                              }
-                                            >
-                                              Appointment
-                                            </button>
-                                          </li>
-                                          <li className="nav-item">
-                                            <button
-                                              className="nav-link"
-                                              onClick={(e) =>
-                                                handleAction(
-                                                  e,
-                                                  "notes",
-                                                  info,
-                                                  info.treatment_name,
-                                                )
-                                              }
-                                            >
-                                              Notes
-                                            </button>
-                                          </li>
-                                          {!info?.Hospital_details?.some(
-                                            (item) => item.hospital_Name,
-                                          ) && (
+                                        <li className="nav-item">
+                                          <button
+                                            className="nav-link"
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "appointment",
+                                                info,
+                                                info.treatment_name,
+                                              )
+                                            }
+                                          >
+                                            Appointment
+                                          </button>
+                                        </li>
+                                        <li className="nav-item">
+                                          <button
+                                            className="nav-link"
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "notes",
+                                                info,
+                                                info.treatment_name,
+                                              )
+                                            }
+                                          >
+                                            Notes
+                                          </button>
+                                        </li>
+                                        {!info?.Hospital_details?.some(
+                                          (item) => item.hospital_Name,
+                                        ) && (
                                             <li className="nav-item">
                                               <button
                                                 className="nav-link"
@@ -3268,480 +3254,480 @@ function PatientDetail() {
                                               </button>
                                             </li>
                                           )}
-                                          <li className="nav-item">
-                                            <button
-                                              className="nav-link"
-                                              onClick={(e) =>
-                                                handleAction(
-                                                  e,
-                                                  "services",
-                                                  info,
-                                                  info.treatment_name,
-                                                )
-                                              }
-                                            >
-                                              + Add Services
-                                            </button>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                      <div
-                                        className={`collapse-icon ${openIndex === index ? "rotate" : ""}`}
-                                        onClick={() =>
-                                          setOpenIndex(
-                                            openIndex === index ? null : index,
-                                          )
-                                        }
-                                        aria-expanded={openIndex === index}
-                                      >
-                                        <i className="fa-solid fa-chevron-down"></i>
-                                      </div>
+                                        <li className="nav-item">
+                                          <button
+                                            className="nav-link"
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "services",
+                                                info,
+                                                info.treatment_name,
+                                              )
+                                            }
+                                          >
+                                            + Add Services
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div
+                                      className={`collapse-icon ${openIndex === index ? "rotate" : ""}`}
+                                      onClick={() =>
+                                        setOpenIndex(
+                                          openIndex === index ? null : index,
+                                        )
+                                      }
+                                      aria-expanded={openIndex === index}
+                                    >
+                                      <i className="fa-solid fa-chevron-down"></i>
                                     </div>
                                   </div>
                                 </div>
-                                <div
-                                  className={`collapse ${openIndex === index ? "show" : ""}`}
-                                >
-                                  {activeSubTab === "details" ? (
-                                    <>
-                                      <div className="row gx-3 gy-3">
-                                        {/* for hospital separate data */}
-                                        <div className="col-md-12">
-                                          <div className="card customstylecard">
-                                            <div className="card-header">
-                                              <h6>
-                                                Hospital Name:
-                                                <span>
-                                                  {" "}
-                                                  {
-                                                    info?.hospital?.details
-                                                      ?.hospital_Name
-                                                  }
-                                                </span>{" "}
-                                                <span className="text-danger">
-                                                  {info?.hospital?.details
-                                                    ?.hospital_Name &&
-                                                    info?.hospital?.charges
-                                                      ?.length === 0 && (
-                                                      <i
-                                                        className="fa-solid fa-trash"
-                                                        onClick={() =>
-                                                          handledelete(info)
-                                                        }
-                                                      ></i>
-                                                    )}
-                                                </span>
-                                              </h6>
-                                            </div>
-                                            <div className="card-body">
-                                              <div className="row gx-3 gy-3">
-                                                <div className="col-md-6">
-                                                  <div className="card patientreat">
-                                                    <div className="card-header service-list">
-                                                      <h6>Treatment</h6>
-                                                    </div>
-                                                    <div className="card-body">
-                                                      <div className="table-responsive table-no-card">
-                                                        <table className="table-card w-100">
-                                                          <thead>
-                                                            <tr>
-                                                              <th>Name</th>
-                                                              <th>Charge</th>
-                                                              <th>Date</th>
-                                                              <th>Time</th>
-                                                              <th>Action</th>
-                                                            </tr>
-                                                          </thead>
-                                                          <tbody>
-                                                            <tr key={index}>
-                                                              <td>
-                                                                {info?.treatment_name ||
-                                                                  "-"}
-                                                              </td>
-                                                              <td>
-                                                                {info?.treatment_course_fee ||
-                                                                  "-"}
-                                                              </td>
-                                                              <td>
-                                                                {new Date(
+                              </div>
+                              <div
+                                className={`collapse ${openIndex === index ? "show" : ""}`}
+                              >
+                                {activeSubTab === "details" ? (
+                                  <>
+                                    <div className="row gx-3 gy-3">
+                                      {/* for hospital separate data */}
+                                      <div className="col-md-12">
+                                        <div className="card customstylecard">
+                                          <div className="card-header">
+                                            <h6>
+                                              Hospital Name:
+                                              <span>
+                                                {" "}
+                                                {
+                                                  info?.hospital?.details
+                                                    ?.hospital_Name
+                                                }
+                                              </span>{" "}
+                                              <span className="text-danger">
+                                                {info?.hospital?.details
+                                                  ?.hospital_Name &&
+                                                  info?.hospital?.charges
+                                                    ?.length === 0 && (
+                                                    <i
+                                                      className="fa-solid fa-trash"
+                                                      onClick={() =>
+                                                        handledelete(info)
+                                                      }
+                                                    ></i>
+                                                  )}
+                                              </span>
+                                            </h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <div className="row gx-3 gy-3">
+                                              <div className="col-md-6">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Treatment</h6>
+                                                  </div>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>Name</th>
+                                                            <th>Charge</th>
+                                                            <th>Date</th>
+                                                            <th>Time</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          <tr key={index}>
+                                                            <td>
+                                                              {info?.treatment_name ||
+                                                                "-"}
+                                                            </td>
+                                                            <td>
+                                                              {info?.treatment_course_fee ||
+                                                                "-"}
+                                                            </td>
+                                                            <td>
+                                                              {new Date(
+                                                                info.treatment_created_at,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )}
+                                                            </td>
+                                                            <td>
+                                                              {info.treatment_created_at
+                                                                ? new Date(
                                                                   info.treatment_created_at,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                )}
-                                                              </td>
-                                                              <td>
-                                                                {info.treatment_created_at
-                                                                  ? new Date(
-                                                                      info.treatment_created_at,
-                                                                    ).toLocaleTimeString(
-                                                                      "en-US",
-                                                                      {
-                                                                        hour: "2-digit",
-                                                                        minute:
-                                                                          "2-digit",
-                                                                      },
-                                                                    )
-                                                                  : "-"}
-                                                              </td>
-                                                              <td>
-                                                                <div className="action-icon">
-                                                                  <i
-                                                                    className="fa-solid fa-pen-to-square me-2"
-                                                                    style={{
-                                                                      cursor:
-                                                                        "pointer",
-                                                                    }}
-                                                                    onClick={() => {
-                                                                      handleclickEdAppointment(
-                                                                        info,
-                                                                      );
-                                                                    }}
-                                                                  ></i>
-                                                                  {/* {item?.hospital_Name && (
+                                                                ).toLocaleTimeString(
+                                                                  "en-US",
+                                                                  {
+                                                                    hour: "2-digit",
+                                                                    minute:
+                                                                      "2-digit",
+                                                                  },
+                                                                )
+                                                                : "-"}
+                                                            </td>
+                                                            <td>
+                                                              <div className="action-icon">
+                                                                <i
+                                                                  className="fa-solid fa-pen-to-square me-2"
+                                                                  style={{
+                                                                    cursor:
+                                                                      "pointer",
+                                                                  }}
+                                                                  onClick={() => {
+                                                                    handleclickEdAppointment(
+                                                                      info,
+                                                                    );
+                                                                  }}
+                                                                ></i>
+                                                                {/* {item?.hospital_Name && (
                                                                           <i className="fa-solid fa-trash" style={{ cursor: "pointer" }}
                                                                             onClick={() => handledelete(info, item)}
                                                                           ></i>
                                                                         )} */}
-                                                                </div>
-                                                              </td>
-                                                            </tr>
-                                                          </tbody>
-                                                        </table>
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                  <div className="card patientreat">
-                                                    <div className="card-header service-list d-flex justify-content-between">
-                                                      <div>
-                                                        <h6>Charges</h6>
-                                                      </div>
-                                                      <div>
-                                                        <button
-                                                          className="add-button"
-                                                          onClick={() => {
-                                                            handleclickopencharge(
-                                                              info,
-                                                            );
-                                                          }}
-                                                        >
-                                                          Add Charge
-                                                        </button>
-                                                      </div>
-                                                    </div>
-                                                    <div className="card-body">
-                                                      <div className="table-responsive table-no-card">
-                                                        <table className="table-card w-100">
-                                                          <thead>
-                                                            <tr>
-                                                              <th>
-                                                                Service Name
-                                                              </th>
-                                                              <th>Price</th>
-                                                              <th>Date</th>
-                                                              <th>Action</th>
-                                                            </tr>
-                                                          </thead>
-                                                          <tbody>
-                                                            {info?.hospital
-                                                              ?.charges
-                                                              ?.length > 0 ? (
-                                                              info?.hospital?.charges?.map(
-                                                                (
-                                                                  item,
-                                                                  index,
-                                                                ) => {
-                                                                  const createdAt =
-                                                                    item?.date;
-
-                                                                  return (
-                                                                    <tr
-                                                                      key={
-                                                                        index
-                                                                      }
-                                                                    >
-                                                                      <td>
-                                                                        {item?.service_name ||
-                                                                          "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        {item?.price ||
-                                                                          "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        {createdAt
-                                                                          ? new Date(
-                                                                              createdAt,
-                                                                            ).toLocaleDateString(
-                                                                              "en-GB",
-                                                                            )
-                                                                          : "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        <div className="action-icon">
-                                                                          <i
-                                                                            className="fa-solid fa-pen-to-square me-2"
-                                                                            style={{
-                                                                              cursor:
-                                                                                "pointer",
-                                                                            }}
-                                                                            onClick={() =>
-                                                                              handledeedit(
-                                                                                info,
-                                                                                item,
-                                                                              )
-                                                                            }
-                                                                          ></i>
-
-                                                                          <i
-                                                                            className="fa-solid fa-trash"
-                                                                            style={{
-                                                                              cursor:
-                                                                                "pointer",
-                                                                            }}
-                                                                            onClick={() =>
-                                                                              handledeedit123222(
-                                                                                info,
-                                                                                index,
-                                                                              )
-                                                                            }
-                                                                          ></i>
-                                                                        </div>
-                                                                      </td>
-                                                                    </tr>
-                                                                  );
-                                                                },
-                                                              )
-                                                            ) : (
-                                                              <tr>
-                                                                <td
-                                                                  colSpan="4"
-                                                                  style={{
-                                                                    textAlign:
-                                                                      "center",
-                                                                  }}
-                                                                >
-                                                                  No Data Found
-                                                                </td>
-                                                              </tr>
-                                                            )}
-                                                          </tbody>
-                                                        </table>
-                                                      </div>
+                                                              </div>
+                                                            </td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
                                                     </div>
                                                   </div>
                                                 </div>
                                               </div>
-                                            </div>
-                                            <div className="card-footer">
-                                              <div className="row justify-content-end">
-                                                <div className="col-md-12">
-                                                  <div className="total-amount">
-                                                    <h6 className="mb-0">
-                                                      Total Amount:
-                                                    </h6>
-                                                    <p>
-                                                      {
-                                                        info?.hospital
-                                                          ?.totalAmount
-                                                      }
-                                                    </p>
+                                              <div className="col-md-6">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list d-flex justify-content-between">
+                                                    <div>
+                                                      <h6>Charges</h6>
+                                                    </div>
+                                                    <div>
+                                                      <button
+                                                        className="add-button"
+                                                        onClick={() => {
+                                                          handleclickopencharge(
+                                                            info,
+                                                          );
+                                                        }}
+                                                      >
+                                                        Add Charge
+                                                      </button>
+                                                    </div>
                                                   </div>
-                                                </div>
-                                                <div className="col-md-12">
-                                                  <div className="total-amount">
-                                                    <h6 className="mb-0">
-                                                      Due Amount:
-                                                    </h6>
-                                                    <p>
-                                                      {
-                                                        info?.hospital
-                                                          ?.dueAmount
-                                                      }
-                                                    </p>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>
+                                                              Service Name
+                                                            </th>
+                                                            <th>Price</th>
+                                                            <th>Date</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {info?.hospital
+                                                            ?.charges
+                                                            ?.length > 0 ? (
+                                                            info?.hospital?.charges?.map(
+                                                              (
+                                                                item,
+                                                                index,
+                                                              ) => {
+                                                                const createdAt =
+                                                                  item?.date;
+
+                                                                return (
+                                                                  <tr
+                                                                    key={
+                                                                      index
+                                                                    }
+                                                                  >
+                                                                    <td>
+                                                                      {item?.service_name ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {item?.price ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {createdAt
+                                                                        ? new Date(
+                                                                          createdAt,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )
+                                                                        : "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      <div className="action-icon">
+                                                                        <i
+                                                                          className="fa-solid fa-pen-to-square me-2"
+                                                                          style={{
+                                                                            cursor:
+                                                                              "pointer",
+                                                                          }}
+                                                                          onClick={() =>
+                                                                            handledeedit(
+                                                                              info,
+                                                                              item,
+                                                                            )
+                                                                          }
+                                                                        ></i>
+
+                                                                        <i
+                                                                          className="fa-solid fa-trash"
+                                                                          style={{
+                                                                            cursor:
+                                                                              "pointer",
+                                                                          }}
+                                                                          onClick={() =>
+                                                                            handledeedit123222(
+                                                                              info,
+                                                                              index,
+                                                                            )
+                                                                          }
+                                                                        ></i>
+                                                                      </div>
+                                                                    </td>
+                                                                  </tr>
+                                                                );
+                                                              },
+                                                            )
+                                                          ) : (
+                                                            <tr>
+                                                              <td
+                                                                colSpan="4"
+                                                                style={{
+                                                                  textAlign:
+                                                                    "center",
+                                                                }}
+                                                              >
+                                                                No Data Found
+                                                              </td>
+                                                            </tr>
+                                                          )}
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
                                                   </div>
                                                 </div>
                                               </div>
                                             </div>
                                           </div>
-                                        </div>
-                                        {/* for omca services */}
-                                        <div className="col-md-12">
-                                          <div className="card customstylecard">
-                                            <div className="card-header">
-                                              <h6>OMCA</h6>
+                                          <div className="card-footer">
+                                            <div className="row justify-content-end">
+                                              <div className="col-md-12">
+                                                <div className="total-amount">
+                                                  <h6 className="mb-0">
+                                                    Total Amount:
+                                                  </h6>
+                                                  <p>
+                                                    {
+                                                      info?.hospital
+                                                        ?.totalAmount
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-12">
+                                                <div className="total-amount">
+                                                  <h6 className="mb-0">
+                                                    Due Amount:
+                                                  </h6>
+                                                  <p>
+                                                    {
+                                                      info?.hospital
+                                                        ?.dueAmount
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </div>
                                             </div>
-                                            <div className="card-body">
-                                              <div className="row gx-3 gy-3">
-                                                {/* extra-service */}
-                                                <div className="col-md-6">
-                                                  <div className="card patientreat">
-                                                    <div className="card-header service-list">
-                                                      <h6>Extra Services</h6>
-                                                    </div>
-                                                    <div className="card-body">
-                                                      <div className="table-responsive table-no-card">
-                                                        <table className="table-card w-100">
-                                                          <thead>
-                                                            <tr>
-                                                              <th>
-                                                                Service Name
-                                                              </th>
-                                                              <th>Price</th>
-                                                              <th>
-                                                                Valid From
-                                                              </th>
-                                                              <th>Valid To</th>
-                                                              <th>Action</th>
-                                                            </tr>
-                                                          </thead>
-                                                          <tbody>
-                                                            {info?.omca
-                                                              ?.extraServices &&
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {/* for omca services */}
+                                      <div className="col-md-12">
+                                        <div className="card customstylecard">
+                                          <div className="card-header">
+                                            <h6>OMCA</h6>
+                                          </div>
+                                          <div className="card-body">
+                                            <div className="row gx-3 gy-3">
+                                              {/* extra-service */}
+                                              <div className="col-md-6">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Extra Services</h6>
+                                                  </div>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>
+                                                              Service Name
+                                                            </th>
+                                                            <th>Price</th>
+                                                            <th>
+                                                              Valid From
+                                                            </th>
+                                                            <th>Valid To</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {info?.omca
+                                                            ?.extraServices &&
                                                             info.omca.extraServices.filter(
                                                               (item) =>
                                                                 item.price,
                                                             ).length > 0 ? (
-                                                              info.omca.extraServices.map(
-                                                                (
-                                                                  item,
-                                                                  index,
-                                                                ) => {
-                                                                  if (
-                                                                    !item.price
-                                                                  )
-                                                                    return null;
-                                                                  return (
-                                                                    <tr
-                                                                      key={
-                                                                        item._id ||
-                                                                        item.service_type
+                                                            info.omca.extraServices.map(
+                                                              (
+                                                                item,
+                                                                index,
+                                                              ) => {
+                                                                if (
+                                                                  !item.price
+                                                                )
+                                                                  return null;
+                                                                return (
+                                                                  <tr
+                                                                    key={
+                                                                      item._id ||
+                                                                      item.service_type
+                                                                    }
+                                                                  >
+                                                                    <td>
+                                                                      {item.serviceName ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {
+                                                                        item.price
                                                                       }
-                                                                    >
-                                                                      <td>
-                                                                        {item.serviceName ||
-                                                                          "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        {
-                                                                          item.price
-                                                                        }
-                                                                      </td>
-                                                                      <td>
-                                                                        {item.startTime
-                                                                          ? new Date(
-                                                                              item.startTime,
-                                                                            ).toLocaleDateString(
-                                                                              "en-GB",
-                                                                            )
-                                                                          : "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        {item.endTime
-                                                                          ? new Date(
-                                                                              item.endTime,
-                                                                            ).toLocaleDateString(
-                                                                              "en-GB",
-                                                                            )
-                                                                          : "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        <div className="action-icon">
-                                                                          <i
-                                                                            className="fa-solid fa-pen-to-square"
-                                                                            onClick={() => {
-                                                                              hadnlcecEditModal(
-                                                                                item,
-                                                                                info,
-                                                                              );
-                                                                            }}
-                                                                          ></i>
-                                                                          <i
-                                                                            className="fa-solid fa-trash"
-                                                                            onClick={() => {
-                                                                              handledeltePatientserveice(
-                                                                                item,
-                                                                                info,
-                                                                                index,
-                                                                              );
-                                                                            }}
-                                                                          ></i>
-                                                                        </div>
-                                                                      </td>
-                                                                    </tr>
-                                                                  );
-                                                                },
-                                                              )
-                                                            ) : (
-                                                              <tr>
-                                                                <td
-                                                                  colSpan="5"
-                                                                  style={{
-                                                                    textAlign:
-                                                                      "center",
-                                                                  }}
-                                                                >
-                                                                  No Data Found
-                                                                </td>
-                                                              </tr>
-                                                            )}
-                                                          </tbody>
-                                                        </table>
-                                                      </div>
+                                                                    </td>
+                                                                    <td>
+                                                                      {item.startTime
+                                                                        ? new Date(
+                                                                          item.startTime,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )
+                                                                        : "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {item.endTime
+                                                                        ? new Date(
+                                                                          item.endTime,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )
+                                                                        : "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      <div className="action-icon">
+                                                                        <i
+                                                                          className="fa-solid fa-pen-to-square"
+                                                                          onClick={() => {
+                                                                            hadnlcecEditModal(
+                                                                              item,
+                                                                              info,
+                                                                            );
+                                                                          }}
+                                                                        ></i>
+                                                                        <i
+                                                                          className="fa-solid fa-trash"
+                                                                          onClick={() => {
+                                                                            handledeltePatientserveice(
+                                                                              item,
+                                                                              info,
+                                                                              index,
+                                                                            );
+                                                                          }}
+                                                                        ></i>
+                                                                      </div>
+                                                                    </td>
+                                                                  </tr>
+                                                                );
+                                                              },
+                                                            )
+                                                          ) : (
+                                                            <tr>
+                                                              <td
+                                                                colSpan="5"
+                                                                style={{
+                                                                  textAlign:
+                                                                    "center",
+                                                                }}
+                                                              >
+                                                                No Data Found
+                                                              </td>
+                                                            </tr>
+                                                          )}
+                                                        </tbody>
+                                                      </table>
                                                     </div>
                                                   </div>
                                                 </div>
-                                                <div className="col-md-6">
-                                                  <div className="card patientreat">
-                                                    <div className="card-header service-list">
-                                                      <h6>Free Services</h6>
-                                                    </div>
-                                                    <div className="card-body">
-                                                      <div className="table-responsive table-no-card">
-                                                        <table className="table-card w-100">
-                                                          <thead>
-                                                            <tr>
-                                                              <th>
-                                                                Service Name
-                                                              </th>
-                                                              {/* <th>Price</th> */}
-                                                              <th>Duration</th>
-                                                              {/* <th>Valid To</th>*/}
-                                                              <th>Action</th>
-                                                            </tr>
-                                                          </thead>
-                                                          <tbody>
-                                                            {info?.omca
-                                                              ?.freeServices &&
+                                              </div>
+                                              <div className="col-md-6">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Free Services</h6>
+                                                  </div>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>
+                                                              Service Name
+                                                            </th>
+                                                            {/* <th>Price</th> */}
+                                                            <th>Duration</th>
+                                                            {/* <th>Valid To</th>*/}
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {info?.omca
+                                                            ?.freeServices &&
                                                             info.omca
                                                               .freeServices
                                                               .length > 0 ? (
-                                                              info.omca.freeServices.map(
-                                                                (
-                                                                  item,
-                                                                  index,
-                                                                ) => {
-                                                                  return (
-                                                                    <tr
-                                                                      key={
-                                                                        index
+                                                            info.omca.freeServices.map(
+                                                              (
+                                                                item,
+                                                                index,
+                                                              ) => {
+                                                                return (
+                                                                  <tr
+                                                                    key={
+                                                                      index
+                                                                    }
+                                                                  >
+                                                                    <td>
+                                                                      {item.serviceName ||
+                                                                        "-"}
+                                                                    </td>
+
+                                                                    <td>
+                                                                      {
+                                                                        item.duration
                                                                       }
-                                                                    >
-                                                                      <td>
-                                                                        {item.serviceName ||
-                                                                          "-"}
-                                                                      </td>
+                                                                    </td>
 
-                                                                      <td>
-                                                                        {
-                                                                          item.duration
-                                                                        }
-                                                                      </td>
-
-                                                                      <td>
-                                                                        <div className="action-icon">
-                                                                          {/* <i
+                                                                    <td>
+                                                                      <div className="action-icon">
+                                                                        {/* <i
                                                                             className="fa-solid fa-pen-to-square"
                                                                             onClick={() => {
                                                                               hadnlcecEditModal(
@@ -3750,42 +3736,42 @@ function PatientDetail() {
                                                                               );
                                                                             }}
                                                                           ></i> */}
-                                                                          <i
-                                                                            className="fa-solid fa-trash"
-                                                                            onClick={() => {
-                                                                              handledeltePatientserveice(
-                                                                                item,
-                                                                                info,
-                                                                                index,
-                                                                              );
-                                                                            }}
-                                                                          ></i>
-                                                                        </div>
-                                                                      </td>
-                                                                    </tr>
-                                                                  );
-                                                                },
-                                                              )
-                                                            ) : (
-                                                              <tr>
-                                                                <td
-                                                                  colSpan={3}
-                                                                  style={{
-                                                                    textAlign:
-                                                                      "center",
-                                                                  }}
-                                                                >
-                                                                  No Data Found
-                                                                </td>
-                                                              </tr>
-                                                            )}
-                                                          </tbody>
-                                                        </table>
-                                                      </div>
+                                                                        <i
+                                                                          className="fa-solid fa-trash"
+                                                                          onClick={() => {
+                                                                            handledeltePatientserveice(
+                                                                              item,
+                                                                              info,
+                                                                              index,
+                                                                            );
+                                                                          }}
+                                                                        ></i>
+                                                                      </div>
+                                                                    </td>
+                                                                  </tr>
+                                                                );
+                                                              },
+                                                            )
+                                                          ) : (
+                                                            <tr>
+                                                              <td
+                                                                colSpan={3}
+                                                                style={{
+                                                                  textAlign:
+                                                                    "center",
+                                                                }}
+                                                              >
+                                                                No Data Found
+                                                              </td>
+                                                            </tr>
+                                                          )}
+                                                        </tbody>
+                                                      </table>
                                                     </div>
                                                   </div>
                                                 </div>
-                                                {/* <div className="col-md-6">
+                                              </div>
+                                              {/* <div className="col-md-6">
                                                       <div className="card patientreat">
                                                         <div className="card-header service-list action-icon">
                                                           <h6>Free Services</h6>
@@ -3830,593 +3816,397 @@ function PatientDetail() {
                                                         </div>
                                                       </div>
                                                     </div> */}
-                                              </div>
-                                            </div>
-                                            <div className="card-footer">
-                                              <div className="row justify-content-end">
-                                                <div className="col-md-12">
-                                                  <div className="total-amount">
-                                                    <h6 className="mb-0">
-                                                      Total Amount:
-                                                    </h6>
-                                                    <p>
-                                                      {info.omca?.totalAmount}
-                                                    </p>
-                                                  </div>
-                                                </div>
-                                                <div className="col-md-12">
-                                                  <div className="total-amount">
-                                                    <h6 className="mb-0">
-                                                      Due Amount:
-                                                    </h6>
-                                                    <p>
-                                                      {info.omca?.dueAmount}
-                                                    </p>
-                                                  </div>
-                                                </div>
-                                              </div>
                                             </div>
                                           </div>
-                                        </div>
-                                        {/* for pharmacy data */}
-                                        <div className="col-md-12">
-                                          <div className="card customstylecard">
-                                            <div className="card-header d-flex justify-content-between">
-                                              <div>
-                                                <h6>Pharmacy</h6>
-                                              </div>
-                                              <div>
-                                                <button
-                                                  className="add-button"
-                                                  onClick={() => {
-                                                    handleclickpharmacycharge(
-                                                      info,
-                                                    );
-                                                  }}
-                                                >
-                                                  Add Charge
-                                                </button>
-                                              </div>
-                                            </div>
-                                            <div className="card-body">
-                                              <div className="table-responsive table-no-card">
-                                                <table className="table-card w-100">
-                                                  <thead>
-                                                    <tr>
-                                                      <th>Pharmacy Name</th>
-                                                      <th>Price</th>
-                                                      <th>Date</th>
-                                                      <th>Action</th>
-                                                    </tr>
-                                                  </thead>
-                                                  <tbody>
-                                                    {info?.pharmacy
-                                                      ?.pharmacyCharges
-                                                      ?.length > 0 ? (
-                                                      info.pharmacy?.pharmacyCharges?.map(
-                                                        (item, index) => (
-                                                          <tr key={item._id}>
-                                                            <td>
-                                                              {item?.service_name ||
-                                                                "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item?.price ||
-                                                                "-"}
-                                                            </td>
-                                                            <td>
-                                                              {new Date(
-                                                                item?.date,
-                                                              ).toLocaleDateString(
-                                                                "en-GB",
-                                                              ) || "-"}
-                                                            </td>
-                                                            <td>
-                                                              <div className="action-icon">
-                                                                <i
-                                                                  className="fa-solid fa-pen-to-square"
-                                                                  onClick={() => {
-                                                                    handleeditpharmacycharge(
-                                                                      item,
-                                                                      info,
-                                                                    );
-                                                                  }}
-                                                                ></i>
-
-                                                                <i
-                                                                  className="fa-solid fa-trash text-danger"
-                                                                  style={{
-                                                                    cursor:
-                                                                      "pointer",
-                                                                  }}
-                                                                  onClick={() =>
-                                                                    deletepharmacy(
-                                                                      info,
-                                                                      index,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              </div>
-                                                            </td>
-                                                          </tr>
-                                                        ),
-                                                      )
-                                                    ) : (
-                                                      <tr>
-                                                        <td
-                                                          colSpan={
-                                                            usrFount === "Admin"
-                                                              ? 9
-                                                              : 7
-                                                          }
-                                                          style={{
-                                                            textAlign: "center",
-                                                          }}
-                                                        >
-                                                          No Data Found
-                                                        </td>
-                                                      </tr>
-                                                    )}
-                                                  </tbody>
-                                                </table>
-                                              </div>
-                                            </div>
-                                            <div className="card-footer">
-                                              <div className="row justify-content-end">
-                                                <div className="col-md-12">
-                                                  <div className="total-amount">
-                                                    <h6 className="mb-0">
-                                                      Total Amount:
-                                                    </h6>
-                                                    <p>
-                                                      {
-                                                        info?.pharmacy
-                                                          ?.totalAmount
-                                                      }
-                                                    </p>
-                                                  </div>
+                                          <div className="card-footer">
+                                            <div className="row justify-content-end">
+                                              <div className="col-md-12">
+                                                <div className="total-amount">
+                                                  <h6 className="mb-0">
+                                                    Total Amount:
+                                                  </h6>
+                                                  <p>
+                                                    {info.omca?.totalAmount}
+                                                  </p>
                                                 </div>
-                                                <div className="col-md-12">
-                                                  <div className="total-amount">
-                                                    <h6 className="mb-0">
-                                                      Due Amount:
-                                                    </h6>
-                                                    <p>
-                                                      {
-                                                        info?.pharmacy
-                                                          ?.dueAmount
-                                                      }
-                                                    </p>
-                                                  </div>
+                                              </div>
+                                              <div className="col-md-12">
+                                                <div className="total-amount">
+                                                  <h6 className="mb-0">
+                                                    Due Amount:
+                                                  </h6>
+                                                  <p>
+                                                    {info.omca?.dueAmount}
+                                                  </p>
                                                 </div>
                                               </div>
                                             </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </>
-                                  ) : (
-                                    ""
-                                  )}
-                                  {activeSubTab === "attendant" &&
-                                    selectedTreatmentId && (
-                                      <>
-                                        <div className="row">
-                                          <div className="col-md-12">
-                                            <div className="top-collpse">
-                                              <div className="treat-buttons mb-0">
-                                                <button
-                                                  onClick={(e) =>
-                                                    handleClickOpen2(
-                                                      e,
-                                                      selectedTreatmentId,
-                                                    )
-                                                  }
-                                                  className="add-button"
-                                                >
-                                                  <span>
-                                                    <i className="fa fa-plus"></i>
-                                                  </span>{" "}
-                                                  Add Attendant{" "}
-                                                </button>
-                                              </div>
+                                      {/* for pharmacy data */}
+                                      <div className="col-md-12">
+                                        <div className="card customstylecard">
+                                          <div className="card-header d-flex justify-content-between">
+                                            <div>
+                                              <h6>Pharmacy</h6>
                                             </div>
-                                            <div className="row gx-3 gy-3">
-                                              <div className="col-md-12">
-                                                <div className="table-responsive">
-                                                  <TableContainer
-                                                    component={Paper}
-                                                    style={{
-                                                      overflowX: "auto",
-                                                    }}
-                                                  >
-                                                    <Table
-                                                      stickyHeader
-                                                      aria-label="attendant table"
-                                                      className="table-no-card"
-                                                    >
-                                                      <TableHead>
-                                                        <TableRow>
-                                                          <TableCell>
-                                                            Sr.No.
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Name
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Relation
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Contact
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Country
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Attendant Address
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Attendant ID Proof
-                                                          </TableCell>
-                                                        </TableRow>
-                                                      </TableHead>
-
-                                                      <TableBody>
-                                                        {attandantFilered.length ===
-                                                        0 ? (
-                                                          <TableRow>
-                                                            <TableCell
-                                                              colSpan={7}
-                                                              align="center"
-                                                            >
-                                                              No attendants
-                                                              found
-                                                            </TableCell>
-                                                          </TableRow>
-                                                        ) : (
-                                                          attandantFilered.map(
-                                                            (item, index) => (
-                                                              <TableRow
-                                                                key={
-                                                                  item._id ||
-                                                                  index
-                                                                }
-                                                              >
-                                                                <TableCell>
-                                                                  {index + 1}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                  {item?.attendant_fullname ||
-                                                                    "N/A"}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                  {item?.attendant_relation ||
-                                                                    "N/A"}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                  {item?.attendant_contact ||
-                                                                    "N/A"}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                  {item?.country ||
-                                                                    "N/A"}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                  {
-                                                                    item?.attendant_address
-                                                                  }
-                                                                </TableCell>
-                                                                <TableCell className="d-flex gap-2">
-                                                                  {item
-                                                                    ?.attendant_passport
-                                                                    ?.length > 0
-                                                                    ? item.attendant_passport.map(
-                                                                        (
-                                                                          file,
-                                                                          fIndex,
-                                                                        ) => {
-                                                                          const filePath =
-                                                                            typeof file ===
-                                                                            "object"
-                                                                              ? file?.path
-                                                                              : file;
-                                                                          return (
-                                                                            <div
-                                                                              key={
-                                                                                fIndex
-                                                                              }
-                                                                            >
-                                                                              <a
-                                                                                href={`https://sisccltd.com/omca_crm/${filePath}`}
-                                                                                target="_blank"
-                                                                                rel="noopener noreferrer"
-                                                                                className="viewbtn"
-                                                                              >
-                                                                                View{" "}
-                                                                                {item
-                                                                                  .attendant_passport
-                                                                                  .length >
-                                                                                1
-                                                                                  ? fIndex +
-                                                                                    1
-                                                                                  : ""}
-                                                                              </a>
-                                                                            </div>
-                                                                          );
-                                                                        },
-                                                                      )
-                                                                    : "Not Uploaded"}
-                                                                </TableCell>
-                                                              </TableRow>
-                                                            ),
-                                                          )
-                                                        )}
-                                                      </TableBody>
-                                                    </Table>
-                                                  </TableContainer>
-                                                </div>
-                                              </div>
+                                            <div>
+                                              <button
+                                                className="add-button"
+                                                onClick={() => {
+                                                  handleclickpharmacycharge(
+                                                    info,
+                                                  );
+                                                }}
+                                              >
+                                                Add Charge
+                                              </button>
                                             </div>
                                           </div>
-                                        </div>
-                                      </>
-                                    )}
-                                  {activeSubTab === "payment" &&
-                                    selectedTreatmentId && (
-                                      <>
-                                        <div>
-                                          <div className="row">
-                                            <div className="col-md-12">
-                                              <div className="experience-box">
-                                                <div className="top-collpse">
-                                                  <div className="treat-buttons">
-                                                    <button
-                                                      onClick={(e) =>
-                                                        handleClickOpen3()
-                                                      }
-                                                      className="add-button"
-                                                    >
-                                                      <span>
-                                                        <i className="fa fa-plus"></i>
-                                                      </span>{" "}
-                                                      Add Amount
-                                                    </button>
-                                                    <button
-                                                      onClick={(e) =>
-                                                        handleClicexportPayment(
-                                                          e,
-                                                          info.treatment_id,
-                                                        )
-                                                      }
-                                                      className="add-button"
-                                                    >
-                                                      <span>
-                                                        <i className="fa fa-plus"></i>
-                                                      </span>{" "}
-                                                      Export
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                                <TableContainer
-                                                  component={Paper}
-                                                >
-                                                  <Table className="table-no-card">
-                                                    <TableHead>
-                                                      <TableRow>
-                                                        <TableCell>
-                                                          Payment Date
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Payment Method
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Payment Amount
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Paid To
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Paid For
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Notes
-                                                        </TableCell>
+                                          <div className="card-body">
+                                            <div className="table-responsive table-no-card">
+                                              <table className="table-card w-100">
+                                                <thead>
+                                                  <tr>
+                                                    <th>Pharmacy Name</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                    <th>Action</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {info?.pharmacy
+                                                    ?.pharmacyCharges
+                                                    ?.length > 0 ? (
+                                                    info.pharmacy?.pharmacyCharges?.map(
+                                                      (item, index) => (
+                                                        <tr key={item._id}>
+                                                          <td>
+                                                            {item?.service_name ||
+                                                              "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item?.price ||
+                                                              "-"}
+                                                          </td>
+                                                          <td>
+                                                            {new Date(
+                                                              item?.date,
+                                                            ).toLocaleDateString(
+                                                              "en-GB",
+                                                            ) || "-"}
+                                                          </td>
+                                                          <td>
+                                                            <div className="action-icon">
+                                                              <i
+                                                                className="fa-solid fa-pen-to-square"
+                                                                onClick={() => {
+                                                                  handleeditpharmacycharge(
+                                                                    item,
+                                                                    info,
+                                                                  );
+                                                                }}
+                                                              ></i>
 
-                                                        <TableCell>
-                                                          Document
-                                                        </TableCell>
-                                                        {usrFount ===
-                                                        "Admin" ? (
-                                                          <>
-                                                            <TableCell>
-                                                              PDF
-                                                            </TableCell>
-                                                            <TableCell>
-                                                              Action
-                                                            </TableCell>
-                                                          </>
-                                                        ) : (
-                                                          ""
-                                                        )}
-                                                      </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                      {paymentsFilered &&
-                                                      paymentsFilered.length >
-                                                        0 ? (
-                                                        paymentsFilered.map(
-                                                          (item) => (
-                                                            <TableRow
-                                                              key={item._id}
-                                                            >
-                                                              <TableCell>
-                                                                {new Date(
-                                                                  item?.payment_Date,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                )}
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {
-                                                                  item?.paymentMethod
-                                                                }
-                                                              </TableCell>
-
-                                                              <TableCell>
-                                                                {
-                                                                  item?.paid_amount
-                                                                }
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {item?.paid_to}
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {item?.paid_for
-                                                                  ?.split("_")
-                                                                  .map(
-                                                                    (word) =>
-                                                                      word
-                                                                        .charAt(
-                                                                          0,
-                                                                        )
-                                                                        .toUpperCase() +
-                                                                      word.slice(
-                                                                        1,
-                                                                      ),
+                                                              <i
+                                                                className="fa-solid fa-trash text-danger"
+                                                                style={{
+                                                                  cursor:
+                                                                    "pointer",
+                                                                }}
+                                                                onClick={() =>
+                                                                  deletepharmacy(
+                                                                    info,
+                                                                    index,
                                                                   )
-                                                                  .join(" ")}
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {item?.notes}
-                                                              </TableCell>
-
-                                                              <TableCell className="action-btn">
-                                                                {item?.attachFile ? (
-                                                                  <a
-                                                                    href={`https://sisccltd.com/omca_crm/${item.attachFile}`}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                  >
-                                                                    <i className="fa fa-eye"></i>
-                                                                  </a>
-                                                                ) : (
-                                                                  "-"
-                                                                )}
-                                                              </TableCell>
-
-                                                              {usrFount ===
-                                                              "Admin" ? (
-                                                                <>
-                                                                  <TableCell>
-                                                                    <button
-                                                                      className="add-button"
-                                                                      onClick={() => {
-                                                                        navigate(
-                                                                          "/Admin/Patient-Pdfdetails",
-                                                                          {
-                                                                            state:
-                                                                              {
-                                                                                data: item?._id,
-                                                                              },
-                                                                          },
-                                                                        );
-                                                                      }}
-                                                                    >
-                                                                      <i className="fa fa-download"></i>
-                                                                    </button>
-                                                                  </TableCell>
-                                                                  <TableCell>
-                                                                    <i
-                                                                      className="fa-solid fa-trash text-danger"
-                                                                      style={{
-                                                                        cursor:
-                                                                          "pointer",
-                                                                      }}
-                                                                      onClick={() =>
-                                                                        deletePaymentInvoice(
-                                                                          item,
-                                                                        )
-                                                                      }
-                                                                    ></i>
-                                                                  </TableCell>
-                                                                </>
-                                                              ) : (
-                                                                ""
-                                                              )}
-                                                            </TableRow>
-                                                          ),
-                                                        )
-                                                      ) : (
-                                                        <TableRow>
-                                                          <TableCell
-                                                            colSpan={
-                                                              usrFount ===
-                                                              "Admin"
-                                                                ? 9
-                                                                : 7
-                                                            }
-                                                            align="center"
-                                                          >
-                                                            No Data Found
-                                                          </TableCell>
-                                                        </TableRow>
-                                                      )}
-                                                    </TableBody>
-                                                  </Table>
-                                                </TableContainer>
+                                                                }
+                                                              ></i>
+                                                            </div>
+                                                          </td>
+                                                        </tr>
+                                                      ),
+                                                    )
+                                                  ) : (
+                                                    <tr>
+                                                      <td
+                                                        colSpan={
+                                                          usrFount === "Admin"
+                                                            ? 9
+                                                            : 7
+                                                        }
+                                                        style={{
+                                                          textAlign: "center",
+                                                        }}
+                                                      >
+                                                        No Data Found
+                                                      </td>
+                                                    </tr>
+                                                  )}
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                          <div className="card-footer">
+                                            <div className="row justify-content-end">
+                                              <div className="col-md-12">
+                                                <div className="total-amount">
+                                                  <h6 className="mb-0">
+                                                    Total Amount:
+                                                  </h6>
+                                                  <p>
+                                                    {
+                                                      info?.pharmacy
+                                                        ?.totalAmount
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-12">
+                                                <div className="total-amount">
+                                                  <h6 className="mb-0">
+                                                    Due Amount:
+                                                  </h6>
+                                                  <p>
+                                                    {
+                                                      info?.pharmacy
+                                                        ?.dueAmount
+                                                    }
+                                                  </p>
+                                                </div>
                                               </div>
                                             </div>
                                           </div>
                                         </div>
-                                      </>
-                                    )}
-                                  {activeSubTab === "reports" &&
-                                    selectedTreatmentId && (
+                                      </div>
+                                    </div>
+                                  </>
+                                ) : (
+                                  ""
+                                )}
+                                {activeSubTab === "attendant" &&
+                                  selectedTreatmentId && (
+                                    <>
+                                      <div className="row">
+                                        <div className="col-md-12">
+                                          <div className="table-responsive">
+                                            <TableContainer
+                                              component={Paper}
+                                              style={{
+                                                overflowX: "auto",
+                                              }}
+                                            >
+                                              <Table
+                                                stickyHeader
+                                                aria-label="attendant table"
+                                                className="table-no-card"
+                                              >
+                                                <TableHead>
+                                                  <TableRow>
+                                                    <TableCell></TableCell>
+                                                    <TableCell>
+                                                      Name
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      Relation
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      Contact
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      Country
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      Attendant Photo
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      Attendant ID Proof
+                                                    </TableCell>
+                                                  </TableRow>
+                                                </TableHead>
+
+                                                <TableBody>
+                                                  {attandantFilered.length ===
+                                                    0 ? (
+                                                    <TableRow>
+                                                      <TableCell
+                                                        colSpan={7}
+                                                        align="center"
+                                                      >
+                                                        No attendants
+                                                        found
+                                                      </TableCell>
+                                                    </TableRow>
+                                                  ) : (
+                                                    attandantFilered.map(
+                                                      (item, index) => (
+                                                        <TableRow
+                                                          key={
+                                                            item._id ||
+                                                            index
+                                                          }
+                                                        >
+                                                          <TableCell>
+                                                            <div className="form-check">
+                                                              <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" />
+                                                            </div>
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {item?.attendant_fullname ||
+                                                              "N/A"}
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {item?.attendant_relation ||
+                                                              "N/A"}
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {item?.attendant_contact ||
+                                                              "N/A"}
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {item?.country ||
+                                                              "N/A"}
+                                                          </TableCell>
+                                                          <TableCell className="action-btn">
+                                                            {item?.attachFile ? (
+                                                              <a
+                                                                href={`https://sisccltd.com/omca_crm/${item.attachFile}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                              >
+                                                                <i className="fa fa-eye"></i>
+                                                              </a>
+                                                            ) : (
+                                                              "-"
+                                                            )}
+                                                          </TableCell>
+                                                          <TableCell className="d-flex gap-2">
+                                                            {item
+                                                              ?.attendant_passport
+                                                              ?.length > 0
+                                                              ? item.attendant_passport.map(
+                                                                (
+                                                                  file,
+                                                                  fIndex,
+                                                                ) => {
+                                                                  const filePath =
+                                                                    typeof file ===
+                                                                      "object"
+                                                                      ? file?.path
+                                                                      : file;
+                                                                  return (
+                                                                    <div
+                                                                      key={
+                                                                        fIndex
+                                                                      }
+                                                                    >
+                                                                      <a
+                                                                        href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="viewbtn"
+                                                                      >
+                                                                        View{" "}
+                                                                        {item
+                                                                          .attendant_passport
+                                                                          .length >
+                                                                          1
+                                                                          ? fIndex +
+                                                                          1
+                                                                          : ""}
+                                                                      </a>
+                                                                    </div>
+                                                                  );
+                                                                },
+                                                              )
+                                                              : "Not Uploaded"}
+                                                          </TableCell>
+                                                        </TableRow>
+                                                      ),
+                                                    )
+                                                  )}
+                                                </TableBody>
+                                              </Table>
+                                            </TableContainer>
+                                          </div>
+                                        </div>
+                                        <div className="col-md-12">
+                                          <div className="mt-3 text-end">
+                                            <button className="add-button">Submit</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </>
+                                  )}
+                                {activeSubTab === "payment" &&
+                                  selectedTreatmentId && (
+                                    <>
                                       <div>
                                         <div className="row">
                                           <div className="col-md-12">
-                                            <div className="top-collpse">
-                                              <div className="treat-buttons">
-                                                <button
-                                                  className="add-button"
-                                                  onClick={(e) =>
-                                                    handleClickOpen10(
-                                                      e,
-                                                      selectedTreatmentId,
-                                                    )
-                                                  }
-                                                >
-                                                  <span>
-                                                    <i className="fa fa-plus"></i>
-                                                  </span>
-                                                  Add Report
-                                                </button>
+                                            <div className="experience-box">
+                                              <div className="top-collpse">
+                                                <div className="treat-buttons">
+                                                  <button
+                                                    onClick={(e) =>
+                                                      handleClickOpen3()
+                                                    }
+                                                    className="add-button"
+                                                  >
+                                                    <span>
+                                                      <i className="fa fa-plus"></i>
+                                                    </span>{" "}
+                                                    Add Amount
+                                                  </button>
+                                                  <button
+                                                    onClick={(e) =>
+                                                      handleClicexportPayment(
+                                                        e,
+                                                        info.treatment_id,
+                                                      )
+                                                    }
+                                                    className="add-button"
+                                                  >
+                                                    <span>
+                                                      <i className="fa fa-plus"></i>
+                                                    </span>{" "}
+                                                    Export
+                                                  </button>
+                                                </div>
                                               </div>
-                                            </div>
-
-                                            <div className="table-responsive">
-                                              <TableContainer component={Paper}>
+                                              <TableContainer
+                                                component={Paper}
+                                              >
                                                 <Table className="table-no-card">
                                                   <TableHead>
                                                     <TableRow>
                                                       <TableCell>
-                                                        Treatment ID
+                                                        Payment Date
                                                       </TableCell>
                                                       <TableCell>
-                                                        Report Title
+                                                        Payment Method
                                                       </TableCell>
                                                       <TableCell>
-                                                        Report Date
+                                                        Payment Amount
                                                       </TableCell>
                                                       <TableCell>
-                                                        Added By
+                                                        Paid To
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        Paid For
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        Notes
                                                       </TableCell>
 
-                                                      {usrFount === "Admin" ? (
+                                                      <TableCell>
+                                                        Document
+                                                      </TableCell>
+                                                      {usrFount ===
+                                                        "Admin" ? (
                                                         <>
-                                                          {" "}
                                                           <TableCell>
-                                                            Reports
+                                                            PDF
                                                           </TableCell>
                                                           <TableCell>
                                                             Action
@@ -4427,55 +4217,83 @@ function PatientDetail() {
                                                       )}
                                                     </TableRow>
                                                   </TableHead>
-
                                                   <TableBody>
-                                                    {reportsFilered1 &&
-                                                    reportsFilered1.length >
+                                                    {paymentsFilered &&
+                                                      paymentsFilered.length >
                                                       0 ? (
-                                                      reportsFilered1.map(
+                                                      paymentsFilered.map(
                                                         (item) => (
                                                           <TableRow
                                                             key={item._id}
                                                           >
                                                             <TableCell>
-                                                              {
-                                                                item?.treatmentId
-                                                              }
-                                                            </TableCell>
-
-                                                            <TableCell>
-                                                              {
-                                                                item?.reportTitle
-                                                              }
-                                                            </TableCell>
-
-                                                            <TableCell>
                                                               {new Date(
-                                                                item?.treatment_report_date,
+                                                                item?.payment_Date,
                                                               ).toLocaleDateString(
                                                                 "en-GB",
                                                               )}
                                                             </TableCell>
                                                             <TableCell>
-                                                              {item?.platform ===
-                                                              1
-                                                                ? "CRM"
-                                                                : "Hospital"}
+                                                              {
+                                                                item?.paymentMethod
+                                                              }
+                                                            </TableCell>
+
+                                                            <TableCell>
+                                                              {
+                                                                item?.paid_amount
+                                                              }
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              {item?.paid_to}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              {item?.paid_for
+                                                                ?.split("_")
+                                                                .map(
+                                                                  (word) =>
+                                                                    word
+                                                                      .charAt(
+                                                                        0,
+                                                                      )
+                                                                      .toUpperCase() +
+                                                                    word.slice(
+                                                                      1,
+                                                                    ),
+                                                                )
+                                                                .join(" ")}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                              {item?.notes}
+                                                            </TableCell>
+
+                                                            <TableCell className="action-btn">
+                                                              <a href="#" >
+                                                                <i className="fa fa-eye"></i>
+                                                              </a>
+
                                                             </TableCell>
 
                                                             {usrFount ===
-                                                            "Admin" ? (
+                                                              "Admin" ? (
                                                               <>
-                                                                {" "}
                                                                 <TableCell>
-                                                                  <a
-                                                                    href={`${image}${item.treatmentReport}`}
-                                                                    target="_blank"
-                                                                    rel="noreferrer"
+                                                                  <button
+                                                                    className="add-button"
+                                                                    onClick={() => {
+                                                                      navigate(
+                                                                        "/Admin/Patient-Pdfdetails",
+                                                                        {
+                                                                          state:
+                                                                          {
+                                                                            data: item?._id,
+                                                                          },
+                                                                        },
+                                                                      );
+                                                                    }}
                                                                   >
-                                                                    Download
-                                                                    Report
-                                                                  </a>
+                                                                    <i className="fa fa-download"></i>
+                                                                  </button>
                                                                 </TableCell>
                                                                 <TableCell>
                                                                   <i
@@ -4485,7 +4303,7 @@ function PatientDetail() {
                                                                         "pointer",
                                                                     }}
                                                                     onClick={() =>
-                                                                      handledeleteReport(
+                                                                      deletePaymentInvoice(
                                                                         item,
                                                                       )
                                                                     }
@@ -4502,9 +4320,10 @@ function PatientDetail() {
                                                       <TableRow>
                                                         <TableCell
                                                           colSpan={
-                                                            usrFount === "Admin"
-                                                              ? 6
-                                                              : 4
+                                                            usrFount ===
+                                                              "Admin"
+                                                              ? 9
+                                                              : 7
                                                           }
                                                           align="center"
                                                         >
@@ -4519,18 +4338,303 @@ function PatientDetail() {
                                           </div>
                                         </div>
                                       </div>
-                                    )}
-                                  {activeSubTab === "appointment" &&
-                                    selectedTreatmentId ===
-                                      info.treatment_id && (
+                                    </>
+                                  )}
+                                {activeSubTab === "reports" &&
+                                  selectedTreatmentId && (
+                                    <div>
                                       <div className="row">
                                         <div className="col-md-12">
                                           <div className="top-collpse">
-                                            <div className="treat-buttons mb-0">
+                                            <div className="treat-buttons">
                                               <button
                                                 className="add-button"
                                                 onClick={(e) =>
-                                                  handleClickOpen1(
+                                                  handleClickOpen10(
+                                                    e,
+                                                    selectedTreatmentId,
+                                                  )
+                                                }
+                                              >
+                                                <span>
+                                                  <i className="fa fa-plus"></i>
+                                                </span>
+                                                Add Report
+                                              </button>
+                                            </div>
+                                          </div>
+
+                                          <div className="table-responsive">
+                                            <TableContainer component={Paper}>
+                                              <Table className="table-no-card">
+                                                <TableHead>
+                                                  <TableRow>
+                                                    <TableCell>
+                                                      Treatment ID
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      Report Title
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      Report Date
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      Added By
+                                                    </TableCell>
+
+                                                    {usrFount === "Admin" ? (
+                                                      <>
+                                                        {" "}
+                                                        <TableCell>
+                                                          Reports
+                                                        </TableCell>
+                                                        <TableCell>
+                                                          Action
+                                                        </TableCell>
+                                                      </>
+                                                    ) : (
+                                                      ""
+                                                    )}
+                                                  </TableRow>
+                                                </TableHead>
+
+                                                <TableBody>
+                                                  {reportsFilered1 &&
+                                                    reportsFilered1.length >
+                                                    0 ? (
+                                                    reportsFilered1.map(
+                                                      (item) => (
+                                                        <TableRow
+                                                          key={item._id}
+                                                        >
+                                                          <TableCell>
+                                                            {
+                                                              item?.treatmentId
+                                                            }
+                                                          </TableCell>
+
+                                                          <TableCell>
+                                                            {
+                                                              item?.reportTitle
+                                                            }
+                                                          </TableCell>
+
+                                                          <TableCell>
+                                                            {new Date(
+                                                              item?.treatment_report_date,
+                                                            ).toLocaleDateString(
+                                                              "en-GB",
+                                                            )}
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {item?.platform ===
+                                                              1
+                                                              ? "CRM"
+                                                              : "Hospital"}
+                                                          </TableCell>
+
+                                                          {usrFount ===
+                                                            "Admin" ? (
+                                                            <>
+                                                              {" "}
+                                                              <TableCell>
+                                                                <a
+                                                                  href={`${image}${item.treatmentReport}`}
+                                                                  target="_blank"
+                                                                  rel="noreferrer"
+                                                                >
+                                                                  Download
+                                                                  Report
+                                                                </a>
+                                                              </TableCell>
+                                                              <TableCell>
+                                                                <i
+                                                                  className="fa-solid fa-trash text-danger"
+                                                                  style={{
+                                                                    cursor:
+                                                                      "pointer",
+                                                                  }}
+                                                                  onClick={() =>
+                                                                    handledeleteReport(
+                                                                      item,
+                                                                    )
+                                                                  }
+                                                                ></i>
+                                                              </TableCell>
+                                                            </>
+                                                          ) : (
+                                                            ""
+                                                          )}
+                                                        </TableRow>
+                                                      ),
+                                                    )
+                                                  ) : (
+                                                    <TableRow>
+                                                      <TableCell
+                                                        colSpan={
+                                                          usrFount === "Admin"
+                                                            ? 6
+                                                            : 4
+                                                        }
+                                                        align="center"
+                                                      >
+                                                        No Data Found
+                                                      </TableCell>
+                                                    </TableRow>
+                                                  )}
+                                                </TableBody>
+                                              </Table>
+                                            </TableContainer>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                {activeSubTab === "appointment" &&
+                                  selectedTreatmentId ===
+                                  info.treatment_id && (
+                                    <div className="row">
+                                      <div className="col-md-12">
+                                        <div className="top-collpse">
+                                          <div className="treat-buttons mb-0">
+                                            <button
+                                              className="add-button"
+                                              onClick={(e) =>
+                                                handleClickOpen1(
+                                                  e,
+                                                  selectedTreatmentId,
+                                                  info,
+                                                )
+                                              }
+                                            >
+                                              <span>
+                                                <i className="fa fa-plus"></i>
+                                              </span>
+                                              Add Appointment
+                                            </button>
+                                          </div>
+                                        </div>
+                                        <div className="table-responsive table-no-card">
+                                          <table className="table-card w-100">
+                                            <thead>
+                                              <tr>
+                                                <th>ID</th>
+                                                <th>Vehicle No</th>
+                                                <th>Driver Name</th>
+                                                <th>Driver Contact</th>
+                                                <th>Pickup Time</th>
+                                                <th>Date</th>
+                                                <th>Notes</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {appointmentTabel.length ===
+                                                0 ? (
+                                                <tr>
+                                                  <td
+                                                    colSpan="8"
+                                                    className="text-center"
+                                                  >
+                                                    No Appointment Found
+                                                  </td>
+                                                </tr>
+                                              ) : (
+                                                appointmentTabel.map(
+                                                  (item) => (
+                                                    <tr key={item._id}>
+                                                      <td>
+                                                        {item.appointmentId}
+                                                      </td>
+                                                      <td>
+                                                        {item.mode !==
+                                                          "online"
+                                                          ? item.vehicle_no
+                                                          : "-"}
+                                                      </td>
+                                                      <td>
+                                                        {item.mode !==
+                                                          "online"
+                                                          ? item.driver_name
+                                                          : "-"}
+                                                      </td>
+                                                      <td>
+                                                        {item.mode !==
+                                                          "online"
+                                                          ? item.driver_contact
+                                                          : "-"}
+                                                      </td>
+                                                      <td>
+                                                        {item.mode !==
+                                                          "online"
+                                                          ? item.pickup_time
+                                                          : "-"}
+                                                      </td>
+                                                      <td>
+                                                        {item.appointment_Date
+                                                          ? new Date(
+                                                            item.appointment_Date,
+                                                          )
+                                                            .toISOString()
+                                                            .slice(0, 10)
+                                                          : ""}
+                                                      </td>
+                                                      <td>{item.note}</td>
+                                                      <td>
+                                                        <span className="badge bg-primary">
+                                                          {item.status}
+                                                        </span>
+                                                      </td>
+                                                      <td>
+                                                        <td>
+                                                          <div className="action-icon">
+                                                            <i
+                                                              className="fa-solid fa-pen-to-square"
+                                                              onClick={() =>
+                                                                handleclickeditfunc(
+                                                                  item,
+                                                                  info,
+                                                                )
+                                                              }
+                                                            ></i>
+                                                            <i
+                                                              className="fa-solid fa-trash"
+                                                              onClick={() =>
+                                                                handleclickeditdelete(
+                                                                  item,
+                                                                  info,
+                                                                )
+                                                              }
+                                                            ></i>
+                                                          </div>
+                                                        </td>
+                                                      </td>
+                                                    </tr>
+                                                  ),
+                                                )
+                                              )}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                {activeSubTab === "notes" &&
+                                  selectedTreatmentId ===
+                                  info.treatment_id && (
+                                    <div className="col-md-12">
+                                      <div className="card patientreat">
+                                        <div className="card-header service-list d-flex justify-content-between">
+                                          <div>
+                                            <h6>Notes</h6>
+                                          </div>
+                                          <div>
+                                            <div>
+                                              <button
+                                                className="add-button"
+                                                onClick={(e) =>
+                                                  handleClickOpenNotes(
                                                     e,
                                                     selectedTreatmentId,
                                                     info,
@@ -4538,91 +4642,88 @@ function PatientDetail() {
                                                 }
                                               >
                                                 <span>
-                                                  <i className="fa fa-plus"></i>
+                                                  <i className="fa fa-plus text-white"></i>
                                                 </span>
-                                                Add Appointment
+                                                Add Notes
                                               </button>
                                             </div>
                                           </div>
+                                        </div>
+                                        <div className="card-body">
                                           <div className="table-responsive table-no-card">
                                             <table className="table-card w-100">
                                               <thead>
                                                 <tr>
-                                                  <th>ID</th>
-                                                  <th>Vehicle No</th>
-                                                  <th>Driver Name</th>
-                                                  <th>Driver Contact</th>
-                                                  <th>Pickup Time</th>
+                                                  <th>Note</th>
                                                   <th>Date</th>
-                                                  <th>Notes</th>
-                                                  <th>Status</th>
+                                                  <th>Added By</th>
+                                                  <th>Images</th>
                                                   <th>Action</th>
                                                 </tr>
                                               </thead>
                                               <tbody>
-                                                {appointmentTabel.length ===
-                                                0 ? (
-                                                  <tr>
-                                                    <td
-                                                      colSpan="8"
-                                                      className="text-center"
-                                                    >
-                                                      No Appointment Found
-                                                    </td>
-                                                  </tr>
-                                                ) : (
-                                                  appointmentTabel.map(
-                                                    (item) => (
-                                                      <tr key={item._id}>
-                                                        <td>
-                                                          {item.appointmentId}
-                                                        </td>
-                                                        <td>
-                                                          {item.mode !==
-                                                          "online"
-                                                            ? item.vehicle_no
-                                                            : "-"}
-                                                        </td>
-                                                        <td>
-                                                          {item.mode !==
-                                                          "online"
-                                                            ? item.driver_name
-                                                            : "-"}
-                                                        </td>
-                                                        <td>
-                                                          {item.mode !==
-                                                          "online"
-                                                            ? item.driver_contact
-                                                            : "-"}
-                                                        </td>
-                                                        <td>
-                                                          {item.mode !==
-                                                          "online"
-                                                            ? item.pickup_time
-                                                            : "-"}
-                                                        </td>
-                                                        <td>
-                                                          {item.appointment_Date
-                                                            ? new Date(
-                                                                item.appointment_Date,
+                                                {notesTable &&
+                                                  notesTable.length > 0 ? (
+                                                  notesTable.map(
+                                                    (item, index) => {
+                                                      return (
+                                                        <tr
+                                                          key={
+                                                            item._id || index
+                                                          }
+                                                        >
+                                                          <td>
+                                                            {item.note || "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item?.date
+                                                              ? new Date(
+                                                                item.date,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
                                                               )
-                                                                .toISOString()
-                                                                .slice(0, 10)
-                                                            : ""}
-                                                        </td>
-                                                        <td>{item.note}</td>
-                                                        <td>
-                                                          <span className="badge bg-primary">
-                                                            {item.status}
-                                                          </span>
-                                                        </td>
-                                                        <td>
+                                                              : "-"}
+                                                          </td>
+                                                          <td>
+                                                            {item.platform ==
+                                                              "1"
+                                                              ? "CRM"
+                                                              : "Hospital"}{" "}
+                                                          </td>
+                                                          <td>
+                                                            {item
+                                                              ?.treatmentNoteImages
+                                                              ?.length > 0
+                                                              ? item.treatmentNoteImages.map(
+                                                                (
+                                                                  img,
+                                                                  index,
+                                                                ) => (
+                                                                  <button
+                                                                    key={
+                                                                      index
+                                                                    }
+                                                                    className="btn btn-sm btn-primary me-1"
+                                                                    onClick={() =>
+                                                                      window.open(
+                                                                        `https://sisccltd.com/omca_crm/${img}`,
+                                                                        "_blank",
+                                                                      )
+                                                                    }
+                                                                  >
+                                                                    View
+                                                                  </button>
+                                                                ),
+                                                              )
+                                                              : "-"}
+                                                          </td>
+
                                                           <td>
                                                             <div className="action-icon">
                                                               <i
                                                                 className="fa-solid fa-pen-to-square"
                                                                 onClick={() =>
-                                                                  handleclickeditfunc(
+                                                                  EditButton(
                                                                     item,
                                                                     info,
                                                                   )
@@ -4631,7 +4732,7 @@ function PatientDetail() {
                                                               <i
                                                                 className="fa-solid fa-trash"
                                                                 onClick={() =>
-                                                                  handleclickeditdelete(
+                                                                  EditDelete(
                                                                     item,
                                                                     info,
                                                                   )
@@ -4639,166 +4740,182 @@ function PatientDetail() {
                                                               ></i>
                                                             </div>
                                                           </td>
-                                                        </td>
-                                                      </tr>
-                                                    ),
+                                                        </tr>
+                                                      );
+                                                    },
                                                   )
+                                                ) : (
+                                                  <tr>
+                                                    <td
+                                                      colSpan="5"
+                                                      style={{
+                                                        textAlign: "center",
+                                                      }}
+                                                    >
+                                                      No Data Found
+                                                    </td>
+                                                  </tr>
                                                 )}
                                               </tbody>
                                             </table>
                                           </div>
                                         </div>
                                       </div>
-                                    )}
-                                  {activeSubTab === "notes" &&
-                                    selectedTreatmentId ===
-                                      info.treatment_id && (
-                                      <div className="col-md-12">
-                                        <div className="card patientreat">
-                                          <div className="card-header service-list d-flex justify-content-between">
-                                            <div>
-                                              <h6>Notes</h6>
-                                            </div>
-                                            <div>
-                                              <div>
-                                                <button
-                                                  className="add-button"
-                                                  onClick={(e) =>
-                                                    handleClickOpenNotes(
-                                                      e,
-                                                      selectedTreatmentId,
-                                                      info,
-                                                    )
+                                    </div>
+                                  )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className={`tab-pane ${mainTab === "Attende" ? "show active" : ""}`} id="atten-cont">
+                <div className="main-tab-hd justify-content-end">
+                  <div className="">
+                    <button onClick={(e) => handleClickOpen2(e, selectedTreatmentId,)} className="add-button">
+                      <span><i className="fa fa-plus"></i></span>{" "}
+                      Add Attendant{" "}
+                    </button>
+                  </div>
+                </div>
+                <div className="card-box">
+                  <div className="row gx-3 gy-3">
+                    <div className="col-md-12">
+                      <div className="table-responsive">
+                        <TableContainer
+                          component={Paper}
+                          style={{
+                            overflowX: "auto",
+                          }}
+                        >
+                          <Table
+                            stickyHeader
+                            aria-label="attendant table"
+                            className="table-no-card"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>
+                                  Sr.No.
+                                </TableCell>
+                                <TableCell>
+                                  Name
+                                </TableCell>
+                                <TableCell>
+                                  Relation
+                                </TableCell>
+                                <TableCell>
+                                  Contact
+                                </TableCell>
+                                <TableCell>
+                                  Country
+                                </TableCell>
+                                <TableCell>
+                                  Attendant Address
+                                </TableCell>
+                                <TableCell>
+                                  Attendant ID Proof
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+
+                            <TableBody>
+                              {attandantFilered.length ===
+                                0 ? (
+                                <TableRow>
+                                  <TableCell
+                                    colSpan={7}
+                                    align="center"
+                                  >
+                                    No attendants
+                                    found
+                                  </TableCell>
+                                </TableRow>
+                              ) : (
+                                attandantFilered.map(
+                                  (item, index) => (
+                                    <TableRow
+                                      key={
+                                        item._id ||
+                                        index
+                                      }
+                                    >
+                                      <TableCell>
+                                        {index + 1}
+                                      </TableCell>
+                                      <TableCell>
+                                        {item?.attendant_fullname ||
+                                          "N/A"}
+                                      </TableCell>
+                                      <TableCell>
+                                        {item?.attendant_relation ||
+                                          "N/A"}
+                                      </TableCell>
+                                      <TableCell>
+                                        {item?.attendant_contact ||
+                                          "N/A"}
+                                      </TableCell>
+                                      <TableCell>
+                                        {item?.country ||
+                                          "N/A"}
+                                      </TableCell>
+                                      <TableCell>
+                                        {
+                                          item?.attendant_address
+                                        }
+                                      </TableCell>
+                                      <TableCell className="d-flex gap-2">
+                                        {item
+                                          ?.attendant_passport
+                                          ?.length > 0
+                                          ? item.attendant_passport.map(
+                                            (
+                                              file,
+                                              fIndex,
+                                            ) => {
+                                              const filePath =
+                                                typeof file ===
+                                                  "object"
+                                                  ? file?.path
+                                                  : file;
+                                              return (
+                                                <div
+                                                  key={
+                                                    fIndex
                                                   }
                                                 >
-                                                  <span>
-                                                    <i className="fa fa-plus text-white"></i>
-                                                  </span>
-                                                  Add Notes
-                                                </button>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div className="card-body">
-                                            <div className="table-responsive table-no-card">
-                                              <table className="table-card w-100">
-                                                <thead>
-                                                  <tr>
-                                                    <th>Note</th>
-                                                    <th>Date</th>
-                                                    <th>Added By</th>
-                                                    <th>Images</th>
-                                                    <th>Action</th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody>
-                                                  {notesTable &&
-                                                  notesTable.length > 0 ? (
-                                                    notesTable.map(
-                                                      (item, index) => {
-                                                        return (
-                                                          <tr
-                                                            key={
-                                                              item._id || index
-                                                            }
-                                                          >
-                                                            <td>
-                                                              {item.note || "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item?.date
-                                                                ? new Date(
-                                                                    item.date,
-                                                                  ).toLocaleDateString(
-                                                                    "en-GB",
-                                                                  )
-                                                                : "-"}
-                                                            </td>
-                                                            <td>
-                                                              {item.platform ==
-                                                              "1"
-                                                                ? "CRM"
-                                                                : "Hospital"}{" "}
-                                                            </td>
-                                                            <td>
-                                                              {item
-                                                                ?.treatmentNoteImages
-                                                                ?.length > 0
-                                                                ? item.treatmentNoteImages.map(
-                                                                    (
-                                                                      img,
-                                                                      index,
-                                                                    ) => (
-                                                                      <button
-                                                                        key={
-                                                                          index
-                                                                        }
-                                                                        className="btn btn-sm btn-primary me-1"
-                                                                        onClick={() =>
-                                                                          window.open(
-                                                                            `https://sisccltd.com/omca_crm/${img}`,
-                                                                            "_blank",
-                                                                          )
-                                                                        }
-                                                                      >
-                                                                        View
-                                                                      </button>
-                                                                    ),
-                                                                  )
-                                                                : "-"}
-                                                            </td>
-
-                                                            <td>
-                                                              <div className="action-icon">
-                                                                <i
-                                                                  className="fa-solid fa-pen-to-square"
-                                                                  onClick={() =>
-                                                                    EditButton(
-                                                                      item,
-                                                                      info,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                                <i
-                                                                  className="fa-solid fa-trash"
-                                                                  onClick={() =>
-                                                                    EditDelete(
-                                                                      item,
-                                                                      info,
-                                                                    )
-                                                                  }
-                                                                ></i>
-                                                              </div>
-                                                            </td>
-                                                          </tr>
-                                                        );
-                                                      },
-                                                    )
-                                                  ) : (
-                                                    <tr>
-                                                      <td
-                                                        colSpan="5"
-                                                        style={{
-                                                          textAlign: "center",
-                                                        }}
-                                                      >
-                                                        No Data Found
-                                                      </td>
-                                                    </tr>
-                                                  )}
-                                                </tbody>
-                                              </table>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    )}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </>
-                      )}
+                                                  <a
+                                                    href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="viewbtn"
+                                                  >
+                                                    View{" "}
+                                                    {item
+                                                      .attendant_passport
+                                                      .length >
+                                                      1
+                                                      ? fIndex +
+                                                      1
+                                                      : ""}
+                                                  </a>
+                                                </div>
+                                              );
+                                            },
+                                          )
+                                          : "Not Uploaded"}
+                                      </TableCell>
+                                    </TableRow>
+                                  ),
+                                )
+                              )}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </div>
                     </div>
                   </div>
                 </div>
