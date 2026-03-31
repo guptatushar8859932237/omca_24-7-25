@@ -49,6 +49,7 @@ export default function Inquiry() {
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
   const [open3, setOpen3] = React.useState(false);
+  const [open4, setOpen4] = React.useState(false);
   const [open9, setOpen9] = React.useState(false);
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
@@ -90,6 +91,9 @@ export default function Inquiry() {
   const handleClose2 = () => {
     setOpen2(false);
   };
+  const handleClose4 = () => {
+    setOpen4(false);
+  };
   const handleClose2wew = () => {
     setOpen9(false);
   };
@@ -98,6 +102,10 @@ export default function Inquiry() {
   };
   const handleClickOpen2 = (e, enq) => {
     setOpen2(true);
+    setEnqId(enq);
+  };
+  const handleClickOpen4 = (e, enq) => {
+    setOpen4(true);
     setEnqId(enq);
   };
   const handleClickOpen3 = (e) => {
@@ -127,11 +135,11 @@ export default function Inquiry() {
   }, [Enquiry]);
 
   useEffect(() => {
-  const savedTab = localStorage.getItem("tabenquiry");
-  if (savedTab !== null) {
-    setTabValue(Number(savedTab));
-  }
-}, []);
+    const savedTab = localStorage.getItem("tabenquiry");
+    if (savedTab !== null) {
+      setTabValue(Number(savedTab));
+    }
+  }, []);
   console.log(searchApiData);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -143,27 +151,27 @@ export default function Inquiry() {
       },
     });
   };
- const ViewDetail = (e, type, info) => {
-  console.log(e,type, info)
-  const routeMap = {
-    0: "/Admin/Enquiry-Detail",
-    1: "/Admin/Enquiry-DetailAmbulance",
-    2: "/Admin/airambulanceview",
-    3: "/Admin/medicalescortservice",
+  const ViewDetail = (e, type, info) => {
+    console.log(e, type, info)
+    const routeMap = {
+      0: "/Admin/Enquiry-Detail",
+      1: "/Admin/Enquiry-DetailAmbulance",
+      2: "/Admin/airambulanceview",
+      3: "/Admin/medicalescortservice",
+    };
+    const path = routeMap[type];
+    if (!path) return;
+    console.log(type)
+    localStorage.setItem("tabenquiry", type)
+    navigate(path, {
+      state: {
+        id: type === 0 ? info.enquiryId : info.id, // ✅ FIX
+        enquiryId: info.enquiryId, // optional
+        type: type,
+      },
+    });
   };
-  const path = routeMap[type];
-  if (!path) return;
-  console.log(type)
-localStorage.setItem("tabenquiry",type)
-  navigate(path, {
-    state: {
-      id: type === 0 ? info.enquiryId : info.id, // ✅ FIX
-      enquiryId: info.enquiryId, // optional
-      type: type,
-    },
-  });
-};
- const sendToPatientAPI = async (type, data) => {
+  const sendToPatientAPI = async (type, data) => {
     try {
       const response = await axios.post(`${baseurl}createPatientFromExternal`, {
         enquiry_type: type,
@@ -208,11 +216,11 @@ localStorage.setItem("tabenquiry",type)
     }
   };
 
-    const handleTabChange = (event, newValue) => {
-  setTabValue(newValue);
-  localStorage.setItem("tabenquiry", newValue);
-};
- const handleChange = async (event, id, tabValue, data) => {
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+    localStorage.setItem("tabenquiry", newValue);
+  };
+  const handleChange = async (event, id, tabValue, data) => {
     const { value } = event.target;
     console.log(data, value);
     const result = await Swal.fire({
@@ -245,17 +253,17 @@ localStorage.setItem("tabenquiry",type)
           console.log(response.data);
           if (response.data.success) {
             console.log(response.data);
-             await dispatch(
-          EnquiryStatus({
-            id,
-            status: Number(value),
-            enquiry_type: "OMCA Enquiry",
-            user_id:response.data.data.id
-          }),
-        ).unwrap();
+            await dispatch(
+              EnquiryStatus({
+                id,
+                status: Number(value),
+                enquiry_type: "OMCA Enquiry",
+                user_id: response.data.data.id
+              }),
+            ).unwrap();
           }
         }
-       
+
         Swal.fire("Success!", "Status updated!", "success");
         dispatch(GetAllEnquiry());
       } catch (err) {
@@ -689,21 +697,19 @@ localStorage.setItem("tabenquiry",type)
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
-                            <TableCell>
-                              <TableSortLabel
-                                active={orderBy === "enquiryId"}
-                                direction={
-                                  orderBy === "enquiryId"
-                                    ? orderDirection
-                                    : "asc"
-                                }
-                                onClick={() => handleRequestSort("enquiryId")}
-                              >
-                                Enquiry IDs
-                              </TableSortLabel>
-                            </TableCell>
-                         
-
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "enquiryId"}
+                              direction={
+                                orderBy === "enquiryId"
+                                  ? orderDirection
+                                  : "asc"
+                              }
+                              onClick={() => handleRequestSort("enquiryId")}
+                            >
+                              Enquiry IDs
+                            </TableSortLabel>
+                          </TableCell>
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "name"}
@@ -715,7 +721,6 @@ localStorage.setItem("tabenquiry",type)
                               Name
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>Email</TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "treatingIn"}
@@ -727,17 +732,6 @@ localStorage.setItem("tabenquiry",type)
                               Treating In
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>
-                            <TableSortLabel
-                              active={orderBy === "country"}
-                              direction={
-                                orderBy === "country" ? orderDirection : "asc"
-                              }
-                              onClick={() => handleRequestSort("country")}
-                            >
-                              Country
-                            </TableSortLabel> */}
-                          {/* </TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "date"}
@@ -753,7 +747,6 @@ localStorage.setItem("tabenquiry",type)
                               Date / Time
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>Disease name</TableCell> */}
                           <TableCell>Status</TableCell>
                           <TableCell>Actions</TableCell>
                           {tabValue === 0 ? (
@@ -769,16 +762,16 @@ localStorage.setItem("tabenquiry",type)
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
                         ).length > 0 ? (
                           (pdfRowLimit
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage,
-                              )
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
                           ).map((info, i) => (
                             <TableRow
                               role="checkbox"
@@ -790,10 +783,10 @@ localStorage.setItem("tabenquiry",type)
                                   ? i + 1
                                   : page * rowsPerPage + i + 1}
                               </TableCell>
-                                <TableCell>{info.enquiryId}</TableCell>
+                              <TableCell>{info.enquiryId}</TableCell>
                               <TableCell
                                 style={{ cursor: "pointer" }}
-                               onClick={(e) => ViewDetail(e, tabValue, info)}
+                                onClick={(e) => ViewDetail(e, tabValue, info)}
                               >
                                 {info.name}
                               </TableCell>
@@ -801,10 +794,10 @@ localStorage.setItem("tabenquiry",type)
                               <TableCell>{info.treatingIn}</TableCell>
                               {/* <TableCell>{info.country}</TableCell> */}
                               <TableCell>{new Date(info.date).toLocaleDateString('en-GB')}/{new Date(info.date).toLocaleTimeString('en-GB', {
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: true,
-})}</TableCell>
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true,
+                              })}</TableCell>
                               {/* <TableCell>{info.treatingIn}</TableCell> */}
                               {/* <TableCell title={info.disease_name}> */}
                               {/* <TableCell title={info.disease_name}>
@@ -827,7 +820,7 @@ localStorage.setItem("tabenquiry",type)
                                           : info.Enquiry_status === "Hold"
                                             ? "2"
                                             : info.Enquiry_status ===
-                                                "Follow-Up"
+                                              "Follow-Up"
                                               ? "3"
                                               : info.Enquiry_status === "Dead"
                                                 ? "4"
@@ -868,34 +861,34 @@ localStorage.setItem("tabenquiry",type)
                                   </Select>
                                 </FormControl>
                               </TableCell>
-                             
-                                  <TableCell className="action-icon">
-                                    <VisibilityIcon
-                                      className="eye-icon"
-                                     onClick={(e) => ViewDetail(e, tabValue, info)}
-                                    />
-                                     {tabValue === 0 ? (
-                                <>
+
+                              <TableCell className="action-icon">
+                                <VisibilityIcon
+                                  className="eye-icon"
+                                  onClick={(e) => ViewDetail(e, tabValue, info)}
+                                />
+                                {tabValue === 0 ? (
+                                  <>
                                     <i
                                       className="fa-solid fa-pen-to-square"
                                       onClick={(e) =>
                                         EditButton(e, info.enquiryId)
                                       }
                                     ></i>
-                            
+
                                     {localStorage.getItem("Role") ===
                                       "Admin" && (
-                                      <i
-                                        className="fa-solid fa-trash"
-                                        onClick={() => handledelete(info)}
-                                      ></i>
-                                    )}
-                                             </>
-                              ) : (
-                                ""
-                              )}
-                                  </TableCell>
-                                    {tabValue === 0 ? (
+                                        <i
+                                          className="fa-solid fa-trash"
+                                          onClick={() => handledelete(info)}
+                                        ></i>
+                                      )}
+                                  </>
+                                ) : (
+                                  ""
+                                )}
+                              </TableCell>
+                              {tabValue === 0 ? (
                                 <>
                                   <TableCell className="action-icon">
                                     <i
@@ -904,12 +897,15 @@ localStorage.setItem("tabenquiry",type)
                                         handleClickOpen2(e, info.enquiryId)
                                       }
                                     ></i>
+                                    <i className="fa-solid fa-stethoscope" onClick={(e) =>
+                                      handleClickOpen4(e, info.enquiryId)
+                                    }></i>
                                   </TableCell>
-                                                   </>
+                                </>
                               ) : (
                                 ""
                               )}
-                               
+
                             </TableRow>
                           ))
                         ) : (
@@ -1157,6 +1153,64 @@ localStorage.setItem("tabenquiry",type)
                     <span style={{ color: "red" }}>
                       {blogErr && !date ? "Please Enter Your  date" : ""}
                     </span>
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={handleNotesdata}
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <ToastContainer />
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={open4}
+          onClose={handleClose4}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Doctor Review</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose4}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form">
+                  <div className="field-set">
+                    <label>Review Notes<span className="text-danger">*</span></label>
+                    <textarea id="w3review" name="discussionNotes" rows="4" cols="50" className="form-control" placeholder="Review"
+                      onChange={(e) => setNote(e.target.value)} value={note} />
+                    <span style={{ color: "red" }}>{blogErr && !note ? "Please Enter Your  note" : ""}</span>
+                  </div>
+                  <div className="field-set">
+                    <label>Upload Images<span className="text-danger">*</span></label>
+                    <input type="file" className="form-control" name="upload_image" id="" />
+                  </div>
+                  <div className="field-set">
+                    <label>Recommendations<span className="text-danger">*</span></label>
+                    <textarea id="" name="recommend" rows="4" cols="50" className="form-control" placeholder="Recommendations" />
                   </div>
                   <DialogActions className="submit-main">
                     <Button
