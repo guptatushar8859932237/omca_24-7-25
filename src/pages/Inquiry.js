@@ -563,7 +563,7 @@ localStorage.setItem("tabenquiry",type)
       emergency_contact: item.emergency_contact || item.phone,
       disease_name: item.disease_name || item.services?.replaceAll("_", " "),
       Enquiry_status: item.Enquiry_status || item.status,
-      date: item.created_at || item.created_at,
+      date: item.createdAt || item.created_at,
       id: item.id || item.id,
       raw: item, // full data for view popup
     }));
