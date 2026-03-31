@@ -49,6 +49,7 @@ export default function Inquiry() {
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
   const [open3, setOpen3] = React.useState(false);
+  const [open4, setOpen4] = React.useState(false);
   const [open9, setOpen9] = React.useState(false);
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
@@ -90,6 +91,9 @@ export default function Inquiry() {
   const handleClose2 = () => {
     setOpen2(false);
   };
+  const handleClose4 = () => {
+    setOpen4(false);
+  };
   const handleClose2wew = () => {
     setOpen9(false);
   };
@@ -98,6 +102,10 @@ export default function Inquiry() {
   };
   const handleClickOpen2 = (e, enq) => {
     setOpen2(true);
+    setEnqId(enq);
+  };
+  const handleClickOpen4 = (e, enq) => {
+    setOpen4(true);
     setEnqId(enq);
   };
   const handleClickOpen3 = (e) => {
@@ -563,7 +571,7 @@ export default function Inquiry() {
       emergency_contact: item.emergency_contact || item.phone,
       disease_name: item.disease_name || item.services?.replaceAll("_", " "),
       Enquiry_status: item.Enquiry_status || item.status,
-      date: item.created_at || item.created_at,
+      date: item.createdAt || item.created_at,
       id: item.id || item.id,
       raw: item, // full data for view popup
     }));
@@ -702,8 +710,6 @@ export default function Inquiry() {
                               Enquiry IDs
                             </TableSortLabel>
                           </TableCell>
-
-
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "name"}
@@ -715,7 +721,6 @@ export default function Inquiry() {
                               Name
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>Email</TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "treatingIn"}
@@ -727,17 +732,6 @@ export default function Inquiry() {
                               Treating In
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>
-                            <TableSortLabel
-                              active={orderBy === "country"}
-                              direction={
-                                orderBy === "country" ? orderDirection : "asc"
-                              }
-                              onClick={() => handleRequestSort("country")}
-                            >
-                              Country
-                            </TableSortLabel> */}
-                          {/* </TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "date"}
@@ -753,7 +747,6 @@ export default function Inquiry() {
                               Date / Time
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>Disease name</TableCell> */}
                           <TableCell>Status</TableCell>
                           <TableCell>Actions</TableCell>
                           {tabValue === 0 ? (
@@ -904,6 +897,9 @@ export default function Inquiry() {
                                         handleClickOpen2(e, info.enquiryId)
                                       }
                                     ></i>
+                                    <i className="fa-solid fa-stethoscope" onClick={(e) =>
+                                      handleClickOpen4(e, info.enquiryId)
+                                    }></i>
                                   </TableCell>
                                 </>
                               ) : (
@@ -1157,6 +1153,64 @@ export default function Inquiry() {
                     <span style={{ color: "red" }}>
                       {blogErr && !date ? "Please Enter Your  date" : ""}
                     </span>
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={handleNotesdata}
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <ToastContainer />
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={open4}
+          onClose={handleClose4}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Doctor Review</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose4}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form">
+                  <div className="field-set">
+                    <label>Review Notes<span className="text-danger">*</span></label>
+                    <textarea id="w3review" name="discussionNotes" rows="4" cols="50" className="form-control" placeholder="Review"
+                      onChange={(e) => setNote(e.target.value)} value={note} />
+                    <span style={{ color: "red" }}>{blogErr && !note ? "Please Enter Your  note" : ""}</span>
+                  </div>
+                  <div className="field-set">
+                    <label>Upload Images<span className="text-danger">*</span></label>
+                    <input type="file" className="form-control" name="upload_image" id="" />
+                  </div>
+                  <div className="field-set">
+                    <label>Recommendations<span className="text-danger">*</span></label>
+                    <textarea id="" name="recommend" rows="4" cols="50" className="form-control" placeholder="Recommendations" />
                   </div>
                   <DialogActions className="submit-main">
                     <Button
