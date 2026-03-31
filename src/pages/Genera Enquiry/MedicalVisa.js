@@ -544,7 +544,7 @@ const handleChangtype = async (e, b) => {
                               {selectedRecord.reference_doc_name_1 || "image"}
                             </h6>
                             <img
-                              src={`https://yellowcabsanfrancisco.com/omca/public/upload/photo/${selectedRecord.applicant_photo}`}
+                              src={`https://omcacrm.com/omca/public/upload/photo/${selectedRecord.applicant_photo}`}
 
 
                               alt="doc-1"
@@ -561,7 +561,7 @@ const handleChangtype = async (e, b) => {
                               {selectedRecord.reference_doc_name_2 || "Visa"}
                             </h6>
                             <img
-                              src={`https://yellowcabsanfrancisco.com/omca/public/upload/medicalvisa/${selectedRecord.medical_visa}`}
+                              src={`https://omcacrm.com/omca/public/upload/medicalvisa/${selectedRecord.medical_visa}`}
                               alt="doc-2"
                               className="img-fluid rounded"
                               style={{ height: "180px", objectFit: "cover", width: "100%" }}
@@ -576,7 +576,7 @@ const handleChangtype = async (e, b) => {
                               {selectedRecord.reference_doc_name_3 || "Passport"}
                             </h6>
                             <img
-                              src={`https://yellowcabsanfrancisco.com/omca/public/upload/passport/${selectedRecord.passport_copy}`}
+                              src={`https://omcacrm.com/omca/public/upload/passport/${selectedRecord.passport_copy}`}
                               alt="doc-3"
                               className="img-fluid rounded"
                               style={{ height: "180px", objectFit: "cover", width: "100%" }}

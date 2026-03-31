@@ -239,7 +239,7 @@ localStorage.setItem("tabenquiry",type)
         };
         if (Number(value) === 1) {
           const response = await axios.post(
-            `https://yellowcabsanfrancisco.com/omca/api/user_registration`,
+            `https://omcacrm.com/omca/api/user_registration`,
             payload,
           );
           console.log(response.data);

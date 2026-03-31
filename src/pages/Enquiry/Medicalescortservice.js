@@ -51,7 +51,7 @@ export default function Medicalescortservice() {
     };
     await axios
       .post(
-        `https://yellowcabsanfrancisco.com/omca/api/crm/other_enquiry_details`,
+        `https://omcacrm.com/omca/api/crm/other_enquiry_details`,
         payload,
       )
       .then((response) => {

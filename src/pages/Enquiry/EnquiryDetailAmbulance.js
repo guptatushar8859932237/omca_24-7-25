@@ -50,7 +50,7 @@ export default function EnquiryDetailAmbulance() {
       type: "AmbulanceRequest"
     }
     await axios
-      .post(`https://yellowcabsanfrancisco.com/omca/api/crm/other_enquiry_details`, payload)
+      .post(`https://omcacrm.com/omca/api/crm/other_enquiry_details`, payload)
       .then((response) => {
         if (response.data.success) {
           console.log(response.data);
