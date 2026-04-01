@@ -1,31 +1,3 @@
-// import React from 'react'
-
-// export default function NursinfCare() {
-//   return (
-//     <div>
-//       nursing Care
-//     </div>
-//   )
-// }
-// import React from 'react'
-
-// export default function PickUpanddrops() {
-//   return (
-//     <div>
-//       Pickup and drops
-//     </div>
-//   )
-// }
-// // import React from 'react'
-
-// // export default function Story() {
-// //   return (
-// //     <div>
-// //       Story
-// //     </div>
-// //   )
-// // }
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
@@ -40,7 +12,7 @@ import {
   Select,
   MenuItem
 } from "@mui/material";
-
+import TableSortLabel from "@mui/material/TableSortLabel";
 import ClearIcon from "@mui/icons-material/Clear";
 import axios from "axios";
 import { AdminBaseUrl } from "../../Basurl/Baseurl";
@@ -56,7 +28,8 @@ export default function NursinfCare() {
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
-
+const [order, setOrder] = useState("asc");
+const [orderBy, setOrderBy] = useState(""); 
   // Popup states
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -91,11 +64,43 @@ export default function NursinfCare() {
     );
   });
 
+const handleSort = (field) => {
+  const isAsc = orderBy === field && order === "asc";
+  setOrder(isAsc ? "desc" : "asc");
+  setOrderBy(field);
+};
 
-  const paginatedData = filteredData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+const sortedData = [...filteredData].sort((a, b) => {
+  if (!orderBy) return 0;
+
+  let valA = a[orderBy] || "";
+  let valB = b[orderBy] || "";
+
+  // Date handling
+  if (orderBy === "created_at") {
+    return order === "asc"
+      ? new Date(valA) - new Date(valB)
+      : new Date(valB) - new Date(valA);
+  }
+
+  // Number handling
+  if (!isNaN(valA) && !isNaN(valB)) {
+    return order === "asc" ? valA - valB : valB - valA;
+  }
+
+  // String handling
+  valA = valA.toString().toLowerCase();
+  valB = valB.toString().toLowerCase();
+
+  if (valA < valB) return order === "asc" ? -1 : 1;
+  if (valA > valB) return order === "asc" ? 1 : -1;
+
+  return 0;
+});
+const paginatedData = sortedData.slice(
+  page * rowsPerPage,
+  page * rowsPerPage + rowsPerPage
+);
 
   // Open popup
   const handleView = (record) => {
@@ -185,11 +190,52 @@ export default function NursinfCare() {
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-              <TableCell> Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>City</TableCell>
-              <TableCell>Status</TableCell>
+                <TableCell sortDirection={orderBy === "name" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "name"}
+        direction={orderBy === "name" ? order : "asc"}
+        onClick={() => handleSort("name")}
+      >
+        Name
+      </TableSortLabel>
+    </TableCell>
+               <TableCell sortDirection={orderBy === "email" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "email"}
+        direction={orderBy === "email" ? order : "asc"}
+        onClick={() => handleSort("email")}
+      >
+        Email
+      </TableSortLabel>
+    </TableCell>
+              <TableCell sortDirection={orderBy === "phone" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "phone"}
+        direction={orderBy === "phone" ? order : "asc"}
+        onClick={() => handleSort("phone")}
+      >
+        Phone
+      </TableSortLabel>
+    </TableCell>
+              <TableCell sortDirection={orderBy === "city" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "city"}
+        direction={orderBy === "city" ? order : "asc"}
+        onClick={() => handleSort("city")}
+      >
+        City
+      </TableSortLabel>
+    </TableCell>
+
+               <TableCell sortDirection={orderBy === "status" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "status"}
+        direction={orderBy === "status" ? order : "asc"}
+        onClick={() => handleSort("status")}
+      >
+        Status
+      </TableSortLabel>
+    </TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>

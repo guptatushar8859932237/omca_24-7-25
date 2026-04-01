@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Table,
@@ -39,6 +40,8 @@ export default function FlightSrvices() {
   const rowsPerPage = 10;
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [order, setOrder] = useState("asc");
+const [orderBy, setOrderBy] = useState("");
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
@@ -51,7 +54,13 @@ export default function FlightSrvices() {
     setFilterValue("");
     setPage(0);
   };
-  const filteredData = medicalVisaData.filter((item) => {
+const handleSort = (field) => {
+  const isAsc = orderBy === field && order === "asc";
+  setOrder(isAsc ? "desc" : "asc");
+  setOrderBy(field);
+};
+
+const filteredData = medicalVisaData.filter((item) => {
     const search = filterValue.toLowerCase();
     return (
       item.first_name?.toLowerCase().includes(search) ||
@@ -67,10 +76,40 @@ export default function FlightSrvices() {
         .includes(search)
     );
   });
-  const paginatedData = filteredData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage,
-  );
+
+
+const sortedData = [...filteredData].sort((a, b) => {
+  if (!orderBy) return 0;
+
+  let valA = a[orderBy] || "";
+  let valB = b[orderBy] || "";
+
+  // Date sorting
+  if (orderBy === "select_date") {
+    return order === "asc"
+      ? new Date(valA) - new Date(valB)
+      : new Date(valB) - new Date(valA);
+  }
+
+  // Number sorting
+  if (!isNaN(valA) && !isNaN(valB)) {
+    return order === "asc" ? valA - valB : valB - valA;
+  }
+
+  // String sorting
+  valA = valA.toString().toLowerCase();
+  valB = valB.toString().toLowerCase();
+
+  if (valA < valB) return order === "asc" ? -1 : 1;
+  if (valA > valB) return order === "asc" ? 1 : -1;
+
+  return 0;
+});
+  
+ const paginatedData = sortedData.slice(
+  page * rowsPerPage,
+  page * rowsPerPage + rowsPerPage
+);
   // Open popup
   const handleView = (record) => {
     setSelectedRecord(record);
@@ -145,11 +184,51 @@ export default function FlightSrvices() {
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-              <TableCell> Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Status</TableCell>
+             <TableCell sortDirection={orderBy === "first_name" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "first_name"}
+    direction={orderBy === "first_name" ? order : "asc"}
+    onClick={() => handleSort("first_name")}
+  >
+    Name
+  </TableSortLabel>
+</TableCell>
+            <TableCell sortDirection={orderBy === "email" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "email"}
+    direction={orderBy === "email" ? order : "asc"}
+    onClick={() => handleSort("email")}
+  >
+    Email
+  </TableSortLabel>
+</TableCell>
+            <TableCell sortDirection={orderBy === "phone" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "phone"}
+    direction={orderBy === "phone" ? order : "asc"}
+    onClick={() => handleSort("phone")}
+  >
+    Phone
+  </TableSortLabel>
+</TableCell>
+             <TableCell sortDirection={orderBy === "select_date" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "select_date"}
+    direction={orderBy === "select_date" ? order : "asc"}
+    onClick={() => handleSort("select_date")}
+  >
+    Date
+  </TableSortLabel>
+</TableCell>
+            <TableCell sortDirection={orderBy === "status" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "status"}
+    direction={orderBy === "status" ? order : "asc"}
+    onClick={() => handleSort("status")}
+  >
+    Status
+  </TableSortLabel>
+</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>

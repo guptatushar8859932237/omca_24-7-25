@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
@@ -12,7 +13,6 @@ import {
   MenuItem
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import ClearIcon from "@mui/icons-material/Clear";
 import axios from "axios";
@@ -21,38 +21,30 @@ import Swal from "sweetalert2";
 
 export default function MedicalVisa() {
   const dispatch = useDispatch();
-
   const { testForms: formData, loading, error } = useSelector(
     (state) => state.testForms
   );
-
+  const [order, setOrder] = useState("asc"); // asc | desc
+const [orderBy, setOrderBy] = useState("");
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
-
-  // Popup states
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
-
   const medicalVisaData = formData?.data?.medical_visa || [];
-
   const handleFilter = (e) => {
     setFilterValue(e.target.value);
     setPage(0);
   };
-
   const handleClearFilter = () => {
     setFilterValue("");
     setPage(0);
   };
-
   const filteredData = medicalVisaData.filter((item) => {
     const search = filterValue.toLowerCase();
-
     return (
       item.applying_for?.toLowerCase().includes(search) ||
       item.first_name?.toLowerCase().includes(search) ||
@@ -63,13 +55,37 @@ export default function MedicalVisa() {
     );
   });
 
+  const handleSort = (field) => {
+  const isAsc = orderBy === field && order === "asc";
+  setOrder(isAsc ? "desc" : "asc");
+  setOrderBy(field);
+};
 
-  const paginatedData = filteredData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+const sortedData = [...filteredData].sort((a, b) => {
+  if (!orderBy) return 0;
 
-  // Open popup
+  let valA = a[orderBy] || "";
+  let valB = b[orderBy] || "";
+
+  // number handling
+  if (!isNaN(valA) && !isNaN(valB)) {
+    return order === "asc" ? valA - valB : valB - valA;
+  }
+
+  // string handling
+  valA = valA.toString().toLowerCase();
+  valB = valB.toString().toLowerCase();
+
+  if (valA < valB) return order === "asc" ? -1 : 1;
+  if (valA > valB) return order === "asc" ? 1 : -1;
+
+  return 0;
+});
+
+const paginatedData = sortedData.slice(
+  page * rowsPerPage,
+  page * rowsPerPage + rowsPerPage
+);
   const handleView = (record) => {
     setSelectedRecord(record);
     setOpen(true);
@@ -159,14 +175,71 @@ const handleChangtype = async (e, b) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell>Sr No.</TableCell>
-              <TableCell>First Name</TableCell>
-              <TableCell>Last Name</TableCell>
-              <TableCell>Nationality</TableCell>
-              <TableCell>Passport No</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Applying For</TableCell>
-              <TableCell>Status</TableCell>
+               <TableCell>Sr No.</TableCell>
+            <TableCell sortDirection={orderBy === "first_name" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "first_name"}
+    direction={orderBy === "first_name" ? order : "asc"}
+    onClick={() => handleSort("first_name")}
+  >
+    First Name
+  </TableSortLabel>
+</TableCell>
+              {/* <TableCell>First Name</TableCell> */}
+             <TableCell sortDirection={orderBy === "last_name" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "last_name"}
+    direction={orderBy === "last_name" ? order : "asc"}
+    onClick={() => handleSort("last_name")}
+  >
+    Last Name
+  </TableSortLabel>
+</TableCell>
+             <TableCell sortDirection={orderBy === "last_name" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "last_name"}
+    direction={orderBy === "last_name" ? order : "asc"}
+    onClick={() => handleSort("last_name")}
+  >
+    Last Name
+  </TableSortLabel>
+</TableCell>
+             <TableCell sortDirection={orderBy === "passport_number" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "passport_number"}
+    direction={orderBy === "passport_number" ? order : "asc"}
+    onClick={() => handleSort("passport_number")}
+  >
+    Passport No
+  </TableSortLabel>
+</TableCell>
+             <TableCell>
+  <TableSortLabel
+    active={orderBy === "phone_number"}
+    direction={orderBy === "phone_number" ? order : "asc"}
+    onClick={() => handleSort("phone_number")}
+  >
+    Phone
+  </TableSortLabel>
+</TableCell>
+            <TableCell>
+  <TableSortLabel
+    active={orderBy === "applying_for"}
+    direction={orderBy === "applying_for" ? order : "asc"}
+    onClick={() => handleSort("applying_for")}
+  >
+    Applying For
+  </TableSortLabel>
+</TableCell>
+             <TableCell sortDirection={orderBy === "status" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "status"}
+    direction={orderBy === "status" ? order : "asc"}
+    onClick={() => handleSort("status")}
+  >
+    Status
+  </TableSortLabel>
+</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>

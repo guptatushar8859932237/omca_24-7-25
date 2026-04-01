@@ -1,13 +1,3 @@
-// import React from 'react'
-
-// export default function Story() {
-//   return (
-//     <div>
-//       Story
-//     </div>
-//   )
-// }
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
@@ -22,7 +12,7 @@ import {
   Select,
   MenuItem
 } from "@mui/material";
-
+import TableSortLabel from "@mui/material/TableSortLabel";
 import ClearIcon from "@mui/icons-material/Clear";
 import axios from "axios";
 import { AdminBaseUrl } from "../../Basurl/Baseurl";
@@ -43,7 +33,8 @@ export default function Stay() {
   // Popup states
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
+const [order, setOrder] = useState("asc");
+const [orderBy, setOrderBy] = useState("");
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
@@ -59,23 +50,54 @@ export default function Stay() {
     setFilterValue("");
     setPage(0);
   };
+  const handleSort = (field) => {
+  const isAsc = orderBy === field && order === "asc";
+  setOrder(isAsc ? "desc" : "asc");
+  setOrderBy(field);
+};
+// const sortedData = [...filteredData].sort((a, b) => {
+//   if (!orderBy) return 0;
 
-  const filteredData = medicalVisaData.filter((item) => {
-    const search = filterValue.toLowerCase();
+//   let valA = a[orderBy] || "";
+//   let valB = b[orderBy] || "";
 
-    return (
-      item.name?.toLowerCase().includes(search) ||
-      item.email?.toLowerCase().includes(search) ||
-      item.phone?.toLowerCase().includes(search) ||
-     new Date(item.select_date).toLocaleDateString("en-GB")?.toLowerCase().includes(search)
-    );
-  });
+//   // Date handling
+//   if (orderBy === "date") {
+//     return order === "asc"
+//       ? new Date(valA) - new Date(valB)
+//       : new Date(valB) - new Date(valA);
+//   }
+
+//   // Number handling
+//   if (!isNaN(valA) && !isNaN(valB)) {
+//     return order === "asc" ? valA - valB : valB - valA;
+//   }
+
+//   // String handling
+//   valA = valA.toString().toLowerCase();
+//   valB = valB.toString().toLowerCase();
+
+//   if (valA < valB) return order === "asc" ? -1 : 1;
+//   if (valA > valB) return order === "asc" ? 1 : -1;
+
+//   return 0;
+// });
+  // const filteredData = medicalVisaData.filter((item) => {
+  //   const search = filterValue.toLowerCase();
+
+  //   return (
+  //     item.name?.toLowerCase().includes(search) ||
+  //     item.email?.toLowerCase().includes(search) ||
+  //     item.phone?.toLowerCase().includes(search) ||
+  //    new Date(item.select_date).toLocaleDateString("en-GB")?.toLowerCase().includes(search)
+  //   );
+  // });
 
 
-  const paginatedData = filteredData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+// const paginatedData = sortedData.slice(
+//   page * rowsPerPage,
+//   page * rowsPerPage + rowsPerPage
+// );
 
   // Open popup
   const handleView = (record) => {
@@ -119,6 +141,55 @@ export default function Stay() {
     Swal.fire("Error", "Something went wrong", "error");
   }
 };
+// ✅ 1. Filter FIRST
+const filteredData = medicalVisaData.filter((item) => {
+  const search = filterValue.toLowerCase();
+
+  return (
+    item.name?.toLowerCase().includes(search) ||
+    item.email?.toLowerCase().includes(search) ||
+    item.phone?.toLowerCase().includes(search) ||
+    new Date(item.select_date)
+      .toLocaleDateString("en-GB")
+      ?.toLowerCase()
+      .includes(search)
+  );
+});
+
+// ✅ 2. THEN Sort
+const sortedData = [...filteredData].sort((a, b) => {
+  if (!orderBy) return 0;
+
+  let valA = a[orderBy] || "";
+  let valB = b[orderBy] || "";
+
+  // Date handling
+  if (orderBy === "date") {
+    return order === "asc"
+      ? new Date(valA) - new Date(valB)
+      : new Date(valB) - new Date(valA);
+  }
+
+  // Number handling
+  if (!isNaN(valA) && !isNaN(valB)) {
+    return order === "asc" ? valA - valB : valB - valA;
+  }
+
+  // String handling
+  valA = valA.toString().toLowerCase();
+  valB = valB.toString().toLowerCase();
+
+  if (valA < valB) return order === "asc" ? -1 : 1;
+  if (valA > valB) return order === "asc" ? 1 : -1;
+
+  return 0;
+});
+
+// ✅ 3. THEN Pagination
+const paginatedData = sortedData.slice(
+  page * rowsPerPage,
+  page * rowsPerPage + rowsPerPage
+);
   return (
     <div>
 
@@ -168,11 +239,51 @@ export default function Stay() {
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-              <TableCell>Booking Id</TableCell>
-              <TableCell> Name</TableCell>
-              <TableCell>Guest House</TableCell>
-              <TableCell>Check-in Date</TableCell>
-              <TableCell>Status</TableCell>
+             <TableCell sortDirection={orderBy === "booking_id" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "booking_id"}
+    direction={orderBy === "booking_id" ? order : "asc"}
+    onClick={() => handleSort("booking_id")}
+  >
+    Booking Id
+  </TableSortLabel>
+</TableCell>
+             <TableCell sortDirection={orderBy === "name" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "name"}
+    direction={orderBy === "name" ? order : "asc"}
+    onClick={() => handleSort("name")}
+  >
+    Name
+  </TableSortLabel>
+</TableCell>
+            <TableCell sortDirection={orderBy === "guesthouse" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "guesthouse"}
+    direction={orderBy === "guesthouse" ? order : "asc"}
+    onClick={() => handleSort("guesthouse")}
+  >
+    Guest House
+  </TableSortLabel>
+</TableCell>
+             <TableCell sortDirection={orderBy === "date" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "date"}
+    direction={orderBy === "date" ? order : "asc"}
+    onClick={() => handleSort("date")}
+  >
+    Check-in Date
+  </TableSortLabel>
+</TableCell>
+             <TableCell sortDirection={orderBy === "status" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "status"}
+    direction={orderBy === "status" ? order : "asc"}
+    onClick={() => handleSort("status")}
+  >
+    Status
+  </TableSortLabel>
+</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>

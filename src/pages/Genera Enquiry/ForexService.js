@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
@@ -23,6 +24,8 @@ export default function ForexService() {
   );
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
+  const [order, setOrder] = useState("asc");
+const [orderBy, setOrderBy] = useState("");
   const rowsPerPage = 10;
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -38,23 +41,67 @@ export default function ForexService() {
     setFilterValue("");
     setPage(0);
   };
-  const filteredData = medicalVisaData.filter((item) => {
-    const search = filterValue.toLowerCase();
-    return (
-      item.first_name?.toLowerCase().includes(search) ||
-      item.email?.toLowerCase().includes(search) ||
-      item.city?.toLowerCase().includes(search) ||
-      String(item.phone)?.includes(search) ||
-      item.services?.replaceAll("_"," ").toLowerCase().includes(search) ||
-     new Date(item.select_date).toLocaleDateString("en-GB")?.toLowerCase().includes(search)
-    );
-  });
-
-
-  const paginatedData = filteredData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
+  const handleSort = (field) => {
+  const isAsc = orderBy === field && order === "asc";
+  setOrder(isAsc ? "desc" : "asc");
+  setOrderBy(field);
+};
+// 1. Filter
+const filteredData = medicalVisaData.filter((item) => {
+  const search = filterValue.toLowerCase();
+  return (
+    item.first_name?.toLowerCase().includes(search) ||
+    item.email?.toLowerCase().includes(search) ||
+    item.city?.toLowerCase().includes(search) ||
+    String(item.phone)?.includes(search) ||
+    item.services?.replaceAll("_"," ").toLowerCase().includes(search) ||
+    new Date(item.select_date)
+      .toLocaleDateString("en-GB")
+      ?.toLowerCase()
+      .includes(search)
   );
+});
+
+// 2. Sort
+const sortedData = [...filteredData].sort((a, b) => {
+  if (!orderBy) return 0;
+
+  let valA = a[orderBy] || "";
+  let valB = b[orderBy] || "";
+
+  // Date sorting
+  if (orderBy === "select_date") {
+    return order === "asc"
+      ? new Date(valA) - new Date(valB)
+      : new Date(valB) - new Date(valA);
+  }
+
+  // Number sorting
+  if (!isNaN(valA) && !isNaN(valB)) {
+    return order === "asc" ? valA - valB : valB - valA;
+  }
+
+  // String sorting
+  valA = valA.toString().toLowerCase();
+  valB = valB.toString().toLowerCase();
+
+  if (valA < valB) return order === "asc" ? -1 : 1;
+  if (valA > valB) return order === "asc" ? 1 : -1;
+
+  return 0;
+});
+
+// 3. Pagination
+const paginatedData = sortedData.slice(
+  page * rowsPerPage,
+  page * rowsPerPage + rowsPerPage
+);
+
+
+// const paginatedData = sortedData.slice(
+//   page * rowsPerPage,
+//   page * rowsPerPage + rowsPerPage
+// );
 
   // Open popup
   const handleView = (record) => {
@@ -146,12 +193,60 @@ export default function ForexService() {
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-              <TableCell> Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Services</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Select Date</TableCell>
-              <TableCell>Status</TableCell>
+             <TableCell sortDirection={orderBy === "first_name" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "first_name"}
+    direction={orderBy === "first_name" ? order : "asc"}
+    onClick={() => handleSort("first_name")}
+  >
+    Name
+  </TableSortLabel>
+</TableCell>
+            <TableCell sortDirection={orderBy === "email" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "email"}
+    direction={orderBy === "email" ? order : "asc"}
+    onClick={() => handleSort("email")}
+  >
+    Email
+  </TableSortLabel>
+</TableCell>
+              <TableCell sortDirection={orderBy === "services" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "services"}
+    direction={orderBy === "services" ? order : "asc"}
+    onClick={() => handleSort("services")}
+  >
+    Services
+  </TableSortLabel>
+</TableCell>
+             <TableCell sortDirection={orderBy === "phone" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "phone"}
+    direction={orderBy === "phone" ? order : "asc"}
+    onClick={() => handleSort("phone")}
+  >
+    Phone
+  </TableSortLabel>
+</TableCell>
+             {/* <TableCell sortDirection={orderBy === "select_date" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "select_date"}
+    direction={orderBy === "select_date" ? order : "asc"}
+    onClick={() => handleSort("select_date")}
+  >
+    Select Date
+  </TableSortLabel>
+</TableCell> */}
+              <TableCell sortDirection={orderBy === "status" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "status"}
+    direction={orderBy === "status" ? order : "asc"}
+    onClick={() => handleSort("status")}
+  >
+    Status
+  </TableSortLabel>
+</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -164,7 +259,7 @@ export default function ForexService() {
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.services?.replaceAll("_"," ")}</TableCell>
                   <TableCell>{item.phone}</TableCell>
-                  <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")=="01/01/1970"?"":new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell>
+                  {/* <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")=="01/01/1970"?"":new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell> */}
                 <TableCell>
                                                           <FormControl
                                                             sx={{ m: 1, minWidth: 120 }}

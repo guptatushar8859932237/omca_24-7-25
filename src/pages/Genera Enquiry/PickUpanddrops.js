@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
@@ -29,7 +30,8 @@ export default function PickUpanddrops() {
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
-
+const [order, setOrder] = useState("asc");
+const [orderBy, setOrderBy] = useState("");
   // Popup states
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -50,32 +52,101 @@ export default function PickUpanddrops() {
     setPage(0);
   };
 
-  const filteredData = medicalVisaData.filter((item) => {
-    const search = filterValue.toLowerCase();
+ // 1. Filter first
+const filteredData = medicalVisaData.filter((item) => {
+  const search = filterValue.toLowerCase();
 
-    return (
-      item.name?.toLowerCase().includes(search) ||
-      item.email?.toLowerCase().includes(search) ||
-      item.city?.toLowerCase().includes(search) ||
-      item.phone?.toLowerCase().includes(search) ||
-      item.perfired_time?.toLowerCase().includes(search) ||
-      item.pickup_location?.toLowerCase().includes(search) ||
-      item.travel_date?.toLowerCase().includes(search) ||
-      item.drop_location?.toLowerCase().includes(search)
-    );
-  });
-
-
-  const paginatedData = filteredData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
+  return (
+    item.name?.toLowerCase().includes(search) ||
+    item.email?.toLowerCase().includes(search) ||
+    item.city?.toLowerCase().includes(search) ||
+    item.phone?.toLowerCase().includes(search) ||
+    item.perfired_time?.toLowerCase().includes(search) ||
+    item.pickup_location?.toLowerCase().includes(search) ||
+    item.travel_date?.toLowerCase().includes(search) ||
+    item.drop_location?.toLowerCase().includes(search)
   );
+});
 
+
+// 2. Sort after filtering
+const sortedData = [...filteredData].sort((a, b) => {
+  if (!orderBy) return 0;
+
+  let valA = a[orderBy] || "";
+  let valB = b[orderBy] || "";
+
+  // Date handling
+  if (orderBy === "pickup_date") {
+    return order === "asc"
+      ? new Date(valA) - new Date(valB)
+      : new Date(valB) - new Date(valA);
+  }
+
+  // Number handling
+  if (!isNaN(valA) && !isNaN(valB)) {
+    return order === "asc" ? valA - valB : valB - valA;
+  }
+
+  // String handling
+  valA = valA.toString().toLowerCase();
+  valB = valB.toString().toLowerCase();
+
+  if (valA < valB) return order === "asc" ? -1 : 1;
+  if (valA > valB) return order === "asc" ? 1 : -1;
+
+  return 0;
+});
+
+
+// 3. Paginate last
+const paginatedData = sortedData.slice(
+  page * rowsPerPage,
+  page * rowsPerPage + rowsPerPage
+);
+
+// const paginatedData = sortedData.slice(
+//   page * rowsPerPage,
+//   page * rowsPerPage + rowsPerPage
+// );
+
+const handleSort = (field) => {
+  const isAsc = orderBy === field && order === "asc";
+  setOrder(isAsc ? "desc" : "asc");
+  setOrderBy(field);
+};
   // Open popup
   const handleView = (record) => {
     setSelectedRecord(record);
     setOpen(true);
   };
+//   const sortedData = [...filteredData].sort((a, b) => {
+//   if (!orderBy) return 0;
+
+//   let valA = a[orderBy] || "";
+//   let valB = b[orderBy] || "";
+
+//   // Date handling
+//   if (orderBy === "pickup_date") {
+//     return order === "asc"
+//       ? new Date(valA) - new Date(valB)
+//       : new Date(valB) - new Date(valA);
+//   }
+
+//   // Number handling
+//   if (!isNaN(valA) && !isNaN(valB)) {
+//     return order === "asc" ? valA - valB : valB - valA;
+//   }
+
+//   // String handling
+//   valA = valA.toString().toLowerCase();
+//   valB = valB.toString().toLowerCase();
+
+//   if (valA < valB) return order === "asc" ? -1 : 1;
+//   if (valA > valB) return order === "asc" ? 1 : -1;
+
+//   return 0;
+// });
   const fullWidth = true;
   const maxWidth = "lg"; // xs | sm | md | lg | xl
 
@@ -162,13 +233,69 @@ export default function PickUpanddrops() {
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-              <TableCell> Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Pickup Location</TableCell>
-              <TableCell>Drop Location</TableCell>
-              <TableCell>Travel Date</TableCell>
-              <TableCell>Status</TableCell>
+             <TableCell sortDirection={orderBy === "name" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "name"}
+    direction={orderBy === "name" ? order : "asc"}
+    onClick={() => handleSort("name")}
+  >
+    Name
+  </TableSortLabel>
+</TableCell>
+            <TableCell sortDirection={orderBy === "email" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "email"}
+    direction={orderBy === "email" ? order : "asc"}
+    onClick={() => handleSort("email")}
+  >
+    Email
+  </TableSortLabel>
+</TableCell>
+           <TableCell sortDirection={orderBy === "phone" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "phone"}
+    direction={orderBy === "phone" ? order : "asc"}
+    onClick={() => handleSort("phone")}
+  >
+    Phone
+  </TableSortLabel>
+</TableCell>
+             <TableCell sortDirection={orderBy === "pickup_location" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "pickup_location"}
+    direction={orderBy === "pickup_location" ? order : "asc"}
+    onClick={() => handleSort("pickup_location")}
+  >
+    Pickup Location
+  </TableSortLabel>
+</TableCell>
+           <TableCell sortDirection={orderBy === "destination_location" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "destination_location"}
+    direction={orderBy === "destination_location" ? order : "asc"}
+    onClick={() => handleSort("destination_location")}
+  >
+    Drop Location
+  </TableSortLabel>
+</TableCell>
+           <TableCell sortDirection={orderBy === "pickup_date" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "pickup_date"}
+    direction={orderBy === "pickup_date" ? order : "asc"}
+    onClick={() => handleSort("pickup_date")}
+  >
+    Travel Date
+  </TableSortLabel>
+</TableCell>
+           <TableCell sortDirection={orderBy === "status" ? order : false}>
+  <TableSortLabel
+    active={orderBy === "status"}
+    direction={orderBy === "status" ? order : "asc"}
+    onClick={() => handleSort("status")}
+  >
+    Status
+  </TableSortLabel>
+</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>

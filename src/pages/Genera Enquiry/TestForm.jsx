@@ -1,44 +1,9 @@
-// import React from 'react'
-
-// export default function TestForm() {
-//   return (
-//     <div>
-
-//     </div>
-//   )
-// }
-// import React from 'react'
-
-// export default function AirAmbulance() {
-//   return (
-//     <div>
-
-//     </div>
-//   )
-// }
-// import React from 'react'
-
-// export default function Hotel() {
-//   return (
-//     <div>
-//       Hotel
-//     </div>
-//   )
-// }
-// import React from 'react'
-
-// export default function Vil() {
-//   return (
-//     <div>
-//       vil
-//     </div>
-//   )
-// }
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
@@ -69,7 +34,8 @@ export default function TestForm() {
   // Popup states
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
+const [order, setOrder] = useState("asc");
+const [orderBy, setOrderBy] = useState("");
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
@@ -80,31 +46,58 @@ export default function TestForm() {
     setFilterValue(e.target.value);
     setPage(0);
   };
+const filteredData = medicalVisaData.filter((item) => {
+  const search = filterValue.toLowerCase();
 
+  return (
+    item.name?.toLowerCase().includes(search) ||
+    item.email?.toLowerCase().includes(search) ||
+    String(item.phone)?.toLowerCase().includes(search) ||
+    item.date?.toLowerCase().includes(search) ||
+    item.time?.toLowerCase().includes(search) ||
+    item.address?.toLowerCase().includes(search) ||
+    String(item.number_of_people)?.toLowerCase().includes(search)
+  );
+});
   const handleClearFilter = () => {
     setFilterValue("");
     setPage(0);
   };
+  const sortedData = [...filteredData].sort((a, b) => {
+  if (!orderBy) return 0;
 
-  const filteredData = medicalVisaData.filter((item) => {
-    const search = filterValue.toLowerCase();
+  let valA = a[orderBy] || "";
+  let valB = b[orderBy] || "";
 
-    return (
-      item.name?.toLowerCase().includes(search) ||
-      item.email?.toLowerCase().includes(search) ||
-      item.phone?.toLowerCase().includes(search) ||
-      item.date?.toLowerCase().includes(search) ||
-      item.time?.toLowerCase().includes(search) ||
-      item.address?.toLowerCase().includes(search) ||
-      item.number_of_people?.toLowerCase().includes(search)
-    );
-  });
+  // Date handling
+  if (orderBy === "date") {
+    return order === "asc"
+      ? new Date(valA) - new Date(valB)
+      : new Date(valB) - new Date(valA);
+  }
+
+  // Number handling
+  if (!isNaN(valA) && !isNaN(valB)) {
+    return order === "asc" ? valA - valB : valB - valA;
+  }
+
+  // String handling
+  valA = valA.toString().toLowerCase();
+  valB = valB.toString().toLowerCase();
+
+  if (valA < valB) return order === "asc" ? -1 : 1;
+  if (valA > valB) return order === "asc" ? 1 : -1;
+
+  return 0;
+});
 
 
-  const paginatedData = filteredData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+
+
+ const paginatedData = sortedData.slice(
+  page * rowsPerPage,
+  page * rowsPerPage + rowsPerPage
+);
 
   // Open popup
   const handleView = (record) => {
@@ -121,7 +114,11 @@ export default function TestForm() {
       <p>{value || "-"}</p>
     </div>
   );
-
+const handleSort = (field) => {
+  const isAsc = orderBy === field && order === "asc";
+  setOrder(isAsc ? "desc" : "asc");
+  setOrderBy(field);
+};
  const handleChangtype = async (e, b) => {
   console.log(e, b);
 
@@ -195,12 +192,61 @@ export default function TestForm() {
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-              <TableCell> Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Time</TableCell>
-              <TableCell>Status</TableCell>
+              <TableCell sortDirection={orderBy === "name" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "name"}
+        direction={orderBy === "name" ? order : "asc"}
+        onClick={() => handleSort("name")}
+      >
+        Name
+      </TableSortLabel>
+    </TableCell>
+              <TableCell sortDirection={orderBy === "email" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "email"}
+        direction={orderBy === "email" ? order : "asc"}
+        onClick={() => handleSort("email")}
+      >
+        Email
+      </TableSortLabel>
+    </TableCell>
+
+              <TableCell sortDirection={orderBy === "phone" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "phone"}
+        direction={orderBy === "phone" ? order : "asc"}
+        onClick={() => handleSort("phone")}
+      >
+        Phone
+      </TableSortLabel>
+    </TableCell>
+              <TableCell sortDirection={orderBy === "date" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "date"}
+        direction={orderBy === "date" ? order : "asc"}
+        onClick={() => handleSort("date")}
+      >
+        Date
+      </TableSortLabel>
+    </TableCell>
+              <TableCell sortDirection={orderBy === "time" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "time"}
+        direction={orderBy === "time" ? order : "asc"}
+        onClick={() => handleSort("time")}
+      >
+        Time
+      </TableSortLabel>
+    </TableCell>
+              <TableCell sortDirection={orderBy === "status" ? order : false}>
+      <TableSortLabel
+        active={orderBy === "status"}
+        direction={orderBy === "status" ? order : "asc"}
+        onClick={() => handleSort("status")}
+      >
+        Status
+      </TableSortLabel>
+    </TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
