@@ -37,8 +37,8 @@ export default function AllServices() {
   const [searchApiData, setSearchApiData] = useState([]);
   const [activeToggleLoading, setActiveToggleLoading] = useState(null);
   const [pdfRowLimit, setPdfRowLimit] = useState(null);
-const [orderBy, setOrderBy] = useState("");
-const [orderDirection, setOrderDirection] = useState("asc");
+  const [orderBy, setOrderBy] = useState("");
+  const [orderDirection, setOrderDirection] = useState("asc");
   const { Service, loading, error } = useSelector((state) => state.Service);
   useEffect(() => {
     dispatch(GetAllServices());
@@ -53,120 +53,120 @@ const [orderDirection, setOrderDirection] = useState("asc");
     navigate("/Admin/edit-service", { state: { serviceId: id } });
   };
   const handleDelete = async (e, serviceId) => {
-  e.preventDefault();
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "You want to delete this service!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#6e7881",
-    confirmButtonText: "Yes, delete it!",
-  });
-  if (result.isConfirmed) {
-    try {
-      const response = await axios.delete(
-        `${baseurl}delete_service/${serviceId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
+    e.preventDefault();
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this service!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6e7881",
+      confirmButtonText: "Yes, delete it!",
+    });
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `${baseurl}delete_service/${serviceId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.data.success === true) {
+          await dispatch(GetAllServices());
+          Swal.fire("Deleted!", "Service deleted successfully.", "success");
         }
-      );
-
-      if (response.data.success === true) {
-        await dispatch(GetAllServices());
-        Swal.fire("Deleted!", "Service deleted successfully.", "success");
+      } catch (error) {
+        console.log("Delete error:", error);
+        Swal.fire("Error!", "Something went wrong.", "error");
       }
-    } catch (error) {
-      console.log("Delete error:", error);
-      Swal.fire("Error!", "Something went wrong.", "error");
     }
-  }
-};
+  };
 
-const handleSort = (field) => {
-  const isAsc = orderBy === field && orderDirection === "asc";
-  const direction = isAsc ? "desc" : "asc";
+  const handleSort = (field) => {
+    const isAsc = orderBy === field && orderDirection === "asc";
+    const direction = isAsc ? "desc" : "asc";
 
-  setOrderBy(field);
-  setOrderDirection(direction);
+    setOrderBy(field);
+    setOrderDirection(direction);
 
-  const sortedData = [...rows].sort((a, b) => {
-    let valA = a[field];
-    let valB = b[field];
+    const sortedData = [...rows].sort((a, b) => {
+      let valA = a[field];
+      let valB = b[field];
 
-    // ✅ Date sorting
-    if (field === "createdAt" || field === "deletedAt") {
-      return direction === "asc"
-        ? new Date(valA) - new Date(valB)
-        : new Date(valB) - new Date(valA);
-    }
+      // ✅ Date sorting
+      if (field === "createdAt" || field === "deletedAt") {
+        return direction === "asc"
+          ? new Date(valA) - new Date(valB)
+          : new Date(valB) - new Date(valA);
+      }
 
-    // ✅ Price (NUMBER FIX 🔥)
-    if (field === "price") {
-      return direction === "asc"
-        ? Number(valA) - Number(valB)
-        : Number(valB) - Number(valA);
-    }
+      // ✅ Price (NUMBER FIX 🔥)
+      if (field === "price") {
+        return direction === "asc"
+          ? Number(valA) - Number(valB)
+          : Number(valB) - Number(valA);
+      }
 
-    // ✅ Boolean (status)
-    if (field === "isActive") {
-      return direction === "asc"
-        ? Number(valA) - Number(valB)
-        : Number(valB) - Number(valA);
-    }
+      // ✅ Boolean (status)
+      if (field === "isActive") {
+        return direction === "asc"
+          ? Number(valA) - Number(valB)
+          : Number(valB) - Number(valA);
+      }
 
-    // ✅ String
-    if (typeof valA === "string") {
-      return direction === "asc"
-        ? valA.localeCompare(valB)
-        : valB.localeCompare(valA);
-    }
+      // ✅ String
+      if (typeof valA === "string") {
+        return direction === "asc"
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
+      }
 
-    return 0;
-  });
+      return 0;
+    });
 
-  setRows(sortedData);
-};
-// const handleSort = (field) => {
-//     const isAsc = orderBy === field && orderDirection === "asc";
-//     const direction = isAsc ? "desc" : "asc";
+    setRows(sortedData);
+  };
+  // const handleSort = (field) => {
+  //     const isAsc = orderBy === field && orderDirection === "asc";
+  //     const direction = isAsc ? "desc" : "asc";
 
-//     setOrderBy(field);
-//     setOrderDirection(direction);
+  //     setOrderBy(field);
+  //     setOrderDirection(direction);
 
-//     const sortedData = [...rows].sort((a, b) => {
-//       let valA = a[field];
-//       let valB = b[field];
+  //     const sortedData = [...rows].sort((a, b) => {
+  //       let valA = a[field];
+  //       let valB = b[field];
 
-//       // ✅ Date sorting
-//       if (field === "createdAt") {
-//         return direction === "asc"
-//           ? new Date(valA) - new Date(valB)
-//           : new Date(valB) - new Date(valA);
-//       }
+  //       // ✅ Date sorting
+  //       if (field === "createdAt") {
+  //         return direction === "asc"
+  //           ? new Date(valA) - new Date(valB)
+  //           : new Date(valB) - new Date(valA);
+  //       }
 
-//       // ✅ Boolean sorting (status)
-//       if (field === "status") {
-//         return direction === "asc"
-//           ? Number(valA) - Number(valB)
-//           : Number(valB) - Number(valA);
-//       }
+  //       // ✅ Boolean sorting (status)
+  //       if (field === "status") {
+  //         return direction === "asc"
+  //           ? Number(valA) - Number(valB)
+  //           : Number(valB) - Number(valA);
+  //       }
 
-//       // ✅ String sorting
-//       if (typeof valA === "string") {
-//         return direction === "asc"
-//           ? valA.localeCompare(valB)
-//           : valB.localeCompare(valA);
-//       }
+  //       // ✅ String sorting
+  //       if (typeof valA === "string") {
+  //         return direction === "asc"
+  //           ? valA.localeCompare(valB)
+  //           : valB.localeCompare(valA);
+  //       }
 
-//       return 0;
-//     });
+  //       return 0;
+  //     });
 
-//     setRows(sortedData);
-//   };
+  //     setRows(sortedData);
+  //   };
   // const handleDelete = async (e, serviceId) => {
   //   e.preventDefault();
   //   const response = await axios.delete(
@@ -226,38 +226,38 @@ const handleSort = (field) => {
   //   });
   //   setRows(filtered);
   // };
-const handleFilter = (event) => {
-  const value = event.target.value.toLowerCase();
-  setFilterValue(value);
-  setPage(0); // ⭐ IMPORTANT
+  const handleFilter = (event) => {
+    const value = event.target.value.toLowerCase();
+    setFilterValue(value);
+    setPage(0); // ⭐ IMPORTANT
 
-  if (!value) {
+    if (!value) {
+      setRows(searchApiData);
+      return;
+    }
+
+    const filtered = searchApiData.filter((item) => {
+      const id = item.serviceId?.toLowerCase() || "";
+      const name = item.serviceName?.toLowerCase() || "";
+      const price = item.price?.toString().toLowerCase() || "";
+      const duration = item.duration?.toLowerCase() || "";
+
+      return (
+        id.includes(value) ||
+        name.includes(value) ||
+        price.includes(value) ||
+        duration.includes(value)
+      );
+    });
+
+    setRows(filtered);
+  };
+
+  const handleClearFilter = () => {
+    setFilterValue("");
     setRows(searchApiData);
-    return;
-  }
-
-  const filtered = searchApiData.filter((item) => {
-    const id = item.serviceId?.toLowerCase() || "";
-    const name = item.serviceName?.toLowerCase() || "";
-    const price = item.price?.toString().toLowerCase() || "";
-    const duration = item.duration?.toLowerCase() || "";
-
-    return (
-      id.includes(value) ||
-      name.includes(value) ||
-      price.includes(value) ||
-      duration.includes(value)
-    );
-  });
-
-  setRows(filtered);
-};
-
- const handleClearFilter = () => {
-  setFilterValue("");
-  setRows(searchApiData);
-  setPage(0); // ⭐ IMPORTANT
-};
+    setPage(0); // ⭐ IMPORTANT
+  };
 
   const handlegetpdfdata = () => {
     const maxRows = rows.length || 1;
@@ -287,38 +287,38 @@ const handleFilter = (event) => {
         setPdfRowLimit(userInput);
         setTimeout(() => {
           toPDF();
-          setPdfRowLimit(null); 
+          setPdfRowLimit(null);
         }, 300);
       }
     });
   };
-const handleclickondata = () => {
-  setShowActions(true);
-  setPage(0); // ⭐ IMPORTANT
-  dispatch(GetAllServices());
-};
-const handleclickpostdatadesltes = async () => {
-  setShowActions(false);
-  setPage(0); // ⭐ IMPORTANT
+  const handleclickondata = () => {
+    setShowActions(true);
+    setPage(0); // ⭐ IMPORTANT
+    dispatch(GetAllServices());
+  };
+  const handleclickpostdatadesltes = async () => {
+    setShowActions(false);
+    setPage(0); // ⭐ IMPORTANT
 
-  try {
-    const response = await axios.get(`${baseurl}get_deleted_services`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await axios.get(`${baseurl}get_deleted_services`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (response) {
-      setRows(response.data.services);
+      if (response) {
+        setRows(response.data.services);
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
-  }
-};
-useEffect(() => {
-  setPage(0);
-}, [rows]);
+  };
+  useEffect(() => {
+    setPage(0);
+  }, [rows]);
 
   // const handleclickpostdatadesltes = async () => {
   //   setShowActions(false)
@@ -368,7 +368,7 @@ useEffect(() => {
                           )}
                         </InputAdornment>
                       ),
-                    }} 
+                    }}
                   />
                 </div>
                 <div>
@@ -377,12 +377,12 @@ useEffect(() => {
                   </Link>
                 </div>
                 {
-                  role==="Admin"?
-                <div>
-                  <Link onClick={handlegetpdfdata} className="add-button ms-2">
-                    <i className="fa fa-file-pdf-o"></i> Pdf
-                  </Link>
-                </div>:""}
+                  role === "Admin" ?
+                    <div>
+                      <Link onClick={handlegetpdfdata} className="add-button ms-2">
+                        <i className="fa fa-file-pdf-o"></i> Pdf
+                      </Link>
+                    </div> : ""}
               </div>
             </div>
           </div>
@@ -393,19 +393,19 @@ useEffect(() => {
               <div className="table-responsive">
                 <TableContainer component={Paper} style={{ overflowX: "auto" }}>
                   <div className="action-icon d-flex justify-content-end p-3">
-                   {
-  localStorage.getItem("Role") === "Admin" ? (
-    showActions === true ? (
-      <button className="add-button" onClick={handleclickpostdatadesltes}>
-        Deleted Data
-      </button>
-    ) : (
-      <button className="add-button" onClick={handleclickondata}>
-        Services
-      </button>
-    )
-  ) : null
-}
+                    {
+                      localStorage.getItem("Role") === "Admin" ? (
+                        showActions === true ? (
+                          <button className="add-button" onClick={handleclickpostdatadesltes}>
+                            Deleted Data
+                          </button>
+                        ) : (
+                          <button className="add-button" onClick={handleclickondata}>
+                            Services
+                          </button>
+                        )
+                      ) : null
+                    }
                   </div>
                   <Table
                     stickyHeader
@@ -416,152 +416,152 @@ useEffect(() => {
                     <TableHead>
                       <TableRow>
                         <TableCell>Sr.No.</TableCell>
-                            {
-!showActions ===true?<>
-                        <TableCell>Deleted By Name</TableCell>
-                        <TableCell>Deleted By Email</TableCell>
-                        <TableCell>Deleted By Time</TableCell>
-                        <TableCell>Deleted By Date</TableCell>
-</>
-                        :""
-                       }
-<TableCell>
-  <TableSortLabel
-    active={orderBy === "serviceId"}
-    direction={orderBy === "serviceId" ? orderDirection : "asc"}
-    onClick={() => handleSort("serviceId")}
-  >
-    Service ID
-  </TableSortLabel>
-</TableCell>
+                        {
+                          !showActions === true ? <>
+                            <TableCell>Deleted By Name</TableCell>
+                            <TableCell>Deleted By Email</TableCell>
+                            <TableCell>Deleted By Time</TableCell>
+                            <TableCell>Deleted By Date</TableCell>
+                          </>
+                            : ""
+                        }
+                        <TableCell>
+                          <TableSortLabel
+                            active={orderBy === "serviceId"}
+                            direction={orderBy === "serviceId" ? orderDirection : "asc"}
+                            onClick={() => handleSort("serviceId")}
+                          >
+                            Service ID
+                          </TableSortLabel>
+                        </TableCell>
                         {/* <TableCell>Service Name</TableCell> */}
-                             <TableCell>
-  <TableSortLabel
-    active={orderBy === "serviceName"}
-    direction={orderBy === "serviceName" ? orderDirection : "asc"}
-    onClick={() => handleSort("serviceName")}
-  >
-    Service Name
-  </TableSortLabel>
-</TableCell>
-                      <TableCell>
-  <TableSortLabel
-    active={orderBy === "price"}
-    direction={orderBy === "price" ? orderDirection : "asc"}
-    onClick={() => handleSort("price")}
-  >
-    Price
-  </TableSortLabel>
-</TableCell>
-                     <TableCell>
-  <TableSortLabel
-    active={orderBy === "duration"}
-    direction={orderBy === "duration" ? orderDirection : "asc"}
-    onClick={() => handleSort("duration")}
-  >
-    Duration
-  </TableSortLabel>
-</TableCell>
-                         <TableCell>
-  <TableSortLabel
-    active={orderBy === "description"}
-    direction={orderBy === "description" ? orderDirection : "asc"}
-    onClick={() => handleSort("description")}
-  >
-    Description
-  </TableSortLabel>
-</TableCell>
-                       {
-showActions ===true?<>
-                       <TableCell>
-  <TableSortLabel
-    active={orderBy === "isActive"}
-    direction={orderBy === "isActive" ? orderDirection : "asc"}
-    onClick={() => handleSort("isActive")}
-  >
-    Status
-  </TableSortLabel>
-</TableCell>
-                        <TableCell>Action</TableCell>
-</>
-                        :""
-                       }
+                        <TableCell>
+                          <TableSortLabel
+                            active={orderBy === "serviceName"}
+                            direction={orderBy === "serviceName" ? orderDirection : "asc"}
+                            onClick={() => handleSort("serviceName")}
+                          >
+                            Service Name
+                          </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                          <TableSortLabel
+                            active={orderBy === "price"}
+                            direction={orderBy === "price" ? orderDirection : "asc"}
+                            onClick={() => handleSort("price")}
+                          >
+                            Price
+                          </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                          <TableSortLabel
+                            active={orderBy === "duration"}
+                            direction={orderBy === "duration" ? orderDirection : "asc"}
+                            onClick={() => handleSort("duration")}
+                          >
+                            Duration
+                          </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                          <TableSortLabel
+                            active={orderBy === "description"}
+                            direction={orderBy === "description" ? orderDirection : "asc"}
+                            onClick={() => handleSort("description")}
+                          >
+                            Description
+                          </TableSortLabel>
+                        </TableCell>
+                        {
+                          showActions === true ? <>
+                            <TableCell>
+                              <TableSortLabel
+                                active={orderBy === "isActive"}
+                                direction={orderBy === "isActive" ? orderDirection : "asc"}
+                                onClick={() => handleSort("isActive")}
+                              >
+                                Status
+                              </TableSortLabel>
+                            </TableCell>
+                            <TableCell>Action</TableCell>
+                          </>
+                            : ""
+                        }
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {(pdfRowLimit
                         ? rows.slice(0, pdfRowLimit)
                         : rows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          )
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
                       ).map((info, i) => (
                         <TableRow key={info.serviceId}>
                           <TableCell>
                             {pdfRowLimit ? i + 1 : page * rowsPerPage + i + 1}
                           </TableCell>
-                           {
-!showActions ===true?<>
-                        <TableCell>{info?.deletedBy?.name}</TableCell>
-                        <TableCell>{info?.deletedBy?.email}</TableCell>
-                        <TableCell> {info?.deletedAt &&
-                                          new Date(
-                                            info.deletedAt
-                                          ).toLocaleTimeString("en-GB", {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                          })}</TableCell>
-                        <TableCell>{new Date(info?.deletedAt).toLocaleDateString('en-GB')}</TableCell>
-</>
-                        :""
-                       }
+                          {
+                            !showActions === true ? <>
+                              <TableCell>{info?.deletedBy?.name}</TableCell>
+                              <TableCell>{info?.deletedBy?.email}</TableCell>
+                              <TableCell> {info?.deletedAt &&
+                                new Date(
+                                  info.deletedAt
+                                ).toLocaleTimeString("en-GB", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}</TableCell>
+                              <TableCell>{new Date(info?.deletedAt).toLocaleDateString('en-GB')}</TableCell>
+                            </>
+                              : ""
+                          }
                           <TableCell>{info.serviceId}</TableCell>
                           <TableCell>{info.serviceName}</TableCell>
-                          <TableCell>{info.price}</TableCell>
+                          <TableCell>${info.price}</TableCell>
                           <TableCell>{info.duration}</TableCell>
                           <TableCell>{info.description}</TableCell>
-                            {
-showActions ===true?<>
-                         <TableCell>
-                            <label className="active-switch">
-                              <input
-                                type="checkbox"
-                                className="active-switch-input"
-                                checked={Boolean(info.isActive)}
-                                disabled={
-                                  activeToggleLoading === info.serviceId
-                                }
-                                onChange={() =>
-                                  dataActiveInactive(
-                                    info.serviceId,
-                                    info.isActive
-                                  )
-                                }
-                              />
-                              <span
-                                className="active-switch-label"
-                                data-on="Active"
-                                data-off="Inactive"
-                              ></span>
-                              <span className="active-switch-handle"></span>
-                            </label>
-                          </TableCell>
-                          <TableCell className="action-icon">
-                            <i
-                              className="fa-solid fa-pen-to-square"
-                              onClick={(e) => EditButton(e, info.serviceId)}
-                            />
-                            {localStorage.getItem("Role") === "Admin" && (
-                              <i
-                                className="fa-solid fa-trash"
-                                onClick={(e) => handleDelete(e, info.serviceId)}
-                              ></i>
-                            )}
-                          </TableCell>
-</>
-                        :""
-                       }
-                         
+                          {
+                            showActions === true ? <>
+                              <TableCell>
+                                <label className="active-switch">
+                                  <input
+                                    type="checkbox"
+                                    className="active-switch-input"
+                                    checked={Boolean(info.isActive)}
+                                    disabled={
+                                      activeToggleLoading === info.serviceId
+                                    }
+                                    onChange={() =>
+                                      dataActiveInactive(
+                                        info.serviceId,
+                                        info.isActive
+                                      )
+                                    }
+                                  />
+                                  <span
+                                    className="active-switch-label"
+                                    data-on="Active"
+                                    data-off="Inactive"
+                                  ></span>
+                                  <span className="active-switch-handle"></span>
+                                </label>
+                              </TableCell>
+                              <TableCell className="action-icon">
+                                <i
+                                  className="fa-solid fa-pen-to-square"
+                                  onClick={(e) => EditButton(e, info.serviceId)}
+                                />
+                                {localStorage.getItem("Role") === "Admin" && (
+                                  <i
+                                    className="fa-solid fa-trash"
+                                    onClick={(e) => handleDelete(e, info.serviceId)}
+                                  ></i>
+                                )}
+                              </TableCell>
+                            </>
+                              : ""
+                          }
+
                         </TableRow>
                       ))}
 

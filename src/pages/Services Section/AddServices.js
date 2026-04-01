@@ -21,10 +21,10 @@ export default function AddStaAddServicesff() {
 
         description: Yup.string()
             .required('Description is required'),
-    price: Yup.number()
-  .typeError("Price must be a number")
-  .positive("Price must be greater than 0")
-  .required("Price is required"),
+        price: Yup.number()
+            .typeError("Price must be a number")
+            .positive("Price must be greater than 0")
+            .required("Price is required"),
         duration: Yup.string().required("Duration is required"),
 
 
@@ -35,9 +35,9 @@ export default function AddStaAddServicesff() {
                 <div className="content">
                     <div className="row">
                         <div className="col-md-12">
-                            <h4 className="page-title"><span><i class="fi fi-sr-angle-double-small-left" style={{cursor:"pointer"}} onClick={()=>{
-                                    window.history.back()
-                                }}></i></span>New Services</h4>
+                            <h4 className="page-title"><span><i class="fi fi-sr-angle-double-small-left" style={{ cursor: "pointer" }} onClick={() => {
+                                window.history.back()
+                            }}></i></span>New Services</h4>
                         </div>
                     </div>
                     <div className="main_content">
@@ -96,23 +96,26 @@ export default function AddStaAddServicesff() {
                                         <div className="col-sm-6">
                                             <div className="field-set">
                                                 <label>Price <span className="text-danger">*</span></label>
-                                                <Field className="form-control"  onKeyPress={(e) => {
-    if (!/^[0-9]$/.test(e.key)) {
-      e.preventDefault(); // blocks everything except digits
-    }
-  }} type="text" name="price" />
+                                                <div className="fixpricee">
+                                                    <p className='code-dial'>$</p>
+                                                    <Field className="form-control code-in" onKeyPress={(e) => {
+                                                        if (!/^[0-9]$/.test(e.key)) {
+                                                            e.preventDefault(); // blocks everything except digits
+                                                        }
+                                                    }} type="text" name="price" />
+                                                </div>
                                                 <ErrorMessage name="price" component="div" style={{ color: "red" }} />
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="">
-                                        <button
-                                            className="submit-btn"
-                                            type="submit"
-                                            disabled={isSubmitting || loading}
-                                        >
-                                            {loading ? "Submitting..." : "Create Service"}
-                                        </button>
+                                        <div className="">
+                                            <button
+                                                className="submit-btn"
+                                                type="submit"
+                                                disabled={isSubmitting || loading}
+                                            >
+                                                {loading ? "Submitting..." : "Create Service"}
+                                            </button>
+                                        </div>
                                     </div>
                                 </Form>
                             )}

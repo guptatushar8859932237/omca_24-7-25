@@ -762,7 +762,7 @@ function PatientDetail() {
   };
   // const editatednde = async (e) => {
   //   e.preventDefault();
-   
+
   //   const formData = new FormData();
   //   formData.append("attendant_fullname", filesData.attendant_fullname);
   //   formData.append("attendant_relation", filesData.attendant_relation);
@@ -804,224 +804,224 @@ function PatientDetail() {
   //     );
   //   }
   // };
-// const editatednde = async (e) => {
-//   e.preventDefault();
+  // const editatednde = async (e) => {
+  //   e.preventDefault();
 
-//   const formData = new FormData();
+  //   const formData = new FormData();
 
-//   formData.append("attendant_fullname", filesData.attendant_fullname);
-//   formData.append("attendant_relation", filesData.attendant_relation);
-//   formData.append("attendant_contact", filesData.attendant_contact);
-//   formData.append("country", filesData.country);
-//   formData.append("attendant_address", filesData.attendant_address);
+  //   formData.append("attendant_fullname", filesData.attendant_fullname);
+  //   formData.append("attendant_relation", filesData.attendant_relation);
+  //   formData.append("attendant_contact", filesData.attendant_contact);
+  //   formData.append("country", filesData.country);
+  //   formData.append("attendant_address", filesData.attendant_address);
 
-//   // ✅ SAFE CHECK
-//   if (filesData?.Attende_passport && filesData.Attende_passport.length > 0) {
-//     filesData.Attende_passport.forEach((file) => {
-//       formData.append("attendant_passport", file);
-//     });
-//   }
+  //   // ✅ SAFE CHECK
+  //   if (filesData?.Attende_passport && filesData.Attende_passport.length > 0) {
+  //     filesData.Attende_passport.forEach((file) => {
+  //       formData.append("attendant_passport", file);
+  //     });
+  //   }
 
-//   try {
-//     const response = await axios.put(
-//       `${baseurl}updateAttendeeDetails/${filesData._id}`,
-//       formData,
-//       {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       }
-//     );
+  //   try {
+  //     const response = await axios.put(
+  //       `${baseurl}updateAttendeeDetails/${filesData._id}`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
 
-//     if (response.data.success) {
-//       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-//       getattendantnewai()
-//       setOpen2(false);
+  //     if (response.data.success) {
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //       getattendantnewai()
+  //       setOpen2(false);
 
-//       Swal.fire("Attendant Details Updated Successfully!", "", "success");
+  //       Swal.fire("Attendant Details Updated Successfully!", "", "success");
 
-//       setFilesData({
-//         attendant_fullname: "",
-//         attendant_relation: "",
-//         attendant_contact: "",
-//         Attende_passport: null,
-//         Attende_photo: null,
-//       });
-//     }
-//   } catch (error) {
-//     Swal.fire(
-//       "Error!",
-//       error?.response?.data?.message || error.message,
-//       "error"
-//     );
-//   }
-// };
-// const editatednde = async (e) => {
-//   e.preventDefault();
+  //       setFilesData({
+  //         attendant_fullname: "",
+  //         attendant_relation: "",
+  //         attendant_contact: "",
+  //         Attende_passport: null,
+  //         Attende_photo: null,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     Swal.fire(
+  //       "Error!",
+  //       error?.response?.data?.message || error.message,
+  //       "error"
+  //     );
+  //   }
+  // };
+  // const editatednde = async (e) => {
+  //   e.preventDefault();
 
-//   const {
-//     attendant_fullname,
-//     attendant_relation,
-//     attendant_contact,
-//     country,
-//     attendant_address,
-//   } = filesData;
+  //   const {
+  //     attendant_fullname,
+  //     attendant_relation,
+  //     attendant_contact,
+  //     country,
+  //     attendant_address,
+  //   } = filesData;
 
-//   // ✅ Validation
-//   if (!attendant_fullname?.trim()) {
-//     return Swal.fire("Error!", "Attendant fullname is required", "error");
-//   }
+  //   // ✅ Validation
+  //   if (!attendant_fullname?.trim()) {
+  //     return Swal.fire("Error!", "Attendant fullname is required", "error");
+  //   }
 
-//   if (!attendant_relation?.trim()) {
-//     return Swal.fire("Error!", "Attendant relation is required", "error");
-//   }
+  //   if (!attendant_relation?.trim()) {
+  //     return Swal.fire("Error!", "Attendant relation is required", "error");
+  //   }
 
-//   if (!attendant_contact?.toString().trim()) {
-//     return Swal.fire("Error!", "Attendant contact is required", "error");
-//   }
+  //   if (!attendant_contact?.toString().trim()) {
+  //     return Swal.fire("Error!", "Attendant contact is required", "error");
+  //   }
 
-//   if (!country?.trim()) {
-//     return Swal.fire("Error!", "Country is required", "error");
-//   }
+  //   if (!country?.trim()) {
+  //     return Swal.fire("Error!", "Country is required", "error");
+  //   }
 
-//   if (!attendant_address?.trim()) {
-//     return Swal.fire("Error!", "Attendant address is required", "error");
-//   }
+  //   if (!attendant_address?.trim()) {
+  //     return Swal.fire("Error!", "Attendant address is required", "error");
+  //   }
 
 
-//   // ✅ If all valid → proceed
-//   const formData = new FormData();
+  //   // ✅ If all valid → proceed
+  //   const formData = new FormData();
 
-//   formData.append("attendant_fullname", attendant_fullname);
-//   formData.append("attendant_relation", attendant_relation);
-//   formData.append("attendant_contact", attendant_contact);
-//   formData.append("country", country);
-//   formData.append("attendant_address", attendant_address);
+  //   formData.append("attendant_fullname", attendant_fullname);
+  //   formData.append("attendant_relation", attendant_relation);
+  //   formData.append("attendant_contact", attendant_contact);
+  //   formData.append("country", country);
+  //   formData.append("attendant_address", attendant_address);
 
-//   filesData.Attende_passport.forEach((file) => {
-//     formData.append("attendant_passport", file);
-//   });
+  //   filesData.Attende_passport.forEach((file) => {
+  //     formData.append("attendant_passport", file);
+  //   });
 
-//   try {
-//     const response = await axios.put(
-//       `${baseurl}updateAttendeeDetails/${filesData._id}`,
-//       formData,
-//       {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       }
-//     );
+  //   try {
+  //     const response = await axios.put(
+  //       `${baseurl}updateAttendeeDetails/${filesData._id}`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
 
-//     if (response.data.success) {
-//       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-//       getattendantnewai();
-//       setOpen2(false);
+  //     if (response.data.success) {
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //       getattendantnewai();
+  //       setOpen2(false);
 
-//       Swal.fire("Success!", "Attendant Details Updated Successfully!", "success");
+  //       Swal.fire("Success!", "Attendant Details Updated Successfully!", "success");
 
-//       setFilesData({
-//         attendant_fullname: "",
-//         attendant_relation: "",
-//         attendant_contact: "",
-//         country: "",
-//         attendant_address: "",
-//         Attende_passport: null,
-//         Attende_photo: null,
-//       });
-//     }
-//   } catch (error) {
-//     Swal.fire(
-//       "Error!",
-//       error?.response?.data?.message || error.message,
-//       "error"
-//     );
-//   }
-// };
+  //       setFilesData({
+  //         attendant_fullname: "",
+  //         attendant_relation: "",
+  //         attendant_contact: "",
+  //         country: "",
+  //         attendant_address: "",
+  //         Attende_passport: null,
+  //         Attende_photo: null,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     Swal.fire(
+  //       "Error!",
+  //       error?.response?.data?.message || error.message,
+  //       "error"
+  //     );
+  //   }
+  // };
 
-const editatednde = async (e) => {
-  e.preventDefault();
-  const {
-    attendant_fullname,
-    attendant_relation,
-    attendant_contact,
-    country,
-    attendant_address,
-  } = filesData;
-  if (!attendant_fullname?.trim()) {
-    return Swal.fire("Error!", "Attendant fullname is required", "error");
-  }
-  if (!attendant_relation?.trim()) {
-    return Swal.fire("Error!", "Attendant relation is required", "error");
-  }
-  if (!attendant_contact?.toString().trim()) {
-    return Swal.fire("Error!", "Attendant contact is required", "error");
-  }
-  if (!country?.trim()) {
-    return Swal.fire("Error!", "Country is required", "error");
-  }
-  if (!attendant_address?.trim()) {
-    return Swal.fire("Error!", "Attendant address is required", "error");
-  }
-  const formData = new FormData();
-  formData.append("attendant_fullname", attendant_fullname);
-  formData.append("attendant_relation", attendant_relation);
-  formData.append("attendant_contact", attendant_contact);
-  formData.append("country", country);
-  formData.append("attendant_address", attendant_address);
+  const editatednde = async (e) => {
+    e.preventDefault();
+    const {
+      attendant_fullname,
+      attendant_relation,
+      attendant_contact,
+      country,
+      attendant_address,
+    } = filesData;
+    if (!attendant_fullname?.trim()) {
+      return Swal.fire("Error!", "Attendant fullname is required", "error");
+    }
+    if (!attendant_relation?.trim()) {
+      return Swal.fire("Error!", "Attendant relation is required", "error");
+    }
+    if (!attendant_contact?.toString().trim()) {
+      return Swal.fire("Error!", "Attendant contact is required", "error");
+    }
+    if (!country?.trim()) {
+      return Swal.fire("Error!", "Country is required", "error");
+    }
+    if (!attendant_address?.trim()) {
+      return Swal.fire("Error!", "Attendant address is required", "error");
+    }
+    const formData = new FormData();
+    formData.append("attendant_fullname", attendant_fullname);
+    formData.append("attendant_relation", attendant_relation);
+    formData.append("attendant_contact", attendant_contact);
+    formData.append("country", country);
+    formData.append("attendant_address", attendant_address);
 
-  // ✅ Optional passport
-  if (filesData?.Attende_passport && filesData.Attende_passport.length > 0) {
-    filesData.Attende_passport.forEach((file) => {
-      formData.append("attendant_passport", file);
-    });
-  }
-
-  try {
-    const response = await axios.put(
-      `${baseurl}updateAttendeeDetails/${filesData._id}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    if (response.data.success) {
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      getattendantnewai();
-      setOpen2(false);
-
-      Swal.fire("Success!", "Attendant Details Updated Successfully!", "success");
-
-      setFilesData({
-        attendant_fullname: "",
-        attendant_relation: "",
-        attendant_contact: "",
-        country: "",
-        attendant_address: "",
-        Attende_passport: null,
-        Attende_photo: null,
+    // ✅ Optional passport
+    if (filesData?.Attende_passport && filesData.Attende_passport.length > 0) {
+      filesData.Attende_passport.forEach((file) => {
+        formData.append("attendant_passport", file);
       });
     }
-  } catch (error) {
-    Swal.fire(
-      "Error!",
-      error?.response?.data?.message || error.message,
-      "error"
-    );
-  }
-};
-  useEffect(()=>{
-  getattendantnewai()
-  },[])
 
-  const getattendantnewai = async()=>{
     try {
-        const response = await axios.get(`${baseurl}getAttendeeDetails/${location.state.patientId}`)
-      setAttandantnew(response.data.data)  
-      } catch (error) {
+      const response = await axios.put(
+        `${baseurl}updateAttendeeDetails/${filesData._id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+        getattendantnewai();
+        setOpen2(false);
+
+        Swal.fire("Success!", "Attendant Details Updated Successfully!", "success");
+
+        setFilesData({
+          attendant_fullname: "",
+          attendant_relation: "",
+          attendant_contact: "",
+          country: "",
+          attendant_address: "",
+          Attende_passport: null,
+          Attende_photo: null,
+        });
+      }
+    } catch (error) {
+      Swal.fire(
+        "Error!",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
+    }
+  };
+  useEffect(() => {
+    getattendantnewai()
+  }, [])
+
+  const getattendantnewai = async () => {
+    try {
+      const response = await axios.get(`${baseurl}getAttendeeDetails/${location.state.patientId}`)
+      setAttandantnew(response.data.data)
+    } catch (error) {
       console.log(error)
     }
   }
@@ -2984,159 +2984,159 @@ const editatednde = async (e) => {
     }
   };
 
-  const handleclickopenpopup = ()=>{
+  const handleclickopenpopup = () => {
     setPopupopenattande(true)
   }
-  const handlecliclosepup = ()=>{
+  const handlecliclosepup = () => {
     setPopupopenattande(false)
   }
   // const handleassignAtendent =(e)=>{
   //   e.preventDefault()
   //   console.log(selectedAttendants)
   // }
-//   const handleassignAtendent = async () => {
-//     console.log(selectedAttendants)
-//   const payload = {
-//     AttendeeIds: selectedAttendants,
-//   };
+  //   const handleassignAtendent = async () => {
+  //     console.log(selectedAttendants)
+  //   const payload = {
+  //     AttendeeIds: selectedAttendants,
+  //   };
 
-//   try {
-//     const response = await axios.post(`${baseurl}treatmentAssignAttendee/${selectedTreatmentId}`,payload);
+  //   try {
+  //     const response = await axios.post(`${baseurl}treatmentAssignAttendee/${selectedTreatmentId}`,payload);
 
-//     // ✅ Success Swal
-//     Swal.fire({
-//       icon: "success",
-//       title: "Success",
-//       text: "Attendees assigned successfully!",
-//       timer: 2000,
-//       showConfirmButton: false,
-//     });
+  //     // ✅ Success Swal
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Success",
+  //       text: "Attendees assigned successfully!",
+  //       timer: 2000,
+  //       showConfirmButton: false,
+  //     });
 
-//   } catch (error) {
-//     // ❌ Error Swal
-//     Swal.fire({
-//       icon: "error",
-//       title: "Error",
-//       text: error?.response?.data?.message || "Something went wrong!",
-//     });
-//   }
-// };
-const handleassignAtendent = async () => {
-  try {
-    // 🔍 Validation
-    if (!selectedAttendants || selectedAttendants.length === 0) {
-      return Swal.fire({
-        icon: "warning",
-        title: "No Selection",
-        text: "Please select at least one attendant!",
+  //   } catch (error) {
+  //     // ❌ Error Swal
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: error?.response?.data?.message || "Something went wrong!",
+  //     });
+  //   }
+  // };
+  const handleassignAtendent = async () => {
+    try {
+      // 🔍 Validation
+      if (!selectedAttendants || selectedAttendants.length === 0) {
+        return Swal.fire({
+          icon: "warning",
+          title: "No Selection",
+          text: "Please select at least one attendant!",
+        });
+      }
+
+      // ⚠️ Confirmation Popup
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You want to assign selected attendants?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, assign",
+        cancelButtonText: "Cancel",
+      });
+
+      if (!result.isConfirmed) return;
+
+      const payload = {
+        AttendeeIds: selectedAttendants,
+      };
+
+      // 🚀 API Call
+      const response = await axios.post(
+        `${baseurl}treatmentAssignAttendee/${selectedTreatmentId}`,
+        payload
+      );
+      handlecliclosepup()
+      getDataapi3(selectedTreatmentId)
+      // ✅ Success Swal
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Attendees assigned successfully!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      // 🔄 Optional Reset
+      setSelectedAttendants([]);
+
+    } catch (error) {
+      console.error(error);
+
+      // ❌ Error Swal
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong!",
       });
     }
+  };
 
-    // ⚠️ Confirmation Popup
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You want to assign selected attendants?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes, assign",
-      cancelButtonText: "Cancel",
-    });
-
-    if (!result.isConfirmed) return;
-
-    const payload = {
-      AttendeeIds: selectedAttendants,
-    };
-
-    // 🚀 API Call
-    const response = await axios.post(
-      `${baseurl}treatmentAssignAttendee/${selectedTreatmentId}`,
-      payload
-    );
-handlecliclosepup()
-getDataapi3(selectedTreatmentId)
-    // ✅ Success Swal
-    Swal.fire({
-      icon: "success",
-      title: "Success",
-      text: "Attendees assigned successfully!",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    // 🔄 Optional Reset
-    setSelectedAttendants([]);
-
-  } catch (error) {
-    console.error(error);
-
-    // ❌ Error Swal
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text:
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong!",
-    });
+  const handleEdit = (item) => {
+    setFilesData(item)
+    console.log(item)
+    setOpen2(true)
+    setAttendedeaisledit(true)
   }
-};
+  // const handleDelete=(item)=>{
+  //   const response = await  axios.delete(`${baseurl}deleteTreatmentAttendee/${item._id}`)
 
-const handleEdit =(item)=>{
-  setFilesData(item)
-  console.log(item)
-  setOpen2(true)
-  setAttendedeaisledit(true)
-}
-// const handleDelete=(item)=>{
-//   const response = await  axios.delete(`${baseurl}deleteTreatmentAttendee/${item._id}`)
+  // }
 
-// }
+  const handleDeletetrtrtrtr = async (item) => {
+    try {
+      // 🔔 Confirmation Popup
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You want to delete this attendee?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete",
+        cancelButtonText: "Cancel",
+      });
 
-const handleDeletetrtrtrtr = async (item) => {
-  try {
-    // 🔔 Confirmation Popup
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You want to delete this attendee?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete",
-      cancelButtonText: "Cancel",
-    });
+      if (!result.isConfirmed) return;
 
-    if (!result.isConfirmed) return;
+      // 🚀 API Call
+      await axios.delete(
+        `${baseurl}deleteAttendee/${item?._id}`
+      );
 
-    // 🚀 API Call
-    await axios.delete(
-      `${baseurl}deleteAttendee/${item?._id}`
-    );
+      // ✅ Success Swal
+      getattendantnewai()
+      //  dispatch(GetPatientTreatments({id:location.state.patientId}))  // 👈 call your API again
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Attendee deleted successfully.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
 
-    // ✅ Success Swal
-    getattendantnewai()
-  //  dispatch(GetPatientTreatments({id:location.state.patientId}))  // 👈 call your API again
-    Swal.fire({
-      icon: "success",
-      title: "Deleted!",
-      text: "Attendee deleted successfully.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
+    } catch (error) {
+      console.error(error);
 
-  } catch (error) {
-    console.error(error);
-
-    // ❌ Error Swal
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text:
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong!",
-    });
-  }
-};
+      // ❌ Error Swal
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong!",
+      });
+    }
+  };
   return (
     <>
       <div className="page-wrapper">
@@ -3917,10 +3917,7 @@ const handleDeletetrtrtrtr = async (item) => {
                                                                       {item?.service_name ||
                                                                         "-"}
                                                                     </td>
-                                                                    <td>
-                                                                      {item?.price ||
-                                                                        "-"}
-                                                                    </td>
+                                                                    <td>${item?.price || "-"}</td>
                                                                     <td>
                                                                       {createdAt
                                                                         ? new Date(
@@ -4075,10 +4072,7 @@ const handleDeletetrtrtrtr = async (item) => {
                                                                       {item.serviceName ||
                                                                         "-"}
                                                                     </td>
-                                                                    <td>
-                                                                      {
-                                                                        item.price
-                                                                      }
+                                                                    <td>${item.price}
                                                                     </td>
                                                                     <td>
                                                                       {item.startTime
@@ -4352,7 +4346,7 @@ const handleDeletetrtrtrtr = async (item) => {
                                                             {item?.service_name ||
                                                               "-"}
                                                           </td>
-                                                          <td>
+                                                          <td>$
                                                             {item?.price ||
                                                               "-"}
                                                           </td>
@@ -4463,7 +4457,7 @@ const handleDeletetrtrtrtr = async (item) => {
                                               }}
                                             >
                                               <div className="d-flex justify-content-end">
-                                              <buttton   className="add-button my-1" onClick={handleclickopenpopup}>Assign Attendent</buttton>
+                                                <buttton className="add-button my-1" onClick={handleclickopenpopup}>Assign Attendent</buttton>
                                               </div>
                                               <Table
                                                 stickyHeader
@@ -4485,7 +4479,7 @@ const handleDeletetrtrtrtr = async (item) => {
                                                       Country
                                                     </TableCell>
                                                     <TableCell>
-                                                     Address
+                                                      Address
                                                     </TableCell>
                                                     <TableCell>
                                                       Attendant ID Proof
@@ -4580,37 +4574,37 @@ const handleDeletetrtrtrtr = async (item) => {
   )}
 </TableCell> */}
 
-<TableCell>
-  <div className="d-flex flex-wrap gap-2">
-    {Array.isArray(item?.AttendeeId?.attendant_passport) &&
-    item.AttendeeId.attendant_passport.length > 0 ? (
-      item.AttendeeId.attendant_passport.map((file, index) => {
-        const filePath =
-          typeof file === "object" ? file?.path : file;
+                                                          <TableCell>
+                                                            <div className="d-flex flex-wrap gap-2">
+                                                              {Array.isArray(item?.AttendeeId?.attendant_passport) &&
+                                                                item.AttendeeId.attendant_passport.length > 0 ? (
+                                                                item.AttendeeId.attendant_passport.map((file, index) => {
+                                                                  const filePath =
+                                                                    typeof file === "object" ? file?.path : file;
 
-        return (
-          <a
-            key={index}
-            href={`https://sisccltd.com/omca_crm/${filePath}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-sm btn-primary"
-          >
-            View{" "}
-            
-          </a>
-        );
-      })
-    ) : (
-      <span>Not Uploaded</span>
-    )}
-  </div>
-</TableCell>
- <TableCell>
+                                                                  return (
+                                                                    <a
+                                                                      key={index}
+                                                                      href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                                      target="_blank"
+                                                                      rel="noopener noreferrer"
+                                                                      className="btn btn-sm btn-primary"
+                                                                    >
+                                                                      View{" "}
+
+                                                                    </a>
+                                                                  );
+                                                                })
+                                                              ) : (
+                                                                <span>Not Uploaded</span>
+                                                              )}
+                                                            </div>
+                                                          </TableCell>
+                                                          <TableCell>
                                                             <i
-                        className="fa fa-trash ms-2 text-danger"  style={{cursor:"pointer"}}
-                        onClick={() => handleDelete212(item?._id)}
-                      ></i>
+                                                              className="fa fa-trash ms-2 text-danger" style={{ cursor: "pointer" }}
+                                                              onClick={() => handleDelete212(item?._id)}
+                                                            ></i>
                                                           </TableCell>
 
                                                         </TableRow>
@@ -5363,7 +5357,7 @@ const handleDeletetrtrtrtr = async (item) => {
                                         }
                                       </TableCell>
                                       <TableCell className="d-flex gap-2">
-                                        {item   
+                                        {item
                                           ?.attendant_passport
                                           ?.length > 0
                                           ? item.attendant_passport.map(
@@ -5404,15 +5398,15 @@ const handleDeletetrtrtrtr = async (item) => {
                                           : "Not Uploaded"}
                                       </TableCell>
                                       <TableCell className="action-icon">
-                                                         <i
-                                                           className="fa fa-edit"
-                                                           onClick={() => handleEdit(item)}
-                                                         ></i>
-                                                           <i
-                                                             className="fa fa-trash ms-2"
-                                                             onClick={() => handleDeletetrtrtrtr(item)}
-                                                           ></i>
-                                                       </TableCell>
+                                        <i
+                                          className="fa fa-edit"
+                                          onClick={() => handleEdit(item)}
+                                        ></i>
+                                        <i
+                                          className="fa fa-trash ms-2"
+                                          onClick={() => handleDeletetrtrtrtr(item)}
+                                        ></i>
+                                      </TableCell>
                                     </TableRow>
                                   ),
                                 )
@@ -5626,14 +5620,17 @@ const handleDeletetrtrtrtr = async (item) => {
                     <label>
                       Enter Price<span className="text-danger">*</span>
                     </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={data.price}
-                      name="price"
-                      onChange={editServiceandlechange}
-                      placeholder="Enter price"
-                    />
+                    <div className="fixpricee">
+                      <p className='code-dial'>$</p>
+                      <input
+                        type="text"
+                        className="form-control code-in"
+                        value={data.price}
+                        name="price"
+                        onChange={editServiceandlechange}
+                        placeholder="Enter price"
+                      />
+                    </div>
                   </div>
                 </Box>
               </Box>
@@ -5652,7 +5649,7 @@ const handleDeletetrtrtrtr = async (item) => {
                           data.startTime ? data.startTime.split("T")[0] : ""
                         }
                         onChange={editServiceandlechange}
-                        placeholder="Enter price"
+                        placeholder="Enter start date"
                       />
                     </div>
                   </div>
@@ -5668,7 +5665,7 @@ const handleDeletetrtrtrtr = async (item) => {
                       name="endTime"
                       value={data.endTime ? data.endTime.split("T")[0] : ""}
                       onChange={editServiceandlechange}
-                      placeholder="Enter price"
+                      placeholder="Enter end date"
                     />
                   </div>
                 </Box>
@@ -5731,17 +5728,18 @@ const handleDeletetrtrtrtr = async (item) => {
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <div className="field-set mb-0">
-                    <label>
-                      Enter Price<span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={data.price}
-                      name="price"
-                      onChange={andlechange}
-                      placeholder="Enter price"
-                    />
+                    <label>Enter Price<span className="text-danger">*</span></label>
+                    <div className="fixpricee">
+                      <p className='code-dial'>$</p>
+                      <input
+                        type="number"
+                        className="form-control code-in"
+                        value={data.price}
+                        name="price"
+                        onChange={andlechange}
+                        placeholder="Enter price"
+                      />
+                    </div>
                   </div>
                 </Box>
               </Box>
@@ -5757,7 +5755,7 @@ const handleDeletetrtrtrtr = async (item) => {
                         className="form-control"
                         name="start_date"
                         onChange={andlechangedate}
-                        placeholder="Enter price"
+                        placeholder="Enter start date"
                       />
                     </div>
                   </div>
@@ -5772,7 +5770,7 @@ const handleDeletetrtrtrtr = async (item) => {
                       className="form-control"
                       name="end_date"
                       onChange={andlechangedate}
-                      placeholder="Enter price"
+                      placeholder="Enter end date"
                     />
                   </div>
                 </Box>
@@ -6144,7 +6142,7 @@ const handleDeletetrtrtrtr = async (item) => {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>{attendedeaisledit===true?"Edit":"Add"} Attendant Details</h6>
+              <h6>{attendedeaisledit === true ? "Edit" : "Add"} Attendant Details</h6>
             </div>
             <div className="cross-icon" onClick={handleClose2}>
               <i class="fa-solid fa-xmark"></i>
@@ -6263,7 +6261,7 @@ const handleDeletetrtrtrtr = async (item) => {
                       <div className="field-set">
                         <label>
                           Attendant Id Proof
-                          <span className="text-danger">{attendedeaisledit===true?"":"*"}</span>
+                          <span className="text-danger">{attendedeaisledit === true ? "" : "*"}</span>
                         </label>
                         <div className="upload-input">
                           <input
@@ -6304,23 +6302,23 @@ const handleDeletetrtrtrtr = async (item) => {
                     >
                       Submit
                     </Button> */}
-                {
-                  attendedeaisledit===true?
-                   <Button
-                      type="submit"
-                      onClick={editatednde}
-                      variant="contained"
-                    >
-                      Edit Attendant
-                    </Button>:
-                     <Button
-                      onClick={handleKysDetail}
-                      variant="contained"
-                    >
-                      Submit
-                    </Button>
-                }    
-               
+                    {
+                      attendedeaisledit === true ?
+                        <Button
+                          type="submit"
+                          onClick={editatednde}
+                          variant="contained"
+                        >
+                          Edit Attendant
+                        </Button> :
+                        <Button
+                          onClick={handleKysDetail}
+                          variant="contained"
+                        >
+                          Submit
+                        </Button>
+                    }
+
                   </DialogActions>
                 </form>
               </Box>
@@ -6959,18 +6957,20 @@ const handleDeletetrtrtrtr = async (item) => {
                   </div>
                 </div>
                 <div className="field-set">
-                  <label>
-                    Price<span className="text-danger"></span>
+                  <label>Price<span className="text-danger"></span>
                   </label>
                   <div className="upload-input">
-                    <input
-                      type="number"
-                      className="form-control"
-                      name="price"
-                      value={hospitalCharge.price}
-                      onKeyPress={handkekeypreees}
-                      onChange={addhospitalChare}
-                    />
+                    <div className="fixpricee">
+                      <p className='code-dial'>$</p>
+                      <input
+                        type="number"
+                        className="form-control code-in"
+                        name="price"
+                        value={hospitalCharge.price}
+                        onKeyPress={handkekeypreees}
+                        onChange={addhospitalChare}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="field-set">
@@ -7052,14 +7052,17 @@ const handleDeletetrtrtrtr = async (item) => {
                     Price<span className="text-danger"></span>
                   </label>
                   <div className="upload-input">
-                    <input
-                      type="number"
-                      className="form-control"
-                      name="price"
-                      value={pharmacyvalue.price}
-                      onKeyPress={handkekeypreees}
-                      onChange={addhosppharmacyhare}
-                    />
+                    <div className="fixpricee">
+                      <p className='code-dial'>$</p>
+                      <input
+                        type="number"
+                        className="form-control code-in"
+                        name="price"
+                        value={pharmacyvalue.price}
+                        onKeyPress={handkekeypreees}
+                        onChange={addhosppharmacyhare}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="field-set">
@@ -7183,30 +7186,30 @@ const handleDeletetrtrtrtr = async (item) => {
                     </label>
                     <div className="upload-input">
 
-<Autocomplete
-  multiple
-  options={attandantnew}
-  disableCloseOnSelect
-  getOptionLabel={(option) => option.attendant_fullname || ""}
-  onChange={(event, newValue) => {
-    const ids = newValue.map((item) => item._id); // 👈 extract _id
-    setSelectedAttendants(ids); // 👈 sirf IDs store
-  }}
-  renderOption={(props, option, { selected }) => (
-    <li {...props}>
-      <Checkbox checked={selected} style={{ marginRight: 8 }} />
-      {option.attendant_fullname}
-    </li>
-  )}
-  renderInput={(params) => (
-    <TextField {...params} label="Select Attendants" />
-  )}
-/>
+                      <Autocomplete
+                        multiple
+                        options={attandantnew}
+                        disableCloseOnSelect
+                        getOptionLabel={(option) => option.attendant_fullname || ""}
+                        onChange={(event, newValue) => {
+                          const ids = newValue.map((item) => item._id); // 👈 extract _id
+                          setSelectedAttendants(ids); // 👈 sirf IDs store
+                        }}
+                        renderOption={(props, option, { selected }) => (
+                          <li {...props}>
+                            <Checkbox checked={selected} style={{ marginRight: 8 }} />
+                            {option.attendant_fullname}
+                          </li>
+                        )}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Select Attendants" />
+                        )}
+                      />
                     </div>
                   </div>
                   <DialogActions className="submit-main">
                     <Button
-                      onClick={ handleassignAtendent}
+                      onClick={handleassignAtendent}
                       variant="contained"
                     >
                       Submit
