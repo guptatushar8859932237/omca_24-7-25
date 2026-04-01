@@ -150,16 +150,19 @@ export default function EditService() {
                         <label>
                           Price <span className="text-danger">*</span>
                         </label>
-                        <Field
-                          className="form-control"
-                          type="text"
-                          name="price"
-                          onKeyPress={(e) => {
-                            if (!/^[0-9]$/.test(e.key)) {
-                              e.preventDefault(); // blocks everything except digits
-                            }
-                          }}
-                        />
+                        <div className="fixpricee">
+                          <p className='code-dial'>$</p>
+                          <Field
+                            className="form-control code-in"
+                            type="text"
+                            name="price"
+                            onKeyPress={(e) => {
+                              if (!/^[0-9]$/.test(e.key)) {
+                                e.preventDefault(); // blocks everything except digits
+                              }
+                            }}
+                          />
+                        </div>
                         <ErrorMessage
                           name="price"
                           component="div"
