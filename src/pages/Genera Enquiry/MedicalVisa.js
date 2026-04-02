@@ -195,13 +195,13 @@ const handleChangtype = async (e, b) => {
     Last Name
   </TableSortLabel>
 </TableCell>
-             <TableCell sortDirection={orderBy === "last_name" ? order : false}>
+             <TableCell sortDirection={orderBy === "country" ? order : false}>
   <TableSortLabel
-    active={orderBy === "last_name"}
-    direction={orderBy === "last_name" ? order : "asc"}
-    onClick={() => handleSort("last_name")}
+    active={orderBy === "country"}
+    direction={orderBy === "country" ? order : "asc"}
+    onClick={() => handleSort("country")}
   >
-    Last Name
+Country
   </TableSortLabel>
 </TableCell>
              <TableCell sortDirection={orderBy === "passport_number" ? order : false}>

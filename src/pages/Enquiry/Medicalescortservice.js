@@ -86,7 +86,7 @@ export default function Medicalescortservice() {
                     style={{ cursor: "pointer" }}
                   ></i>
                 </span>
-                View Medical Escort Enquiry
+                View Treatment Estimate
               </h4>
             </div>
           </div>
@@ -237,7 +237,7 @@ export default function Medicalescortservice() {
                       <button
                         key={index}
                         type="button"
-                        className="add-button"
+                        className="viewbtn"
                         onClick={() => window.open(rep.report, "_blank")}
                       >
                         View

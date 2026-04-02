@@ -1169,47 +1169,108 @@ function PatientDetail() {
         Swal.fire("Error", `${error?.response?.data?.message}`, "error");
       });
   };
-  const handleAddTritmentPayment = async () => {
-    console.log(treatmentId, selectedTreatmentId);
-    try {
-      const formData = new FormData();
-      formData.append("id", treatmentId || selectedTreatmentId);
-      formData.append("paid_amount", data?.paid_amount);
-      formData.append("notes", data?.notes);
-      formData.append("paymentMethod", data?.paymentMethod);
-      formData.append("payment_Date", data?.payment_Date);
-      formData.append("paid_to", valueofappointmentpaidto);
-      formData.append("paid_for", iniData?.paid_for);
-      formData.append("platform", 1);
-      if (iniData?.attachFile) {
-        formData.append("attachFile", iniData.attachFile);
-      }
-      await dispatch(AddNewTretmentPayment(formData)).unwrap();
-      getDataapi3(selectedTreatmentId);
-      setOpen3(false);
-      Swal.fire("Success!", "Payment Details Added Successfully!", "success");
-      if (location.state?.patientId) {
-        dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      }
-      setTreatmentId("");
-      setData({
-        paid_amount: "",
-        paymentMethod: "",
-        payment_Date: "",
-      });
-    } catch (err) {
-      const errorMessage =
-        typeof err === "string" ? err : err?.message || "Something went wrong";
-      setOpen3(false);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: errorMessage,
-      }).then(() => {
-        setOpen3(true);
-      });
+ const handleAddTritmentPayment = async () => {
+  console.log(treatmentId, selectedTreatmentId);
+
+  // ✅ Validation
+  if (!valueofappointmentpaidto) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Please select Paid To",
+    });
+    return;
+  }
+
+  if (!iniData?.paid_for) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Please select Paid For",
+    });
+    return;
+  }
+  if (!data?.notes) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Please select Notes",
+    });
+    return;
+  }
+  if (!data?.paymentMethod) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Please select Payment Method",
+    });
+    return;
+  }
+  if (!data?.paid_amount) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Please select Paid Amount",
+    });
+    return;
+  }
+  if (!data?.payment_Date) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Please select Payment Date",
+    });
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append("id", treatmentId || selectedTreatmentId);
+    formData.append("paid_amount", data?.paid_amount);
+    formData.append("notes", data?.notes);
+    formData.append("paymentMethod", data?.paymentMethod);
+    formData.append("payment_Date", data?.payment_Date);
+    formData.append("paid_to", valueofappointmentpaidto);
+    formData.append("paid_for", iniData?.paid_for);
+    formData.append("platform", 1);
+
+    if (iniData?.attachFile) {
+      formData.append("attachFile", iniData.attachFile);
     }
-  };
+
+    await dispatch(AddNewTretmentPayment(formData)).unwrap();
+
+    getDataapi3(selectedTreatmentId);
+    setOpen3(false);
+
+    Swal.fire("Success!", "Payment Details Added Successfully!", "success");
+
+    if (location.state?.patientId) {
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+    }
+
+    setTreatmentId("");
+    setData({
+      paid_amount: "",
+      paymentMethod: "",
+      payment_Date: "",
+    });
+
+  } catch (err) {
+    const errorMessage =
+      typeof err === "string" ? err : err?.message || "Something went wrong";
+
+    setOpen3(false);
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: errorMessage,
+    }).then(() => {
+      setOpen3(true);
+    });
+  }
+};
   const handleChange = async (event, id) => {
     const { value } = event.target;
     setSeekerStatus((prev) => ({
@@ -4174,7 +4235,7 @@ function PatientDetail() {
                                                                         ></i>
                                                                         <i
                                                                           className="fa-solid fa-trash"
-                                                                          onClick={() => {
+                                                                           onClick={() => {
                                                                             handledeltePatientserveice(
                                                                               item,
                                                                               info,
@@ -4261,7 +4322,9 @@ function PatientDetail() {
                                                                           ></i> */}
                                                                         <i
                                                                           className="fa-solid fa-trash"
-                                                                          onClick={() => {
+                                                                        
+
+                                                                           onClick={() => {
                                                                             handledeltePatientserveice(
                                                                               item,
                                                                               info,
@@ -4742,7 +4805,7 @@ function PatientDetail() {
                                                     className="add-button"
                                                   >
                                                     <span>
-                                                      <i className="fa fa-plus"></i>
+                                                      {/* <i className="fa fa-plus"></i> */}
                                                     </span>{" "}
                                                     Export
                                                   </button>
@@ -4811,7 +4874,7 @@ function PatientDetail() {
                                                             </TableCell>
 
                                                             <TableCell>
-                                                              {
+                                                              ${
                                                                 item?.paid_amount
                                                               }
                                                             </TableCell>
@@ -6741,7 +6804,7 @@ function PatientDetail() {
                   </div>
                   <div className="field-set">
                     <label>
-                      Attach Invoice <span className="text-danger">*</span>
+                      Attach Invoice <span className="text-danger"></span>
                     </label>
                     <input
                       type="file"
@@ -6755,6 +6818,8 @@ function PatientDetail() {
                     <label>
                       Paid Amount<span className="text-danger">*</span>
                     </label>
+                     <div className="fixpricee">
+                      <p className="code-dial">$</p>
                     <input
                       type="text"
                       placeholder="paid amount"
@@ -6766,10 +6831,11 @@ function PatientDetail() {
                       value={data.paid_amount}
                     />
                   </div>
+                  </div>
                   {/* <div>{info.treatment_due_payment}</div> */}
                   <div className="field-set">
                     <label>
-                      Payment Method<span className="text-danger"></span>
+                      Payment Method<span className="text-danger">*</span>
                     </label>
                     <select
                       placeholder="payment Method"
@@ -6790,7 +6856,7 @@ function PatientDetail() {
                   </div>
                   <div className="field-set">
                     <label>
-                      Payment Date<span className="text-danger"></span>
+                      Payment Date<span className="text-danger">*</span>
                     </label>
                     <input
                       type="date"
@@ -6805,7 +6871,7 @@ function PatientDetail() {
                   </div>
                   <div className="field-set">
                     <label>
-                      Notes<span className="text-danger"></span>
+                      Notes<span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"

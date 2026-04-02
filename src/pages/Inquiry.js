@@ -220,77 +220,151 @@ export default function Inquiry() {
     setTabValue(newValue);
     localStorage.setItem("tabenquiry", newValue);
   };
-  const handleChange = async (event, id, tabValue, data) => {
-    const { value } = event.target;
-    console.log(data, value);
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you really want to update / convert?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-    });
-    if (!result.isConfirmed) return;
-    if (tabValue === 0) {
-      try {
-        setSeekerStatus((prev) => ({
-          ...prev,
-          [id]: value,
-        }));
-        const payload = {
-          full_name: data.raw.name,
-          email: data.raw.email,
-          phone_code: data.raw.phoneCode,
-          phone: data.raw.emergency_contact,
-          passport_number: data.raw.passport_num,
-          user_type: 2,
-        };
-        if (Number(value) === 1) {
-          const response = await axios.post(
-            `https://omcacrm.com/omca/api/user_registration`,
-            payload,
-          );
-          console.log(response.data);
-          if (response.data.success) {
-            console.log(response.data);
-            await dispatch(
-              EnquiryStatus({
-                id,
-                status: Number(value),
-                enquiry_type: "OMCA Enquiry",
-                user_id: response.data.data.id
-              }),
-            ).unwrap();
-          }
-        }
+const handleChange = async (event, id, tabValue, data) => {
+  const { value } = event.target;
 
-        Swal.fire("Success!", "Status updated!", "success");
-        dispatch(GetAllEnquiry());
-      } catch (err) {
-        Swal.fire("Error!", err?.message || "Error", "error");
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "Do you really want to update / convert?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  });
+
+  if (!result.isConfirmed) return;
+
+  // ✅ ONLY run when Confirmed selected
+  if (Number(value) !== 1) {
+    // Sirf status update karna hai, API nahi
+    await handleChangtype({ value }, data.raw);
+    return;
+  }
+
+  // 🔥 TAB 0 → Enquiry
+  if (tabValue === 0) {
+    try {
+      const payload = {
+        full_name: data.raw.name,
+        email: data.raw.email,
+        phone_code: data.raw.phoneCode,
+        phone: data.raw.emergency_contact,
+        passport_number: data.raw.passport_num,
+        user_type: 2,
+      };
+
+      const response = await axios.post(
+        `https://omcacrm.com/omca/api/user_registration`,
+        payload
+      );
+
+      if (response.data.success) {
+        await dispatch(
+          EnquiryStatus({
+            id,
+            status: Number(value),
+            enquiry_type: "OMCA Enquiry",
+            user_id: response.data.data.id,
+          })
+        ).unwrap();
       }
-    }
-    // ✅ TAB 1 → Ambulance
-    if (tabValue === 1) {
-      await sendToPatientAPI("Ambulance Service", data.raw);
-      // 🔥 NEW ADD
-      await handleChangtype({ value }, data.raw);
-    }
-    // ✅ TAB 2 → Air Ambulance
-    if (tabValue === 2) {
-      await sendToPatientAPI("Air Medical Escort", data.raw);
 
-      // 🔥 NEW ADD
-      await handleChangtype({ value }, data.raw);
+      Swal.fire("Success!", "Converted to patient!", "success");
+      dispatch(GetAllEnquiry());
+    } catch (err) {
+      Swal.fire("Error!", err?.message || "Error", "error");
     }
-    // ✅ TAB 3 → Treatment Estimate
-    if (tabValue === 3) {
-      await sendToPatientAPI("Treatment Estimate", data.raw);
+  }
 
-      // 🔥 NEW ADD
-      await handleChangtype({ value }, data.raw);
-    }
-  };
+  // 🔥 TAB 1 → Ambulance
+  if (tabValue === 1) {
+    await sendToPatientAPI("Ambulance Service", data.raw);
+    await handleChangtype({ value }, data.raw);
+  }
+
+  // 🔥 TAB 2 → Air Ambulance
+  if (tabValue === 2) {
+    await sendToPatientAPI("Air Medical Escort", data.raw);
+    await handleChangtype({ value }, data.raw);
+  }
+
+  // 🔥 TAB 3 → Treatment
+  if (tabValue === 3) {
+    await sendToPatientAPI("Treatment Estimate", data.raw);
+    await handleChangtype({ value }, data.raw);
+  }
+};
+
+  // const handleChange = async (event, id, tabValue, data) => {
+  //   const { value } = event.target;
+  //   console.log(data, value);
+  //   const result = await Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "Do you really want to update / convert?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes",
+  //   });
+  //   if (!result.isConfirmed) return;
+  //   if (tabValue === 0) {
+  //     try {
+  //       setSeekerStatus((prev) => ({
+  //         ...prev,
+  //         [id]: value,
+  //       }));
+  //       const payload = {
+  //         full_name: data.raw.name,
+  //         email: data.raw.email,
+  //         phone_code: data.raw.phoneCode,
+  //         phone: data.raw.emergency_contact,
+  //         passport_number: data.raw.passport_num,
+  //         user_type: 2,
+  //       };
+  //       if (Number(value) === 1) {
+  //         const response = await axios.post(
+  //           `https://omcacrm.com/omca/api/user_registration`,
+  //           payload,
+  //         );
+  //         console.log(response.data);
+  //         if (response.data.success) {
+  //           console.log(response.data);
+  //           await dispatch(
+  //             EnquiryStatus({
+  //               id,
+  //               status: Number(value),
+  //               enquiry_type: "OMCA Enquiry",
+  //               user_id: response.data.data.id
+  //             }),
+  //           ).unwrap();
+  //         }
+  //       }
+
+  //       Swal.fire("Success!", "Status updated!", "success");
+  //       dispatch(GetAllEnquiry());
+  //     } catch (err) {
+  //       Swal.fire("Error!", err?.message || "Error", "error");
+  //     }
+  //   }
+  //   // ✅ TAB 1 → Ambulance
+  //   if (tabValue === 1) {
+  //     await sendToPatientAPI("Ambulance Service", data.raw);
+  //     // 🔥 NEW ADD
+  //     await handleChangtype({ value }, data.raw);
+  //   }
+  //   // ✅ TAB 2 → Air Ambulance
+  //   if (tabValue === 2) {
+  //     await sendToPatientAPI("Air Medical Escort", data.raw);
+
+  //     // 🔥 NEW ADD
+  //     await handleChangtype({ value }, data.raw);
+  //   }
+  //   // ✅ TAB 3 → Treatment Estimate
+  //   if (tabValue === 3) {
+  //     await sendToPatientAPI("Treatment Estimate", data.raw);
+
+  //     // 🔥 NEW ADD
+  //     await handleChangtype({ value }, data.raw);
+  //   }
+  // };
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_enquiries`, {
@@ -805,7 +879,7 @@ export default function Inquiry() {
                                   ? info.disease_name.slice(0, 10) + "..."
                                   : info.disease_name}
                               </TableCell> */}
-                              <TableCell>
+                              {/* <TableCell>
                                 <FormControl
                                   sx={{ m: 1, minWidth: 120 }}
                                   size="small"
@@ -854,14 +928,59 @@ export default function Inquiry() {
                                       }
                                     }}
                                   >
+                                    <MenuItem value="0">Pending</MenuItem>
                                     <MenuItem value="1">Confirmed</MenuItem>
                                     <MenuItem value="2">Hold</MenuItem>
                                     <MenuItem value="3">Follow-up</MenuItem>
                                     <MenuItem value="4">Closed</MenuItem>
                                   </Select>
                                 </FormControl>
-                              </TableCell>
-
+                              </TableCell> */}
+<TableCell>
+  {info.Enquiry_status === "Confirmed" ? (
+    // ✅ Only show text
+    <span style={{ fontWeight: "bold",  }}>
+      Confirmed
+    </span>
+  ) : (
+    // ✅ Otherwise show dropdown
+    <FormControl
+      sx={{ m: 1, minWidth: 120 }}
+      size="small"
+      className="cont-main"
+    >
+      <Select
+        value={
+          seekerStatus[info.enquiryId]
+            ? seekerStatus[info.enquiryId]
+            : info.Enquiry_status === "Hold"
+              ? "2"
+              : info.Enquiry_status === "Follow-Up"
+                ? "3"
+                : info.Enquiry_status === "Dead"
+                  ? "4"
+                  : "0"
+        }
+        onChange={(e) =>
+          handleChange(
+            e,
+            info.enquiryId,
+            tabValue,
+            info
+          )
+        }
+        displayEmpty
+        className="status-direct"
+      >
+        <MenuItem value="0">Pending</MenuItem>
+        <MenuItem value="1">Confirmed</MenuItem>
+        <MenuItem value="2">Hold</MenuItem>
+        <MenuItem value="3">Follow-up</MenuItem>
+        <MenuItem value="4">Closed</MenuItem>
+      </Select>
+    </FormControl>
+  )}
+</TableCell>
                               <TableCell className="action-icon">
                                 <VisibilityIcon
                                   className="eye-icon"
@@ -897,9 +1016,9 @@ export default function Inquiry() {
                                         handleClickOpen2(e, info.enquiryId)
                                       }
                                     ></i>
-                                    <i className="fa-solid fa-stethoscope" onClick={(e) =>
+                                    {/* <i className="fa-solid fa-stethoscope" onClick={(e) =>
                                       handleClickOpen4(e, info.enquiryId)
-                                    }></i>
+                                    }></i> */}
                                   </TableCell>
                                 </>
                               ) : (

@@ -275,9 +275,11 @@ export default function EnquiryDetail() {
                     <div className="field-set">
                       <label>Patient Profile<span className="text-danger"></span></label>
                       <div className="engpatimg mt-0">
-                        <div className="viewbtn">
-                          <a href={`${imageUrl}${row.patient_Profile}`} >View</a>
-                        </div>
+                       {row.patient_Profile && (
+  <div className="viewbtn">
+    <a href={`${imageUrl}${row.patient_Profile}`}>View</a>
+  </div>
+)}
                       </div>
                     </div>
                   </div>

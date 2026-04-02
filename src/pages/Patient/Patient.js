@@ -686,7 +686,7 @@ const handleRequestSort = (property) => {
                               Date/Time
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>
+                          <TableCell>
                             <TableSortLabel
                               active={orderBy === "country"}
                               direction={orderBy === "country" ? order : "asc"}
@@ -694,7 +694,7 @@ const handleRequestSort = (property) => {
                             >
                               Country
                             </TableSortLabel>
-                          </TableCell> */}
+                          </TableCell>
                           {showActions === true ? (
                             <>
                              <TableCell>
@@ -786,27 +786,13 @@ const handleRequestSort = (property) => {
                                         "..."
                                       : info.patient_name}
                                   </TableCell>
-                                  {/* <TableCell
-                                    style={{ cursor: "pointer" }}
-                                    title={info.patient_disease
-                                      ?.map((d) => d.disease_name)
-                                      .join(", ")}
-                                  >
-                                    {(() => {
-                                      const diseases = info.patient_disease
-                                        ?.map((d) => d.disease_name)
-                                        .join(", ");
-                                      if (!diseases) return "";
-                                      return diseases.length > 15
-                                        ? diseases.substring(0, 15) + "..."
-                                        : diseases;
-                                    })()}
-                                  </TableCell> */}
+                                 
                                   <TableCell>{info.treatingIn}</TableCell>
                                   <TableCell>{new Date(info.createdAt).toLocaleDateString('en-GB')}/{new Date(info.createdAt).toLocaleTimeString('en-GB', {
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: true,})}</TableCell>
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true,})}</TableCell>
+                                    <TableCell>{info.country}</TableCell>
                                   {/* <TableCell>{info.country}</TableCell> */}
 
                                   {showActions === true ? (

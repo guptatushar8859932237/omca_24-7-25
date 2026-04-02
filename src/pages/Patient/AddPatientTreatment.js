@@ -246,11 +246,15 @@ export default function AddPatientTreatment() {
                         <label>
                           Total Charge<span className="text-danger">*</span>
                         </label>
+                         <div className="fixpricee">
+                      <p className="code-dial">$</p>
+                     
                         <Field
                           className="form-control"
                           type="number"
                           name="total_charge"
                         />
+                        </div>
                         <ErrorMessage
                           name="total_charge"
                           component="div"
@@ -304,11 +308,14 @@ export default function AddPatientTreatment() {
                         <label>
                           Amount Paid<span className="text-danger">*</span>
                         </label>
+                          <div className="fixpricee">
+                      <p className="code-dial">$</p>
                         <Field
                           className="form-control"
                           type="number"
                           name="amount_paid"
                         />
+                      </div>
                         <ErrorMessage
                           name="amount_paid"
                           component="div"

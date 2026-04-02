@@ -494,7 +494,7 @@ export default function EnquiryDetailAmbulance() {
                       <button
                         key={index}
                         type="button"
-                        className="add-button"
+                        className=" viewbtn"
                         onClick={() => window.open(rep.report, "_blank")}
                       >
                         View
