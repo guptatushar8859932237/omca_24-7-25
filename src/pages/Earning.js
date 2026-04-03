@@ -201,9 +201,9 @@ export default function Earning() {
                             <TableCell>{info.patientId}</TableCell>
                             <TableCell>{info.patient_name}</TableCell>
                             <TableCell>{info?.country}</TableCell>
-                            <TableCell>{info.total_Amount}</TableCell>
-                            <TableCell>{info.remaining_balance}</TableCell>
-                            <TableCell>{info.amount_paid}</TableCell>
+                            <TableCell>${info.total_Amount}</TableCell>
+                            <TableCell>${info.remaining_balance}</TableCell>
+                            <TableCell>${info.amount_paid}</TableCell>
                             <TableCell>{info.Disease_agreement}</TableCell>
                           </TableRow>
                         ))}

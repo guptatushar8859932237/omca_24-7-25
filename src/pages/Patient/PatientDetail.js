@@ -157,6 +157,7 @@ function PatientDetail() {
   const [chkservice, setChkservice] = useState([]);
   const [blogErr, setBlogErr] = useState(false);
   const [editPatientProfile, setEditPatientProfile] = useState(false);
+  const [hAndleReport, setHAndleReport] = useState(false);
   const [appointErr, setAppointErr] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
   const [oeditappp, setOeditappp] = useState(false);
@@ -271,6 +272,14 @@ function PatientDetail() {
   const handleclosePerforma = () => {
     setOpen32(false);
   };
+
+  const handleEditreport =(id,info)=>{
+    
+    setTreatmentId(id,info.treatmentId)
+  setIniData(id)
+    setHAndleReport(true)
+    setOpen10(true);
+  }
   const handleClickOpen10 = (e, tretmentId) => {
     setTreatmentId(tretmentId);
     setOpen10(true);
@@ -293,6 +302,8 @@ function PatientDetail() {
   };
   const handleClose10 = () => {
     setOpen10(false);
+    setHAndleReport(false)
+    setIniData("")
   };
   const PatientDetailButton = (e, id) => {
     navigate("/Admin/add-patient-treatment", {
@@ -1470,6 +1481,89 @@ function PatientDetail() {
       window.open(url, "_blank");
     });
   };
+  const handleClickEditReport = async () => {
+  console.log("a",treatmentId);
+
+  if (!iniData?.reportTitle?.trim()) {
+    return Swal.fire("Error", "Report Title is required", "error");
+  }
+  if (!iniData?.treatment_report_date) {
+    return Swal.fire("Error", "Report Date is required", "error");
+  }
+  try {
+    Swal.fire({
+      title: "Updating...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    const formData = new FormData();
+
+    formData.append("reportTitle", iniData.reportTitle);
+
+    // ✅ date fix
+    formData.append(
+      "treatment_report_date",
+      new Date(iniData.treatment_report_date)
+        .toISOString()
+        .split("T")[0]
+    );
+
+    formData.append("platform", 1);
+
+    // ✅ attachFile check
+    if (iniData?.attachFile) {
+      formData.append("attachFile", iniData.attachFile);
+    }
+
+    // ✅ multiple images check
+    if (Array.isArray(imagefile)) {
+      imagefile.forEach((file) => {
+        formData.append("treatmentReport", file);
+      });
+    }
+
+    const response = await axios.put(
+      `${baseurl}editReport/${iniData._id}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    if (response?.data?.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Report Updated Successfully ✅",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      handleClose10();
+      getDataapi3(treatmentId.treatmentId);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: response?.data?.message || "Failed to update report",
+      });
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text:
+        error?.response?.data?.message ||
+        "Something went wrong. Please try again.",
+    });
+  }
+};
   const handleClickSubmit = async () => {
     // 🔥 VALIDATION START
     if (!iniData.reportTitle) {
@@ -5016,7 +5110,7 @@ function PatientDetail() {
                                                 <TableHead>
                                                   <TableRow>
                                                     <TableCell>
-                                                      Treatment ID
+                                                      Treatment Name
                                                     </TableCell>
                                                     <TableCell>
                                                       Report Title
@@ -5053,7 +5147,7 @@ function PatientDetail() {
                                                           key={item._id}
                                                         >
                                                           <TableCell>
-                                                            {item?.treatmentId}
+                                                            {item?.treatment_course_name}
                                                           </TableCell>
 
                                                           <TableCell>
@@ -5088,7 +5182,7 @@ function PatientDetail() {
                                                                   Report
                                                                 </a>
                                                               </TableCell>
-                                                              <TableCell>
+                                                              <TableCell className="action-icon">
                                                                 <i
                                                                   className="fa-solid fa-trash text-danger"
                                                                   style={{
@@ -5101,6 +5195,10 @@ function PatientDetail() {
                                                                     )
                                                                   }
                                                                 ></i>
+                                                                <i
+                      className="fa-solid fa-pen-to-square"
+                      onClick={() => handleEditreport(item,info)}
+                    ></i>
                                                               </TableCell>
                                                             </>
                                                           ) : (
@@ -6910,7 +7008,7 @@ function PatientDetail() {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>Add Reports</h6>
+              <h6>{hAndleReport===true?"Edit":"Add"} Reports</h6>
             </div>
             <div className="cross-icon" onClick={handleClose10}>
               <i class="fa-solid fa-xmark"></i>
@@ -6937,14 +7035,14 @@ function PatientDetail() {
                       type="text"
                       placeholder="Report Title"
                       className="form-control"
-                      multiple
                       name="reportTitle"
+                      value={iniData.reportTitle}
                       onChange={handlefilechange}
                     />
                   </div>
                   <div className="field-set">
                     <label>
-                      Reports <span className="text-danger">*</span>
+                      Reports <span className="text-danger">{hAndleReport===true?"":"*"}</span>
                     </label>
                     <input
                       type="file"
@@ -6959,24 +7057,37 @@ function PatientDetail() {
                       Treatment Report Date{" "}
                       <span className="text-danger">*</span>
                     </label>
-                    <input
-                      type="date"
-                      placeholder="payment Method"
-                      className="form-control"
-                      name="treatment_report_date"
-                      required
-                      onChange={handlefilechange}
-                    />
+                   <input
+  type="date"
+  className="form-control"
+  value={
+    iniData?.treatment_report_date
+      ? iniData.treatment_report_date.split("T")[0]
+      : ""
+  }
+  name="treatment_report_date"
+  required
+  onChange={handlefilechange}
+/>
                   </div>
 
                   <DialogActions className="submit-main">
+                   {
+                    hAndleReport===true?
                     <Button
+                      // type="submit"
+                      onClick={handleClickEditReport}
+                      variant="contained"
+                    >
+                      Edit Report
+                    </Button>:
+                  <Button
                       // type="submit"
                       onClick={handleClickSubmit}
                       variant="contained"
                     >
                       Submit
-                    </Button>
+                    </Button>  }
                   </DialogActions>
                 </div>
               </Box>

@@ -326,7 +326,7 @@ export default function Staff() {
                     ></i>
                     {role === "Admin" && (
                       <i
-                        className="fa fa-trash ms-2"
+                        className="fa-solid fa-pen-to-square ms-2"
                         onClick={() => handleDelete(info._id)}
                       ></i>
                     )}

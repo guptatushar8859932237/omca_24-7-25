@@ -250,11 +250,14 @@ export default function EditPatientTreatment() {
                         <label>
                           Total Charge<span className="text-danger">*</span>
                         </label>
+                          <div className="fixpricee">
+                      <p className="code-dial">$</p>
                         <Field
                           className="form-control"
                           type="number"
                           name="total_charge"
                         />
+                        </div>
                         <ErrorMessage
                           name="total_charge"
                           component="div"
