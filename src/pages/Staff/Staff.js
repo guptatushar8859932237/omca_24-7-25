@@ -321,12 +321,12 @@ export default function Staff() {
                                </TableCell>
                   <TableCell className="action-icon">
                     <i
-                      className="fa fa-edit"
+                      className="fa-solid fa-pen-to-square"
                       onClick={() => handleEdit(info._id)}
                     ></i>
                     {role === "Admin" && (
                       <i
-                        className="fa-solid fa-pen-to-square ms-2"
+                        className="fa fa-trash ms-1"
                         onClick={() => handleDelete(info._id)}
                       ></i>
                     )}
