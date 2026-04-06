@@ -247,10 +247,10 @@ export default function AddPatientTreatment() {
                           Total Charge<span className="text-danger">*</span>
                         </label>
                          <div className="fixpricee">
-                      <p className="code-dial">$</p>
+                      <p className="code-dial">USD($)</p>
                      
                         <Field
-                          className="form-control"
+                          className="form-control code-in"
                           type="number"
                           name="total_charge"
                         />
@@ -305,13 +305,11 @@ export default function AddPatientTreatment() {
                     </div>
                     <div className="col-sm-6">
                       <div className="field-set">
-                        <label>
-                          Amount Paid<span className="text-danger">*</span>
-                        </label>
+                        <label>Amount Paid<span className="text-danger">*</span></label>
                           <div className="fixpricee">
-                      <p className="code-dial">$</p>
+                      <p className="code-dial">USD($)</p>
                         <Field
-                          className="form-control"
+                          className="form-control code-in"
                           type="number"
                           name="amount_paid"
                         />

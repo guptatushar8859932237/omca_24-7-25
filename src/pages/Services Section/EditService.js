@@ -151,7 +151,7 @@ export default function EditService() {
                           Price <span className="text-danger">*</span>
                         </label>
                         <div className="fixpricee">
-                          <p className='code-dial'>$</p>
+                          <p className='code-dial'>USD($)</p>
                           <Field
                             className="form-control code-in"
                             type="text"

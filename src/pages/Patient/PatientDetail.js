@@ -273,10 +273,10 @@ function PatientDetail() {
     setOpen32(false);
   };
 
-  const handleEditreport =(id,info)=>{
-    
-    setTreatmentId(id,info.treatmentId)
-  setIniData(id)
+  const handleEditreport = (id, info) => {
+
+    setTreatmentId(id, info.treatmentId)
+    setIniData(id)
     setHAndleReport(true)
     setOpen10(true);
   }
@@ -386,7 +386,7 @@ function PatientDetail() {
   const gettreatment11 = async () => {
     try {
       const response = await axios.post(`${baseurl}treatment_list`);
-    } catch (error) {}
+    } catch (error) { }
   };
   useEffect(() => {
     gettreatment();
@@ -704,7 +704,7 @@ function PatientDetail() {
       if (rresponse.data.success === "true") {
         setDataHospital(rresponse.data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   useEffect(() => {
     getdataApi();
@@ -779,14 +779,14 @@ function PatientDetail() {
     }
   };
 
- const hospitalStatuses = [
-  "Under Review",
-  "Under Surgery",
-  "Admitted",
-  "Assigned to Hospital",
-  "Under Recovery",
-  "Discharged",
-];
+  const hospitalStatuses = [
+    "Under Review",
+    "Under Surgery",
+    "Admitted",
+    "Assigned to Hospital",
+    "Under Recovery",
+    "Discharged",
+  ];
   // const editatednde = async (e) => {
   //   e.preventDefault();
 
@@ -1180,108 +1180,108 @@ function PatientDetail() {
         Swal.fire("Error", `${error?.response?.data?.message}`, "error");
       });
   };
- const handleAddTritmentPayment = async () => {
-  console.log(treatmentId, selectedTreatmentId);
+  const handleAddTritmentPayment = async () => {
+    console.log(treatmentId, selectedTreatmentId);
 
-  // ✅ Validation
-  if (!valueofappointmentpaidto) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Please select Paid To",
-    });
-    return;
-  }
-
-  if (!iniData?.paid_for) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Please select Paid For",
-    });
-    return;
-  }
-  if (!data?.notes) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Please select Notes",
-    });
-    return;
-  }
-  if (!data?.paymentMethod) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Please select Payment Method",
-    });
-    return;
-  }
-  if (!data?.paid_amount) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Please select Paid Amount",
-    });
-    return;
-  }
-  if (!data?.payment_Date) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Please select Payment Date",
-    });
-    return;
-  }
-
-  try {
-    const formData = new FormData();
-    formData.append("id", treatmentId || selectedTreatmentId);
-    formData.append("paid_amount", data?.paid_amount);
-    formData.append("notes", data?.notes);
-    formData.append("paymentMethod", data?.paymentMethod);
-    formData.append("payment_Date", data?.payment_Date);
-    formData.append("paid_to", valueofappointmentpaidto);
-    formData.append("paid_for", iniData?.paid_for);
-    formData.append("platform", 1);
-
-    if (iniData?.attachFile) {
-      formData.append("attachFile", iniData.attachFile);
+    // ✅ Validation
+    if (!valueofappointmentpaidto) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Please select Paid To",
+      });
+      return;
     }
 
-    await dispatch(AddNewTretmentPayment(formData)).unwrap();
-
-    getDataapi3(selectedTreatmentId);
-    setOpen3(false);
-
-    Swal.fire("Success!", "Payment Details Added Successfully!", "success");
-
-    if (location.state?.patientId) {
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+    if (!iniData?.paid_for) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Please select Paid For",
+      });
+      return;
+    }
+    if (!data?.notes) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Please select Notes",
+      });
+      return;
+    }
+    if (!data?.paymentMethod) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Please select Payment Method",
+      });
+      return;
+    }
+    if (!data?.paid_amount) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Please select Paid Amount",
+      });
+      return;
+    }
+    if (!data?.payment_Date) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Please select Payment Date",
+      });
+      return;
     }
 
-    setTreatmentId("");
-    setData({
-      paid_amount: "",
-      paymentMethod: "",
-      payment_Date: "",
-    });
+    try {
+      const formData = new FormData();
+      formData.append("id", treatmentId || selectedTreatmentId);
+      formData.append("paid_amount", data?.paid_amount);
+      formData.append("notes", data?.notes);
+      formData.append("paymentMethod", data?.paymentMethod);
+      formData.append("payment_Date", data?.payment_Date);
+      formData.append("paid_to", valueofappointmentpaidto);
+      formData.append("paid_for", iniData?.paid_for);
+      formData.append("platform", 1);
 
-  } catch (err) {
-    const errorMessage =
-      typeof err === "string" ? err : err?.message || "Something went wrong";
+      if (iniData?.attachFile) {
+        formData.append("attachFile", iniData.attachFile);
+      }
 
-    setOpen3(false);
+      await dispatch(AddNewTretmentPayment(formData)).unwrap();
 
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: errorMessage,
-    }).then(() => {
-      setOpen3(true);
-    });
-  }
-};
+      getDataapi3(selectedTreatmentId);
+      setOpen3(false);
+
+      Swal.fire("Success!", "Payment Details Added Successfully!", "success");
+
+      if (location.state?.patientId) {
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      }
+
+      setTreatmentId("");
+      setData({
+        paid_amount: "",
+        paymentMethod: "",
+        payment_Date: "",
+      });
+
+    } catch (err) {
+      const errorMessage =
+        typeof err === "string" ? err : err?.message || "Something went wrong";
+
+      setOpen3(false);
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+      }).then(() => {
+        setOpen3(true);
+      });
+    }
+  };
   const handleChange = async (event, id) => {
     const { value } = event.target;
     setSeekerStatus((prev) => ({
@@ -1306,7 +1306,7 @@ function PatientDetail() {
       Swal.fire("Success!", "Status updated successfully!", "success");
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
       return response.data;
-    } catch (err) {}
+    } catch (err) { }
   };
   const handleChangeDetails = async (event, id) => {
     try {
@@ -1482,88 +1482,88 @@ function PatientDetail() {
     });
   };
   const handleClickEditReport = async () => {
-  console.log("a",treatmentId);
+    console.log("a", treatmentId);
 
-  if (!iniData?.reportTitle?.trim()) {
-    return Swal.fire("Error", "Report Title is required", "error");
-  }
-  if (!iniData?.treatment_report_date) {
-    return Swal.fire("Error", "Report Date is required", "error");
-  }
-  try {
-    Swal.fire({
-      title: "Updating...",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
-
-    const formData = new FormData();
-
-    formData.append("reportTitle", iniData.reportTitle);
-
-    // ✅ date fix
-    formData.append(
-      "treatment_report_date",
-      new Date(iniData.treatment_report_date)
-        .toISOString()
-        .split("T")[0]
-    );
-
-    formData.append("platform", 1);
-
-    // ✅ attachFile check
-    if (iniData?.attachFile) {
-      formData.append("attachFile", iniData.attachFile);
+    if (!iniData?.reportTitle?.trim()) {
+      return Swal.fire("Error", "Report Title is required", "error");
     }
-
-    // ✅ multiple images check
-    if (Array.isArray(imagefile)) {
-      imagefile.forEach((file) => {
-        formData.append("treatmentReport", file);
-      });
+    if (!iniData?.treatment_report_date) {
+      return Swal.fire("Error", "Report Date is required", "error");
     }
-
-    const response = await axios.put(
-      `${baseurl}editReport/${iniData._id}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    if (response?.data?.success) {
+    try {
       Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Report Updated Successfully ✅",
-        timer: 1500,
-        showConfirmButton: false,
+        title: "Updating...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
       });
 
-      handleClose10();
-      getDataapi3(treatmentId.treatmentId);
-    } else {
+      const formData = new FormData();
+
+      formData.append("reportTitle", iniData.reportTitle);
+
+      // ✅ date fix
+      formData.append(
+        "treatment_report_date",
+        new Date(iniData.treatment_report_date)
+          .toISOString()
+          .split("T")[0]
+      );
+
+      formData.append("platform", 1);
+
+      // ✅ attachFile check
+      if (iniData?.attachFile) {
+        formData.append("attachFile", iniData.attachFile);
+      }
+
+      // ✅ multiple images check
+      if (Array.isArray(imagefile)) {
+        imagefile.forEach((file) => {
+          formData.append("treatmentReport", file);
+        });
+      }
+
+      const response = await axios.put(
+        `${baseurl}editReport/${iniData._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response?.data?.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Report Updated Successfully ✅",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        handleClose10();
+        getDataapi3(treatmentId.treatmentId);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response?.data?.message || "Failed to update report",
+        });
+      }
+    } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: response?.data?.message || "Failed to update report",
+        text:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
       });
     }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text:
-        error?.response?.data?.message ||
-        "Something went wrong. Please try again.",
-    });
-  }
-};
+  };
   const handleClickSubmit = async () => {
     // 🔥 VALIDATION START
     if (!iniData.reportTitle) {
@@ -2300,7 +2300,7 @@ function PatientDetail() {
 
         setHospitlID(updatedList);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const validateForm = () => {
     const newErrors = {};
@@ -2442,9 +2442,9 @@ function PatientDetail() {
       if (response.data.success) {
         setTreatemntData1(response.data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
-  const handleclickApprove = (hospitalids, b) => {};
+  const handleclickApprove = (hospitalids, b) => { };
   const approveReject = async (info, hospitalId, status) => {
     const payload = { status };
     try {
@@ -3667,28 +3667,28 @@ function PatientDetail() {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                              <span
-                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                              >
-                                                {item.status}
-                                              </span>
-                                            )}
+                                                <span
+                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                                >
+                                                  {item.status}
+                                                </span>
+                                              )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                            <button
-                                              className="add-button"
-                                              onClick={() =>
-                                                approveReject(
-                                                  info,
-                                                  item.id,
-                                                  "Approved",
-                                                )
-                                              }
-                                            >
-                                              Approve
-                                            </button>
-                                          )}
+                                              <button
+                                                className="add-button"
+                                                onClick={() =>
+                                                  approveReject(
+                                                    info,
+                                                    item.id,
+                                                    "Approved",
+                                                  )
+                                                }
+                                              >
+                                                Approve
+                                              </button>
+                                            )}
                                         </div>
                                       ))}
                                     </div>
@@ -3775,9 +3775,9 @@ function PatientDetail() {
                           "notes",
                         ].includes(activeSubTab)
                           ? tretment?.filter(
-                              (item) =>
-                                item.treatment_id === selectedTreatmentId,
-                            )
+                            (item) =>
+                              item.treatment_id === selectedTreatmentId,
+                          )
                           : tretment
                         )?.map((info, index) => {
                           return (
@@ -3931,22 +3931,22 @@ function PatientDetail() {
                                         {!info?.Hospital_details?.some(
                                           (item) => item.hospital_Name,
                                         ) && (
-                                          <li className="nav-item">
-                                            <button
-                                              className="nav-link"
-                                              onClick={(e) =>
-                                                handleAction(
-                                                  e,
-                                                  "hospital",
-                                                  info,
-                                                  info.treatment_name,
-                                                )
-                                              }
-                                            >
-                                              + Add Hospital
-                                            </button>
-                                          </li>
-                                        )}
+                                            <li className="nav-item">
+                                              <button
+                                                className="nav-link"
+                                                onClick={(e) =>
+                                                  handleAction(
+                                                    e,
+                                                    "hospital",
+                                                    info,
+                                                    info.treatment_name,
+                                                  )
+                                                }
+                                              >
+                                                + Add Hospital
+                                              </button>
+                                            </li>
+                                          )}
                                         <li className="nav-item">
                                           <button
                                             className="nav-link"
@@ -3987,7 +3987,7 @@ function PatientDetail() {
                                       {/* for hospital separate data */}
                                       <div className="col-md-12">
                                         <div className="card customstylecard">
-                                          <div className="card-header d-flex justify-content-between">
+                                          <div className="card-header d-flex justify-content-between align-items-center">
                                             <h6>
                                               Hospital Name:
                                               <span>
@@ -4011,9 +4011,12 @@ function PatientDetail() {
                                                   )}
                                               </span>
                                             </h6>
-                                          {hospitalStatuses.includes(info?.treatment_status) && (
-  <h6>Status: {info?.treatment_status}</h6>
-)}
+                                            {hospitalStatuses.includes(info?.treatment_status) && (
+                                              <h6>Status: {info?.treatment_status}</h6>
+                                            )}
+                                            <div className="">
+                                              <a href=""><i class="fa-solid fa-download me-2"></i>Download Pdf</a>
+                                            </div>
                                           </div>
                                           <div className="card-body">
                                             <div className="row gx-3 gy-3">
@@ -4055,15 +4058,15 @@ function PatientDetail() {
                                                             <td>
                                                               {info.treatment_created_at
                                                                 ? new Date(
-                                                                    info.treatment_created_at,
-                                                                  ).toLocaleTimeString(
-                                                                    "en-US",
-                                                                    {
-                                                                      hour: "2-digit",
-                                                                      minute:
-                                                                        "2-digit",
-                                                                    },
-                                                                  )
+                                                                  info.treatment_created_at,
+                                                                ).toLocaleTimeString(
+                                                                  "en-US",
+                                                                  {
+                                                                    hour: "2-digit",
+                                                                    minute:
+                                                                      "2-digit",
+                                                                  },
+                                                                )
                                                                 : "-"}
                                                             </td>
                                                             <td>
@@ -4129,7 +4132,7 @@ function PatientDetail() {
                                                         <tbody>
                                                           {info?.hospital
                                                             ?.charges?.length >
-                                                          0 ? (
+                                                            0 ? (
                                                             info?.hospital?.charges?.map(
                                                               (item, index) => {
                                                                 const createdAt =
@@ -4151,10 +4154,10 @@ function PatientDetail() {
                                                                     <td>
                                                                       {createdAt
                                                                         ? new Date(
-                                                                            createdAt,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
+                                                                          createdAt,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )
                                                                         : "-"}
                                                                     </td>
                                                                     <td>
@@ -4246,8 +4249,11 @@ function PatientDetail() {
                                       {/* for omca services */}
                                       <div className="col-md-12">
                                         <div className="card customstylecard">
-                                          <div className="card-header">
+                                          <div className="card-header d-flex align-items-center justify-content-bettween">
                                             <h6>OMCA</h6>
+                                            <div className="">
+                                              <a href=""><i class="fa-solid fa-download me-2"></i>Download Pdf</a>
+                                            </div>
                                           </div>
                                           <div className="card-body">
                                             <div className="row gx-3 gy-3">
@@ -4274,10 +4280,10 @@ function PatientDetail() {
                                                         <tbody>
                                                           {info?.omca
                                                             ?.extraServices &&
-                                                          info.omca.extraServices.filter(
-                                                            (item) =>
-                                                              item.price,
-                                                          ).length > 0 ? (
+                                                            info.omca.extraServices.filter(
+                                                              (item) =>
+                                                                item.price,
+                                                            ).length > 0 ? (
                                                             info.omca.extraServices.map(
                                                               (item, index) => {
                                                                 if (!item.price)
@@ -4302,19 +4308,19 @@ function PatientDetail() {
                                                                     <td>
                                                                       {item.startTime
                                                                         ? new Date(
-                                                                            item.startTime,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
+                                                                          item.startTime,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )
                                                                         : "-"}
                                                                     </td>
                                                                     <td>
                                                                       {item.endTime
                                                                         ? new Date(
-                                                                            item.endTime,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
+                                                                          item.endTime,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )
                                                                         : "-"}
                                                                     </td>
                                                                     <td>
@@ -4330,7 +4336,7 @@ function PatientDetail() {
                                                                         ></i>
                                                                         <i
                                                                           className="fa-solid fa-trash"
-                                                                           onClick={() => {
+                                                                          onClick={() => {
                                                                             handledeltePatientserveice(
                                                                               item,
                                                                               info,
@@ -4385,8 +4391,8 @@ function PatientDetail() {
                                                         <tbody>
                                                           {info?.omca
                                                             ?.freeServices &&
-                                                          info.omca.freeServices
-                                                            .length > 0 ? (
+                                                            info.omca.freeServices
+                                                              .length > 0 ? (
                                                             info.omca.freeServices.map(
                                                               (item, index) => {
                                                                 return (
@@ -4417,9 +4423,9 @@ function PatientDetail() {
                                                                           ></i> */}
                                                                         <i
                                                                           className="fa-solid fa-trash"
-                                                                        
 
-                                                                           onClick={() => {
+
+                                                                          onClick={() => {
                                                                             handledeltePatientserveice(
                                                                               item,
                                                                               info,
@@ -4527,8 +4533,11 @@ function PatientDetail() {
                                       <div className="col-md-12">
                                         <div className="card customstylecard">
                                           <div className="card-header d-flex justify-content-between">
-                                            <div>
+                                            <div className="d-flex align-items-center gap-3">
                                               <h6>Pharmacy</h6>
+                                              <div className="">
+                                                <a href=""><i class="fa-solid fa-download me-2"></i>Download Pdf</a>
+                                              </div>
                                             </div>
                                             <div>
                                               <button
@@ -4557,7 +4566,7 @@ function PatientDetail() {
                                                 <tbody>
                                                   {info?.pharmacy
                                                     ?.pharmacyCharges?.length >
-                                                  0 ? (
+                                                    0 ? (
                                                     info.pharmacy?.pharmacyCharges?.map(
                                                       (item, index) => (
                                                         <tr key={item._id}>
@@ -4712,7 +4721,7 @@ function PatientDetail() {
 
                                                 <TableBody>
                                                   {attandantFilered.length ===
-                                                  0 ? (
+                                                    0 ? (
                                                     <TableRow>
                                                       <TableCell
                                                         colSpan={7}
@@ -4803,9 +4812,9 @@ function PatientDetail() {
                                                                 item?.AttendeeId
                                                                   ?.attendant_passport,
                                                               ) &&
-                                                              item.AttendeeId
-                                                                .attendant_passport
-                                                                .length > 0 ? (
+                                                                item.AttendeeId
+                                                                  .attendant_passport
+                                                                  .length > 0 ? (
                                                                 item.AttendeeId.attendant_passport.map(
                                                                   (
                                                                     file,
@@ -4813,7 +4822,7 @@ function PatientDetail() {
                                                                   ) => {
                                                                     const filePath =
                                                                       typeof file ===
-                                                                      "object"
+                                                                        "object"
                                                                         ? file?.path
                                                                         : file;
 
@@ -4948,7 +4957,7 @@ function PatientDetail() {
                                                   </TableHead>
                                                   <TableBody>
                                                     {paymentsFilered &&
-                                                    paymentsFilered.length >
+                                                      paymentsFilered.length >
                                                       0 ? (
                                                       paymentsFilered.map(
                                                         (item) => (
@@ -5017,7 +5026,7 @@ function PatientDetail() {
                                                             </TableCell> */}
 
                                                             {usrFount ===
-                                                            "Admin" ? (
+                                                              "Admin" ? (
                                                               <>
                                                                 <TableCell>
                                                                   <button
@@ -5027,9 +5036,9 @@ function PatientDetail() {
                                                                         "/Admin/Patient-Pdfdetails",
                                                                         {
                                                                           state:
-                                                                            {
-                                                                              data: item?._id,
-                                                                            },
+                                                                          {
+                                                                            data: item?._id,
+                                                                          },
                                                                         },
                                                                       );
                                                                     }}
@@ -5141,7 +5150,7 @@ function PatientDetail() {
 
                                                 <TableBody>
                                                   {reportsFilered1 &&
-                                                  reportsFilered1.length > 0 ? (
+                                                    reportsFilered1.length > 0 ? (
                                                     reportsFilered1.map(
                                                       (item) => (
                                                         <TableRow
@@ -5164,13 +5173,13 @@ function PatientDetail() {
                                                           </TableCell>
                                                           <TableCell>
                                                             {item?.platform ===
-                                                            1
+                                                              1
                                                               ? "CRM"
                                                               : "Hospital"}
                                                           </TableCell>
 
                                                           {usrFount ===
-                                                          "Admin" ? (
+                                                            "Admin" ? (
                                                             <>
                                                               {" "}
                                                               <TableCell>
@@ -5197,9 +5206,9 @@ function PatientDetail() {
                                                                   }
                                                                 ></i>
                                                                 <i
-                      className="fa-solid fa-pen-to-square"
-                      onClick={() => handleEditreport(item,info)}
-                    ></i>
+                                                                  className="fa-solid fa-pen-to-square"
+                                                                  onClick={() => handleEditreport(item, info)}
+                                                                ></i>
                                                               </TableCell>
                                                             </>
                                                           ) : (
@@ -5307,10 +5316,10 @@ function PatientDetail() {
                                                     <td>
                                                       {item.appointment_Date
                                                         ? new Date(
-                                                            item.appointment_Date,
-                                                          )
-                                                            .toISOString()
-                                                            .slice(0, 10)
+                                                          item.appointment_Date,
+                                                        )
+                                                          .toISOString()
+                                                          .slice(0, 10)
                                                         : ""}
                                                     </td>
                                                     <td>{item.note}</td>
@@ -5394,7 +5403,7 @@ function PatientDetail() {
                                               </thead>
                                               <tbody>
                                                 {notesTable &&
-                                                notesTable.length > 0 ? (
+                                                  notesTable.length > 0 ? (
                                                   notesTable.map(
                                                     (item, index) => {
                                                       return (
@@ -5409,15 +5418,15 @@ function PatientDetail() {
                                                           <td>
                                                             {item?.date
                                                               ? new Date(
-                                                                  item.date,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                )
+                                                                item.date,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )
                                                               : "-"}
                                                           </td>
                                                           <td>
                                                             {item.platform ==
-                                                            "1"
+                                                              "1"
                                                               ? "CRM"
                                                               : "Hospital"}{" "}
                                                           </td>
@@ -5426,26 +5435,26 @@ function PatientDetail() {
                                                               ?.treatmentNoteImages
                                                               ?.length > 0
                                                               ? item.treatmentNoteImages.map(
-                                                                  (
-                                                                    img,
-                                                                    index,
-                                                                  ) => (
-                                                                    <button
-                                                                      key={
-                                                                        index
-                                                                      }
-                                                                      className="btn btn-sm btn-primary me-1"
-                                                                      onClick={() =>
-                                                                        window.open(
-                                                                          `https://sisccltd.com/omca_crm/${img}`,
-                                                                          "_blank",
-                                                                        )
-                                                                      }
-                                                                    >
-                                                                      View
-                                                                    </button>
-                                                                  ),
-                                                                )
+                                                                (
+                                                                  img,
+                                                                  index,
+                                                                ) => (
+                                                                  <button
+                                                                    key={
+                                                                      index
+                                                                    }
+                                                                    className="btn btn-sm btn-primary me-1"
+                                                                    onClick={() =>
+                                                                      window.open(
+                                                                        `https://sisccltd.com/omca_crm/${img}`,
+                                                                        "_blank",
+                                                                      )
+                                                                    }
+                                                                  >
+                                                                    View
+                                                                  </button>
+                                                                ),
+                                                              )
                                                               : "-"}
                                                           </td>
 
@@ -5577,29 +5586,29 @@ function PatientDetail() {
                                     <TableCell className="d-flex gap-2">
                                       {item?.attendant_passport?.length > 0
                                         ? item.attendant_passport.map(
-                                            (file, fIndex) => {
-                                              const filePath =
-                                                typeof file === "object"
-                                                  ? file?.path
-                                                  : file;
-                                              return (
-                                                <div key={fIndex}>
-                                                  <a
-                                                    href={`https://sisccltd.com/omca_crm/${filePath}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="viewbtn"
-                                                  >
-                                                    View{" "}
-                                                    {item.attendant_passport
-                                                      .length > 1
-                                                      ? fIndex + 1
-                                                      : ""}
-                                                  </a>
-                                                </div>
-                                              );
-                                            },
-                                          )
+                                          (file, fIndex) => {
+                                            const filePath =
+                                              typeof file === "object"
+                                                ? file?.path
+                                                : file;
+                                            return (
+                                              <div key={fIndex}>
+                                                <a
+                                                  href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  className="viewbtn"
+                                                >
+                                                  View{" "}
+                                                  {item.attendant_passport
+                                                    .length > 1
+                                                    ? fIndex + 1
+                                                    : ""}
+                                                </a>
+                                              </div>
+                                            );
+                                          },
+                                        )
                                         : "Not Uploaded"}
                                     </TableCell>
                                     <TableCell className="action-icon">
@@ -5827,7 +5836,7 @@ function PatientDetail() {
                       Enter Price<span className="text-danger">*</span>
                     </label>
                     <div className="fixpricee">
-                      <p className="code-dial">$</p>
+                      <p className="code-dial">USD($)</p>
                       <input
                         type="text"
                         className="form-control code-in"
@@ -5938,7 +5947,7 @@ function PatientDetail() {
                       Enter Price<span className="text-danger">*</span>
                     </label>
                     <div className="fixpricee">
-                      <p className="code-dial">$</p>
+                      <p className="code-dial">USD($)</p>
                       <input
                         type="number"
                         className="form-control code-in"
@@ -6917,19 +6926,19 @@ function PatientDetail() {
                     <label>
                       Paid Amount<span className="text-danger">*</span>
                     </label>
-                     <div className="fixpricee">
-                      <p className="code-dial">$</p>
-                    <input
-                      type="text"
-                      placeholder="paid amount"
-                      className="form-control"
-                      onKeyPress={handleKeyPress}
-                      name="paid_amount"
-                      required=""
-                      onChange={AddpaymentOnchnage}
-                      value={data.paid_amount}
-                    />
-                  </div>
+                    <div className="fixpricee">
+                      <p className="code-dial">USD($)</p>
+                      <input
+                        type="text"
+                        placeholder="paid amount"
+                        className="form-control"
+                        onKeyPress={handleKeyPress}
+                        name="paid_amount"
+                        required=""
+                        onChange={AddpaymentOnchnage}
+                        value={data.paid_amount}
+                      />
+                    </div>
                   </div>
                   {/* <div>{info.treatment_due_payment}</div> */}
                   <div className="field-set">
@@ -7009,7 +7018,7 @@ function PatientDetail() {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>{hAndleReport===true?"Edit":"Add"} Reports</h6>
+              <h6>{hAndleReport === true ? "Edit" : "Add"} Reports</h6>
             </div>
             <div className="cross-icon" onClick={handleClose10}>
               <i class="fa-solid fa-xmark"></i>
@@ -7043,7 +7052,7 @@ function PatientDetail() {
                   </div>
                   <div className="field-set">
                     <label>
-                      Reports <span className="text-danger">{hAndleReport===true?"":"*"}</span>
+                      Reports <span className="text-danger">{hAndleReport === true ? "" : "*"}</span>
                     </label>
                     <input
                       type="file"
@@ -7058,37 +7067,37 @@ function PatientDetail() {
                       Treatment Report Date{" "}
                       <span className="text-danger">*</span>
                     </label>
-                   <input
-  type="date"
-  className="form-control"
-  value={
-    iniData?.treatment_report_date
-      ? iniData.treatment_report_date.split("T")[0]
-      : ""
-  }
-  name="treatment_report_date"
-  required
-  onChange={handlefilechange}
-/>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={
+                        iniData?.treatment_report_date
+                          ? iniData.treatment_report_date.split("T")[0]
+                          : ""
+                      }
+                      name="treatment_report_date"
+                      required
+                      onChange={handlefilechange}
+                    />
                   </div>
 
                   <DialogActions className="submit-main">
-                   {
-                    hAndleReport===true?
-                    <Button
-                      // type="submit"
-                      onClick={handleClickEditReport}
-                      variant="contained"
-                    >
-                      Edit Report
-                    </Button>:
-                  <Button
-                      // type="submit"
-                      onClick={handleClickSubmit}
-                      variant="contained"
-                    >
-                      Submit
-                    </Button>  }
+                    {
+                      hAndleReport === true ?
+                        <Button
+                          // type="submit"
+                          onClick={handleClickEditReport}
+                          variant="contained"
+                        >
+                          Edit Report
+                        </Button> :
+                        <Button
+                          // type="submit"
+                          onClick={handleClickSubmit}
+                          variant="contained"
+                        >
+                          Submit
+                        </Button>}
                   </DialogActions>
                 </div>
               </Box>
@@ -7201,7 +7210,7 @@ function PatientDetail() {
                   </label>
                   <div className="upload-input">
                     <div className="fixpricee">
-                      <p className="code-dial">$</p>
+                      <p className="code-dial">USD($)</p>
                       <input
                         type="number"
                         className="form-control code-in"
@@ -7293,7 +7302,7 @@ function PatientDetail() {
                   </label>
                   <div className="upload-input">
                     <div className="fixpricee">
-                      <p className="code-dial">$</p>
+                      <p className="code-dial">USD($)</p>
                       <input
                         type="number"
                         className="form-control code-in"

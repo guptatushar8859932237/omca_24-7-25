@@ -281,7 +281,7 @@
 //                         </tr>
 //                       </thead>
 //                       <tbody>
-                        
+
 //                                 <tr >
 //                                   <td
 //                                     style={{
@@ -293,7 +293,7 @@
 //                                      {new Date(
 //                                       payments?.payment_Date
 //                                     ).toLocaleDateString("en-GB")}
-                                  
+
 //                                   </td>
 //                                   <td
 //                                     style={{
@@ -314,7 +314,7 @@
 //                                      {payments?.paid_amount}
 //                                   </td>
 //                                 </tr>
-                           
+
 //                       </tbody>
 //                     </table>
 //                     <table style={{ width: "100%", marginBottom: 30 }}>
@@ -455,25 +455,18 @@ export default function PAymentpdf() {
   return (
     <div className="page-wrapper">
       <div className="content">
-        <div className="d-flex justify-content-between me-5 mb-3">
+        <div className="d-flex justify-content-between">
           <div>
             <h4 className="page-title">
-              <i
-                className="fa fa-arrow-left"
+              <i className="fa fa-arrow-left"
                 style={{ cursor: "pointer" }}
                 onClick={handleclick}
               ></i>
             </h4>
           </div>
-       <div>
-           <button className="add-button"  onClick={handleDownload}>
-            
-           <FileDownloadIcon
-              style={{ cursor: "pointer" }}
-               
-            />Download
-          </button>
-       </div>
+          <div>
+            <button className="add-button" onClick={handleDownload}><FileDownloadIcon style={{ cursor: "pointer" }} />Download</button>
+          </div>
         </div>
         <section
           ref={targetRef}
