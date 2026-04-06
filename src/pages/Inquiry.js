@@ -797,6 +797,17 @@ const handleChange = async (event, id, tabValue, data) => {
                           </TableCell>
                           <TableCell>
                             <TableSortLabel
+                              active={orderBy === "country"}
+                              direction={
+                                orderBy === "country" ? orderDirection : "asc"
+                              }
+                              onClick={() => handleRequestSort("country")}
+                            >
+                             Country
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
                               active={orderBy === "treatingIn"}
                               direction={
                                 orderBy === "treatingIn" ? orderDirection : "asc"
@@ -866,7 +877,7 @@ const handleChange = async (event, id, tabValue, data) => {
                               </TableCell>
                               {/* <TableCell>{info.email}</TableCell> */}
                               <TableCell>{info.treatingIn}</TableCell>
-                              {/* <TableCell>{info.country}</TableCell> */}
+                              <TableCell>{info.country}</TableCell>
                               <TableCell>{new Date(info.date).toLocaleDateString('en-GB')}/{new Date(info.date).toLocaleTimeString('en-GB', {
                                 hour: '2-digit',
                                 minute: '2-digit',

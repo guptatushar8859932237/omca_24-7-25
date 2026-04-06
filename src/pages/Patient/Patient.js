@@ -389,6 +389,8 @@ export default function Patient() {
       "Local Case",
       "Follow Up",
       "Passed Away",
+      "Arrival",
+      "Departing"
     ];
     const typeValues = [
       "Private",
@@ -826,6 +828,7 @@ const handleRequestSort = (property) => {
                                             <MenuItem value="Insurance + Private">
                                               Insurance + Private
                                             </MenuItem>
+                                            
                                           </Select>
                                         </FormControl>
                                       </TableCell>
@@ -875,6 +878,12 @@ const handleRequestSort = (property) => {
                                             </MenuItem>
                                             <MenuItem value="Passed Away">
                                               Passed Away
+                                            </MenuItem>
+                                            <MenuItem value="Arrival">
+                                              Arrival
+                                            </MenuItem>
+                                            <MenuItem value="Departing">
+                                              Departing
                                             </MenuItem>
                                           </Select>
                                         </FormControl>
