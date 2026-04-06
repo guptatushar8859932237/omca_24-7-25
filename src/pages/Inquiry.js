@@ -1027,9 +1027,9 @@ const handleChange = async (event, id, tabValue, data) => {
                                         handleClickOpen2(e, info.enquiryId)
                                       }
                                     ></i>
-                                    {/* <i className="fa-solid fa-stethoscope" onClick={(e) =>
+                                    <i className="fa-solid fa-stethoscope" onClick={(e) =>
                                       handleClickOpen4(e, info.enquiryId)
-                                    }></i> */}
+                                    }></i>
                                   </TableCell>
                                 </>
                               ) : (

@@ -120,12 +120,14 @@ export default function Patient() {
     });
   };
   const PatientDetail = (e, id, enq, c, d) => {
+    console.log(e, id, enq, c, d,"dddddddddddddddddddddddddddddddddddddddddddsh")
     navigate("/Admin/Patient-Detail", {
       state: {
         patientId: id,
         enqId: enq,
         testid: c,
-        tratmentlit: d,
+        // tratmentlit: d,
+        user_id:d,
       },
     });
   };
@@ -778,6 +780,7 @@ const handleRequestSort = (property) => {
                                         info.patientId,
                                         info.enquiryId,
                                         info.id,
+                                        info.user_id,
                                         // info.patient_disease[0].treatment_id,
                                       )
                                     }
@@ -897,6 +900,7 @@ const handleRequestSort = (property) => {
                                               info.patientId,
                                               info.enquiryId,
                                               info.id,
+                                               info.user_id
                                               // info.patient_disease[0]
                                               //   .treatment_id,
                                             )

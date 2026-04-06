@@ -6,6 +6,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { GetPatientTreatments } from "../../reducer/PatientTreatmentSlice";
@@ -48,6 +49,8 @@ function PatientDetail() {
   const [datagetapiPaidto, setDatagetapiPaidto] = useState([]);
   const [getAttendeDetails, setGetAttendeDetails] = useState([]);
   const [attandantnew, setAttandantnew] = useState([]);
+  const [guestHouseBooking, setGuestHouseBooking] = useState([]);
+  const [guestHouseBookingobj, setGuestHouseBookingobj] = useState({});
   const [hospitalDetails, setHospitalDetails] = useState({});
   const [errors, setErrors] = useState({});
   const [valueofappointmentpaidto, setValueofappointmentpaidto] = useState("");
@@ -267,6 +270,7 @@ function PatientDetail() {
     setTreatmentId(tretmentId);
   };
   useEffect(() => {
+    patient_guesthouse()
     getallPayments();
   }, [location.state.patientId]);
   const handleclosePerforma = () => {
@@ -3353,6 +3357,20 @@ function PatientDetail() {
       });
     }
   };
+
+  const patient_guesthouse = async()=>{
+    console.log(location.state.user_id)
+    const payload ={
+      user_id:location.state.user_id
+    }
+    try {
+      const response = await axios.post(`${AdminBaseUrl}patient_guesthouse_bookings`,payload)
+      setGuestHouseBooking(response.data.data)
+      setGuestHouseBookingobj(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <>
       <div className="page-wrapper">
@@ -4083,11 +4101,6 @@ function PatientDetail() {
                                                                     );
                                                                   }}
                                                                 ></i>
-                                                                {/* {item?.hospital_Name && (
-                                                                          <i className="fa-solid fa-trash" style={{ cursor: "pointer" }}
-                                                                            onClick={() => handledelete(info, item)}
-                                                                          ></i>
-                                                                        )} */}
                                                               </div>
                                                             </td>
                                                           </tr>
@@ -4257,7 +4270,6 @@ function PatientDetail() {
                                           </div>
                                           <div className="card-body">
                                             <div className="row gx-3 gy-3">
-                                              {/* extra-service */}
                                               <div className="col-md-6">
                                                 <div className="card patientreat">
                                                   <div className="card-header service-list">
@@ -4403,13 +4415,11 @@ function PatientDetail() {
                                                                       {item.serviceName ||
                                                                         "-"}
                                                                     </td>
-
                                                                     <td>
                                                                       {
                                                                         item.duration
                                                                       }
                                                                     </td>
-
                                                                     <td>
                                                                       <div className="action-icon">
                                                                         {/* <i
@@ -4458,51 +4468,99 @@ function PatientDetail() {
                                                   </div>
                                                 </div>
                                               </div>
-                                              {/* <div className="col-md-6">
-                                                      <div className="card patientreat">
-                                                        <div className="card-header service-list action-icon">
-                                                          <h6>Free Services</h6>
-                                                        </div>
-                                                        <div className="card-body">
-                                                          <ul className="free-list">
-                                                           {info?.omca?.freeServices?.map(
-                                                              (item, index) => (
-                                                                <li
-                                                                  key={
-                                                                    item._id || index
-                                                                  }
-                                                                >
-                                                                  <div className="row">
-                                                                    <div className="col-md-12">
-                                                                      <div className="para-main-div hosp-info">
-                                                                        <p>
-                                                                          {" "}
-                                                                          {
-                                                                            item.serviceName
-                                                                          }
-                                                                        </p>
-                                                                        <div className="action-icon">
-                                                                          <i
-                                                                            className="fa-solid fa-trash"
-                                                                            onClick={() =>
-                                                                              EditFreeDelete(
-                                                                                item,
-                                                                                info,
-                                                                                index,
-                                                                              )
-                                                                            }
-                                                                          ></i>
-                                                                        </div>
+                                            </div>
+                                            <div className="row gx-3 gy-3">
+                                              <div className="col-md-12">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Guest House Services</h6>
+                                                  </div>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            
+                                                            <th>Guest House Name</th>
+                                                            <th>Check In</th>
+                                                            <th>Check Out</th>
+                                                            <th>Number of Guest</th>
+                                                            <th>Amount</th>
+                                                            {/* <th>Actions</th> */}
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {guestHouseBooking &&
+                                                            guestHouseBooking.length > 0 ? (
+                                                            guestHouseBooking.map(
+                                                              (item, index) => {
+                                                                return (
+                                                                  <tr
+                                                                    key={
+                                                                      item.id 
+                                                                    }
+                                                                  >
+                                                                    <td>
+                                                                      {item.guest_house_name ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      
+                                                                      {
+                                                                        item.checkin
+                                                                      }
+                                                                    </td>
+                                                                    <td>
+                                                                      
+                                                                      {
+                                                                        item.checkout
+                                                                      }
+                                                                    </td>
+                                                                  
+                                                                  <td>{parseInt(item.adults) + parseInt(item.children)}</td>
+                                                                  <td>{ parseInt(item?.payment_amount)}</td>
+                                                                    <td>
+                                                                      <div className="action-icon">
+                                                                         {/* <VisibilityIcon
+                                                                                                                  className="eye-icon"
+                                                                                                                  // onClick={(e) =>
+                                                                                                                  //   PatientDetail(
+                                                                                                                  //     e,
+                                                                                                                  //     info.patientId,
+                                                                                                                  //     info.enquiryId,
+                                                                                                                  //     info.id,
+                                                                                                                  //      info.user_id
+                                                                                                                  //     // info.patient_disease[0]
+                                                                                                                  //     //   .treatment_id,
+                                                                                                                  //   )
+                                                                                                                  // }
+                                                                                                                />
+                                                                        */}
                                                                       </div>
-                                                                    </div>
-                                                                  </div>
-                                                                </li>
-                                                              ),
-                                                            )}
-                                                          </ul>
-                                                        </div>
-                                                      </div>
-                                                    </div> */}
+                                                                    </td>
+                                                                  </tr>
+                                                                );
+                                                              },
+                                                            )
+                                                          ) : (
+                                                            <tr>
+                                                              <td
+                                                                colSpan="5"
+                                                                style={{
+                                                                  textAlign:
+                                                                    "center",
+                                                                }}
+                                                              >
+                                                                No Data Found
+                                                              </td>
+                                                            </tr>
+                                                          )}
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
                                             </div>
                                           </div>
                                           <div className="card-footer">
@@ -4513,7 +4571,13 @@ function PatientDetail() {
                                                     Total Amount:
                                                   </h6>
                                                   <p>
-                                                    ${info.omca?.totalAmount}
+                                                    ${
+  index === 0
+    ? Number(info?.omca?.totalAmount || 0) +
+      Number(guestHouseBookingobj?.total_amount || 0)
+    : Number(info?.omca?.totalAmount || 0)
+}
+                                               {/* ${Number(info?.omca?.totalAmount || 0) + Number(guestHouseBookingobj?.total_amount || 0)} */}
                                                   </p>
                                                 </div>
                                               </div>
@@ -4522,7 +4586,15 @@ function PatientDetail() {
                                                   <h6 className="mb-0">
                                                     Due Amount:
                                                   </h6>
-                                                  <p>${info.omca?.dueAmount}</p>
+                                                  <p>
+                                                  ${
+  index === 0
+    ? Number(info?.omca?.dueAmount || 0) +
+      Number(guestHouseBookingobj?.due_amount || 0)
+    : Number(info?.omca?.dueAmount || 0)
+}
+{/* {Number(info?.omca?.dueAmount || 0) + Number(guestHouseBookingobj?.due_amount || 0)} */}
+                                                    </p>
                                                 </div>
                                               </div>
                                             </div>

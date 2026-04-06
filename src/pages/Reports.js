@@ -1049,7 +1049,7 @@ export default function Reports() {
                                     </TableCell>
                                     <TableCell>{info.country}</TableCell>
                                     <TableCell>
-                                      {info.patient_disease[0].disease_name}
+                                      {info?.patient_disease[0]?.disease_name}
                                     </TableCell>
                                   </TableRow>
                                 </>

@@ -675,7 +675,14 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>)}
-                <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                    <div className="col-md-12">
+                  <div className="treat-hd">
+                    <h6>Registered Data</h6>
+                    <span className="line"></span>
+                  </div>
+                </div>
+                  <div className="row">
+                  <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
                   <div className="dash-widget1">
                     <div className="dash-widget-bg">
                       <i className="fa-solid fa-hospital"></i>
@@ -734,6 +741,8 @@ export default function Dashboard() {
                 ) : (
                   ""
                 )}
+                  </div>
+              
                 <div className="row">
                   <div className="col-md-12">
                     <div className="treat-hd">
@@ -960,7 +969,55 @@ export default function Dashboard() {
                         <span className="widget-title">Passed Away</span>
                       </div>
                     </div>
-                  </div>
+                  </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                  <div
+                    className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleStatusClick("Arrival")}
+                  >
+                    <div className="dash-widget1">
+                      <div
+                        className="dash-widget-bg"
+                        style={{ backgroundColor: "#343a40" }}
+                      >
+                        <i className="fa fa-heart-o"></i>
+                      </div>
+                      <div className="dash-widget-info1">
+                        <h3>
+                          <CountUp
+                            start={0}
+                            end={travelled?.["Arrival"] || 0}
+                            duration={2}
+                          />
+                        </h3>
+                        <span className="widget-title">Arrival</span>
+                      </div>
+                    </div>
+                  </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                  <div
+                    className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleStatusClick("Departing")}
+                  >
+                    <div className="dash-widget1">
+                      <div
+                        className="dash-widget-bg"
+                        style={{ backgroundColor: "#343a40" }}
+                      >
+                        <i className="fa fa-heart-o"></i>
+                      </div>
+                      <div className="dash-widget-info1">
+                        <h3>
+                          <CountUp
+                            start={0}
+                            end={travelled?.["Departing"] || 0}
+                            duration={2}
+                          />
+                        </h3>
+                        <span className="widget-title">Departing</span>
+                      </div>
+                    </div>
+                  </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
                 </div>
                 <div className="row mt-4">
                   <div className="col-md-12">
