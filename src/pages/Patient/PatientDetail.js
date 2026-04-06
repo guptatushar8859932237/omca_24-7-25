@@ -2329,6 +2329,7 @@ function PatientDetail() {
     formData.append("patientId", location.state.patientId);
     formData.append("treatment", JSON.stringify(fieldValue));
     formData.append("hospitals", JSON.stringify(hospitalId));
+    formData.append("platform", 1);
     formData.append("notes", value1 || "");
     images.forEach((file) => {
       formData.append("reports", file);
