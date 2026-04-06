@@ -65,7 +65,6 @@ export default function AddStaAddServicesff() {
                             {({ isSubmitting, setFieldValue }) => (
                                 <Form>
                                     <div className="row">
-                                        {/* Name */}
                                         <div className="col-sm-6">
                                             <div className="field-set">
                                                 <label>Service Name <span className="text-danger">*</span></label>
@@ -92,12 +91,11 @@ export default function AddStaAddServicesff() {
                                                 <ErrorMessage name="duration" component="p" style={{ color: "red" }} />
                                             </div>
                                         </div>
-
                                         <div className="col-sm-6">
                                             <div className="field-set">
                                                 <label>Price <span className="text-danger">*</span></label>
                                                 <div className="fixpricee">
-                                                    <p className='code-dial'>$</p>
+                                                    <p className='code-dial'>USD($)</p>
                                                     <Field className="form-control code-in" onKeyPress={(e) => {
                                                         if (!/^[0-9]$/.test(e.key)) {
                                                             e.preventDefault(); // blocks everything except digits
