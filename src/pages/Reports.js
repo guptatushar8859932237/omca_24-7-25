@@ -695,12 +695,10 @@ export default function Reports() {
       Swal.fire("Warning", "Please generate report first", "warning");
       return;
     }
-
     try {
       const response = await axios.get(`${baseurl}exportfilteredpatient/`, {
         params: lastFilterParams,
       });
-
       if (response.data.download_link) {
         const link = document.createElement("a");
         link.href = `${baseu11}${response.data.download_link}`;
@@ -715,7 +713,6 @@ export default function Reports() {
       Swal.fire("Error", "Download failed", "error");
     }
   };
-
   const getReportData = async () => {
     try {
       const params = {
@@ -871,6 +868,12 @@ export default function Reports() {
                           input={
                             <OutlinedInput placeholder="Select Treatment" />
                           }
+                            renderValue={(selected) => {
+    if (!selected) {
+      return <span style={{ color: "#aaa" }}>Select Treatment</span>;
+    }
+    return selected;
+  }}
                           sx={{ height: 40 }}
                           className="select-treatment"
                           MenuProps={{
@@ -912,6 +915,12 @@ export default function Reports() {
                           input={
                             <OutlinedInput placeholder="Select Hospital" />
                           }
+                           renderValue={(selected) => {
+    if (!selected) {
+      return <span style={{ color: "#aaa" }}>Select Hospital</span>;
+    }
+    return selected;
+  }}
                           sx={{ height: 40 }}
                           className="select-hospital"
                           MenuProps={{

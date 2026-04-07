@@ -882,8 +882,8 @@ const handleRequestSort = (property) => {
                                             <MenuItem value="Passed Away">
                                               Passed Away
                                             </MenuItem>
-                                            <MenuItem value="Arrival">
-                                              Arrival
+                                            <MenuItem value="Arriving">
+                                              Arriving
                                             </MenuItem>
                                             <MenuItem value="Departing">
                                               Departing

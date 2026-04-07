@@ -7,8 +7,8 @@ export const excelExoprt = 'https://sisccltd.com/'  //server
 export const AdminBaseUrl ="https://omcacrm.com/omca/api/crm/"
 // https://omcacrm.com/omca/api/crm
 // export const AdminBaseUrl ="https://omcacrm.com/omca/api/crm/"
-// export const baseurl = 'http://192.168.1.48:5201/api/'
-// export const baseu11 = 'http://192.168.1.48:5201'
-// export const excelExoprt = 'http://192.168.1.48:5201/api/'
+// export const baseurl = 'http://192.168.1.73:5201/api/'
+// export const baseu11 = 'http://192.168.1.73:5201'
+// export const excelExoprt = 'http://192.168.1.73:5201/api/'
 // export const image = 'https://sisccltd.com/omca_crm/'     
-// export const imageUrl = 'http://192.168.1.48:5201/uploads/'  //local   
+// export const imageUrl = 'http://192.168.1.73:5201/uploads/'  //local   

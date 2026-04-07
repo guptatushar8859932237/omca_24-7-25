@@ -52,6 +52,7 @@ export default function Dashboard() {
   });
   const { Countries } = useSelector((state) => state.Countries);
   const [country, setCountry] = useState("");
+  const [countryTreating, setCountryTreating] = useState("");
   const [holisticChartData, setHolisticChartData] = useState({
     all: { series: [], categories: [] },
     Daily: { series: [], categories: [] },
@@ -140,12 +141,14 @@ export default function Dashboard() {
       categories,
     };
   };
-  const GetDashboard = (a, country) => {
+  const GetDashboard = (a, country,countryTreating) => {
     axios
       .get(`${baseurl}Dashboard_count`, {
         params: {
           period: a,
           country: country,
+          treatingIn:countryTreating
+ 
         },
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -312,8 +315,8 @@ export default function Dashboard() {
   useEffect(() => {
     const period = getPeriod(chartView);
 
-    GetDashboard(period, country);
-  }, [chartView, country]);
+    GetDashboard(period, country,countryTreating);
+  }, [chartView, country, countryTreating]);
   const getPatientStatusCount = async (status) => {
     try {
       const response = await axios.get(
@@ -504,7 +507,7 @@ export default function Dashboard() {
           ) : (
             <>
               <div className="row">
-                <div className="col-md-7">
+                <div className="col-md-4">
                   <div className="treat-hd">
                     <h6>Holistic Data</h6>
                     <span className="line"></span>
@@ -576,6 +579,32 @@ export default function Dashboard() {
                       <option onClick={() => setChartView("quarterly")}>Quarterly</option>
                       <option  onClick={() => setChartView("yearly")}>Yearly</option>
                     </select> */}
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="treat-hd">
+                    <FormControl fullWidth size="small">
+                      <Select
+                        value={countryTreating}
+                        displayEmpty
+                        onChange={(e) => setCountryTreating(e.target.value)}
+                        MenuProps={{
+                          PaperProps: {
+                            style: { maxHeight: 250 },
+                          },
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>Select TreatingIn Country</em>
+                        </MenuItem>
+
+                        {Countries?.map((c, i) => (
+                          <MenuItem key={i} value={c.name}>
+                            {c.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </div>
                 </div>
                 <div className="col-md-3">
@@ -675,6 +704,27 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>)}
+                  <div
+                    className="col-md-6 col-sm-6 col-lg-6 col-xl-3"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleHolisticClick("selectedTreatingInCount")}
+                  >
+                    <div className="dash-widget1">
+                      <div className="dash-widget-bg">
+                        <i className="fas fa-user-injured"></i>
+                      </div>
+                      <div className="dash-widget-info1">
+                        <h3>
+                          <CountUp
+                            start={0}
+                            end={count?.selectedTreatingInCount || 0}
+                            duration={2}
+                          />
+                        </h3>
+                        <span className="widget-title">Total Treating In Country</span>
+                      </div>
+                    </div>
+                  </div>
                     <div className="col-md-12">
                   <div className="treat-hd">
                     <h6>Registered Data</h6>
