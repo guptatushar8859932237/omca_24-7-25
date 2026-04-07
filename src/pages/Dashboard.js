@@ -41,7 +41,6 @@ export default function Dashboard() {
     quarterly: { series: [], categories: [] },
     yearly: { series: [], categories: [] },
   });
-
   const [hospitalPerformanceData, setHospitalPerformanceData] = useState({
     all: { series: [], categories: [] },
     Daily: { series: [], categories: [] },
@@ -125,17 +124,14 @@ export default function Dashboard() {
       ],
     };
   };
-
   const formatHospitalPerformance = (data) => {
     const categories = data.map((item) => item.hospitalName);
-
     const series = [
       {
         name: "Patients",
         data: data.map((item) => item.totalPatients),
       },
     ];
-
     return {
       series,
       categories,
@@ -597,7 +593,6 @@ export default function Dashboard() {
                         <MenuItem value="">
                           <em>Select TreatingIn Country</em>
                         </MenuItem>
-
                         {Countries?.map((c, i) => (
                           <MenuItem key={i} value={c.name}>
                             {c.name}
@@ -792,7 +787,6 @@ export default function Dashboard() {
                   ""
                 )}
                   </div>
-              
                 <div className="row">
                   <div className="col-md-12">
                     <div className="treat-hd">

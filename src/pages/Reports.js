@@ -900,7 +900,6 @@ export default function Reports() {
                       </FormControl>
                     </div>
                   </div>
-                  Reports
                   <div className="col-md-3">
                     <div className="field-set">
                       <label>

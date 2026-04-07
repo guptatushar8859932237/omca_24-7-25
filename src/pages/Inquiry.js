@@ -151,6 +151,48 @@ export default function Inquiry() {
       },
     });
   };
+
+  const handleDeleteExternal = async (row) => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "Do you want to delete this request?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, Delete",
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const payload = {
+      id: row.raw.id,
+      model:
+        tabValue === 1
+          ? "AmbulanceRequest"
+          : tabValue === 2
+          ? "AirAmbulance"
+          : tabValue === 3
+          ? "PatientQuery"
+          : "",
+      status: "Deleted", // 👈 ya "delete" jo backend accept kare
+    };
+
+    const res = await axios.post(
+      `${AdminBaseUrl}update_user_request_status`,
+      payload
+    );
+
+    if (res?.data?.success) {
+      Swal.fire("Deleted!", "Record deleted successfully", "success");
+
+      // ✅ IMPORTANT: refresh data
+      dispatch(testForms()); // 👈 this will hit get_requestvipapp
+    }
+  } catch (error) {
+    console.log(error);
+    Swal.fire("Error!", "Something went wrong", "error");
+  }
+};
   const ViewDetail = (e, type, info) => {
     console.log(e, type, info)
     const routeMap = {
@@ -294,77 +336,6 @@ const handleChange = async (event, id, tabValue, data) => {
   }
 };
 
-  // const handleChange = async (event, id, tabValue, data) => {
-  //   const { value } = event.target;
-  //   console.log(data, value);
-  //   const result = await Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "Do you really want to update / convert?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "Yes",
-  //   });
-  //   if (!result.isConfirmed) return;
-  //   if (tabValue === 0) {
-  //     try {
-  //       setSeekerStatus((prev) => ({
-  //         ...prev,
-  //         [id]: value,
-  //       }));
-  //       const payload = {
-  //         full_name: data.raw.name,
-  //         email: data.raw.email,
-  //         phone_code: data.raw.phoneCode,
-  //         phone: data.raw.emergency_contact,
-  //         passport_number: data.raw.passport_num,
-  //         user_type: 2,
-  //       };
-  //       if (Number(value) === 1) {
-  //         const response = await axios.post(
-  //           `https://omcacrm.com/omca/api/user_registration`,
-  //           payload,
-  //         );
-  //         console.log(response.data);
-  //         if (response.data.success) {
-  //           console.log(response.data);
-  //           await dispatch(
-  //             EnquiryStatus({
-  //               id,
-  //               status: Number(value),
-  //               enquiry_type: "OMCA Enquiry",
-  //               user_id: response.data.data.id
-  //             }),
-  //           ).unwrap();
-  //         }
-  //       }
-
-  //       Swal.fire("Success!", "Status updated!", "success");
-  //       dispatch(GetAllEnquiry());
-  //     } catch (err) {
-  //       Swal.fire("Error!", err?.message || "Error", "error");
-  //     }
-  //   }
-  //   // ✅ TAB 1 → Ambulance
-  //   if (tabValue === 1) {
-  //     await sendToPatientAPI("Ambulance Service", data.raw);
-  //     // 🔥 NEW ADD
-  //     await handleChangtype({ value }, data.raw);
-  //   }
-  //   // ✅ TAB 2 → Air Ambulance
-  //   if (tabValue === 2) {
-  //     await sendToPatientAPI("Air Medical Escort", data.raw);
-
-  //     // 🔥 NEW ADD
-  //     await handleChangtype({ value }, data.raw);
-  //   }
-  //   // ✅ TAB 3 → Treatment Estimate
-  //   if (tabValue === 3) {
-  //     await sendToPatientAPI("Treatment Estimate", data.raw);
-
-  //     // 🔥 NEW ADD
-  //     await handleChangtype({ value }, data.raw);
-  //   }
-  // };
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_enquiries`, {
@@ -542,7 +513,9 @@ const handleChange = async (event, id, tabValue, data) => {
             })
             .then((newData) => {
               Swal.fire("Deleted!", "Patient has been deleted.", "success");
-              setRows(newData.payload);
+             const normalized = normalizeData(newData.payload || [], "enquiry");
+setRows(normalized);
+setSearchApiData(normalized);
             })
             .catch((err) => {
               Swal.fire("Error!", err?.message || "An error occurred", "error");
@@ -589,25 +562,47 @@ const handleChange = async (event, id, tabValue, data) => {
     });
   };
 
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && orderDirection === "asc";
-    const direction = isAsc ? "desc" : "asc";
+const handleRequestSort = (property) => {
+  const isAsc = orderBy === property && orderDirection === "asc";
+  const direction = isAsc ? "desc" : "asc";
 
-    setOrderDirection(direction);
-    setOrderBy(property);
+  setOrderDirection(direction);
+  setOrderBy(property);
 
-    const sortedData = [...rows].sort((a, b) => {
-      if (a[property] < b[property]) {
-        return direction === "asc" ? -1 : 1;
-      }
-      if (a[property] > b[property]) {
-        return direction === "asc" ? 1 : -1;
-      }
-      return 0;
-    });
+  const sortedData = [...rows].sort((a, b) => {
+    let valA = a[property];
+    let valB = b[property];
 
-    setRows(sortedData);
-  };
+    // ✅ Handle null/undefined
+    if (!valA) valA = "";
+    if (!valB) valB = "";
+
+    // ✅ Special handling for DATE
+    if (property === "date") {
+      return direction === "asc"
+        ? new Date(valA) - new Date(valB)
+        : new Date(valB) - new Date(valA);
+    }
+
+    // ✅ Special handling for NUMBER (enquiryId, age etc.)
+    if (property === "enquiryId" || property === "age") {
+      return direction === "asc"
+        ? Number(valA) - Number(valB)
+        : Number(valB) - Number(valA);
+    }
+
+    // ✅ Default STRING sorting
+    valA = valA.toString().toLowerCase();
+    valB = valB.toString().toLowerCase();
+
+    if (valA < valB) return direction === "asc" ? -1 : 1;
+    if (valA > valB) return direction === "asc" ? 1 : -1;
+
+    return 0;
+  });
+
+  setRows(sortedData);
+};
   useEffect(() => {
     let filtered = [];
 
@@ -635,21 +630,23 @@ const handleChange = async (event, id, tabValue, data) => {
     setRows(filtered);
     setSearchApiData(filtered);
   }, [tabValue, Enquiry, formData]);
-  const normalizeData = (data, type) => {
-    return data.map((item) => ({
-      enquiryId: item.enquiryId || item.id,
-      name: item.name || item.first_name,
-      email: item.email,
-      country: item.country || item.city,
-      treatingIn: item.treatingIn || item.treating_in_country || "",
-      emergency_contact: item.emergency_contact || item.phone,
-      disease_name: item.disease_name || item.services?.replaceAll("_", " "),
-      Enquiry_status: item.Enquiry_status || item.status,
-      date: item.createdAt || item.created_at,
-      id: item.id || item.id,
-      raw: item, // full data for view popup
-    }));
-  };
+
+
+const normalizeData = (data, type) => {
+  return data.map((item) => ({
+    enquiryId: item.enquiryId || item.id || 0,
+    name: item.name || item.first_name || "",
+    email: item.email || "",
+    country: item.country || "",
+    treatingIn: item.treatingIn || item.treating_in_country || "",
+    emergency_contact: item.emergency_contact || item.phone || "",
+    disease_name: item.disease_name || item.services?.replaceAll("_", " ") || "",
+    Enquiry_status: item.Enquiry_status || item.status || "",
+    date: item.createdAt || item.created_at || "",
+    id: item.id,
+    raw: item,
+  }));
+};
 
   return (
     <>
@@ -753,7 +750,6 @@ const handleChange = async (event, id, tabValue, data) => {
               </div>
             </div>
           </div>
-
           <div className="main_content">
             <div className="row">
               <div className="col-md-12">
@@ -875,78 +871,14 @@ const handleChange = async (event, id, tabValue, data) => {
                               >
                                 {info.name}
                               </TableCell>
-                              {/* <TableCell>{info.email}</TableCell> */}
-                              <TableCell>{info.treatingIn}</TableCell>
                               <TableCell>{info.country}</TableCell>
-                              <TableCell>{new Date(info.date).toLocaleDateString('en-GB')}/{new Date(info.date).toLocaleTimeString('en-GB', {
+                              <TableCell>{info.treatingIn}</TableCell>
+                              <TableCell>{new Date(info.date).toLocaleDateString('en-GB')}-{new Date(info.date).toLocaleTimeString('en-GB', {
                                 hour: '2-digit',
                                 minute: '2-digit',
                                 hour12: true,
                               })}</TableCell>
-                              {/* <TableCell>{info.treatingIn}</TableCell> */}
-                              {/* <TableCell title={info.disease_name}> */}
-                              {/* <TableCell title={info.disease_name}>
-                                {info.disease_name?.length > 10
-                                  ? info.disease_name.slice(0, 10) + "..."
-                                  : info.disease_name}
-                              </TableCell> */}
-                              {/* <TableCell>
-                                <FormControl
-                                  sx={{ m: 1, minWidth: 120 }}
-                                  size="small"
-                                  className="cont-main"
-                                >
-                                  <Select
-                                    value={
-                                      seekerStatus[info.enquiryId]
-                                        ? seekerStatus[info.enquiryId]
-                                        : info.Enquiry_status === "Confirmed"
-                                          ? "1"
-                                          : info.Enquiry_status === "Hold"
-                                            ? "2"
-                                            : info.Enquiry_status ===
-                                              "Follow-Up"
-                                              ? "3"
-                                              : info.Enquiry_status === "Dead"
-                                                ? "4"
-                                                : ""
-                                    }
-                                    onChange={(e) =>
-                                      handleChange(
-                                        e,
-                                        info.enquiryId,
-                                        tabValue,
-                                        info,
-                                      )
-                                    }
-                                    displayEmpty
-                                    inputProps={{
-                                      "aria-label": "Without label",
-                                    }}
-                                    className="status-direct"
-                                    renderValue={(selected) => {
-                                      switch (selected) {
-                                        case "1":
-                                          return "Confirmed";
-                                        case "2":
-                                          return "Hold";
-                                        case "3":
-                                          return "Follow-up";
-                                        case "4":
-                                          return "Closed";
-                                        default:
-                                          return "Pending";
-                                      }
-                                    }}
-                                  >
-                                    <MenuItem value="0">Pending</MenuItem>
-                                    <MenuItem value="1">Confirmed</MenuItem>
-                                    <MenuItem value="2">Hold</MenuItem>
-                                    <MenuItem value="3">Follow-up</MenuItem>
-                                    <MenuItem value="4">Closed</MenuItem>
-                                  </Select>
-                                </FormControl>
-                              </TableCell> */}
+                             
 <TableCell>
   {info.Enquiry_status === "Confirmed" ? (
     // ✅ Only show text
@@ -997,7 +929,7 @@ const handleChange = async (event, id, tabValue, data) => {
                                   className="eye-icon"
                                   onClick={(e) => ViewDetail(e, tabValue, info)}
                                 />
-                                {tabValue === 0 ? (
+                                {/* {tabValue === 0 ? (
                                   <>
                                     <i
                                       className="fa-solid fa-pen-to-square"
@@ -1016,7 +948,28 @@ const handleChange = async (event, id, tabValue, data) => {
                                   </>
                                 ) : (
                                   ""
-                                )}
+                                )} */}
+                                {tabValue === 0 ? (
+  <>
+    <i
+      className="fa-solid fa-pen-to-square"
+      onClick={(e) => EditButton(e, info.enquiryId)}
+    ></i>
+
+    {localStorage.getItem("Role") === "Admin" && (
+      <i
+        className="fa-solid fa-trash"
+        onClick={() => handledelete(info)}
+      ></i>
+    )}
+  </>
+) : (
+  // 🔥 NEW DELETE FOR OTHER TABS
+  <i
+    className="fa-solid fa-trash"
+    onClick={() => handleDeleteExternal(info)}
+  ></i>
+)}
                               </TableCell>
                               {tabValue === 0 ? (
                                 <>
