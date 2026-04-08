@@ -1687,61 +1687,64 @@ function PatientDetail() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const uploadmultipleRecord = async () => {
-    if (!validateForm()) return;
-    const swalOnTop = Swal.mixin({
-      customClass: {
-        popup: "swal-on-top",
-      },
-      buttonsStyling: true,
-    });
-    const formData = new FormData();
-    formData.append("patientObjectId", location.state.testid);
-    formData.append("patientId", location.state.patientId);
-    formData.append("treatment", JSON.stringify(fieldValue));
-    formData.append("hospitals", JSON.stringify(hospitalId));
-    formData.append("notes", value1 || "");
-    images.forEach((file) => {
-      formData.append("reports", file);
-    });
+  // const uploadmultipleRecord = async () => {
+  //   if (!validateForm()) return;
+  //   const swalOnTop = Swal.mixin({
+  //     customClass: {
+  //       popup: "swal-on-top",
+  //     },
+  //     buttonsStyling: true,
+  //   });
+  //   const formData = new FormData();
+  //   formData.append("patientObjectId", location.state.testid);
+  //   formData.append("patientId", location.state.patientId);
+  //   formData.append("treatment", JSON.stringify(fieldValue));
+  //   formData.append("hospitals", JSON.stringify(hospitalId));
+  //   formData.append("notes", value1 || "");
+  //   images.forEach((file) => {
+  //     formData.append("reports", file);
+  //   });
 
-    try {
-      const response = await axios.post(
-        `${baseurl}addTreatmentPlan`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } },
-      );
+  //   try {
+  //     const response = await axios.post(
+  //       `${baseurl}addTreatmentPlan`, formData,
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     }
+  //     );
 
-      if (response?.data?.success) {
-        getTreatmentPlan();
-        setTreatmentPlanPopup(false);
-        await swalOnTop.fire({
-          icon: "success",
-          title: "Success",
-          text: response.data.message || "Treatment plan added successfully",
-          confirmButtonText: "OK",
-        });
-        PlanTreatmentPopupClose();
-        setFieldValue(null);
-        setHospitalId([]);
-        setValue1("");
-        setImages([]);
-      } else {
-        await swalOnTop.fire(
-          "Error",
-          response?.data?.message || "Something went wrong",
-          "error",
-        );
-      }
-    } catch (error) {
-      const errorMsg =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Server error occurred";
+  //     if (response?.data?.success) {
+  //       getTreatmentPlan();
+  //       setTreatmentPlanPopup(false);
+  //       await swalOnTop.fire({
+  //         icon: "success",
+  //         title: "Success",
+  //         text: response.data.message || "Treatment plan added successfully",
+  //         confirmButtonText: "OK",
+  //       });
+  //       PlanTreatmentPopupClose();
+  //       setFieldValue(null);
+  //       setHospitalId([]);
+  //       setValue1("");
+  //       setImages([]);
+  //     } else {
+  //       await swalOnTop.fire(
+  //         "Error",
+  //         response?.data?.message || "Something went wrong",
+  //         "error",
+  //       );
+  //     }
+  //   } catch (error) {
+  //     const errorMsg =
+  //       error?.response?.data?.message ||
+  //       error?.message ||
+  //       "Server error occurred";
 
-      await swalOnTop.fire("Error", errorMsg, "error");
-    }
-  };
+  //     await swalOnTop.fire("Error", errorMsg, "error");
+  //   }
+  // };
   // const handleAddTritmentPaymenttestsubmit =async ()=>{
   //   try {
   //     console.log(dataPerforma)
@@ -1756,6 +1759,96 @@ function PatientDetail() {
   //     console.log(error)
   //   }
   // }
+  const uploadmultipleRecord = async () => {
+  // ✅ Validate form first
+  if (!validateForm()) return;
+
+  const swalOnTop = Swal.mixin({
+    customClass: {
+      popup: "swal-on-top",
+    },
+    buttonsStyling: true,
+  });
+
+  try {
+    // ✅ Safe access (important fix)
+    const patientObjectId = location?.state?.testid || "";
+    const patientId = location?.state?.patientId || "";
+
+    // ❌ Stop if required data missing
+    if (!patientObjectId || !patientId) {
+      await swalOnTop.fire("Error", "Patient data missing", "error");
+      return;
+    }
+
+    // ✅ Create FormData
+    const formData = new FormData();
+    formData.append("patientObjectId", patientObjectId);
+    formData.append("patientId", patientId);
+    formData.append("treatment", JSON.stringify(fieldValue || []));
+    formData.append("hospitals", JSON.stringify(hospitalId || []));
+    formData.append("notes", value1 || "");
+
+    // ✅ Append multiple images safely
+    if (images && images.length > 0) {
+      images.forEach((file) => {
+        formData.append("reports", file);
+      });
+    }
+
+    // ✅ API Call
+    const response = await axios.post(
+      `${baseurl}addTreatmentPlan`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    // ✅ Success handling
+    if (response?.data?.success) {
+      await swalOnTop.fire({
+        icon: "success",
+        title: "Success",
+        text:
+          response?.data?.message ||
+          "Treatment plan added successfully",
+        confirmButtonText: "OK",
+      });
+
+      // ✅ Refresh data
+      getTreatmentPlan();
+
+      // ✅ Close popup & reset state
+      setTreatmentPlanPopup(false);
+      PlanTreatmentPopupClose();
+
+      setFieldValue([]);
+      setHospitalId([]);
+      setValue1("");
+      setImages([]);
+    } else {
+      // ❌ API returned failure
+      await swalOnTop.fire(
+        "Error",
+        response?.data?.message || "Something went wrong",
+        "error"
+      );
+    }
+  } catch (error) {
+    // ❌ Error handling improved
+    const errorMsg =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Server error occurred";
+
+    console.error("Upload Error:", error);
+
+    await swalOnTop.fire("Error", errorMsg, "error");
+  }
+};
   const handleAddTritmentPaymenttestsubmit = async () => {
     try {
       if (!dataPerforma) {
