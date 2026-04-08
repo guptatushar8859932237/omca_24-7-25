@@ -4469,7 +4469,7 @@ function PatientDetail() {
                                                 </div>
                                               </div>
                                             </div>
-                                            <div className="row gx-3 gy-3">
+                                            <div className="row gx-3 gy-3 mt-2">
                                               <div className="col-md-12">
                                                 <div className="card patientreat">
                                                   <div className="card-header service-list">
@@ -4518,7 +4518,7 @@ function PatientDetail() {
                                                                     </td>
                                                                   
                                                                   <td>{parseInt(item.adults) + parseInt(item.children)}</td>
-                                                                  <td>{ parseInt(item?.payment_amount)}</td>
+                                                                  <td>${ parseInt(item?.payment_amount)}</td>
                                                                     <td>
                                                                       <div className="action-icon">
                                                                          {/* <VisibilityIcon

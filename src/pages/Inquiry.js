@@ -112,6 +112,7 @@ export default function Inquiry() {
     setOpen3(true);
   };
   const statusMap = {
+    0: "Pending",
     1: "Confirmed",
     2: "Hold",
     3: "Follow-Up",
@@ -153,48 +154,48 @@ export default function Inquiry() {
   };
 
   const handleDeleteExternal = async (row) => {
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "Do you want to delete this request?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, Delete",
-  });
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this request?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+    });
 
-  if (!result.isConfirmed) return;
+    if (!result.isConfirmed) return;
 
-  try {
-    const payload = {
-      id: row.raw.id,
-      model:
-        tabValue === 1
-          ? "AmbulanceRequest"
-          : tabValue === 2
-          ? "AirAmbulance"
-          : tabValue === 3
-          ? "PatientQuery"
-          : "",
-      status: "Deleted", // 👈 ya "delete" jo backend accept kare
-    };
+    try {
+      const payload = {
+        id: row.raw.id,
+        model:
+          tabValue === 1
+            ? "AmbulanceRequest"
+            : tabValue === 2
+              ? "AirAmbulance"
+              : tabValue === 3
+                ? "PatientQuery"
+                : "",
+        status: "Deleted", // 👈 ya "delete" jo backend accept kare
+      };
 
-    const res = await axios.post(
-      `${AdminBaseUrl}update_user_request_status`,
-      payload
-    );
+      const res = await axios.post(
+        `${AdminBaseUrl}update_user_request_status`,
+        payload,
+      );
 
-    if (res?.data?.success) {
-      Swal.fire("Deleted!", "Record deleted successfully", "success");
+      if (res?.data?.success) {
+        Swal.fire("Deleted!", "Record deleted successfully", "success");
 
-      // ✅ IMPORTANT: refresh data
-      dispatch(testForms()); // 👈 this will hit get_requestvipapp
+        // ✅ IMPORTANT: refresh data
+        dispatch(testForms()); // 👈 this will hit get_requestvipapp
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Error!", "Something went wrong", "error");
     }
-  } catch (error) {
-    console.log(error);
-    Swal.fire("Error!", "Something went wrong", "error");
-  }
-};
+  };
   const ViewDetail = (e, type, info) => {
-    console.log(e, type, info)
+    console.log(e, type, info);
     const routeMap = {
       0: "/Admin/Enquiry-Detail",
       1: "/Admin/Enquiry-DetailAmbulance",
@@ -203,8 +204,8 @@ export default function Inquiry() {
     };
     const path = routeMap[type];
     if (!path) return;
-    console.log(type)
-    localStorage.setItem("tabenquiry", type)
+    console.log(type);
+    localStorage.setItem("tabenquiry", type);
     navigate(path, {
       state: {
         id: type === 0 ? info.enquiryId : info.id, // ✅ FIX
@@ -220,7 +221,7 @@ export default function Inquiry() {
         data: data,
       });
       if (response.data.success) {
-        Swal.fire("Success!", `${type} converted to patient`, "success");
+        // Swal.fire("Success!", `${type} converted to patient`, "success");
       }
     } catch (error) {
       console.log(error);
@@ -230,8 +231,12 @@ export default function Inquiry() {
   const handleChangtype = async (e, b) => {
     const value = e?.value || e?.target?.value;
     console.log(tabValue);
+    console.log(e)
+    console.log(value)
+    const data1 =parseInt(value)
     const data = {
       id: b?.id,
+      status: statusMap[data1], 
       model:
         tabValue === 1
           ? "AmbulanceRequest"
@@ -240,8 +245,7 @@ export default function Inquiry() {
             : tabValue === 3
               ? "PatientQuery"
               : "",
-      status: statusMap[value], // number (1,2,3,4)
-      // status_text: statusMap[value], // ✅ string (Confirmed, Hold...)
+     
     };
     try {
       const response = await axios.post(
@@ -262,8 +266,85 @@ export default function Inquiry() {
     setTabValue(newValue);
     localStorage.setItem("tabenquiry", newValue);
   };
+  // const handleChange = async (event, id, tabValue, data) => {
+  //   console.log(event, id, tabValue, data)
+  //   const { value } = event.target;
+  //     console.log(value)
+  //   const result = await Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "Do you really want to update / convert?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes",
+  //   });
+
+  //   if (!result.isConfirmed) return;
+
+  //   // ✅ ONLY run when Confirmed selected
+  //   if (Number(value) !== 1) {
+  //     // Sirf status update karna hai, API nahi
+  //     await handleChangtype({ value }, data.raw);
+  //     return;
+  //   }
+  //   console.log(tabValue)
+  //   // 🔥 TAB 0 → Enquiry
+  //   if (tabValue === 0) {
+  //     try {
+  //       const payload = {
+  //         full_name: data.raw.name,
+  //         email: data.raw.email,
+  //         phone_code: data.raw.phoneCode,
+  //         phone: data.raw.emergency_contact,
+  //         passport_number: data.raw.passport_num,
+  //         user_type: 2,
+  //       };
+
+  //       const response = await axios.post(
+  //         `https://omcacrm.com/omca/api/user_registration`,
+  //         payload,
+  //       );
+
+  //       if (response.data.success) {
+  //         await dispatch(
+  //           EnquiryStatus({
+  //             id,
+  //             status: Number(value),
+  //             enquiry_type: "OMCA Enquiry",
+  //             user_id: response.data.data.id,
+  //           }),
+  //         ).unwrap();
+  //       }
+
+  //       Swal.fire("Success!", "Converted to patient!", "success");
+  //       dispatch(GetAllEnquiry());
+  //     } catch (err) {
+  //       Swal.fire("Error!", err?.message || "Error", "error");
+  //     }
+  //   }
+
+  //   // 🔥 TAB 1 → Ambulance
+  //   if (tabValue === 1) {
+  //     await sendToPatientAPI("Ambulance Service", data.raw);
+  //     await handleChangtype({ value }, data.raw);
+  //   }
+
+  //   // 🔥 TAB 2 → Air Ambulance
+  //   if (tabValue === 2) {
+  //     await sendToPatientAPI("Air Medical Escort", data.raw);
+  //     await handleChangtype({ value }, data.raw);
+  //   }
+
+  //   // 🔥 TAB 3 → Treatment
+  //   if (tabValue === 3) {
+  //     await sendToPatientAPI("Treatment Estimate", data.raw);
+  //     await handleChangtype({ value }, data.raw);
+  //   }
+  // };
 const handleChange = async (event, id, tabValue, data) => {
+  console.log(event, id, tabValue, data);
+
   const { value } = event.target;
+  const status = Number(value);
 
   const result = await Swal.fire({
     title: "Are you sure?",
@@ -275,67 +356,82 @@ const handleChange = async (event, id, tabValue, data) => {
 
   if (!result.isConfirmed) return;
 
-  // ✅ ONLY run when Confirmed selected
-  if (Number(value) !== 1) {
-    // Sirf status update karna hai, API nahi
-    await handleChangtype({ value }, data.raw);
-    return;
-  }
+  if (tabValue===0) {
+    if (status ===1) {
+      try {
+        const payload = {
+          full_name: data.raw.name,
+          email: data.raw.email,
+          phone_code: data.raw.phoneCode,
+          phone: data.raw.emergency_contact,
+          passport_number: data.raw.passport_num,
+          user_type: 2,
+        };
 
-  // 🔥 TAB 0 → Enquiry
-  if (tabValue === 0) {
-    try {
-      const payload = {
-        full_name: data.raw.name,
-        email: data.raw.email,
-        phone_code: data.raw.phoneCode,
-        phone: data.raw.emergency_contact,
-        passport_number: data.raw.passport_num,
-        user_type: 2,
-      };
+        const response = await axios.post(
+          `https://omcacrm.com/omca/api/user_registration`,
+          payload
+        );
 
-      const response = await axios.post(
-        `https://omcacrm.com/omca/api/user_registration`,
-        payload
-      );
+        if (response.data.success) {
+          await dispatch(
+            EnquiryStatus({
+              id,
+              status,
+              enquiry_type: "OMCA Enquiry",
+              user_id: response.data.data.id,
+            })
+          ).unwrap();
 
-      if (response.data.success) {
-        await dispatch(
-          EnquiryStatus({
-            id,
-            status: Number(value),
-            enquiry_type: "OMCA Enquiry",
-            user_id: response.data.data.id,
-          })
-        ).unwrap();
+          Swal.fire("Success!", "Converted to patient!", "success");
+          dispatch(GetAllEnquiry());
+        }
+      } catch (err) {
+        Swal.fire("Error!", err?.message || "Error", "error");
       }
+    
+    }else{
+        await dispatch(
+            EnquiryStatus({
+              id,
+              status,
+              enquiry_type: "OMCA Enquiry",
+            })
+          ).unwrap();
 
-      Swal.fire("Success!", "Converted to patient!", "success");
-      dispatch(GetAllEnquiry());
-    } catch (err) {
-      Swal.fire("Error!", err?.message || "Error", "error");
+          Swal.fire("Success!", "Status Change Successfully!", "success");
+          dispatch(GetAllEnquiry());
+    }
+  }else{
+    if (status ===1) {
+      try {
+        if (tabValue===1) {
+       await sendToPatientAPI("Ambulance Service", data.raw);
+        }
+        if (tabValue===2) {
+       await sendToPatientAPI("Air Medical Escort", data.raw);
+        }
+        if (tabValue===3) {
+       await sendToPatientAPI("Treatment Estimate", data.raw);
+        }
+          await handleChangtype({ value }, data.raw);
+
+          Swal.fire("Success!", "Converted to patient!", "success");
+
+          dispatch(GetAllEnquiry());
+        
+      } catch (err) {
+        Swal.fire("Error!", err?.message || "Error", "error");
+      }
+    
+    }else{
+          await handleChangtype({ value }, data.raw);
+
+          Swal.fire("Success!", "Status changed!", "success");
+          dispatch(GetAllEnquiry());
     }
   }
-
-  // 🔥 TAB 1 → Ambulance
-  if (tabValue === 1) {
-    await sendToPatientAPI("Ambulance Service", data.raw);
-    await handleChangtype({ value }, data.raw);
-  }
-
-  // 🔥 TAB 2 → Air Ambulance
-  if (tabValue === 2) {
-    await sendToPatientAPI("Air Medical Escort", data.raw);
-    await handleChangtype({ value }, data.raw);
-  }
-
-  // 🔥 TAB 3 → Treatment
-  if (tabValue === 3) {
-    await sendToPatientAPI("Treatment Estimate", data.raw);
-    await handleChangtype({ value }, data.raw);
-  }
 };
-
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_enquiries`, {
@@ -513,9 +609,12 @@ const handleChange = async (event, id, tabValue, data) => {
             })
             .then((newData) => {
               Swal.fire("Deleted!", "Patient has been deleted.", "success");
-             const normalized = normalizeData(newData.payload || [], "enquiry");
-setRows(normalized);
-setSearchApiData(normalized);
+              const normalized = normalizeData(
+                newData.payload || [],
+                "enquiry",
+              );
+              setRows(normalized);
+              setSearchApiData(normalized);
             })
             .catch((err) => {
               Swal.fire("Error!", err?.message || "An error occurred", "error");
@@ -562,47 +661,47 @@ setSearchApiData(normalized);
     });
   };
 
-const handleRequestSort = (property) => {
-  const isAsc = orderBy === property && orderDirection === "asc";
-  const direction = isAsc ? "desc" : "asc";
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && orderDirection === "asc";
+    const direction = isAsc ? "desc" : "asc";
 
-  setOrderDirection(direction);
-  setOrderBy(property);
+    setOrderDirection(direction);
+    setOrderBy(property);
 
-  const sortedData = [...rows].sort((a, b) => {
-    let valA = a[property];
-    let valB = b[property];
+    const sortedData = [...rows].sort((a, b) => {
+      let valA = a[property];
+      let valB = b[property];
 
-    // ✅ Handle null/undefined
-    if (!valA) valA = "";
-    if (!valB) valB = "";
+      // ✅ Handle null/undefined
+      if (!valA) valA = "";
+      if (!valB) valB = "";
 
-    // ✅ Special handling for DATE
-    if (property === "date") {
-      return direction === "asc"
-        ? new Date(valA) - new Date(valB)
-        : new Date(valB) - new Date(valA);
-    }
+      // ✅ Special handling for DATE
+      if (property === "date") {
+        return direction === "asc"
+          ? new Date(valA) - new Date(valB)
+          : new Date(valB) - new Date(valA);
+      }
 
-    // ✅ Special handling for NUMBER (enquiryId, age etc.)
-    if (property === "enquiryId" || property === "age") {
-      return direction === "asc"
-        ? Number(valA) - Number(valB)
-        : Number(valB) - Number(valA);
-    }
+      // ✅ Special handling for NUMBER (enquiryId, age etc.)
+      if (property === "enquiryId" || property === "age") {
+        return direction === "asc"
+          ? Number(valA) - Number(valB)
+          : Number(valB) - Number(valA);
+      }
 
-    // ✅ Default STRING sorting
-    valA = valA.toString().toLowerCase();
-    valB = valB.toString().toLowerCase();
+      // ✅ Default STRING sorting
+      valA = valA.toString().toLowerCase();
+      valB = valB.toString().toLowerCase();
 
-    if (valA < valB) return direction === "asc" ? -1 : 1;
-    if (valA > valB) return direction === "asc" ? 1 : -1;
+      if (valA < valB) return direction === "asc" ? -1 : 1;
+      if (valA > valB) return direction === "asc" ? 1 : -1;
 
-    return 0;
-  });
+      return 0;
+    });
 
-  setRows(sortedData);
-};
+    setRows(sortedData);
+  };
   useEffect(() => {
     let filtered = [];
 
@@ -631,22 +730,22 @@ const handleRequestSort = (property) => {
     setSearchApiData(filtered);
   }, [tabValue, Enquiry, formData]);
 
-
-const normalizeData = (data, type) => {
-  return data.map((item) => ({
-    enquiryId: item.enquiryId || item.id || 0,
-    name: item.name || item.first_name || "",
-    email: item.email || "",
-    country: item.country || "",
-    treatingIn: item.treatingIn || item.treating_in_country || "",
-    emergency_contact: item.emergency_contact || item.phone || "",
-    disease_name: item.disease_name || item.services?.replaceAll("_", " ") || "",
-    Enquiry_status: item.Enquiry_status || item.status || "",
-    date: item.createdAt || item.created_at || "",
-    id: item.id,
-    raw: item,
-  }));
-};
+  const normalizeData = (data, type) => {
+    return data.map((item) => ({
+      enquiryId: item.enquiryId || item.id || 0,
+      name: item.name || item.first_name || "",
+      email: item.email || "",
+      country: item.country || "",
+      treatingIn: item.treatingIn || item.treating_in_country || "",
+      emergency_contact: item.emergency_contact || item.phone || "",
+      disease_name:
+        item.disease_name || item.services?.replaceAll("_", " ") || "",
+      Enquiry_status: item.Enquiry_status || item.status || "",
+      date: item.createdAt || item.created_at || "",
+      id: item.id,
+      raw: item,
+    }));
+  };
 
   return (
     <>
@@ -771,9 +870,7 @@ const normalizeData = (data, type) => {
                             <TableSortLabel
                               active={orderBy === "enquiryId"}
                               direction={
-                                orderBy === "enquiryId"
-                                  ? orderDirection
-                                  : "asc"
+                                orderBy === "enquiryId" ? orderDirection : "asc"
                               }
                               onClick={() => handleRequestSort("enquiryId")}
                             >
@@ -799,14 +896,16 @@ const normalizeData = (data, type) => {
                               }
                               onClick={() => handleRequestSort("country")}
                             >
-                             Country
+                              Country
                             </TableSortLabel>
                           </TableCell>
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "treatingIn"}
                               direction={
-                                orderBy === "treatingIn" ? orderDirection : "asc"
+                                orderBy === "treatingIn"
+                                  ? orderDirection
+                                  : "asc"
                               }
                               onClick={() => handleRequestSort("treatingIn")}
                             >
@@ -817,13 +916,9 @@ const normalizeData = (data, type) => {
                             <TableSortLabel
                               active={orderBy === "date"}
                               direction={
-                                orderBy === "date"
-                                  ? orderDirection
-                                  : "asc"
+                                orderBy === "date" ? orderDirection : "asc"
                               }
-                              onClick={() =>
-                                handleRequestSort("date")
-                              }
+                              onClick={() => handleRequestSort("date")}
                             >
                               Date / Time
                             </TableSortLabel>
@@ -843,16 +938,16 @@ const normalizeData = (data, type) => {
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage,
-                          )
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
                         ).length > 0 ? (
                           (pdfRowLimit
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage,
+                              )
                           ).map((info, i) => (
                             <TableRow
                               role="checkbox"
@@ -873,57 +968,67 @@ const normalizeData = (data, type) => {
                               </TableCell>
                               <TableCell>{info.country}</TableCell>
                               <TableCell>{info.treatingIn}</TableCell>
-                              <TableCell>{new Date(info.date).toLocaleDateString('en-GB')}-{new Date(info.date).toLocaleTimeString('en-GB', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true,
-                              })}</TableCell>
-                             
-<TableCell>
-  {info.Enquiry_status === "Confirmed" ? (
-    // ✅ Only show text
-    <span style={{ fontWeight: "bold",  }}>
-      Confirmed
-    </span>
-  ) : (
-    // ✅ Otherwise show dropdown
-    <FormControl
-      sx={{ m: 1, minWidth: 120 }}
-      size="small"
-      className="cont-main"
-    >
-      <Select
-        value={
-          seekerStatus[info.enquiryId]
-            ? seekerStatus[info.enquiryId]
-            : info.Enquiry_status === "Hold"
-              ? "2"
-              : info.Enquiry_status === "Follow-Up"
-                ? "3"
-                : info.Enquiry_status === "Dead"
-                  ? "4"
-                  : "0"
-        }
-        onChange={(e) =>
-          handleChange(
-            e,
-            info.enquiryId,
-            tabValue,
-            info
-          )
-        }
-        displayEmpty
-        className="status-direct"
-      >
-        <MenuItem value="0">Pending</MenuItem>
-        <MenuItem value="1">Confirmed</MenuItem>
-        <MenuItem value="2">Hold</MenuItem>
-        <MenuItem value="3">Follow-up</MenuItem>
-        <MenuItem value="4">Closed</MenuItem>
-      </Select>
-    </FormControl>
-  )}
-</TableCell>
+                              <TableCell>
+                                {new Date(info.date).toLocaleDateString(
+                                  "en-GB",
+                                )}
+                                -
+                                {new Date(info.date).toLocaleTimeString(
+                                  "en-GB",
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                  },
+                                )}
+                              </TableCell>
+
+                              <TableCell>
+                                {info.Enquiry_status === "Confirmed" ? (
+                                  // ✅ Only show text
+                                  <span style={{ fontWeight: "bold" }}>
+                                    Confirmed
+                                  </span>
+                                ) : (
+                                  // ✅ Otherwise show dropdown
+                                  <FormControl
+                                    sx={{ m: 1, minWidth: 120 }}
+                                    size="small"
+                                    className="cont-main"
+                                  >
+                                    <Select
+                                      value={
+                                        seekerStatus[info.enquiryId]
+                                          ? seekerStatus[info.enquiryId]
+                                          : info.Enquiry_status === "Hold"
+                                            ? "2"
+                                            : info.Enquiry_status ===
+                                                "Follow-Up"
+                                              ? "3"
+                                              : info.Enquiry_status === "Dead"
+                                                ? "4"
+                                                : "0"
+                                      }
+                                      onChange={(e) =>
+                                        handleChange(
+                                          e,
+                                          info.enquiryId,
+                                          tabValue,
+                                          info,
+                                        )
+                                      }
+                                      displayEmpty
+                                      className="status-direct"
+                                    >
+                                      <MenuItem value="0">Pending</MenuItem>
+                                      <MenuItem value="1">Confirmed</MenuItem>
+                                      <MenuItem value="2">Hold</MenuItem>
+                                      <MenuItem value="3">Follow-up</MenuItem>
+                                      <MenuItem value="4">Closed</MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                )}
+                              </TableCell>
                               <TableCell className="action-icon">
                                 <VisibilityIcon
                                   className="eye-icon"
@@ -950,26 +1055,29 @@ const normalizeData = (data, type) => {
                                   ""
                                 )} */}
                                 {tabValue === 0 ? (
-  <>
-    <i
-      className="fa-solid fa-pen-to-square"
-      onClick={(e) => EditButton(e, info.enquiryId)}
-    ></i>
+                                  <>
+                                    <i
+                                      className="fa-solid fa-pen-to-square"
+                                      onClick={(e) =>
+                                        EditButton(e, info.enquiryId)
+                                      }
+                                    ></i>
 
-    {localStorage.getItem("Role") === "Admin" && (
-      <i
-        className="fa-solid fa-trash"
-        onClick={() => handledelete(info)}
-      ></i>
-    )}
-  </>
-) : (
-  // 🔥 NEW DELETE FOR OTHER TABS
-  <i
-    className="fa-solid fa-trash"
-    onClick={() => handleDeleteExternal(info)}
-  ></i>
-)}
+                                    {localStorage.getItem("Role") ===
+                                      "Admin" && (
+                                      <i
+                                        className="fa-solid fa-trash"
+                                        onClick={() => handledelete(info)}
+                                      ></i>
+                                    )}
+                                  </>
+                                ) : (
+                                  // 🔥 NEW DELETE FOR OTHER TABS
+                                  <i
+                                    className="fa-solid fa-trash"
+                                    onClick={() => handleDeleteExternal(info)}
+                                  ></i>
+                                )}
                               </TableCell>
                               {tabValue === 0 ? (
                                 <>
@@ -980,15 +1088,17 @@ const normalizeData = (data, type) => {
                                         handleClickOpen2(e, info.enquiryId)
                                       }
                                     ></i>
-                                    <i className="fa-solid fa-stethoscope" onClick={(e) =>
-                                      handleClickOpen4(e, info.enquiryId)
-                                    }></i>
+                                    <i
+                                      className="fa-solid fa-stethoscope"
+                                      onClick={(e) =>
+                                        handleClickOpen4(e, info.enquiryId)
+                                      }
+                                    ></i>
                                   </TableCell>
                                 </>
                               ) : (
                                 ""
                               )}
-
                             </TableRow>
                           ))
                         ) : (
@@ -1282,18 +1392,46 @@ const normalizeData = (data, type) => {
               <Box>
                 <form id="contact-form">
                   <div className="field-set">
-                    <label>Review Notes<span className="text-danger">*</span></label>
-                    <textarea id="w3review" name="discussionNotes" rows="4" cols="50" className="form-control" placeholder="Review"
-                      onChange={(e) => setNote(e.target.value)} value={note} />
-                    <span style={{ color: "red" }}>{blogErr && !note ? "Please Enter Your  note" : ""}</span>
+                    <label>
+                      Review Notes<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id="w3review"
+                      name="discussionNotes"
+                      rows="4"
+                      cols="50"
+                      className="form-control"
+                      placeholder="Review"
+                      onChange={(e) => setNote(e.target.value)}
+                      value={note}
+                    />
+                    <span style={{ color: "red" }}>
+                      {blogErr && !note ? "Please Enter Your  note" : ""}
+                    </span>
                   </div>
                   <div className="field-set">
-                    <label>Upload Images<span className="text-danger">*</span></label>
-                    <input type="file" className="form-control" name="upload_image" id="" />
+                    <label>
+                      Upload Images<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      name="upload_image"
+                      id=""
+                    />
                   </div>
                   <div className="field-set">
-                    <label>Recommendations<span className="text-danger">*</span></label>
-                    <textarea id="" name="recommend" rows="4" cols="50" className="form-control" placeholder="Recommendations" />
+                    <label>
+                      Recommendations<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id=""
+                      name="recommend"
+                      rows="4"
+                      cols="50"
+                      className="form-control"
+                      placeholder="Recommendations"
+                    />
                   </div>
                   <DialogActions className="submit-main">
                     <Button
