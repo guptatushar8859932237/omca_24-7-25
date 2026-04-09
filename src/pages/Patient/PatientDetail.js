@@ -2031,59 +2031,6 @@ function PatientDetail() {
       );
     }
   };
-  // const handleExtraButton = async () => {
-  //   try {
-  //     const formattedDate = date
-  //       ? new Date(date).toISOString().split("T")[0]
-  //       : "";
-  //     const payload = {
-  //       hospitalId: hospitalData.hospital_id,
-  //       note: note,
-  //       appointment_Date: formattedDate, // ✅ formatted date
-  //       mode: statuddropdown,
-  //       ...(statuddropdown === "offline" && {
-  //         pickup_time: pickuptime,
-  //         driver_name: drivername,
-  //         driver_contact: drivercontact,
-  //         vehicle_no: vehicalnumber,
-  //       }),
-  //     };
-  //     console.log(payload);
-  //     const response = await axios.put(
-  //       `${baseurl}edit_appointment/${appointmentid}`,
-  //       payload,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       },
-  //     );
-  //     if (response?.data?.success) {
-  //       Swal.fire("Appointment updated successfully!", "", "success");
-  //       setOpen1(false);
-  //       getDataapi3(selectedTreatmentId)
-  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  //       // reset form
-  //       setNote("");
-  //       setDate("");
-  //       setPickuptime("");
-  //       setDrivername("");
-  //       setDrivercontact("");
-  //       setVehicalnumber("");
-  //       setAppHospital(null);
-  //       setEdited(false);
-  //       setAppointErr(false);
-  //     } else {
-  //       Swal.fire("Update failed!", "", "error");
-  //     }
-  //   } catch (err) {
-  //     Swal.fire(
-  //       "Error!",
-  //       err?.response?.data?.message || err?.message || "Something went wrong",
-  //       "error",
-  //     );
-  //   }
-  // };
   const handleClicexportPayment = async (a, b) => {
     try {
       const response = await axios.get(`${baseurl}exportTreatmentExcel/${b}`, {

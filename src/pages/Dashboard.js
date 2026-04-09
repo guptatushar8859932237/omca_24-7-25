@@ -1034,7 +1034,7 @@ export default function Dashboard() {
                             duration={2}
                           />
                         </h3>
-                        <span className="widget-title">Arrival</span>
+                        <span className="widget-title">Arriving</span>
                       </div>
                     </div>
                   </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          

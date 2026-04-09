@@ -70,15 +70,15 @@ export default function AddStaff() {
     .max(15, "Phone number must not exceed 15 digits")
     .required("Phone number is required"),
 
-  roleStatuses: Yup.array()
-    .of(Yup.string())
-    .min(1, "Select at least one permission")
-    .required("Permission is required"),
+  // roleStatuses: Yup.array()
+  //   .of(Yup.string())
+  //   .min(1, "Select at least one permission")
+  //   .required("Permission is required"),
 
-  accessCountries: Yup.array()
-    .of(Yup.string())
-    .min(1, "Select at least one country for data access")
-    .required("Data access country is required"),
+  // accessCountries: Yup.array()
+  //   .of(Yup.string())
+  //   .min(1, "Select at least one country for data access")
+  //   .required("Data access country is required"),
 
   profileImage: Yup.mixed()
     .required("Profile image is required")
@@ -387,7 +387,7 @@ export default function AddStaff() {
                     </div>
 <div className="col-sm-6 dropdownCustom">
   <label>
-    Data Access Country <span className="text-danger">*</span>
+    Data Access Country <span className="text-danger"></span>
   </label>
 
   <FormControl fullWidth size="small">

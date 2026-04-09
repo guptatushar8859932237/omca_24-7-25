@@ -67,10 +67,10 @@ export default function EditStaff() {
     //   .required("Edit Delete is required"),
     profileImage: Yup.mixed().required("Profile image is required"),
     country: Yup.string().required("Country is required"),
-    accessCountries: Yup.array().min(
-      1,
-      "At least one country must be selected",
-    ),
+    // accessCountries: Yup.array().min(
+    //   1,
+    //   "At least one country must be selected",
+    // ),
     dial_code: Yup.string().required("Dial code is required"),
   });
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -286,7 +286,7 @@ export default function EditStaff() {
                   </div>
                   <div className="col-sm-6">
                     <label>
-                      Access Countries <span className="text-danger">*</span>
+                      Access Countries <span className="text-danger"></span>
                     </label>
 
                     <FormControl fullWidth>
@@ -477,7 +477,7 @@ export default function EditStaff() {
                   </div>
                   <div className="col-sm-6">
                     <label>
-                      Give Permission<span className="text-danger">*</span>
+                      Give Permission<span className="text-danger"></span>
                     </label>
                     <FormControl fullWidth>
                       <Select
