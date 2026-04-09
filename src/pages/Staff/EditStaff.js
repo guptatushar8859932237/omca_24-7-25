@@ -83,7 +83,10 @@ export default function EditStaff() {
       formData.append("gender", values.gender);
       formData.append("country", values.country);
       formData.append("dial_code", values.dial_code);
-      formData.append("roleStatuses", values.roleStatuses);
+   formData.append(
+  "roleStatuses",
+  JSON.stringify(values.roleStatuses || [])
+);
       formData.append(
         "accessCountries",
         JSON.stringify(values.accessCountries),
@@ -132,7 +135,7 @@ export default function EditStaff() {
               country: editStaff.country || "",
               dial_code: editStaff.dial_code || "",
               profileImage: editStaff.profileImage || null,
-              roleStatuses: editStaff.roleStatuses || null,
+             roleStatuses: editStaff.roleStatuses || [],
   //              isEdit: editStaff.isEdit || "0",   // FIXED
   // isDelete: editStaff.isDelete || "0", // FIXED
               accessCountries: editStaff.accessCountries || [],
