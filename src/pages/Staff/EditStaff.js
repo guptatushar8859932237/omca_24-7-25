@@ -83,9 +83,9 @@ export default function EditStaff() {
       formData.append("gender", values.gender);
       formData.append("country", values.country);
       formData.append("dial_code", values.dial_code);
-   formData.append(
+  formData.append(
   "roleStatuses",
-  JSON.stringify(values.roleStatuses || [])
+  JSON.stringify(values.roleStatuses.filter(Boolean))
 );
       formData.append(
         "accessCountries",
@@ -488,20 +488,21 @@ export default function EditStaff() {
                         value={values.roleStatuses}
                         name="roleStatuses"
                         onChange={(event) => {
-                          const value = event.target.value;
-                          if (value.includes("All")) {
-                            if (
-                              values.roleStatuses.length ===
-                              statusOptions.length
-                            ) {
-                              setFieldValue("roleStatuses", []);
-                            } else {
-                              setFieldValue("roleStatuses", statusOptions);
-                            }
-                          } else {
-                            setFieldValue("roleStatuses", value);
-                          }
-                        }}
+  let value = event.target.value;
+
+  // ❌ Remove empty values
+  value = value.filter((v) => v !== "");
+
+  if (value.includes("All")) {
+    if (values.roleStatuses.length === statusOptions.length) {
+      setFieldValue("roleStatuses", []);
+    } else {
+      setFieldValue("roleStatuses", statusOptions);
+    }
+  } else {
+    setFieldValue("roleStatuses", value);
+  }
+}}
                         className=""
                         renderValue={(selected) => selected.join(", ")}
                         MenuProps={{

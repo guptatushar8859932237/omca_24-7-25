@@ -91,7 +91,7 @@ export default function EnquiryDetailAmbulance() {
               <div className="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Enquiry Id<span className="text-danger">*</span></label>
+                    <label>Enquiry Id<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -102,7 +102,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Patient Name<span className="text-danger">*</span></label>
+                    <label>Patient Name<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -114,7 +114,7 @@ export default function EnquiryDetailAmbulance() {
                 <div className="col-md-3">
                   <div className="field-set">
                     <label>Phone Number
-                      <span className="text-danger">*</span>
+                      <span className="text-danger"></span>
                     </label>
                     <div className="country-code">
                       <input
@@ -134,7 +134,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Email<span className="text-danger">*</span></label>
+                    <label>Email<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -145,7 +145,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Passport Number<span className="text-danger">*</span></label>
+                    <label>Passport Number<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -156,7 +156,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Treating In Country<span className="text-danger">*</span></label>
+                    <label>Treating In Country<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -173,7 +173,7 @@ export default function EnquiryDetailAmbulance() {
               <div className="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Consciousness Status<span className="text-danger">*</span></label>
+                    <label>Consciousness Status<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -184,7 +184,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Breathing Difficulty<span className="text-danger">*</span></label>
+                    <label>Breathing Difficulty<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -195,7 +195,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Level of Urgency<span className="text-danger">*</span></label>
+                    <label>Level of Urgency<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -206,7 +206,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Bleeding or Trauma Details<span className="text-danger">*</span></label>
+                    <label>Bleeding or Trauma Details<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="email"
@@ -223,7 +223,7 @@ export default function EnquiryDetailAmbulance() {
               <div className="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Pickup Address<span className="text-danger">*</span></label>
+                    <label>Pickup Address<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -234,7 +234,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Pickup Location Type<span className="text-danger">*</span></label>
+                    <label>Pickup Location Type<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -245,7 +245,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Pickup Date<span className="text-danger">*</span></label>
+                    <label>Pickup Date<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -256,7 +256,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Pickup Time<span className="text-danger">*</span></label>
+                    <label>Pickup Time<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -267,7 +267,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>GPS / Location Pin<span className="text-danger">*</span></label>
+                    <label>GPS / Location Pin<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -284,7 +284,7 @@ export default function EnquiryDetailAmbulance() {
               <div className="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Destination Address<span className="text-danger">*</span></label>
+                    <label>Destination Address<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -295,7 +295,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Hospital Name<span className="text-danger">*</span></label>
+                    <label>Hospital Name<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -306,7 +306,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Department or Ward<span className="text-danger">*</span></label>
+                    <label>Department or Ward<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -323,7 +323,7 @@ export default function EnquiryDetailAmbulance() {
               <div className="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Reason For Ambulance Request / Chief Complaint<span className="text-danger">*</span></label>
+                    <label>Reason For Ambulance Request / Chief Complaint<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -334,7 +334,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Patient Condition<span className="text-danger">*</span></label>
+                    <label>Patient Condition<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -345,7 +345,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Ambulance Type<span className="text-danger">*</span></label>
+                    <label>Ambulance Type<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -356,7 +356,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Special Needs<span className="text-danger">*</span></label>
+                    <label>Special Needs<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -373,7 +373,7 @@ export default function EnquiryDetailAmbulance() {
               <div className="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Name of Caller / Attendant<span className="text-danger">*</span></label>
+                    <label>Name of Caller / Attendant<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -384,7 +384,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Relation to Patient<span className="text-danger">*</span></label>
+                    <label>Relation to Patient<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -395,7 +395,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Alternate Contact Number <span className="text-danger">*</span></label>
+                    <label>Alternate Contact Number <span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -412,7 +412,7 @@ export default function EnquiryDetailAmbulance() {
               <div className="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Payment Method<span className="text-danger">*</span></label>
+                    <label>Payment Method<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -423,7 +423,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Insurance Details<span className="text-danger">*</span></label>
+                    <label>Insurance Details<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -434,7 +434,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Approval / Reference Number <span className="text-danger">*</span></label>
+                    <label>Approval / Reference Number <span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -451,7 +451,7 @@ export default function EnquiryDetailAmbulance() {
               <div className="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Special Instructions<span className="text-danger">*</span></label>
+                    <label>Special Instructions<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -462,7 +462,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Language Preference<span className="text-danger">*</span></label>
+                    <label>Language Preference<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -473,7 +473,7 @@ export default function EnquiryDetailAmbulance() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Doctor Reference <span className="text-danger">*</span></label>
+                    <label>Doctor Reference <span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"

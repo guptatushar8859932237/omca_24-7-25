@@ -95,7 +95,7 @@ export default function Medicalescortservice() {
               <div className="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Enquiry Id<span className="text-danger">*</span></label>
+                    <label>Enquiry Id<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -106,7 +106,7 @@ export default function Medicalescortservice() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Treatment<span className="text-danger">*</span></label>
+                    <label>Treatment<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -117,7 +117,7 @@ export default function Medicalescortservice() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Country<span className="text-danger">*</span>
+                    <label>Country<span className="text-danger"></span>
                     </label>
                     <input
                       class="form-control"
@@ -129,7 +129,7 @@ export default function Medicalescortservice() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Name<span className="text-danger">*</span></label>
+                    <label>Name<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -140,7 +140,7 @@ export default function Medicalescortservice() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Email<span className="text-danger">*</span></label>
+                    <label>Email<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -153,7 +153,7 @@ export default function Medicalescortservice() {
                   <div className="field-set">
                     <label>
                       Phone Number
-                      <span className="text-danger">*</span>
+                      <span className="text-danger"></span>
                     </label>
                     <div className="country-code">
                       <input
@@ -174,7 +174,7 @@ export default function Medicalescortservice() {
                 <div className="col-md-3">
                   <div className="field-set">
                     <label>WhatsApp Number
-                      <span className="text-danger">*</span>
+                      <span className="text-danger"></span>
                     </label>
                     <div className="country-code">
                       <input
@@ -194,7 +194,7 @@ export default function Medicalescortservice() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Description<span className="text-danger">*</span></label>
+                    <label>Description<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="email"
@@ -205,7 +205,7 @@ export default function Medicalescortservice() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Passport Number<span className="text-danger">*</span></label>
+                    <label>Passport Number<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"
@@ -216,7 +216,7 @@ export default function Medicalescortservice() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Treating In Country<span className="text-danger">*</span></label>
+                    <label>Treating In Country<span className="text-danger"></span></label>
                     <input
                       class="form-control"
                       type="text"

@@ -211,7 +211,7 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Country<span className="text-danger">*</span></label>
+                      <label>Country<span className="text-danger"></span></label>
                       <input
                         class="form-control"
                         type="email"

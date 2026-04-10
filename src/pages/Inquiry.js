@@ -389,7 +389,6 @@ const handleChange = async (event, id, tabValue, data) => {
       } catch (err) {
         Swal.fire("Error!", err?.message || "Error", "error");
       }
-    
     }else{
         await dispatch(
             EnquiryStatus({
@@ -398,7 +397,6 @@ const handleChange = async (event, id, tabValue, data) => {
               enquiry_type: "OMCA Enquiry",
             })
           ).unwrap();
-
           Swal.fire("Success!", "Status Change Successfully!", "success");
           dispatch(GetAllEnquiry());
     }
