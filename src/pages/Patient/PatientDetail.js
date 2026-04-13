@@ -38,9 +38,12 @@ import {
 
 function PatientDetail() {
   const navigate = useNavigate();
+  const [openGuesthouse, setOpenGuesthouse] = useState(false);
+  const [isEditGuesthouse, setIsEditGuesthouse] = useState(false);
   const [seekerStatus, setSeekerStatus] = React.useState({});
   const [treatmentData, setTreatmentData] = useState([]);
   const [pickuptime, setPickuptime] = useState("");
+  const [treatmentIds1, setTreatmentIds1] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
   const [images, setImages] = useState([]);
   const [openIndex, setOpenIndex] = useState(0);
@@ -159,6 +162,16 @@ function PatientDetail() {
   const [appointmentTabel, setAppointmentTabel] = useState([]);
   const [chkservice, setChkservice] = useState([]);
   const [blogErr, setBlogErr] = useState(false);
+  const [formDataGuestHouse, setFormDataGuestHouse] = useState({
+    guestHouseName: "",
+    dateRangeFrom: "",
+    dateRangeTo: "",
+    numberOfRooms: "",
+    paymentAmount: "",
+    paymentDate: "",
+    notes: "",
+    invoiceFile: null,
+  });
   const [editPatientProfile, setEditPatientProfile] = useState(false);
   const [hAndleReport, setHAndleReport] = useState(false);
   const [appointErr, setAppointErr] = useState(false);
@@ -199,6 +212,26 @@ function PatientDetail() {
       throw error;
     }
   };
+
+  const hadnlcecEdopenmodalGuestHouse =(item,info)=>{
+    console.log(item,info)
+    setTreatmentIds1(item.patientId)
+    setFormDataGuestHouse(item)
+    setIsEditGuesthouse(true)
+     setOpenGuesthouse(true);
+  }
+
+  const handleclickGuestHouse = (info) => {
+    setTreatmentIds1(info.treatment_id);
+    setOpenGuesthouse(true);
+  };
+  const handleCloseguesthouse = () => {
+    setOpenGuesthouse(false);
+      setTreatmentIds1()
+    setIsEditGuesthouse(false)
+    setFormDataGuestHouse("")
+     setOpenGuesthouse(false);
+  };
   const AddpaymentOnchnage = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
@@ -225,6 +258,11 @@ function PatientDetail() {
       setKyc(PatientTreatments.Kyc_details);
       setNotes(PatientTreatments.discussionNotes);
       setPayment_details(PatientTreatments.payment_details);
+      const treatmentId = PatientTreatments?.treatments?.[0]?.treatment_id;
+      console.log(treatmentId);
+      if (treatmentId) {
+        patient_guesthouse(treatmentId); // 👈 pass karo
+      }
       setChkservice(PatientTreatments.services);
     }
   }, [PatientTreatments]);
@@ -270,9 +308,13 @@ function PatientDetail() {
     setTreatmentId(tretmentId);
   };
   useEffect(() => {
-    patient_guesthouse();
-    getallPayments();
-  }, [location.state.patientId]);
+    const treatmentId = tretment?.treatment?.[0]?.treatment_id;
+
+    if (treatmentId) {
+      patient_guesthouse();
+      getallPayments();
+    }
+  }, [location.state.patientId, tretment]);
   const handleclosePerforma = () => {
     setOpen32(false);
   };
@@ -2285,11 +2327,11 @@ function PatientDetail() {
       const response = await axios.post(
         `${baseurl}addTreatmentPlan`,
         formData,
-          {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      }
       );
       if (response?.data?.success) {
         getTreatmentPlan();
@@ -2356,6 +2398,57 @@ function PatientDetail() {
       });
     }
   };
+  const handledelteguestHouse = async (item, info, index) => {
+    console.log(item, info, index);
+
+    // 🔥 Confirm popup
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this record!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.post(
+          `${baseurl}deleteGuestHouseCharge/${item.id}`,
+        );
+
+        // ✅ Success
+        if (response?.data?.success) {
+          Swal.fire({
+            icon: "success",
+            title: "Deleted!",
+            text: response.data.message || "Record deleted successfully",
+          });
+
+          // 🔄 optional: refresh list
+          patient_guesthouse(item.treatment_id); // ya jo bhi API tum use kar rahe ho refresh ke liye
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: response?.data?.message || "Something went wrong",
+          });
+        }
+      } catch (error) {
+        console.error(error);
+
+        // ❌ Error
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text:
+            error.response?.data?.message || "Server error, please try again",
+        });
+      }
+    }
+  };
+
   const AddpaymentOnchnage123 = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -3096,20 +3189,6 @@ function PatientDetail() {
       _id: item._id,
     });
   };
-
-  // const editpaharmacy=async()=>{
-  //   const payload={
-  //  service_name: pharmacyvalue.service_name,
-  //   price: pharmacyvalue.price,
-  //   date: pharmacyvalue.date ? pharmacyvalue.date.split("T")[0] : "",
-  //   _id:pharmacyvalue._id
-  //   }
-  // try {
-  //   const response =await axios.put(`${baseurl}editPharmacyCharge/${treatmntidPharmacy}`,payload)
-  // } catch (error) {
-
-  // }
-  // }
   const editpaharmacy = async () => {
     const payload = {
       service_name: pharmacyvalue.service_name,
@@ -3117,7 +3196,6 @@ function PatientDetail() {
       date: pharmacyvalue.date, // ✅ already YYYY-MM-DD hona chahiye
       charge_id: pharmacyvalue._id,
     };
-
     try {
       const response = await axios.put(
         `${baseurl}editPharmacyCharge/${treatmntidPharmacy}`,
@@ -3155,43 +3233,320 @@ function PatientDetail() {
     }
   };
 
+  const handlechangeGuesthouse = (e) => {
+    const { name, value, type, files } = e.target;
+
+    setFormDataGuestHouse((prev) => ({
+      ...prev,
+      [name]: type === "file" ? files[0] : value,
+    }));
+  };
+
+  // const submitGuestHouseApi = async () => {
+  //   try {
+  //     const formData = new FormData();
+
+  //     // ✅ append all fields
+  //     formData.append("guestHouseName", iniData.guestHouseName || "");
+  //     formData.append("dateRangeFrom", iniData.dateRangeFrom || "");
+  //     formData.append("dateRangeTo", iniData.dateRangeTo || "");
+  //     formData.append("numberOfRooms", hospitalCharge.numberOfRooms || "");
+  //     formData.append("paymentAmount", hospitalCharge.paymentAmount || "");
+  //     formData.append("paymentDate", iniData.paymentDate || "");
+  //     formData.append("notes", iniData.notes || "");
+
+  //     // ✅ file
+  //     if (iniData.invoiceFile) {
+  //       formData.append("invoiceFile", iniData.invoiceFile);
+  //     }
+
+  //     // 🔥 API call
+  //     const response = await axios.post(
+  //       `${baseurl}addGuestHouseCharge`,formData);
+
+  //     // ✅ Success Swal
+  //     if (response.data.success) {
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: "Success",
+  //         text: response.data.message || "Data submitted successfully",
+  //         confirmButtonColor: "#3085d6",
+  //       });
+
+  //       handleCloseguesthouse(); // modal close
+  //     } else {
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Error",
+  //         text: response.data.message || "Something went wrong",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+
+  //     // ❌ Error Swal
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text:
+  //         error.response?.data?.message ||
+  //         "Server error. Please try again.",
+  //     });
+  //   }
+  // };
+
+  const handleClickGuesthuseedit = async () => {
+  const data = formDataGuestHouse;
+      console.log(data)
+  // 🔥 Validation
+  if (!data.guestHouseName?.trim()) {
+    return Swal.fire("Error", "Guest House Name is required", "error");
+  }
+
+  if (!data.dateRangeFrom) {
+    return Swal.fire("Error", "Date Range From is required", "error");
+  }
+
+  if (!data.dateRangeTo) {
+    return Swal.fire("Error", "Date Range To is required", "error");
+  }
+
+  // ✅ Date logic
+  if (new Date(data.dateRangeTo) < new Date(data.dateRangeFrom)) {
+    return Swal.fire("Error", "End date must be after start date", "error");
+  }
+
+  if (!data.numberOfRooms) {
+    return Swal.fire("Error", "Number of Rooms is required", "error");
+  }
+
+  if (!data.paymentAmount) {
+    return Swal.fire("Error", "Payment Amount is required", "error");
+  }
+
+  if (!data.paymentDate) {
+    return Swal.fire("Error", "Payment Date is required", "error");
+  }
+
+  if (!data.notes?.trim()) {
+    return Swal.fire("Error", "Notes is required", "error");
+  }
+
+  try {
+    const formData = new FormData();
+
+    // ✅ normal fields
+    Object.keys(data).forEach((key) => {
+      if (key !== "invoiceFile" && data[key] !== null && data[key] !== undefined) {
+        formData.append(key, data[key]);
+      }
+    });
+
+    // ✅ file only if selected
+    if (data.invoiceFile instanceof File) {
+      formData.append("invoiceFile", data.invoiceFile);
+    }
+
+    // ✅ extra params
+    formData.append("treatment_id", treatmentIds1);
+    formData.append("patientId", location.state.patientId);
+
+    const response = await axios.post(
+      `${baseurl}updateGuestHouseCharge/${data.id}`,
+      formData
+    );
+
+    if (response?.data?.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: response.data.message || "Data updated successfully",
+      });
+
+      patient_guesthouse(data.treatment_id);
+      handleCloseguesthouse();
+    } else {
+      Swal.fire("Error", response?.data?.message || "Something went wrong", "error");
+    }
+  } catch (error) {
+    console.error(error);
+
+    Swal.fire(
+      "Error",
+      error.response?.data?.message || "Server error",
+      "error"
+    );
+  }
+};
+
+  // const handleClickGuesthuseedit = async () => {
+  //   const data = formDataGuestHouse;
+
+  //   // 🔥 Validation
+  //   if (!data.guestHouseName?.trim()) {
+  //     return Swal.fire("Error", "Guest House Name is required", "error");
+  //   }
+
+  //   if (!data.dateRangeFrom) {
+  //     return Swal.fire("Error", "Date Range From is required", "error");
+  //   }
+
+  //   if (!data.dateRangeTo) {
+  //     return Swal.fire("Error", "Date Range To is required", "error");
+  //   }
+
+  //   // ✅ Date logic validation
+  //   if (new Date(data.dateRangeTo) < new Date(data.dateRangeFrom)) {
+  //     return Swal.fire("Error", "End date must be after start date", "error");
+  //   }
+
+  //   if (!data.numberOfRooms) {
+  //     return Swal.fire("Error", "Number of Rooms is required", "error");
+  //   }
+
+  //   if (!data.paymentAmount) {
+  //     return Swal.fire("Error", "Payment Amount is required", "error");
+  //   }
+
+  //   if (!data.paymentDate) {
+  //     return Swal.fire("Error", "Payment Date is required", "error");
+  //   }
+
+  //   if (!data.notes?.trim()) {
+  //     return Swal.fire("Error", "Notes is required", "error");
+  //   }
+
+  //   if (!data.invoiceFile) {
+  //     return Swal.fire("Error", "Invoice File is required", "error");
+  //   }
+
+  //   try {
+  //     const formData = new FormData();
+  //     Object.keys(data).forEach((key) => {
+  //       if (data[key] !== null && data[key] !== undefined) {
+  //         formData.append(key, data[key]);
+  //       }
+  //     });
+  //     formData.append("treatment_id", treatmentIds1);
+  //     formData.append("patientId", location.state.patientId);
+
+  //     const response = await axios.post(
+  //       `${baseurl}updateGuestHouseCharge/${data.id}`,
+  //       formData,
+  //     );
+  //     if (response?.data?.success) {
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: "Success",
+  //         text: response.data.message || "Data Edite successfully",
+  //       });
+  //       patient_guesthouse(treatmentIds1);
+  //       handleCloseguesthouse();
+  //     } else {
+  //       Swal.fire(
+  //         "Error",
+  //         response?.data?.message || "Something went wrong",
+  //         "error",
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+
+  //     Swal.fire(
+  //       "Error",
+  //       error.response?.data?.message || "Server error",
+  //       "error",
+  //     );
+  //   }
+  // };
+  const submitGuestHouseApi = async () => {
+    const data = formDataGuestHouse;
+
+    // 🔥 Validation
+    if (!data.guestHouseName?.trim()) {
+      return Swal.fire("Error", "Guest House Name is required", "error");
+    }
+
+    if (!data.dateRangeFrom) {
+      return Swal.fire("Error", "Date Range From is required", "error");
+    }
+
+    if (!data.dateRangeTo) {
+      return Swal.fire("Error", "Date Range To is required", "error");
+    }
+
+    // ✅ Date logic validation
+    if (new Date(data.dateRangeTo) < new Date(data.dateRangeFrom)) {
+      return Swal.fire("Error", "End date must be after start date", "error");
+    }
+
+    if (!data.numberOfRooms) {
+      return Swal.fire("Error", "Number of Rooms is required", "error");
+    }
+
+    if (!data.paymentAmount) {
+      return Swal.fire("Error", "Payment Amount is required", "error");
+    }
+
+    if (!data.paymentDate) {
+      return Swal.fire("Error", "Payment Date is required", "error");
+    }
+
+    if (!data.notes?.trim()) {
+      return Swal.fire("Error", "Notes is required", "error");
+    }
+
+    if (!data.invoiceFile) {
+      return Swal.fire("Error", "Invoice File is required", "error");
+    }
+
+    try {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => {
+        if (data[key] !== null && data[key] !== undefined) {
+          formData.append(key, data[key]);
+        }
+      });
+      formData.append("treatment_id", treatmentIds1);
+      formData.append("patientId", location.state.patientId);
+
+      const response = await axios.post(
+        `${baseurl}addGuestHouseCharge`,
+        formData,
+      );
+      if (response?.data?.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: response.data.message || "Data submitted successfully",
+        });
+        patient_guesthouse(treatmentIds1);
+        handleCloseguesthouse();
+      } else {
+        Swal.fire(
+          "Error",
+          response?.data?.message || "Something went wrong",
+          "error",
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Server error",
+        "error",
+      );
+    }
+  };
+
   const handleclickopenpopup = () => {
     setPopupopenattande(true);
   };
   const handlecliclosepup = () => {
     setPopupopenattande(false);
   };
-  // const handleassignAtendent =(e)=>{
-  //   e.preventDefault()
-  //   console.log(selectedAttendants)
-  // }
-  //   const handleassignAtendent = async () => {
-  //     console.log(selectedAttendants)
-  //   const payload = {
-  //     AttendeeIds: selectedAttendants,
-  //   };
 
-  //   try {
-  //     const response = await axios.post(`${baseurl}treatmentAssignAttendee/${selectedTreatmentId}`,payload);
-
-  //     // ✅ Success Swal
-  //     Swal.fire({
-  //       icon: "success",
-  //       title: "Success",
-  //       text: "Attendees assigned successfully!",
-  //       timer: 2000,
-  //       showConfirmButton: false,
-  //     });
-
-  //   } catch (error) {
-  //     // ❌ Error Swal
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error",
-  //       text: error?.response?.data?.message || "Something went wrong!",
-  //     });
-  //   }
-  // };
   const handleassignAtendent = async () => {
     try {
       // 🔍 Validation
@@ -3202,8 +3557,6 @@ function PatientDetail() {
           text: "Please select at least one attendant!",
         });
       }
-
-      // ⚠️ Confirmation Popup
       const result = await Swal.fire({
         title: "Are you sure?",
         text: "You want to assign selected attendants?",
@@ -3212,14 +3565,10 @@ function PatientDetail() {
         confirmButtonText: "Yes, assign",
         cancelButtonText: "Cancel",
       });
-
       if (!result.isConfirmed) return;
-
       const payload = {
         AttendeeIds: selectedAttendants,
       };
-
-      // 🚀 API Call
       const response = await axios.post(
         `${baseurl}treatmentAssignAttendee/${selectedTreatmentId}`,
         payload,
@@ -3273,6 +3622,7 @@ function PatientDetail() {
         showCancelButton: true,
         confirmButtonText: "Yes, delete",
         cancelButtonText: "Cancel",
+        cancelButtonColor: "#6e7881",
       });
 
       if (!result.isConfirmed) return;
@@ -3305,16 +3655,12 @@ function PatientDetail() {
     }
   };
 
-  const patient_guesthouse = async () => {
-    console.log(location.state.user_id);
-    const payload = {
-      user_id: location.state.user_id,
-    };
+  const patient_guesthouse = async (treatmentId) => {
     try {
-      const response = await axios.post(
-        `${AdminBaseUrl}patient_guesthouse_bookings`,
-        payload,
+      const response = await axios.get(
+        `${baseurl}getGuestHouseCharge/${location.state.patientId}/${treatmentId}`,
       );
+      console.log(response.data.data);
       setGuestHouseBooking(response.data.data);
       setGuestHouseBookingobj(response.data);
     } catch (error) {
@@ -3934,11 +4280,15 @@ function PatientDetail() {
                                     </div>
                                     <div
                                       className={`collapse-icon ${openIndex === index ? "rotate" : ""}`}
-                                      onClick={() =>
-                                        setOpenIndex(
-                                          openIndex === index ? null : index,
-                                        )
-                                      }
+                                      onClick={() => {
+                                        const isOpening = openIndex !== index;
+
+                                        setOpenIndex(isOpening ? index : null);
+
+                                        if (isOpening) {
+                                          patient_guesthouse(info.treatment_id);
+                                        }
+                                      }}
                                       aria-expanded={openIndex === index}
                                     >
                                       <i className="fa-solid fa-chevron-down"></i>
@@ -4430,10 +4780,22 @@ function PatientDetail() {
                                             <div className="row gx-3 gy-3 mt-2">
                                               <div className="col-md-12">
                                                 <div className="card patientreat">
-                                                  <div className="card-header service-list">
+                                                  <div className="card-header service-list d-flex justify-content-between">
                                                     <h6>
                                                       Guest House Services
                                                     </h6>
+                                                    <div>
+                                                      <button
+                                                        className="add-button"
+                                                        onClick={() => {
+                                                          handleclickGuestHouse(
+                                                            info,
+                                                          );
+                                                        }}
+                                                      >
+                                                        Add Guest House
+                                                      </button>
+                                                    </div>
                                                   </div>
                                                   <div className="card-body">
                                                     <div className="table-responsive table-no-card">
@@ -4445,11 +4807,14 @@ function PatientDetail() {
                                                             </th>
                                                             <th>Check In</th>
                                                             <th>Check Out</th>
-                                                            <th>
-                                                              Number of Guest
-                                                            </th>
+                                                            <th>Total Guest</th>
                                                             <th>Amount</th>
-                                                            {/* <th>Actions</th> */}
+                                                            <th>
+                                                              Payment Date
+                                                            </th>
+                                                            <th>Notes</th>
+                                                            <th>Document</th>
+                                                            <th>Action</th>
                                                           </tr>
                                                         </thead>
                                                         <tbody>
@@ -4465,51 +4830,87 @@ function PatientDetail() {
                                                                     }
                                                                   >
                                                                     <td>
-                                                                      {item.guest_house_name ||
+                                                                      {item.guestHouseName ||
                                                                         "-"}
                                                                     </td>
                                                                     <td>
-                                                                      {
-                                                                        item.checkin
-                                                                      }
+                                                                      {new Date(
+                                                                        item.dateRangeFrom,
+                                                                      ).toLocaleDateString(
+                                                                        "en-GB",
+                                                                      )}
                                                                     </td>
                                                                     <td>
-                                                                      {
-                                                                        item.checkout
-                                                                      }
+                                                                      {new Date(
+                                                                        item.dateRangeTo,
+                                                                      ).toLocaleDateString(
+                                                                        "en-GB",
+                                                                      )}
                                                                     </td>
 
                                                                     <td>
-                                                                      {parseInt(
-                                                                        item.adults,
-                                                                      ) +
-                                                                        parseInt(
-                                                                          item.children,
-                                                                        )}
+                                                                      {
+                                                                        item.numberOfRooms
+                                                                      }
                                                                     </td>
                                                                     <td>
                                                                       $
                                                                       {parseInt(
-                                                                        item?.payment_amount,
+                                                                        item?.paymentAmount,
+                                                                      )}
+                                                                    </td>
+                                                                    <td>
+                                                                      {new Date(
+                                                                        item?.paymentDate,
+                                                                      ).toLocaleDateString(
+                                                                        "en-GB",
+                                                                      )}
+                                                                    </td>
+                                                                    <td>
+                                                                      {
+                                                                        item?.notes
+                                                                      }
+                                                                    </td>
+                                                                    <td>
+                                                                      {item?.invoiceUrl ? (
+                                                                        <button
+                                                                          className="btn btn-sm btn-primary"
+                                                                          onClick={() =>
+                                                                            window.open(
+                                                                              `${baseurl}${item.invoiceUrl}`,
+                                                                              "_blank",
+                                                                            )
+                                                                          }
+                                                                        >
+                                                                          View
+                                                                        </button>
+                                                                      ) : (
+                                                                        "No File"
                                                                       )}
                                                                     </td>
                                                                     <td>
                                                                       <div className="action-icon">
-                                                                        {/* <VisibilityIcon
-                                                                                                                          className="eye-icon"
-                                                                                                                  // onClick={(e) =>
-                                                                                                                  //   PatientDetail(
-                                                                                                                  //     e,
-                                                                                                                  //     info.patientId,
-                                                                                                                  //     info.enquiryId,
-                                                                                                                  //     info.id,
-                                                                                                                  //      info.user_id
-                                                                                                                  //     // info.patient_disease[0]
-                                                                                                                  //     //   .treatment_id,
-                                                                                                                  //   )
-                                                                                                                  // }
-                                                                                                                />
-                                                                        */}
+                                                                        <div className="action-icon">
+                                                                          <i
+                                                                            className="fa-solid fa-pen-to-square"
+                                                                            onClick={() => {
+                                                                              hadnlcecEdopenmodalGuestHouse(
+                                                                                item,
+                                                                                info,
+                                                                              );
+                                                                            }}
+                                                                          ></i>
+                                                                          <i
+                                                                            className="fa-solid fa-trash"
+                                                                            onClick={() => {
+                                                                              handledelteguestHouse(
+                                                                                item,
+                                                                                info,
+                                                                                index,
+                                                                              );
+                                                                            }}
+                                                                          ></i>
+                                                                        </div>
                                                                       </div>
                                                                     </td>
                                                                   </tr>
@@ -7173,6 +7574,187 @@ function PatientDetail() {
                         variant="contained"
                       >
                         Submit
+                      </Button>
+                    )}
+                  </DialogActions>
+                </div>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={openGuesthouse}
+          onClose={handleCloseguesthouse}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>{isEditGuesthouse=== false?"Add":"Edit"} Guest House</h6>
+            </div>
+            <div className="cross-icon" onClick={handleCloseguesthouse}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box view-table-detail">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <div id="contact-form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Guest House Name<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder=" Guest House Name"
+                      className="form-control"
+                      name="guestHouseName"
+                      value={formDataGuestHouse.guestHouseName}
+                      onChange={handlechangeGuesthouse}
+                    />
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Date Range From <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={
+                        formDataGuestHouse?.dateRangeFrom
+                          ? formDataGuestHouse.dateRangeFrom.split("T")[0]
+                          : ""
+                      }
+                      name="dateRangeFrom"
+                      required
+                      onChange={handlechangeGuesthouse}
+                    />
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Date Range To <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={
+                        formDataGuestHouse?.dateRangeTo
+                          ? formDataGuestHouse.dateRangeTo.split("T")[0]
+                          : ""
+                      }
+                      name="dateRangeTo"
+                      required
+                      onChange={handlechangeGuesthouse}
+                    />
+                  </div>
+
+                  <div className="field-set">
+                    <label>
+                      Number Of Rooms<span className="text-danger">*</span>
+                    </label>
+                    <div className="upload-input">
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="numberOfRooms"
+                        value={formDataGuestHouse.numberOfRooms}
+                        onKeyPress={handkekeypreees}
+                        onChange={handlechangeGuesthouse}
+                      />
+                    </div>
+
+                    <div className="field-set">
+                      <label>
+                        Payment Amount<span className="text-danger">*</span>
+                      </label>
+                      <div className="upload-input">
+                        <div className="fixpricee">
+                          <p className="code-dial">USD($)</p>
+                          <input
+                            type="number"
+                            className="form-control code-in"
+                            name="paymentAmount"
+                            value={formDataGuestHouse.paymentAmount}
+                            onKeyPress={handkekeypreees}
+                            onChange={handlechangeGuesthouse}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="field-set">
+                      <label>
+                        Payment Date <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={
+                          formDataGuestHouse?.paymentDate
+                            ? formDataGuestHouse.paymentDate.split("T")[0]
+                            : ""
+                        }
+                        name="paymentDate"
+                        required
+                        onChange={handlechangeGuesthouse}
+                      />
+                    </div>
+                    <div className="field-set">
+                      <label>
+                        Notes <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={formDataGuestHouse?.notes}
+                        name="notes"
+                        required
+                        onChange={handlechangeGuesthouse}
+                      />
+                    </div>
+
+                    <div className="field-set">
+                      <label>
+                        Invoice File <span className="text-danger">{isEditGuesthouse===true?"":"*"}</span>
+                      </label>
+                      <input
+                        type="file"
+                        placeholder="payment Method"
+                        className="form-control"
+                        name="invoiceFile"
+                        accept="image/*"
+                        required
+                        onChange={handlechangeGuesthouse}
+                      />
+                    </div>
+                  </div>
+
+                  <DialogActions className="submit-main">
+                    {isEditGuesthouse === true ? (
+                      <Button
+                        // type="submit"
+                        onClick={handleClickGuesthuseedit}
+                        variant="contained"
+                      >
+                        Edit Guest House
+                      </Button>
+                    ) : (
+                      <Button
+                        // type="submit"
+                        onClick={submitGuestHouseApi}
+                        variant="contained"
+                      >
+                       Add Guest House
                       </Button>
                     )}
                   </DialogActions>
