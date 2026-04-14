@@ -5590,7 +5590,6 @@ function PatientDetail() {
                                                     )}
                                                   </TableRow>
                                                 </TableHead>
-
                                                 <TableBody>
                                                   {reportsFilered1 &&
                                                   reportsFilered1.length > 0 ? (
@@ -5604,11 +5603,9 @@ function PatientDetail() {
                                                               item?.treatment_course_name
                                                             }
                                                           </TableCell>
-
                                                           <TableCell>
                                                             {item?.reportTitle}
                                                           </TableCell>
-
                                                           <TableCell>
                                                             {new Date(
                                                               item?.treatment_report_date,
@@ -5622,7 +5619,6 @@ function PatientDetail() {
                                                               ? "CRM"
                                                               : "Hospital"}
                                                           </TableCell>
-
                                                           {usrFount ===
                                                           "Admin" ? (
                                                             <>
