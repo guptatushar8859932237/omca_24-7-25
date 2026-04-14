@@ -317,6 +317,69 @@ export default function EnquiryDetail() {
                     </div>
                   </div>
                 </div>
+                  <div className="row">
+                          <div className="treat-hd">
+           <h6>Doctor Review</h6>
+                            <span className="line"></span></div>
+                    <div className="col-md-12">
+  <div className="row">  {/* 👈 ye important hai */}
+
+    <div className="col-md-4">
+      <div className="field-set">
+        <label>Review Notes</label>
+        <input
+          className="form-control"
+          type="text"
+          value={row?.doctorReview?.review_notes || ""}
+          readOnly
+        />
+      </div>
+    </div>
+
+    <div className="col-md-4">
+      <div className="field-set">
+        <label>Recommendations</label>
+        <input
+          className="form-control"
+          type="text"
+          value={row?.doctorReview?.Recommendations || ""}
+          readOnly
+        />
+      </div>
+    </div>
+
+    <div className="col-md-4">
+      <div className="field-set">
+        <label>Documents</label>
+
+      {row?.doctorReview?.images?.length > 0 ? (
+  row.doctorReview.images.map((img, index) => {
+    const fullUrl = img.startsWith("http")
+      ? img
+      : imageUrl + img;
+
+  return (
+  <div key={index}>
+    <button
+      type="button"
+      className="viewbtn"
+      onClick={() => window.open(fullUrl, "_blank")}
+    >
+      View
+    </button>
+  </div>
+);
+  })
+) : (
+  <p>No Documents</p>
+)}
+      </div>
+    </div>
+
+  </div>
+</div>
+                  </div>
+
                 <div className="treat-hd">
                   {
                     row.patient_relation ?

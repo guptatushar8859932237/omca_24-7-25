@@ -65,14 +65,67 @@ export default function Inquiry() {
   const { Enquiry, loading, error } = useSelector((state) => state.Enquiry);
   const { hospital } = useSelector((state) => state.hospital);
   const [tabValue, setTabValue] = useState(0);
-
+const [recommend, setRecommend] = useState("");
+const [images, setImages] = useState([]);
   // const handleTabChange = (event, newValue) => {
   //   setTabValue(newValue);
   // };
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
+// 🔥 textarea change
+const handleNoteChange = (e) => {
+  setNote(e.target.value);
+};
 
+const handleRecommendChange = (e) => {
+  setRecommend(e.target.value);
+};
+
+// 🔥 image change
+const handleImageChange = (e) => {
+  const files = Array.from(e.target.files);
+  setImages(files);
+};
+
+const handleNotesdataqw = async (e) => {
+  e.preventDefault();
+
+  if (!note || !recommend || images.length === 0) {
+    return Swal.fire("Error", "All fields are required", "error");
+  }
+
+  try {
+    const formData = new FormData();
+
+    formData.append("review_notes", note);
+    formData.append("Recommendations", recommend);
+    formData.append("enquiryId", enqId);
+
+    // 🔥 multiple images append
+    images.forEach((img) => {
+      formData.append("images", img);
+    });
+
+    const response = await axios.post(
+      `${baseurl}addDoctorReview`,
+      formData
+    );
+
+    if (response.data.success) {
+      handleClose4()
+      Swal.fire("Success", "Data submitted successfully", "success");
+
+      // reset
+      setNote("");
+      setRecommend("");
+      setImages([]);
+    }
+  } catch (error) {
+    console.log(error);
+    Swal.fire("Error", "Something went wrong", "error");
+  }
+};
   const airAmbulanceData = formData?.data?.air_ambulance || [];
   const ambulanceData = formData?.data?.ambulance_requests || [];
   const treatmentData = formData?.data?.get_treatment_estimate || [];
@@ -231,12 +284,12 @@ export default function Inquiry() {
   const handleChangtype = async (e, b) => {
     const value = e?.value || e?.target?.value;
     console.log(tabValue);
-    console.log(e)
-    console.log(value)
-    const data1 =parseInt(value)
+    console.log(e);
+    console.log(value);
+    const data1 = parseInt(value);
     const data = {
       id: b?.id,
-      status: statusMap[data1], 
+      status: statusMap[data1],
       model:
         tabValue === 1
           ? "AmbulanceRequest"
@@ -245,7 +298,6 @@ export default function Inquiry() {
             : tabValue === 3
               ? "PatientQuery"
               : "",
-     
     };
     try {
       const response = await axios.post(
@@ -266,170 +318,87 @@ export default function Inquiry() {
     setTabValue(newValue);
     localStorage.setItem("tabenquiry", newValue);
   };
-  // const handleChange = async (event, id, tabValue, data) => {
-  //   console.log(event, id, tabValue, data)
-  //   const { value } = event.target;
-  //     console.log(value)
-  //   const result = await Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "Do you really want to update / convert?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "Yes",
-  //   });
-
-  //   if (!result.isConfirmed) return;
-
-  //   // ✅ ONLY run when Confirmed selected
-  //   if (Number(value) !== 1) {
-  //     // Sirf status update karna hai, API nahi
-  //     await handleChangtype({ value }, data.raw);
-  //     return;
-  //   }
-  //   console.log(tabValue)
-  //   // 🔥 TAB 0 → Enquiry
-  //   if (tabValue === 0) {
-  //     try {
-  //       const payload = {
-  //         full_name: data.raw.name,
-  //         email: data.raw.email,
-  //         phone_code: data.raw.phoneCode,
-  //         phone: data.raw.emergency_contact,
-  //         passport_number: data.raw.passport_num,
-  //         user_type: 2,
-  //       };
-
-  //       const response = await axios.post(
-  //         `https://omcacrm.com/omca/api/user_registration`,
-  //         payload,
-  //       );
-
-  //       if (response.data.success) {
-  //         await dispatch(
-  //           EnquiryStatus({
-  //             id,
-  //             status: Number(value),
-  //             enquiry_type: "OMCA Enquiry",
-  //             user_id: response.data.data.id,
-  //           }),
-  //         ).unwrap();
-  //       }
-
-  //       Swal.fire("Success!", "Converted to patient!", "success");
-  //       dispatch(GetAllEnquiry());
-  //     } catch (err) {
-  //       Swal.fire("Error!", err?.message || "Error", "error");
-  //     }
-  //   }
-
-  //   // 🔥 TAB 1 → Ambulance
-  //   if (tabValue === 1) {
-  //     await sendToPatientAPI("Ambulance Service", data.raw);
-  //     await handleChangtype({ value }, data.raw);
-  //   }
-
-  //   // 🔥 TAB 2 → Air Ambulance
-  //   if (tabValue === 2) {
-  //     await sendToPatientAPI("Air Medical Escort", data.raw);
-  //     await handleChangtype({ value }, data.raw);
-  //   }
-
-  //   // 🔥 TAB 3 → Treatment
-  //   if (tabValue === 3) {
-  //     await sendToPatientAPI("Treatment Estimate", data.raw);
-  //     await handleChangtype({ value }, data.raw);
-  //   }
-  // };
-const handleChange = async (event, id, tabValue, data) => {
-  console.log(event, id, tabValue, data);
-
-  const { value } = event.target;
-  const status = Number(value);
-
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "Do you really want to update / convert?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-  });
-
-  if (!result.isConfirmed) return;
-
-  if (tabValue===0) {
-    if (status ===1) {
-      try {
-        const payload = {
-          full_name: data.raw.name,
-          email: data.raw.email,
-          phone_code: data.raw.phoneCode,
-          phone: data.raw.emergency_contact,
-          passport_number: data.raw.passport_num,
-          user_type: 2,
-        };
-
-        const response = await axios.post(
-          `https://omcacrm.com/omca/api/user_registration`,
-          payload
-        );
-
-        if (response.data.success) {
-          await dispatch(
-            EnquiryStatus({
-              id,
-              status,
-              enquiry_type: "OMCA Enquiry",
-              user_id: response.data.data.id,
-            })
-          ).unwrap();
-
-          Swal.fire("Success!", "Converted to patient!", "success");
-          dispatch(GetAllEnquiry());
+  const handleChange = async (event, id, tabValue, data) => {
+    console.log(event, id, tabValue, data);
+    const { value } = event.target;
+    const status = Number(value);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to update / convert?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    });
+    if (!result.isConfirmed) return;
+    if (tabValue === 0) {
+      if (status === 1) {
+        try {
+          const payload = {
+            full_name: data.raw.name,
+            email: data.raw.email,
+            phone_code: data.raw.phoneCode,
+            phone: data.raw.emergency_contact,
+            passport_number: data.raw.passport_num,
+            user_type: 2,
+          };
+          const response = await axios.post(
+            `https://omcacrm.com/omca/api/user_registration`,
+            payload,
+          );
+          if (response.data.success) {
+            await dispatch(
+              EnquiryStatus({
+                id,
+                status,
+                enquiry_type: "OMCA Enquiry",
+                user_id: response.data.data.id,
+              }),
+            ).unwrap();
+            Swal.fire("Success!", "Converted to patient!", "success");
+            dispatch(GetAllEnquiry());
+          }
+        } catch (err) {
+          Swal.fire("Error!", err?.message || "Error", "error");
         }
-      } catch (err) {
-        Swal.fire("Error!", err?.message || "Error", "error");
-      }
-    }else{
+      } else {
         await dispatch(
-            EnquiryStatus({
-              id,
-              status,
-              enquiry_type: "OMCA Enquiry",
-            })
-          ).unwrap();
-          Swal.fire("Success!", "Status Change Successfully!", "success");
-          dispatch(GetAllEnquiry());
-    }
-  }else{
-    if (status ===1) {
-      try {
-        if (tabValue===1) {
-       await sendToPatientAPI("Ambulance Service", data.raw);
-        }
-        if (tabValue===2) {
-       await sendToPatientAPI("Air Medical Escort", data.raw);
-        }
-        if (tabValue===3) {
-       await sendToPatientAPI("Treatment Estimate", data.raw);
-        }
+          EnquiryStatus({
+            id,
+            status,
+            enquiry_type: "OMCA Enquiry",
+          }),
+        ).unwrap();
+        Swal.fire("Success!", "Status Change Successfully!", "success");
+        dispatch(GetAllEnquiry());
+      }
+    } else {
+      if (status === 1) {
+        try {
+          if (tabValue === 1) {
+            await sendToPatientAPI("Ambulance Service", data.raw);
+          }
+          if (tabValue === 2) {
+            await sendToPatientAPI("Air Medical Escort", data.raw);
+          }
+          if (tabValue === 3) {
+            await sendToPatientAPI("Treatment Estimate", data.raw);
+          }
           await handleChangtype({ value }, data.raw);
 
           Swal.fire("Success!", "Converted to patient!", "success");
 
           dispatch(GetAllEnquiry());
-        
-      } catch (err) {
-        Swal.fire("Error!", err?.message || "Error", "error");
-      }
-    
-    }else{
-          await handleChangtype({ value }, data.raw);
+        } catch (err) {
+          Swal.fire("Error!", err?.message || "Error", "error");
+        }
+      } else {
+        await handleChangtype({ value }, data.raw);
 
-          Swal.fire("Success!", "Status changed!", "success");
-          dispatch(GetAllEnquiry());
+        Swal.fire("Success!", "Status changed!", "success");
+        dispatch(GetAllEnquiry());
+      }
     }
-  }
-};
+  };
   const handleSampleFile = async () => {
     try {
       const response = await axios.get(`${baseurl}export_enquiries`, {
@@ -658,7 +627,6 @@ const handleChange = async (event, id, tabValue, data) => {
       }
     });
   };
-
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && orderDirection === "asc";
     const direction = isAsc ? "desc" : "asc";
@@ -680,54 +648,40 @@ const handleChange = async (event, id, tabValue, data) => {
           ? new Date(valA) - new Date(valB)
           : new Date(valB) - new Date(valA);
       }
-
-      // ✅ Special handling for NUMBER (enquiryId, age etc.)
       if (property === "enquiryId" || property === "age") {
         return direction === "asc"
           ? Number(valA) - Number(valB)
           : Number(valB) - Number(valA);
       }
-
-      // ✅ Default STRING sorting
       valA = valA.toString().toLowerCase();
       valB = valB.toString().toLowerCase();
-
       if (valA < valB) return direction === "asc" ? -1 : 1;
       if (valA > valB) return direction === "asc" ? 1 : -1;
-
       return 0;
     });
-
     setRows(sortedData);
   };
   useEffect(() => {
     let filtered = [];
-
     switch (tabValue) {
       case 0:
         filtered = normalizeData(Enquiry || [], "enquiry");
         break;
-
       case 1:
         filtered = normalizeData(ambulanceData, "ambulance");
         break;
-
       case 2:
         filtered = normalizeData(airAmbulanceData, "air");
         break;
-
       case 3:
         filtered = normalizeData(treatmentData, "treatment");
         break;
-
       default:
         filtered = [];
     }
-
     setRows(filtered);
     setSearchApiData(filtered);
   }, [tabValue, Enquiry, formData]);
-
   const normalizeData = (data, type) => {
     return data.map((item) => ({
       enquiryId: item.enquiryId || item.id || 0,
@@ -744,18 +698,23 @@ const handleChange = async (event, id, tabValue, data) => {
       raw: item,
     }));
   };
-
   return (
     <>
       <div className="page-wrapper">
         <div className="content">
           <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
-            <Tabs value={tabValue} onChange={handleTabChange}>
-              <Tab label="Enquiry" />
-              <Tab label="Ambulance Service" />
-              <Tab label="Air Medical Escort" />
-              <Tab label="Treatment Estimate" />
-            </Tabs>
+            {role === "Admin" ? (
+              <Tabs value={tabValue} onChange={handleTabChange}>
+                <Tab label="Enquiry" />
+                <Tab label="Ambulance Service" />
+                <Tab label="Air Medical Escort" />
+                <Tab label="Treatment Estimate" />
+              </Tabs>
+            ) : (
+              <Tabs value={tabValue} onChange={handleTabChange}>
+                <Tab label="Enquiry" />
+              </Tabs>
+            )}
           </Box>
           <div className="row">
             <div className="col-md-12">
@@ -1400,7 +1359,7 @@ const handleChange = async (event, id, tabValue, data) => {
                       cols="50"
                       className="form-control"
                       placeholder="Review"
-                      onChange={(e) => setNote(e.target.value)}
+                     onChange={handleNoteChange}
                       value={note}
                     />
                     <span style={{ color: "red" }}>
@@ -1414,6 +1373,8 @@ const handleChange = async (event, id, tabValue, data) => {
                     <input
                       type="file"
                       className="form-control"
+                      multiple 
+                        onChange={handleImageChange}
                       name="upload_image"
                       id=""
                     />
@@ -1427,7 +1388,9 @@ const handleChange = async (event, id, tabValue, data) => {
                       name="recommend"
                       rows="4"
                       cols="50"
+                       onChange={handleRecommendChange}
                       className="form-control"
+                        value={recommend}
                       placeholder="Recommendations"
                     />
                   </div>
@@ -1435,7 +1398,7 @@ const handleChange = async (event, id, tabValue, data) => {
                     <Button
                       type="submit"
                       variant="contained"
-                      onClick={handleNotesdata}
+                      onClick={handleNotesdataqw}
                     >
                       Submit
                     </Button>

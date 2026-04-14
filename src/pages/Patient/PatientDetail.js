@@ -4807,7 +4807,7 @@ function PatientDetail() {
                                                             </th>
                                                             <th>Check In</th>
                                                             <th>Check Out</th>
-                                                            <th>Total Guest</th>
+                                                            <th>Total Rooms</th>
                                                             <th>Amount</th>
                                                             <th>
                                                               Payment Date
@@ -4877,7 +4877,7 @@ function PatientDetail() {
                                                                           className="btn btn-sm btn-primary"
                                                                           onClick={() =>
                                                                             window.open(
-                                                                              `${baseurl}${item.invoiceUrl}`,
+                                                                              `${baseu11}${item.invoiceUrl}`,
                                                                               "_blank",
                                                                             )
                                                                           }
@@ -4947,19 +4947,7 @@ function PatientDetail() {
                                                   </h6>
                                                   <p>
                                                     $
-                                                    {index === 0
-                                                      ? Number(
-                                                          info?.omca
-                                                            ?.totalAmount || 0,
-                                                        ) +
-                                                        Number(
-                                                          guestHouseBookingobj?.total_amount ||
-                                                            0,
-                                                        )
-                                                      : Number(
-                                                          info?.omca
-                                                            ?.totalAmount || 0,
-                                                        )}
+                                                    {guestHouseBookingobj.totalAmount}
                                                     {/* ${Number(info?.omca?.totalAmount || 0) + Number(guestHouseBookingobj?.total_amount || 0)} */}
                                                   </p>
                                                 </div>
@@ -4971,19 +4959,7 @@ function PatientDetail() {
                                                   </h6>
                                                   <p>
                                                     $
-                                                    {index === 0
-                                                      ? Number(
-                                                          info?.omca
-                                                            ?.dueAmount || 0,
-                                                        ) +
-                                                        Number(
-                                                          guestHouseBookingobj?.due_amount ||
-                                                            0,
-                                                        )
-                                                      : Number(
-                                                          info?.omca
-                                                            ?.dueAmount || 0,
-                                                        )}
+                                                     {guestHouseBookingobj.dueAmount}
                                                     {/* {Number(info?.omca?.dueAmount || 0) + Number(guestHouseBookingobj?.due_amount || 0)} */}
                                                   </p>
                                                 </div>

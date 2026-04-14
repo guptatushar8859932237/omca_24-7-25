@@ -70,21 +70,24 @@ export default function EditEnquiry() {
     patient_emergency_contact_no: Yup.string()
       .matches(/^[0-9]+$/, "Only digits are allowed")
       .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
-   patient_relation_no: Yup.string().when("has_relation", (hasRelation, schema) => {
-  if (hasRelation) {
-    return schema
-      .transform((value) => (value ? value.trim() : ""))
-      .test(
-        "valid-number",
-        "Please enter a valid numeric contact number",
-        function (value) {
-          if (!value) return true; // empty allowed
-          return /^[0-9]{8,15}$/.test(value);
+    patient_relation_no: Yup.string().when(
+      "has_relation",
+      (hasRelation, schema) => {
+        if (hasRelation) {
+          return schema
+            .transform((value) => (value ? value.trim() : ""))
+            .test(
+              "valid-number",
+              "Please enter a valid numeric contact number",
+              function (value) {
+                if (!value) return true; // empty allowed
+                return /^[0-9]{8,15}$/.test(value);
+              },
+            );
         }
-      );
-  }
-  return schema.notRequired();
-}),
+        return schema.notRequired();
+      },
+    ),
     // patient_relation_no: Yup.string().when("has_relation", {
     //   is: true,
     //   then: (schema) =>
@@ -271,6 +274,11 @@ export default function EditEnquiry() {
                   patient_relation_id: editenquiry?.patient_relation_id || [],
                   patient_id_proof: editenquiry?.patient_id_proof || [],
                   patient_Profile: editenquiry?.patient_Profile || "",
+                  doctorReviewNotes:
+                    editenquiry?.doctorReview?.review_notes || "",
+                  doctorReviewRecommendations:
+                    editenquiry?.doctorReview?.Recommendations || "",
+                  // doctor_images: editenquiry?.doctorReview?.images || [],
                 }}
                 validationSchema={basicSchema}
                 onSubmit={async (values, { setSubmitting }) => {
@@ -289,12 +297,27 @@ export default function EditEnquiry() {
                     "discussionNotes",
                     JSON.stringify(values.discussion_notes),
                   );
+                  formData.append(
+                    "doctor_review_notes",
+                    values.doctorReviewNotes,
+                  );
+                  formData.append(
+                    "doctor_recommendations",
+                    values.doctorReviewRecommendations,
+                  );
                   if (
                     values.patient_id_proof &&
                     values.patient_id_proof.length > 0
                   ) {
                     values.patient_id_proof.forEach((file) => {
                       formData.append("patient_id_proof", file);
+                    });
+                  }
+                  if (values.doctor_images && values.doctor_images.length > 0) {
+                    values.doctor_images.forEach((file) => {
+                      if (typeof file !== "string") {
+                        formData.append("doctor_review_images", file);
+                      }
                     });
                   }
                   if (values.patient_Profile instanceof File) {
@@ -849,6 +872,69 @@ export default function EditEnquiry() {
                           </Field>
                         </div>
                       </div>
+
+                      <div className="col-md-12">
+                        <h5>Doctor Review</h5>
+                      </div>
+
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Review Notes</label>
+                          <Field
+                            as="textarea"
+                            name="doctorReviewNotes"
+                            className="form-control"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Recommendations</label>
+                          <Field
+                            as="textarea"
+                            name="doctorReviewRecommendations"
+                            className="form-control"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-4">
+                        <div className="field-set">
+                          <label>Upload Images</label>
+                          <input
+                            type="file"
+                            className="form-control"
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.target.files);
+                              setFieldValue("doctor_images", files);
+                            }}
+                          />
+
+                          {/* Show existing images */}
+                          <div className="engpatimg">
+                            {editenquiry?.doctorReview?.images?.map(
+                              (img, index) => {
+                                const fullUrl = `${imageUrl}${img}`;
+                                return (
+                                  <button
+                                    key={index}
+                                    type="button"
+                                    className="viewbtn"
+                                    onClick={() =>
+                                      window.open(fullUrl, "_blank")
+                                    }
+                                  >
+                                    View {index + 1}
+                                  </button>
+                                );
+                              },
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="col-md-12">
                         <div className="form-check mb-3">
                           <Field
@@ -961,45 +1047,43 @@ export default function EditEnquiry() {
                               <div className="engpatimg">
                                 {Array.isArray(
                                   editenquiry.patient_relation_id,
-                                ) &&
-                                editenquiry.patient_relation_id.length > 0 ? (
-                                  editenquiry.patient_relation_id.map(
-                                    (file, index) => {
-                                      const fileUrl = `${imageUrl}${file}`;
-                                      return (
-                                        <div className="">
-                                          <div
-                                            className="file-preview"
-                                            key={index}
-                                          >
-                                            <span
-                                              className="delete-icon"
-                                              onClick={() =>
-                                                handleDeleteAttendantIdProof(
-                                                  index,
-                                                )
-                                              }
+                                ) && editenquiry.patient_relation_id.length > 0
+                                  ? editenquiry.patient_relation_id.map(
+                                      (file, index) => {
+                                        const fileUrl = `${imageUrl}${file}`;
+                                        return (
+                                          <div className="">
+                                            <div
+                                              className="file-preview"
+                                              key={index}
                                             >
-                                              <i class="fa-solid fa-xmark"></i>
-                                            </span>
-                                            <button
-                                              type="button"
-                                              className="viewbtn"
-                                              onClick={() =>
-                                                window.open(fileUrl, "_blank")
-                                              }
-                                            >
-                                              View
-                                            </button>
+                                              <span
+                                                className="delete-icon"
+                                                onClick={() =>
+                                                  handleDeleteAttendantIdProof(
+                                                    index,
+                                                  )
+                                                }
+                                              >
+                                                <i class="fa-solid fa-xmark"></i>
+                                              </span>
+                                              <button
+                                                type="button"
+                                                className="viewbtn"
+                                                onClick={() =>
+                                                  window.open(fileUrl, "_blank")
+                                                }
+                                              >
+                                                View
+                                              </button>
+                                            </div>
                                           </div>
-                                        </div>
-                                      );
-                                    },
-                                  )
-                                ) : (
-                                  ""
-                                  // <img src={avtar} alt="default" />
-                                )}
+                                        );
+                                      },
+                                    )
+                                  : ""
+                                    // <img src={avtar} alt="default" />
+                                }
                               </div>
                               <ErrorMessage
                                 name="patient_relation_id"
