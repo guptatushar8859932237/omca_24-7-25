@@ -45,6 +45,7 @@ export default function Inquiry() {
   const navigate = useNavigate();
   const [note, setNote] = useState("");
   const [date, setDate] = useState();
+  const [datauserId,setDatauserId]=useState([])
   const [open2, setOpen2] = React.useState(false);
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
@@ -67,12 +68,18 @@ export default function Inquiry() {
   const [tabValue, setTabValue] = useState(0);
 const [recommend, setRecommend] = useState("");
 const [images, setImages] = useState([]);
+const [airAmbulanceData, setAirAmbulanceData] = useState([]);
+const [ambulanceData, setAmbulanceData] = useState([]);
+const [treatmentData, setTreatmentData] = useState([]);
   // const handleTabChange = (event, newValue) => {
   //   setTabValue(newValue);
   // };
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
+  useEffect(() => {
+   getUserId()
+  }, []);
 // 🔥 textarea change
 const handleNoteChange = (e) => {
   setNote(e.target.value);
@@ -126,9 +133,29 @@ const handleNotesdataqw = async (e) => {
     Swal.fire("Error", "Something went wrong", "error");
   }
 };
-  const airAmbulanceData = formData?.data?.air_ambulance || [];
-  const ambulanceData = formData?.data?.ambulance_requests || [];
-  const treatmentData = formData?.data?.get_treatment_estimate || [];
+
+useEffect (()=>{
+  get3tabdata(datauserId)
+},[datauserId])
+
+const get3tabdata =async (datauserId)=>{
+  const payload ={
+    user_ids:datauserId
+  }
+try {
+    const response = await axios.post(`${AdminBaseUrl}other_enquiry_requests`,payload)
+    console.log(response.data.data)
+    setAirAmbulanceData(response.data?.data?.air_ambulance || []);
+  setAmbulanceData(response?.data?.data?.ambulance_requests || []);
+  setTreatmentData(response?.data?.data?.get_treatment_estimate || []);
+} catch (error) {
+  console.log(error)
+}
+}
+
+  // const airAmbulanceData = formData?.data?.air_ambulance || [];
+  // const ambulanceData = formData?.data?.ambulance_requests || [];
+  // const treatmentData = formData?.data?.get_treatment_estimate || [];
   useEffect(() => {
     dispatch(GetAllHositalData());
     console.log(error, hospital);
@@ -698,23 +725,34 @@ const handleNotesdataqw = async (e) => {
       raw: item,
     }));
   };
+
+  const getUserId = async ()=>{
+    try {
+        const response = await axios.get(`${baseurl}get_patient_user_ids`,{
+          headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        })
+        if(response.data.success){
+          console.log(response.data)
+          setDatauserId(response.data.user_ids)
+        }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <>
       <div className="page-wrapper">
         <div className="content">
           <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
-            {role === "Admin" ? (
               <Tabs value={tabValue} onChange={handleTabChange}>
                 <Tab label="Enquiry" />
                 <Tab label="Ambulance Service" />
                 <Tab label="Air Medical Escort" />
                 <Tab label="Treatment Estimate" />
               </Tabs>
-            ) : (
-              <Tabs value={tabValue} onChange={handleTabChange}>
-                <Tab label="Enquiry" />
-              </Tabs>
-            )}
+             
           </Box>
           <div className="row">
             <div className="col-md-12">

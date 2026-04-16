@@ -49,6 +49,7 @@ function PatientDetail() {
   const [openIndex, setOpenIndex] = useState(0);
   const [selectedAttendants, setSelectedAttendants] = useState([]);
   const [treatemntData1, setTreatemntData1] = useState([]);
+  const [doctorReviewData1, setDoctorReviewData1] = useState([]);
   const [datagetapiPaidto, setDatagetapiPaidto] = useState([]);
   const [getAttendeDetails, setGetAttendeDetails] = useState([]);
   const [attandantnew, setAttandantnew] = useState([]);
@@ -434,6 +435,9 @@ function PatientDetail() {
     } catch (error) {}
   };
   useEffect(() => {
+    getDrreview();
+  }, []);
+  useEffect(() => {
     gettreatment();
   }, [ispatient?.patientId]);
   const gettreatment = async () => {
@@ -455,6 +459,7 @@ function PatientDetail() {
 
   useEffect(() => {
     getAllPaidTo();
+
   }, []);
 
   const handlesubmit = async (e) => {
@@ -2475,6 +2480,20 @@ function PatientDetail() {
       perfomainvoice: file,
     }));
   };
+  const getDrreview = async () => {
+    const payload = {
+      patientId: location.state.patientId,
+    };
+    try {
+      const response = await axios.get(
+        `${baseurl}get_doctor_review/${location.state.patientId}`,
+      );
+      if (response.data.success) {
+        console.log(response.data)
+        setDoctorReviewData1(response.data.data);
+      }
+    } catch (error) {}
+  };
   const getTreatmentPlan = async () => {
     const payload = {
       patientId: location.state.patientId,
@@ -3897,6 +3916,26 @@ function PatientDetail() {
             <ul className="nav nav-tabs nav-tabs-bottom">
               <li className="nav-item">
                 <a
+                  className={`nav-link ${mainTab === "Doctor-Review" ? "active" : ""}`}
+                  href="#about-cont126"
+                  data-toggle="tab"
+                  onClick={() => handleMainTabChange("Doctor-Review")}
+                >
+                  Doctor Review{" "}
+                </a>
+                </li>
+              {/* <li className="nav-item">
+                <a
+                  className={`nav-link ${mainTab === "Doctor-Review" ? "active" : ""}`}
+                  href="#about-cont126"
+                  data-toggle="tab"
+                  onClick={() => handleMainTabChange("Doctor-Review")}
+                >
+                  {" "}
+                </a>
+                </li> */}
+                 <li className="nav-item">
+                <a
                   className={`nav-link ${mainTab === "treatment-plans" ? "active" : ""}`}
                   href="#about-cont123"
                   data-toggle="tab"
@@ -3927,6 +3966,105 @@ function PatientDetail() {
               </li>
             </ul>
             <div className="tab-content">
+              <div
+                className={`tab-pane ${mainTab === "Doctor-Review" ? "show active" : ""} mt-5`}
+                id="about-cont126"
+              >
+               
+                <div className="row gx-3 gy-3">
+                  <div className="col-md-12">
+                    {doctorReviewData1?.length === 0 ? (
+                      <p className="text-center">
+                        No Doctor Review for this patients
+                      </p>
+                    ) : (
+                      <>
+                        {doctorReviewData1?.map((info, index) => {
+                          // console.log(info, "array data");
+                          return (
+                            <div className="card-box" key={index}>
+                              <div className="treatment-header">
+                                <div className="d-flex justify-content-between">
+                                  <div>
+                                    <h5>Doctor Reviews</h5>
+                                    {/* <h5>{info?.treatment?.name}</h5> */}
+                                  </div>
+                                  <div>
+                                    {/* <i
+                                      onClick={() => {
+                                        handleclickdeleteplan(info);
+                                      }}
+                                      className="fa fa-trash text-danger me-2"
+                                    ></i> */}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="treatment-body">
+                                <div className="row">
+                                  <div className="col-md-6">
+                                    <div className="">
+                                      <h5>Recommendations</h5>
+                                          <div>
+                                            <span className="hospital-name">
+                                              {info?.Recommendations}
+                                            </span>
+                                          </div>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-3">
+                                    <div className="">
+                                      <h5>Reports</h5>
+                                      {info?.images?.length > 0 ? (
+                                        info?.images?.map((report, index) => (
+                                          <div key={index}>
+                                            <a
+                                              href={`${baseu11}/${report}`}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="report-link"
+                                            >
+                                              View Document
+                                            </a>
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <span className="text-muted">
+                                          No Reports
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="col-md-3">
+                                    <div className="">
+                                      <h5>Notes</h5>
+                                      <p className="notes-text">
+                                        {info?.review_notes || "No Notes Added"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  {/* <div className="col-md-2">
+                                    <div className="">
+                                      <h5>Action</h5>
+                                      <div className="action-icon">
+                                        <i
+                                          className="fa-solid fa-trash"
+                                          // onClick={() =>
+                                          //   EditDelete(index, info)
+                                          // }
+                                        ></i>
+                                      </div>
+                                    </div>
+                                  </div> */}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
               <div
                 className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`}
                 id="about-cont123"
