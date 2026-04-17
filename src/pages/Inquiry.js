@@ -61,6 +61,8 @@ export default function Inquiry() {
   const [rows, setRows] = useState([]);
   const [report, setReport] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
+  const [roleStatuses, setRoleStatuses] = useState([]);
+  const [getcountries, setGetcountries] = useState([]);
   const dispatch = useDispatch();
   const { testForms: formData } = useSelector((state) => state.testForms);
   const { Enquiry, loading, error } = useSelector((state) => state.Enquiry);
@@ -133,14 +135,11 @@ const handleNotesdataqw = async (e) => {
     Swal.fire("Error", "Something went wrong", "error");
   }
 };
-
-useEffect (()=>{
-  get3tabdata(datauserId)
-},[datauserId])
-
-const get3tabdata =async (datauserId)=>{
+const get3tabdata =async (datauserId,getcountry,rolestatus)=>{
   const payload ={
-    user_ids:datauserId
+    user_ids:datauserId,
+    accessCountries:getcountry,
+roleStatuses:rolestatus,
   }
 try {
     const response = await axios.post(`${AdminBaseUrl}other_enquiry_requests`,payload)
@@ -708,7 +707,7 @@ try {
     }
     setRows(filtered);
     setSearchApiData(filtered);
-  }, [tabValue, Enquiry, formData]);
+  }, [tabValue, Enquiry, ambulanceData, airAmbulanceData, treatmentData])
   const normalizeData = (data, type) => {
     return data.map((item) => ({
       enquiryId: item.enquiryId || item.id || 0,
@@ -735,7 +734,10 @@ try {
         })
         if(response.data.success){
           console.log(response.data)
-          setDatauserId(response.data.user_ids)
+          // setDatauserId(response.data.user_ids)
+          get3tabdata(response.data.user_ids,response.data.accessCountries,response.data.roleStatuses)
+          setGetcountries(response.data.accessCountries)
+          setRoleStatuses(response.data.roleStatuses)
         }
     } catch (error) {
       console.log(error)
@@ -746,13 +748,18 @@ try {
       <div className="page-wrapper">
         <div className="content">
           <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
-              <Tabs value={tabValue} onChange={handleTabChange}>
-                <Tab label="Enquiry" />
-                <Tab label="Ambulance Service" />
-                <Tab label="Air Medical Escort" />
-                <Tab label="Treatment Estimate" />
-              </Tabs>
-             
+  {(roleStatuses.length === 0 && getcountries.length === 0) ? (
+  <Tabs value={tabValue} onChange={handleTabChange}>
+    <Tab label="Enquiry" />
+  </Tabs>
+) : (
+  <Tabs value={tabValue} onChange={handleTabChange}>
+    <Tab label="Enquiry" />
+    <Tab label="Ambulance Service" />
+    <Tab label="Air Medical Escort" />
+    <Tab label="Treatment Estimate" />
+  </Tabs>
+)}
           </Box>
           <div className="row">
             <div className="col-md-12">
