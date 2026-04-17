@@ -45,7 +45,7 @@ export default function Inquiry() {
   const navigate = useNavigate();
   const [note, setNote] = useState("");
   const [date, setDate] = useState();
-  const [datauserId,setDatauserId]=useState([])
+  const [datauserId, setDatauserId] = useState([]);
   const [open2, setOpen2] = React.useState(false);
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
@@ -68,11 +68,11 @@ export default function Inquiry() {
   const { Enquiry, loading, error } = useSelector((state) => state.Enquiry);
   const { hospital } = useSelector((state) => state.hospital);
   const [tabValue, setTabValue] = useState(0);
-const [recommend, setRecommend] = useState("");
-const [images, setImages] = useState([]);
-const [airAmbulanceData, setAirAmbulanceData] = useState([]);
-const [ambulanceData, setAmbulanceData] = useState([]);
-const [treatmentData, setTreatmentData] = useState([]);
+  const [recommend, setRecommend] = useState("");
+  const [images, setImages] = useState([]);
+  const [airAmbulanceData, setAirAmbulanceData] = useState([]);
+  const [ambulanceData, setAmbulanceData] = useState([]);
+  const [treatmentData, setTreatmentData] = useState([]);
   // const handleTabChange = (event, newValue) => {
   //   setTabValue(newValue);
   // };
@@ -80,79 +80,79 @@ const [treatmentData, setTreatmentData] = useState([]);
     dispatch(testForms());
   }, [dispatch]);
   useEffect(() => {
-   getUserId()
+    getUserId();
   }, []);
-// 🔥 textarea change
-const handleNoteChange = (e) => {
-  setNote(e.target.value);
-};
+  // 🔥 textarea change
+  const handleNoteChange = (e) => {
+    setNote(e.target.value);
+  };
 
-const handleRecommendChange = (e) => {
-  setRecommend(e.target.value);
-};
+  const handleRecommendChange = (e) => {
+    setRecommend(e.target.value);
+  };
 
-// 🔥 image change
-const handleImageChange = (e) => {
-  const files = Array.from(e.target.files);
-  setImages(files);
-};
+  // 🔥 image change
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages(files);
+  };
 
-const handleNotesdataqw = async (e) => {
-  e.preventDefault();
+  const handleNotesdataqw = async (e) => {
+    e.preventDefault();
 
-  if (!note || !recommend || images.length === 0) {
-    return Swal.fire("Error", "All fields are required", "error");
-  }
-
-  try {
-    const formData = new FormData();
-
-    formData.append("review_notes", note);
-    formData.append("Recommendations", recommend);
-    formData.append("enquiryId", enqId);
-
-    // 🔥 multiple images append
-    images.forEach((img) => {
-      formData.append("images", img);
-    });
-
-    const response = await axios.post(
-      `${baseurl}addDoctorReview`,
-      formData
-    );
-
-    if (response.data.success) {
-      handleClose4()
-      Swal.fire("Success", "Data submitted successfully", "success");
-
-      // reset
-      setNote("");
-      setRecommend("");
-      setImages([]);
+    if (!note || !recommend || images.length === 0) {
+      return Swal.fire("Error", "All fields are required", "error");
     }
-  } catch (error) {
-    console.log(error);
-    Swal.fire("Error", "Something went wrong", "error");
-  }
-};
- const statusRole=localStorage.getItem('Role')
-const get3tabdata =async (datauserId,getcountry,rolestatus)=>{
-  const payload ={
-    user_ids:datauserId,
-    accessCountries:getcountry,
-roleStatuses:rolestatus,
-is_admin:statusRole==="Admin"?1:0
-  }
-try {
-    const response = await axios.post(`${AdminBaseUrl}other_enquiry_requests`,payload)
-    console.log(response.data.data)
-    setAirAmbulanceData(response.data?.data?.air_ambulance || []);
-  setAmbulanceData(response?.data?.data?.ambulance_requests || []);
-  setTreatmentData(response?.data?.data?.get_treatment_estimate || []);
-} catch (error) {
-  console.log(error)
-}
-}
+
+    try {
+      const formData = new FormData();
+
+      formData.append("review_notes", note);
+      formData.append("Recommendations", recommend);
+      formData.append("enquiryId", enqId);
+
+      // 🔥 multiple images append
+      images.forEach((img) => {
+        formData.append("images", img);
+      });
+
+      const response = await axios.post(`${baseurl}addDoctorReview`, formData);
+
+      if (response.data.success) {
+        handleClose4();
+        Swal.fire("Success", "Data submitted successfully", "success");
+
+        // reset
+        setNote("");
+        setRecommend("");
+        setImages([]);
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Error", "Something went wrong", "error");
+    }
+  };
+  const statusRole = localStorage.getItem("Role");
+  const get3tabdata = async (datauserId, getcountry, rolestatus) => {
+    const payload = {
+      user_ids: datauserId,
+      accessCountries: getcountry,
+      roleStatuses: rolestatus,
+      is_admin: statusRole === "Admin" ? 1 : 0,
+    };
+    try {
+      const response = await axios.post(
+        `${AdminBaseUrl}other_enquiry_requests`,
+        payload,
+      );
+      console.log(response.data.data);
+      setAirAmbulanceData(response.data?.data?.air_ambulance || []);
+      setAmbulanceData(response?.data?.data?.ambulance_requests || []);
+      setTreatmentData(response?.data?.data?.get_treatment_estimate || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // const airAmbulanceData = formData?.data?.air_ambulance || [];
   // const ambulanceData = formData?.data?.ambulance_requests || [];
@@ -709,7 +709,7 @@ try {
     }
     setRows(filtered);
     setSearchApiData(filtered);
-  }, [tabValue, Enquiry, ambulanceData, airAmbulanceData, treatmentData])
+  }, [tabValue, Enquiry, ambulanceData, airAmbulanceData, treatmentData]);
   const normalizeData = (data, type) => {
     return data.map((item) => ({
       enquiryId: item.enquiryId || item.id || 0,
@@ -727,41 +727,53 @@ try {
     }));
   };
 
-  const getUserId = async ()=>{
+  const getUserId = async () => {
     try {
-        const response = await axios.get(`${baseurl}get_patient_user_ids`,{
-          headers: {
+      const response = await axios.get(`${baseurl}get_patient_user_ids`, {
+        headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        })
-        if(response.data.success){
-          console.log(response.data)
-          // setDatauserId(response.data.user_ids)
-          get3tabdata(response.data.user_ids,response.data.accessCountries,response.data.roleStatuses)
-          setGetcountries(response.data.accessCountries)
-          setRoleStatuses(response.data.roleStatuses)
-        }
+      });
+      if (response.data.success) {
+        console.log(response.data);
+        // setDatauserId(response.data.user_ids)
+        get3tabdata(
+          response.data.user_ids,
+          response.data.accessCountries,
+          response.data.roleStatuses,
+        );
+        setGetcountries(response.data.accessCountries);
+        setRoleStatuses(response.data.roleStatuses);
+      }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   return (
     <>
       <div className="page-wrapper">
         <div className="content">
           <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
-  {(roleStatuses.length === 0 && getcountries.length === 0) ? (
-  <Tabs value={tabValue} onChange={handleTabChange}>
-    <Tab label="Enquiry" />
-  </Tabs>
-) : (
-  <Tabs value={tabValue} onChange={handleTabChange}>
-    <Tab label="Enquiry" />
-    <Tab label="Ambulance Service" />
-    <Tab label="Air Medical Escort" />
-    <Tab label="Treatment Estimate" />
-  </Tabs>
-)}
+
+            {
+              role==="Admin"?  <Tabs value={tabValue} onChange={handleTabChange}>
+                <Tab label="Enquiry" />
+                <Tab label="Ambulance Service" />
+                <Tab label="Air Medical Escort" />
+                <Tab label="Treatment Estimate" />
+              </Tabs> :
+ getcountries.length === 0 ? (
+              <Tabs value={tabValue} onChange={handleTabChange}>
+                <Tab label="Enquiry" />
+              </Tabs>
+            ) : (
+              <Tabs value={tabValue} onChange={handleTabChange}>
+                <Tab label="Enquiry" />
+                <Tab label="Ambulance Service" />
+                <Tab label="Air Medical Escort" />
+                <Tab label="Treatment Estimate" />
+              </Tabs>
+            )}
           </Box>
           <div className="row">
             <div className="col-md-12">
@@ -1406,7 +1418,7 @@ try {
                       cols="50"
                       className="form-control"
                       placeholder="Review"
-                     onChange={handleNoteChange}
+                      onChange={handleNoteChange}
                       value={note}
                     />
                     <span style={{ color: "red" }}>
@@ -1420,8 +1432,8 @@ try {
                     <input
                       type="file"
                       className="form-control"
-                      multiple 
-                        onChange={handleImageChange}
+                      multiple
+                      onChange={handleImageChange}
                       name="upload_image"
                       id=""
                     />
@@ -1435,9 +1447,9 @@ try {
                       name="recommend"
                       rows="4"
                       cols="50"
-                       onChange={handleRecommendChange}
+                      onChange={handleRecommendChange}
                       className="form-control"
-                        value={recommend}
+                      value={recommend}
                       placeholder="Recommendations"
                     />
                   </div>
