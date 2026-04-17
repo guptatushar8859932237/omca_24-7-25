@@ -135,11 +135,13 @@ const handleNotesdataqw = async (e) => {
     Swal.fire("Error", "Something went wrong", "error");
   }
 };
+ const statusRole=localStorage.getItem('Role')
 const get3tabdata =async (datauserId,getcountry,rolestatus)=>{
   const payload ={
     user_ids:datauserId,
     accessCountries:getcountry,
 roleStatuses:rolestatus,
+is_admin:statusRole==="Admin"?1:0
   }
 try {
     const response = await axios.post(`${AdminBaseUrl}other_enquiry_requests`,payload)
