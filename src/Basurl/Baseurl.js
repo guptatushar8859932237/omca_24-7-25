@@ -4,6 +4,7 @@ export const imageUrl = 'https://sisccltd.com/omca_crm/'  //server
 export const baseu11 = 'https://sisccltd.com/omca_crm'  //server
 export const excelExoprt = 'https://sisccltd.com/'  //server
 export const AdminBaseUrl ="https://omcacrm.com/omca/api/crm/"
+export const AdminBaseUrl1 ="https://omcacrm.com/omca/api/"
 // https://omcacrm.com/omca/api/crm
 // export const AdminBaseUrl ="https://omcacrm.com/omca/api/crm/"
 // export const baseurl = 'http://192.168.1.77:5201/api/'

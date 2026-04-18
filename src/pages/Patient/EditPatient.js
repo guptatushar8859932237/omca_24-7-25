@@ -12,7 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { baseurl, image } from "../../Basurl/Baseurl";
+import { AdminBaseUrl, AdminBaseUrl1, baseurl, image } from "../../Basurl/Baseurl";
 import axios from "axios";
 import { Autocomplete, TextField } from "@mui/material";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
@@ -173,6 +173,7 @@ const { Treatment } = useSelector((state) => state.Treatment);
                     id_proof: [],
                     patient_relation: ispatient?.patient_relation || "",
                     patient_relation_no: ispatient?.patient_relation_no || "",
+                    user_id: ispatient?.user_id || "",
                   }}
                   validationSchema={basicSchema}
                   //             onSubmit={async (values, { setSubmitting }) => {
@@ -257,7 +258,9 @@ const { Treatment } = useSelector((state) => state.Treatment);
                           data: formData,
                         }),
                       ).unwrap();
-
+                      formData.append("from", "crm");
+                      const response = await axios.post(`${AdminBaseUrl1}user_update_profile`,formData)
+                        console.log(response)
                       Swal.fire(
                         "Success!",
                         "Patient updated successfully",

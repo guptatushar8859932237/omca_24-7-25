@@ -73,16 +73,12 @@ export default function Inquiry() {
   const [airAmbulanceData, setAirAmbulanceData] = useState([]);
   const [ambulanceData, setAmbulanceData] = useState([]);
   const [treatmentData, setTreatmentData] = useState([]);
-  // const handleTabChange = (event, newValue) => {
-  //   setTabValue(newValue);
-  // };
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
   useEffect(() => {
     getUserId();
   }, []);
-  // 🔥 textarea change
   const handleNoteChange = (e) => {
     setNote(e.target.value);
   };
@@ -91,7 +87,6 @@ export default function Inquiry() {
     setRecommend(e.target.value);
   };
 
-  // 🔥 image change
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
@@ -99,30 +94,22 @@ export default function Inquiry() {
 
   const handleNotesdataqw = async (e) => {
     e.preventDefault();
-
     if (!note || !recommend || images.length === 0) {
       return Swal.fire("Error", "All fields are required", "error");
     }
-
     try {
       const formData = new FormData();
-
       formData.append("review_notes", note);
       formData.append("Recommendations", recommend);
       formData.append("enquiryId", enqId);
-
       // 🔥 multiple images append
       images.forEach((img) => {
         formData.append("images", img);
       });
-
       const response = await axios.post(`${baseurl}addDoctorReview`, formData);
-
       if (response.data.success) {
         handleClose4();
         Swal.fire("Success", "Data submitted successfully", "success");
-
-        // reset
         setNote("");
         setRecommend("");
         setImages([]);
@@ -153,10 +140,6 @@ export default function Inquiry() {
       console.log(error);
     }
   };
-
-  // const airAmbulanceData = formData?.data?.air_ambulance || [];
-  // const ambulanceData = formData?.data?.ambulance_requests || [];
-  // const treatmentData = formData?.data?.get_treatment_estimate || [];
   useEffect(() => {
     dispatch(GetAllHositalData());
     console.log(error, hospital);
@@ -233,7 +216,6 @@ export default function Inquiry() {
       },
     });
   };
-
   const handleDeleteExternal = async (row) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -341,7 +323,6 @@ export default function Inquiry() {
       Swal.fire("Error", "Something went wrong", "error");
     }
   };
-
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
     localStorage.setItem("tabenquiry", newValue);
@@ -726,7 +707,6 @@ export default function Inquiry() {
       raw: item,
     }));
   };
-
   const getUserId = async () => {
     try {
       const response = await axios.get(`${baseurl}get_patient_user_ids`, {
@@ -736,12 +716,13 @@ export default function Inquiry() {
       });
       if (response.data.success) {
         console.log(response.data);
-        // setDatauserId(response.data.user_ids)
+        console.log('a')
         get3tabdata(
           response.data.user_ids,
           response.data.accessCountries,
           response.data.roleStatuses,
         );
+        console.log('b')
         setGetcountries(response.data.accessCountries);
         setRoleStatuses(response.data.roleStatuses);
       }
