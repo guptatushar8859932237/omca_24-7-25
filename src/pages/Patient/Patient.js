@@ -120,14 +120,21 @@ export default function Patient() {
     });
   };
   const PatientDetail = (e, id, enq, c, d) => {
-    console.log(e, id, enq, c, d,"dddddddddddddddddddddddddddddddddddddddddddsh")
+    console.log(
+      e,
+      id,
+      enq,
+      c,
+      d,
+      "dddddddddddddddddddddddddddddddddddddddddddsh",
+    );
     navigate("/Admin/Patient-Detail", {
       state: {
         patientId: id,
         enqId: enq,
         testid: c,
         // tratmentlit: d,
-        user_id:d,
+        user_id: d,
       },
     });
   };
@@ -392,7 +399,7 @@ export default function Patient() {
       "Follow Up",
       "Passed Away",
       "Arrival",
-      "Departing"
+      "Departing",
     ];
     const typeValues = [
       "Private",
@@ -406,27 +413,27 @@ export default function Patient() {
       await filterdataapi(onVaue, "type");
     }
   };
-const handleRequestSort = (property) => {
-  const isAsc = orderBy === property && order === "asc";
-  const direction = isAsc ? "desc" : "asc";
-  setOrder(direction);
-  setOrderBy(property);
-  const sortedRows = [...rows].sort((a, b) => {
-    let valueA = "";
-    let valueB = "";
-    if (property === "patient_disease") {
-      valueA = a.patient_disease?.map(d => d.disease_name).join(", ") || "";
-      valueB = b.patient_disease?.map(d => d.disease_name).join(", ") || "";
-    } else {
-      valueA = a[property] || "";
-      valueB = b[property] || "";
-    }
-    return direction === "asc"
-      ? valueA.localeCompare(valueB)
-      : valueB.localeCompare(valueA);
-  });
-  setRows(sortedRows);
-};
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    const direction = isAsc ? "desc" : "asc";
+    setOrder(direction);
+    setOrderBy(property);
+    const sortedRows = [...rows].sort((a, b) => {
+      let valueA = "";
+      let valueB = "";
+      if (property === "patient_disease") {
+        valueA = a.patient_disease?.map((d) => d.disease_name).join(", ") || "";
+        valueB = b.patient_disease?.map((d) => d.disease_name).join(", ") || "";
+      } else {
+        valueA = a[property] || "";
+        valueB = b[property] || "";
+      }
+      return direction === "asc"
+        ? valueA.localeCompare(valueB)
+        : valueB.localeCompare(valueA);
+    });
+    setRows(sortedRows);
+  };
   // const handleRequestSort = (property) => {
   //   const isAsc = orderBy === property && order === "asc";
   //   const direction = isAsc ? "desc" : "asc";
@@ -642,7 +649,7 @@ const handleRequestSort = (property) => {
                             ""
                           )}
                           <TableCell>
-                            <TableSortLabel 
+                            <TableSortLabel
                               active={orderBy === "patientNumber"}
                               direction={
                                 orderBy === "patientNumber" ? order : "asc"
@@ -663,7 +670,7 @@ const handleRequestSort = (property) => {
                               Patient Name
                             </TableSortLabel>
                           </TableCell>
-                      {/* <TableCell>
+                          {/* <TableCell>
   <TableSortLabel
     active={orderBy === "patient_disease"}
     direction={orderBy === "patient_disease" ? order : "asc"}
@@ -675,7 +682,9 @@ const handleRequestSort = (property) => {
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "treatingIn"}
-                              direction={orderBy === "treatingIn" ? order : "asc"}
+                              direction={
+                                orderBy === "treatingIn" ? order : "asc"
+                              }
                               onClick={() => handleRequestSort("treatingIn")}
                             >
                               Treating In
@@ -684,7 +693,9 @@ const handleRequestSort = (property) => {
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "createdAt"}
-                              direction={orderBy === "createdAt" ? order : "asc"}
+                              direction={
+                                orderBy === "createdAt" ? order : "asc"
+                              }
                               onClick={() => handleRequestSort("createdAt")}
                             >
                               Date/Time
@@ -701,24 +712,32 @@ const handleRequestSort = (property) => {
                           </TableCell>
                           {showActions === true ? (
                             <>
-                             <TableCell>
-  <TableSortLabel
-    active={orderBy === "patient_type_new"}
-    direction={orderBy === "patient_type_new" ? order : "asc"}
-    onClick={() => handleRequestSort("patient_type_new")}
-  >
-    Patient Type
-  </TableSortLabel>
-</TableCell>
-                           <TableCell>
-  <TableSortLabel
-    active={orderBy === "p_status"}
-    direction={orderBy === "p_status" ? order : "asc"}
-    onClick={() => handleRequestSort("p_status")}
-  >
-    Status
-  </TableSortLabel>
-</TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === "patient_type_new"}
+                                  direction={
+                                    orderBy === "patient_type_new"
+                                      ? order
+                                      : "asc"
+                                  }
+                                  onClick={() =>
+                                    handleRequestSort("patient_type_new")
+                                  }
+                                >
+                                  Patient Type
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === "p_status"}
+                                  direction={
+                                    orderBy === "p_status" ? order : "asc"
+                                  }
+                                  onClick={() => handleRequestSort("p_status")}
+                                >
+                                  Status
+                                </TableSortLabel>
+                              </TableCell>
                               <TableCell>Action</TableCell>
                             </>
                           ) : (
@@ -743,7 +762,7 @@ const handleRequestSort = (property) => {
                                   <TableCell>
                                     {(page - 1) * rowsPerPage + i + 1}
                                   </TableCell>
-                                  {showActions === false                                                                                                                                                                                                                                                                                                                                                                                                                          ? (
+                                  {showActions === false ? (
                                     <>
                                       <TableCell>
                                         {info?.deletedBy?.name}
@@ -791,13 +810,22 @@ const handleRequestSort = (property) => {
                                         "..."
                                       : info.patient_name}
                                   </TableCell>
-                                 
+
                                   <TableCell>{info.treatingIn}</TableCell>
-                                  <TableCell>{new Date(info.createdAt).toLocaleDateString('en-GB')}/{new Date(info.createdAt).toLocaleTimeString('en-GB', {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true,})}</TableCell>
-                                    <TableCell>{info.country}</TableCell>
+                                  <TableCell>
+                                    {new Date(
+                                      info.createdAt,
+                                    ).toLocaleDateString("en-GB")}
+                                    /
+                                    {new Date(
+                                      info.createdAt,
+                                    ).toLocaleTimeString("en-GB", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    })}
+                                  </TableCell>
+                                  <TableCell>{info.country}</TableCell>
                                   {/* <TableCell>{info.country}</TableCell> */}
 
                                   {showActions === true ? (
@@ -831,7 +859,6 @@ const handleRequestSort = (property) => {
                                             <MenuItem value="Insurance + Private">
                                               Insurance + Private
                                             </MenuItem>
-                                            
                                           </Select>
                                         </FormControl>
                                       </TableCell>
@@ -900,7 +927,7 @@ const handleRequestSort = (property) => {
                                               info.patientId,
                                               info.enquiryId,
                                               info.id,
-                                               info.user_id
+                                              info.user_id,
                                               // info.patient_disease[0]
                                               //   .treatment_id,
                                             )

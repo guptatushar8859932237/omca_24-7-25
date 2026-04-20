@@ -4699,8 +4699,10 @@ function PatientDetail() {
                                                             </tr>
                                                           </thead>
                                                           <tbody>
-                                                            {info?.hospital?.payments &&
-                                                            info?.hospital?.payments
+                                                            {info?.hospital
+                                                              ?.payments &&
+                                                            info?.hospital
+                                                              ?.payments
                                                               .length > 0 ? (
                                                               info?.hospital?.payments.map(
                                                                 (

@@ -1045,44 +1045,49 @@ export default function EditEnquiry() {
                                 }}
                               />
                               <div className="engpatimg">
-                                {Array.isArray(
-                                  editenquiry.patient_relation_id,
-                                ) && editenquiry.patient_relation_id.length > 0
-                                  ? editenquiry.patient_relation_id.map(
-                                      (file, index) => {
-                                        const fileUrl = `${imageUrl}${file}`;
-                                        return (
-                                          <div className="">
-                                            <div
-                                              className="file-preview"
-                                              key={index}
-                                            >
-                                              <span
-                                                className="delete-icon"
-                                                onClick={() =>
-                                                  handleDeleteAttendantIdProof(
-                                                    index,
-                                                  )
-                                                }
+                                {
+                                  Array.isArray(
+                                    editenquiry.patient_relation_id,
+                                  ) &&
+                                  editenquiry.patient_relation_id.length > 0
+                                    ? editenquiry.patient_relation_id.map(
+                                        (file, index) => {
+                                          const fileUrl = `${imageUrl}${file}`;
+                                          return (
+                                            <div className="">
+                                              <div
+                                                className="file-preview"
+                                                key={index}
                                               >
-                                                <i class="fa-solid fa-xmark"></i>
-                                              </span>
-                                              <button
-                                                type="button"
-                                                className="viewbtn"
-                                                onClick={() =>
-                                                  window.open(fileUrl, "_blank")
-                                                }
-                                              >
-                                                View
-                                              </button>
+                                                <span
+                                                  className="delete-icon"
+                                                  onClick={() =>
+                                                    handleDeleteAttendantIdProof(
+                                                      index,
+                                                    )
+                                                  }
+                                                >
+                                                  <i class="fa-solid fa-xmark"></i>
+                                                </span>
+                                                <button
+                                                  type="button"
+                                                  className="viewbtn"
+                                                  onClick={() =>
+                                                    window.open(
+                                                      fileUrl,
+                                                      "_blank",
+                                                    )
+                                                  }
+                                                >
+                                                  View
+                                                </button>
+                                              </div>
                                             </div>
-                                          </div>
-                                        );
-                                      },
-                                    )
-                                  : ""
-                                    // <img src={avtar} alt="default" />
+                                          );
+                                        },
+                                      )
+                                    : ""
+                                  // <img src={avtar} alt="default" />
                                 }
                               </div>
                               <ErrorMessage

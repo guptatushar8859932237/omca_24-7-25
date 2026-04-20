@@ -68,8 +68,7 @@ function App() {
     <>
       <Provider store={store}>
         <Router>
-          
-  <IdleLogout timeout={300000} />
+          <IdleLogout timeout={300000} />
           <Routes>
             <Route path="/" element={<AdminLogin />} />
             <Route path="/Forgot" element={<Forgot />} />
@@ -102,7 +101,11 @@ function App() {
               <Route index path="/Admin/earnings" element={<Earnings />} />
               <Route in path="/Admin/inquiry" element={<Inquiry />} />
               <Route index path="/Admin/Services" element={<Services />} />
-              <Route index path="/Admin/edit-service" element={<EditService />} />
+              <Route
+                index
+                path="/Admin/edit-service"
+                element={<EditService />}
+              />
               <Route
                 index
                 path="/Admin/add-Services"
@@ -120,8 +123,16 @@ function App() {
               />
               <Route index path="/Admin/settings" element={<Settings />} />
               <Route index path="/Admin/profile" element={<Profile />} />
-              <Route index path="/Admin/Activity-user" element={<ActivityUser />} />
-              <Route index path="/Admin/Activity-tracker" element={<ActivityTracker />} />
+              <Route
+                index
+                path="/Admin/Activity-user"
+                element={<ActivityUser />}
+              />
+              <Route
+                index
+                path="/Admin/Activity-tracker"
+                element={<ActivityTracker />}
+              />
               <Route
                 index
                 path="/Admin/edit-profile"
@@ -160,11 +171,7 @@ function App() {
                 path="/Admin/add-countries"
                 element={<AddCountries />}
               />
-              <Route
-                index
-                path="/Admin/currency"
-                element={<Currency />}
-              />
+              <Route index path="/Admin/currency" element={<Currency />} />
               <Route
                 index
                 path="/Admin/Addcurrency"
@@ -185,11 +192,7 @@ function App() {
                 path="/Admin/add-hospitals"
                 element={<AddHospitals />}
               />
-              <Route
-                index
-                path="/Admin/totalUser"
-                element={<Totaluser />}
-              />
+              <Route index path="/Admin/totalUser" element={<Totaluser />} />
               <Route
                 index
                 path="/Admin/edit-hospitals"
@@ -210,8 +213,11 @@ function App() {
                 path="/Admin/Patient-Pdfdetails"
                 element={<PAymentpdf />}
               />
-              <Route index path="/Admin/General_Enquiries"
-               element={<GerGeneralEnquiry />} />
+              <Route
+                index
+                path="/Admin/General_Enquiries"
+                element={<GerGeneralEnquiry />}
+              />
 
               <Route index path="/Admin/add-Enquiry" element={<AddEnquiry />} />
               <Route
