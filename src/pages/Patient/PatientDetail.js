@@ -214,13 +214,13 @@ function PatientDetail() {
     }
   };
 
-  const hadnlcecEdopenmodalGuestHouse =(item,info)=>{
-    console.log(item,info)
-    setTreatmentIds1(item.patientId)
-    setFormDataGuestHouse(item)
-    setIsEditGuesthouse(true)
-     setOpenGuesthouse(true);
-  }
+  const hadnlcecEdopenmodalGuestHouse = (item, info) => {
+    console.log(item, info);
+    setTreatmentIds1(item.patientId);
+    setFormDataGuestHouse(item);
+    setIsEditGuesthouse(true);
+    setOpenGuesthouse(true);
+  };
 
   const handleclickGuestHouse = (info) => {
     setTreatmentIds1(info.treatment_id);
@@ -228,10 +228,10 @@ function PatientDetail() {
   };
   const handleCloseguesthouse = () => {
     setOpenGuesthouse(false);
-      setTreatmentIds1()
-    setIsEditGuesthouse(false)
-    setFormDataGuestHouse("")
-     setOpenGuesthouse(false);
+    setTreatmentIds1();
+    setIsEditGuesthouse(false);
+    setFormDataGuestHouse("");
+    setOpenGuesthouse(false);
   };
   const AddpaymentOnchnage = (e) => {
     const { name, value } = e.target;
@@ -253,6 +253,7 @@ function PatientDetail() {
   }, [dispatch, location.state.patientId]);
   useEffect(() => {
     if (PatientTreatments) {
+      console.log(PatientTreatments);
       setIspatient(PatientTreatments);
       console.log(PatientTreatments);
       setTretment(PatientTreatments.treatments || []);
@@ -459,7 +460,6 @@ function PatientDetail() {
 
   useEffect(() => {
     getAllPaidTo();
-
   }, []);
 
   const handlesubmit = async (e) => {
@@ -2489,7 +2489,7 @@ function PatientDetail() {
         `${baseurl}get_doctor_review/${location.state.patientId}`,
       );
       if (response.data.success) {
-        console.log(response.data)
+        console.log(response.data);
         setDoctorReviewData1(response.data.data);
       }
     } catch (error) {}
@@ -3315,88 +3315,96 @@ function PatientDetail() {
   // };
 
   const handleClickGuesthuseedit = async () => {
-  const data = formDataGuestHouse;
-      console.log(data)
-  // 🔥 Validation
-  if (!data.guestHouseName?.trim()) {
-    return Swal.fire("Error", "Guest House Name is required", "error");
-  }
-
-  if (!data.dateRangeFrom) {
-    return Swal.fire("Error", "Date Range From is required", "error");
-  }
-
-  if (!data.dateRangeTo) {
-    return Swal.fire("Error", "Date Range To is required", "error");
-  }
-
-  // ✅ Date logic
-  if (new Date(data.dateRangeTo) < new Date(data.dateRangeFrom)) {
-    return Swal.fire("Error", "End date must be after start date", "error");
-  }
-
-  if (!data.numberOfRooms) {
-    return Swal.fire("Error", "Number of Rooms is required", "error");
-  }
-
-  if (!data.paymentAmount) {
-    return Swal.fire("Error", "Payment Amount is required", "error");
-  }
-
-  if (!data.paymentDate) {
-    return Swal.fire("Error", "Payment Date is required", "error");
-  }
-
-  if (!data.notes?.trim()) {
-    return Swal.fire("Error", "Notes is required", "error");
-  }
-
-  try {
-    const formData = new FormData();
-
-    // ✅ normal fields
-    Object.keys(data).forEach((key) => {
-      if (key !== "invoiceFile" && data[key] !== null && data[key] !== undefined) {
-        formData.append(key, data[key]);
-      }
-    });
-
-    // ✅ file only if selected
-    if (data.invoiceFile instanceof File) {
-      formData.append("invoiceFile", data.invoiceFile);
+    const data = formDataGuestHouse;
+    console.log(data);
+    // 🔥 Validation
+    if (!data.guestHouseName?.trim()) {
+      return Swal.fire("Error", "Guest House Name is required", "error");
     }
 
-    // ✅ extra params
-    formData.append("treatment_id", treatmentIds1);
-    formData.append("patientId", location.state.patientId);
+    if (!data.dateRangeFrom) {
+      return Swal.fire("Error", "Date Range From is required", "error");
+    }
 
-    const response = await axios.post(
-      `${baseurl}updateGuestHouseCharge/${data.id}`,
-      formData
-    );
+    if (!data.dateRangeTo) {
+      return Swal.fire("Error", "Date Range To is required", "error");
+    }
 
-    if (response?.data?.success) {
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: response.data.message || "Data updated successfully",
+    // ✅ Date logic
+    if (new Date(data.dateRangeTo) < new Date(data.dateRangeFrom)) {
+      return Swal.fire("Error", "End date must be after start date", "error");
+    }
+
+    if (!data.numberOfRooms) {
+      return Swal.fire("Error", "Number of Rooms is required", "error");
+    }
+
+    if (!data.paymentAmount) {
+      return Swal.fire("Error", "Payment Amount is required", "error");
+    }
+
+    if (!data.paymentDate) {
+      return Swal.fire("Error", "Payment Date is required", "error");
+    }
+
+    if (!data.notes?.trim()) {
+      return Swal.fire("Error", "Notes is required", "error");
+    }
+
+    try {
+      const formData = new FormData();
+
+      // ✅ normal fields
+      Object.keys(data).forEach((key) => {
+        if (
+          key !== "invoiceFile" &&
+          data[key] !== null &&
+          data[key] !== undefined
+        ) {
+          formData.append(key, data[key]);
+        }
       });
 
-      patient_guesthouse(data.treatment_id);
-      handleCloseguesthouse();
-    } else {
-      Swal.fire("Error", response?.data?.message || "Something went wrong", "error");
-    }
-  } catch (error) {
-    console.error(error);
+      // ✅ file only if selected
+      if (data.invoiceFile instanceof File) {
+        formData.append("invoiceFile", data.invoiceFile);
+      }
 
-    Swal.fire(
-      "Error",
-      error.response?.data?.message || "Server error",
-      "error"
-    );
-  }
-};
+      // ✅ extra params
+      formData.append("treatment_id", treatmentIds1);
+      formData.append("patientId", location.state.patientId);
+
+      const response = await axios.post(
+        `${baseurl}updateGuestHouseCharge/${data.id}`,
+        formData,
+      );
+
+      if (response?.data?.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: response.data.message || "Data updated successfully",
+        });
+
+        patient_guesthouse(data.treatment_id);
+        handleCloseguesthouse();
+      } else {
+        Swal.fire(
+          "Error",
+          response?.data?.message || "Something went wrong",
+          "error",
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Server error",
+        "error",
+      );
+    }
+  };
 
   // const handleClickGuesthuseedit = async () => {
   //   const data = formDataGuestHouse;
@@ -3923,7 +3931,7 @@ function PatientDetail() {
                 >
                   Doctor Review{" "}
                 </a>
-                </li>
+              </li>
               {/* <li className="nav-item">
                 <a
                   className={`nav-link ${mainTab === "Doctor-Review" ? "active" : ""}`}
@@ -3934,7 +3942,7 @@ function PatientDetail() {
                   {" "}
                 </a>
                 </li> */}
-                 <li className="nav-item">
+              <li className="nav-item">
                 <a
                   className={`nav-link ${mainTab === "treatment-plans" ? "active" : ""}`}
                   href="#about-cont123"
@@ -3970,7 +3978,6 @@ function PatientDetail() {
                 className={`tab-pane ${mainTab === "Doctor-Review" ? "show active" : ""} mt-5`}
                 id="about-cont126"
               >
-               
                 <div className="row gx-3 gy-3">
                   <div className="col-md-12">
                     {doctorReviewData1?.length === 0 ? (
@@ -4004,11 +4011,11 @@ function PatientDetail() {
                                   <div className="col-md-6">
                                     <div className="">
                                       <h5>Recommendations</h5>
-                                          <div>
-                                            <span className="hospital-name">
-                                              {info?.Recommendations}
-                                            </span>
-                                          </div>
+                                      <div>
+                                        <span className="hospital-name">
+                                          {info?.Recommendations}
+                                        </span>
+                                      </div>
                                     </div>
                                   </div>
                                   <div className="col-md-3">
@@ -4672,8 +4679,141 @@ function PatientDetail() {
                                                   </div>
                                                 </div>
                                               </div>
+                                              <div className="row gx-3 gy-3 mt-2">
+                                                <div className="col-md-12">
+                                                  <div className="card patientreat">
+                                                    <div className="card-body mt-3">
+                                                      <div className="table-responsive table-no-card">
+                                                        <table className="table-card w-100">
+                                                          <thead>
+                                                            <tr>
+                                                              <th>Amount</th>
+                                                              <th>
+                                                                Payment Date
+                                                              </th>
+                                                              <th>Notes</th>
+                                                              <th>Paid To</th>
+                                                              <th>Paid For</th>
+                                                              <th>Document</th>
+                                                              {/* <th>Action</th> */}
+                                                            </tr>
+                                                          </thead>
+                                                          <tbody>
+                                                            {info?.hospital?.payments &&
+                                                            info?.hospital?.payments
+                                                              .length > 0 ? (
+                                                              info?.hospital?.payments.map(
+                                                                (
+                                                                  item,
+                                                                  index,
+                                                                ) => {
+                                                                  return (
+                                                                    <tr
+                                                                      key={
+                                                                        item.id
+                                                                      }
+                                                                    >
+                                                                      <td>
+                                                                        $
+                                                                        {
+                                                                          item?.paid_amount
+                                                                        }
+                                                                      </td>
+
+                                                                      <td>
+                                                                        {new Date(
+                                                                          item.payment_Date,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )}
+                                                                      </td>
+
+                                                                      <td>
+                                                                        {item.notes ||
+                                                                          "-"}
+                                                                      </td>
+                                                                      <td>
+                                                                        {item
+                                                                          .paid_to
+                                                                          .name ||
+                                                                          "-"}
+                                                                      </td>
+                                                                      <td>
+                                                                        {item
+                                                                          .paid_for
+                                                                          .name ||
+                                                                          "-"}
+                                                                      </td>
+
+                                                                      <td>
+                                                                        {item?.attachFile ? (
+                                                                          <button
+                                                                            className="btn btn-sm btn-primary"
+                                                                            onClick={() =>
+                                                                              window.open(
+                                                                                `${baseu11}${item.attachFile}`,
+                                                                                "_blank",
+                                                                              )
+                                                                            }
+                                                                          >
+                                                                            View
+                                                                          </button>
+                                                                        ) : (
+                                                                          "No File"
+                                                                        )}
+                                                                      </td>
+                                                                      {/* <td>
+                                                                      <div className="action-icon">
+                                                                        <div className="action-icon">
+                                                                          <i
+                                                                            className="fa-solid fa-pen-to-square"
+                                                                            onClick={() => {
+                                                                              hadnlcecEdopenmodalGuestHouse(
+                                                                                item,
+                                                                                info,
+                                                                              );
+                                                                            }}
+                                                                          ></i>
+                                                                          <i
+                                                                            className="fa-solid fa-trash"
+                                                                            onClick={() => {
+                                                                              handledelteguestHouse(
+                                                                                item,
+                                                                                info,
+                                                                                index,
+                                                                              );
+                                                                            }}
+                                                                          ></i>
+                                                                        </div>
+                                                                      </div>
+                                                                    </td> */}
+                                                                    </tr>
+                                                                  );
+                                                                },
+                                                              )
+                                                            ) : (
+                                                              <tr>
+                                                                <td
+                                                                  colSpan="5"
+                                                                  style={{
+                                                                    textAlign:
+                                                                      "center",
+                                                                  }}
+                                                                >
+                                                                  No Data Found
+                                                                </td>
+                                                              </tr>
+                                                            )}
+                                                          </tbody>
+                                                        </table>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
                                             </div>
                                           </div>
+
                                           <div className="card-footer">
                                             <div className="row justify-content-end">
                                               <div className="col-md-12">
@@ -5072,6 +5212,130 @@ function PatientDetail() {
                                                       </table>
                                                     </div>
                                                   </div>
+                                                  <div className="card-body mt-3">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>Amount</th>
+                                                            <th>
+                                                              Payment Date
+                                                            </th>
+                                                            <th>Notes</th>
+                                                            <th>Paid To</th>
+                                                            <th>Paid For</th>
+                                                            <th>Document</th>
+                                                            {/* <th>Action</th> */}
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {info?.omca
+                                                            ?.payments &&
+                                                          info?.omca?.payments
+                                                            .length > 0 ? (
+                                                            info?.omca?.payments.map(
+                                                              (item, index) => {
+                                                                return (
+                                                                  <tr
+                                                                    key={
+                                                                      item.id
+                                                                    }
+                                                                  >
+                                                                    <td>
+                                                                      $
+                                                                      {
+                                                                        item.paid_amount
+                                                                      }
+                                                                    </td>
+
+                                                                    <td>
+                                                                      {new Date(
+                                                                        item.payment_Date,
+                                                                      ).toLocaleDateString(
+                                                                        "en-GB",
+                                                                      )}
+                                                                    </td>
+
+                                                                    <td>
+                                                                      {item.notes ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {item
+                                                                        .paid_to
+                                                                        .name ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {item
+                                                                        .paid_for
+                                                                        .name ||
+                                                                        "-"}
+                                                                    </td>
+
+                                                                    <td>
+                                                                      {item?.attachFile ? (
+                                                                        <button
+                                                                          className="btn btn-sm btn-primary"
+                                                                          onClick={() =>
+                                                                            window.open(
+                                                                              `${baseu11}${item.attachFile}`,
+                                                                              "_blank",
+                                                                            )
+                                                                          }
+                                                                        >
+                                                                          View
+                                                                        </button>
+                                                                      ) : (
+                                                                        "No File"
+                                                                      )}
+                                                                    </td>
+                                                                    {/* <td>
+                                                                      <div className="action-icon">
+                                                                        <div className="action-icon">
+                                                                          <i
+                                                                            className="fa-solid fa-pen-to-square"
+                                                                            onClick={() => {
+                                                                              hadnlcecEdopenmodalGuestHouse(
+                                                                                item,
+                                                                                info,
+                                                                              );
+                                                                            }}
+                                                                          ></i>
+                                                                          <i
+                                                                            className="fa-solid fa-trash"
+                                                                            onClick={() => {
+                                                                              handledelteguestHouse(
+                                                                                item,
+                                                                                info,
+                                                                                index,
+                                                                              );
+                                                                            }}
+                                                                          ></i>
+                                                                        </div>
+                                                                      </div>
+                                                                    </td> */}
+                                                                  </tr>
+                                                                );
+                                                              },
+                                                            )
+                                                          ) : (
+                                                            <tr>
+                                                              <td
+                                                                colSpan="5"
+                                                                style={{
+                                                                  textAlign:
+                                                                    "center",
+                                                                }}
+                                                              >
+                                                                No Data Found
+                                                              </td>
+                                                            </tr>
+                                                          )}
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                               </div>
                                             </div>
@@ -5085,7 +5349,9 @@ function PatientDetail() {
                                                   </h6>
                                                   <p>
                                                     $
-                                                    {guestHouseBookingobj.totalAmount}
+                                                    {
+                                                      guestHouseBookingobj.totalAmount
+                                                    }
                                                     {/* ${Number(info?.omca?.totalAmount || 0) + Number(guestHouseBookingobj?.total_amount || 0)} */}
                                                   </p>
                                                 </div>
@@ -5097,7 +5363,9 @@ function PatientDetail() {
                                                   </h6>
                                                   <p>
                                                     $
-                                                     {guestHouseBookingobj.dueAmount}
+                                                    {
+                                                      guestHouseBookingobj.dueAmount
+                                                    }
                                                     {/* {Number(info?.omca?.dueAmount || 0) + Number(guestHouseBookingobj?.due_amount || 0)} */}
                                                   </p>
                                                 </div>
@@ -5192,6 +5460,103 @@ function PatientDetail() {
                                                               ></i>
                                                             </div>
                                                           </td>
+                                                        </tr>
+                                                      ),
+                                                    )
+                                                  ) : (
+                                                    <tr>
+                                                      <td
+                                                        colSpan={
+                                                          usrFount === "Admin"
+                                                            ? 9
+                                                            : 7
+                                                        }
+                                                        style={{
+                                                          textAlign: "center",
+                                                        }}
+                                                      >
+                                                        No Data Found
+                                                      </td>
+                                                    </tr>
+                                                  )}
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                          <div className="card-body">
+                                            <div className="table-responsive table-no-card">
+                                              <table className="table-card w-100">
+                                                <thead>
+                                                  <tr>
+                                                    {/* <th>Payment</th> */}
+                                                    <th>Paid Amount</th>
+                                                    <th>Date</th>
+                                                    <th>Notes</th>
+                                                    <th>Paid To</th>
+                                                    <th>Paid For</th>
+                                                    <th>Method</th>
+                                                    {/* <th>paid_amount</th> */}
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {info?.pharmacy?.payments
+                                                    ?.length > 0 ? (
+                                                    info?.pharmacy?.payments?.map(
+                                                      (item, index) => (
+                                                        <tr key={item._id}>
+                                                          {/* <td>
+                                                            {item?.service_name ||
+                                                              "-"}
+                                                          </td> */}
+                                                          <td>
+                                                            $
+                                                            {item?.paid_amount ||
+                                                              "-"}
+                                                          </td>
+                                                          <td>
+                                                            {new Date(
+                                                              item?.payment_Date,
+                                                            ).toLocaleDateString(
+                                                              "en-GB",
+                                                            ) || "-"}
+                                                          </td>
+                                                          <td>{item.notes}</td>
+                                                          <td>
+                                                            {item.paid_for.name}
+                                                          </td>
+                                                          <td>
+                                                            {item.paid_to.name}
+                                                          </td>
+                                                          <td>
+                                                            {item.paymentMethod}
+                                                          </td>
+                                                          {/* <td>
+                                                            <div className="action-icon">
+                                                              <i
+                                                                className="fa-solid fa-pen-to-square"
+                                                                onClick={() => {
+                                                                  handleeditpharmacycharge(
+                                                                    item,
+                                                                    info,
+                                                                  );
+                                                                }}
+                                                              ></i>
+
+                                                              <i
+                                                                className="fa-solid fa-trash text-danger"
+                                                                style={{
+                                                                  cursor:
+                                                                    "pointer",
+                                                                }}
+                                                                onClick={() =>
+                                                                  deletepharmacy(
+                                                                    info,
+                                                                    index,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                            </div>
+                                                          </td> */}
                                                         </tr>
                                                       ),
                                                     )
@@ -7702,7 +8067,7 @@ function PatientDetail() {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>{isEditGuesthouse=== false?"Add":"Edit"} Guest House</h6>
+              <h6>{isEditGuesthouse === false ? "Add" : "Edit"} Guest House</h6>
             </div>
             <div className="cross-icon" onClick={handleCloseguesthouse}>
               <i class="fa-solid fa-xmark"></i>
@@ -7835,7 +8200,10 @@ function PatientDetail() {
 
                     <div className="field-set">
                       <label>
-                        Invoice File <span className="text-danger">{isEditGuesthouse===true?"":"*"}</span>
+                        Invoice File{" "}
+                        <span className="text-danger">
+                          {isEditGuesthouse === true ? "" : "*"}
+                        </span>
                       </label>
                       <input
                         type="file"
@@ -7864,7 +8232,7 @@ function PatientDetail() {
                         onClick={submitGuestHouseApi}
                         variant="contained"
                       >
-                       Add Guest House
+                        Add Guest House
                       </Button>
                     )}
                   </DialogActions>
