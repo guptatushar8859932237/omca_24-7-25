@@ -102,7 +102,7 @@ export default function Inquiry() {
       formData.append("review_notes", note);
       formData.append("Recommendations", recommend);
       formData.append("enquiryId", enqId);
-      // 🔥 multiple images append
+      formData.append('user_type',statusRole)
       images.forEach((img) => {
         formData.append("images", img);
       });
