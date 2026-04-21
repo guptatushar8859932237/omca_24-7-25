@@ -3334,6 +3334,7 @@ a.fc-event:not([href]) {
 .experience-list > li .experience-content .timeline-content a.name {
   color: var(--bs-text-color);
   font-weight: 600;
+  flex: 1;
 }
 
 .experience-list > li .time {
@@ -7609,4 +7610,23 @@ input:checked + .slider:before {
   border-left: 0px;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
+}
+
+.accordion .card:last-of-type {
+  border-top-left-radius: 5px !important;
+  border-top-right-radius: 5px !important;
+}
+
+.accordion .card:first-of-type {
+  border: 1px solid #ccc !important;
+  border-bottom-right-radius: 5px !important;
+  border-bottom-left-radius: 5px !important;
+}
+.accordion-button:focus{
+  box-shadow: unset !important;
+}
+.commentbtn{
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 500;
 }

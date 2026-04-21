@@ -433,7 +433,7 @@ function PatientDetail() {
   const gettreatment11 = async () => {
     try {
       const response = await axios.post(`${baseurl}treatment_list`);
-    } catch (error) {}
+    } catch (error) { }
   };
   useEffect(() => {
     getDrreview();
@@ -754,7 +754,7 @@ function PatientDetail() {
       if (rresponse.data.success === "true") {
         setDataHospital(rresponse.data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   useEffect(() => {
     getdataApi();
@@ -1355,7 +1355,7 @@ function PatientDetail() {
       Swal.fire("Success!", "Status updated successfully!", "success");
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
       return response.data;
-    } catch (err) {}
+    } catch (err) { }
   };
   const handleChangeDetails = async (event, id) => {
     try {
@@ -2294,7 +2294,7 @@ function PatientDetail() {
 
         setHospitlID(updatedList);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const validateForm = () => {
     const newErrors = {};
@@ -2492,7 +2492,7 @@ function PatientDetail() {
         console.log(response.data);
         setDoctorReviewData1(response.data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const getTreatmentPlan = async () => {
     const payload = {
@@ -2505,9 +2505,9 @@ function PatientDetail() {
       if (response.data.success) {
         setTreatemntData1(response.data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
-  const handleclickApprove = (hospitalids, b) => {};
+  const handleclickApprove = (hospitalids, b) => { };
   const approveReject = async (info, hospitalId, status) => {
     const payload = { status };
     try {
@@ -4049,19 +4049,78 @@ function PatientDetail() {
                                       </p>
                                     </div>
                                   </div>
-                                  {/* <div className="col-md-2">
-                                    <div className="">
-                                      <h5>Action</h5>
-                                      <div className="action-icon">
-                                        <i
-                                          className="fa-solid fa-trash"
-                                          // onClick={() =>
-                                          //   EditDelete(index, info)
-                                          // }
-                                        ></i>
+                                  <div className="col-md-12">
+                                    <div className="accordion" id="accordionExample">
+                                      <div className="accordion-item">
+                                        <h2 className="accordion-header d-flex justify-content-between align-items-center">
+                                          <button className="accordion-button commentbtn" type="button" data-bs-toggle="collapse" data-bs-target="#commentsCollapse"
+                                            aria-expanded="true">Comments
+                                          </button>
+                                        </h2>
+                                        <div id="commentsCollapse" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                          <div className="accordion-body">
+                                            <div className="row gy-3">
+                                              <div className="col-md-12">
+                                                <div className="card customstylecard">
+                                                  <div className="card-body">
+                                                    <div className="note-view">
+                                                      <h3 className="card-title">Patient Note - Test user</h3>
+                                                    </div>
+                                                    <div className="experience-box">
+                                                      <ul className="experience-list">
+                                                        <li className="mb-0">
+                                                          <div className="experience-user">
+                                                            <div className="before-circle"></div>
+                                                          </div>
+                                                          <div className="experience-content">
+                                                            <div className="timeline-content">
+                                                              <a href="#/" className="name">
+                                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                                              </a>
+                                                              <a href="">View Documents</a>
+                                                              <div>Date-21/04/26</div>
+                                                            </div>
+                                                          </div>
+                                                        </li>
+                                                      </ul>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-12">
+                                                <div className="card customstylecard">
+                                                  <div className="card-body">
+                                                    <div className="note-view">
+                                                      <h3 className="card-title">Doctor Note - Test max</h3>
+                                                    </div>
+                                                    <div className="experience-box">
+                                                      <ul className="experience-list">
+                                                        <li className="mb-0">
+                                                          <div className="experience-user">
+                                                            <div className="before-circle"></div>
+                                                          </div>
+                                                          <div className="experience-content">
+                                                            <div className="timeline-content">
+                                                              <a href="#/" className="name">
+                                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                                              </a>
+                                                              <a href="">View Documents</a>
+                                                              <div>Date-21/04/26</div>
+                                                            </div>
+                                                          </div>
+                                                        </li>
+                                                      </ul>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div> */}
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -4126,28 +4185,28 @@ function PatientDetail() {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                              <span
-                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                              >
-                                                {item.status}
-                                              </span>
-                                            )}
+                                                <span
+                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                                >
+                                                  {item.status}
+                                                </span>
+                                              )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                            <button
-                                              className="add-button"
-                                              onClick={() =>
-                                                approveReject(
-                                                  info,
-                                                  item.id,
-                                                  "Approved",
-                                                )
-                                              }
-                                            >
-                                              Approve
-                                            </button>
-                                          )}
+                                              <button
+                                                className="add-button"
+                                                onClick={() =>
+                                                  approveReject(
+                                                    info,
+                                                    item.id,
+                                                    "Approved",
+                                                  )
+                                                }
+                                              >
+                                                Approve
+                                              </button>
+                                            )}
                                         </div>
                                       ))}
                                     </div>
@@ -4234,9 +4293,9 @@ function PatientDetail() {
                           "notes",
                         ].includes(activeSubTab)
                           ? tretment?.filter(
-                              (item) =>
-                                item.treatment_id === selectedTreatmentId,
-                            )
+                            (item) =>
+                              item.treatment_id === selectedTreatmentId,
+                          )
                           : tretment
                         )?.map((info, index) => {
                           return (
@@ -4411,24 +4470,24 @@ function PatientDetail() {
                                           </li>
                                         ):""} */}
                                         {
-  !info?.hospital?.details?.hospital_Name && (
-    <li className="nav-item">
-      <button
-        className="nav-link"
-        onClick={(e) =>
-          handleAction(
-            e,
-            "hospital",
-            info,
-            info.treatment_name
-          )
-        }
-      >
-        + Add Hospital
-      </button>
-    </li>
-  )
-}
+                                          !info?.hospital?.details?.hospital_Name && (
+                                            <li className="nav-item">
+                                              <button
+                                                className="nav-link"
+                                                onClick={(e) =>
+                                                  handleAction(
+                                                    e,
+                                                    "hospital",
+                                                    info,
+                                                    info.treatment_name
+                                                  )
+                                                }
+                                              >
+                                                + Add Hospital
+                                              </button>
+                                            </li>
+                                          )
+                                        }
                                         {/* <li className="nav-item">
                                           <button
                                             className="nav-link"
@@ -4500,10 +4559,10 @@ function PatientDetail() {
                                             {hospitalStatuses.includes(
                                               info?.treatment_status,
                                             ) && (
-                                              <h6>
-                                                Status: {info?.treatment_status}
-                                              </h6>
-                                            )}
+                                                <h6>
+                                                  Status: {info?.treatment_status}
+                                                </h6>
+                                              )}
                                             <div className="">
                                               <a href="">
                                                 <i class="fa-solid fa-download me-2"></i>
@@ -4551,15 +4610,15 @@ function PatientDetail() {
                                                             <td>
                                                               {info.treatment_created_at
                                                                 ? new Date(
-                                                                    info.treatment_created_at,
-                                                                  ).toLocaleTimeString(
-                                                                    "en-US",
-                                                                    {
-                                                                      hour: "2-digit",
-                                                                      minute:
-                                                                        "2-digit",
-                                                                    },
-                                                                  )
+                                                                  info.treatment_created_at,
+                                                                ).toLocaleTimeString(
+                                                                  "en-US",
+                                                                  {
+                                                                    hour: "2-digit",
+                                                                    minute:
+                                                                      "2-digit",
+                                                                  },
+                                                                )
                                                                 : "-"}
                                                             </td>
                                                             <td>
@@ -4589,7 +4648,7 @@ function PatientDetail() {
                                                 <div className="card patientreat">
                                                   <div className="card-header service-list d-flex justify-content-between">
                                                     <div>
-                                                      <h6>Charges</h6>
+                                                      <h6>Hospital Charges</h6>
                                                     </div>
                                                     <div>
                                                       <button
@@ -4609,9 +4668,7 @@ function PatientDetail() {
                                                       <table className="table-card w-100">
                                                         <thead>
                                                           <tr>
-                                                            <th>
-                                                              Service Name
-                                                            </th>
+                                                            <th>Service Name</th>
                                                             <th>Price</th>
                                                             <th>Date</th>
                                                             <th>Action</th>
@@ -4620,7 +4677,7 @@ function PatientDetail() {
                                                         <tbody>
                                                           {info?.hospital
                                                             ?.charges?.length >
-                                                          0 ? (
+                                                            0 ? (
                                                             info?.hospital?.charges?.map(
                                                               (item, index) => {
                                                                 const createdAt =
@@ -4642,10 +4699,10 @@ function PatientDetail() {
                                                                     <td>
                                                                       {createdAt
                                                                         ? new Date(
-                                                                            createdAt,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
+                                                                          createdAt,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )
                                                                         : "-"}
                                                                     </td>
                                                                     <td>
@@ -4702,92 +4759,109 @@ function PatientDetail() {
                                                   </div>
                                                 </div>
                                               </div>
-                                              <div className="row gx-3 gy-3 mt-2">
-                                                <div className="col-md-12">
-                                                  <div className="card patientreat">
-                                                    <div className="card-body mt-3">
-                                                      <div className="table-responsive table-no-card">
-                                                        <table className="table-card w-100">
-                                                          <thead>
-                                                            <tr>
-                                                              <th>Amount</th>
-                                                              <th>
-                                                                Payment Date
-                                                              </th>
-                                                              <th>Notes</th>
-                                                              <th>Paid To</th>
-                                                              <th>Paid For</th>
-                                                              <th>Document</th>
-                                                              {/* <th>Action</th> */}
-                                                            </tr>
-                                                          </thead>
-                                                          <tbody>
-                                                            {info?.hospital
-                                                              ?.payments &&
+                                              <div className="col-md-12">
+                                                <div className="total-amount">
+                                                  <h6 className="mb-0">
+                                                    Total Amount:
+                                                  </h6>
+                                                  <p>
+                                                    $
+                                                    {
+                                                      info?.hospital
+                                                        ?.totalAmount
+                                                    }
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-12">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Payment</h6>
+                                                  </div>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>Payment Amount</th>
+                                                            <th>Payment Date</th>
+                                                            <th>Payment Method</th>
+                                                            <th>Notes</th>
+                                                            <th>Paid To</th>
+                                                            <th>Paid For</th>
+                                                            <th>Document</th>
+                                                            <th>Pdf</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {info?.hospital
+                                                            ?.payments &&
                                                             info?.hospital
                                                               ?.payments
                                                               .length > 0 ? (
-                                                              info?.hospital?.payments.map(
-                                                                (
-                                                                  item,
-                                                                  index,
-                                                                ) => {
-                                                                  return (
-                                                                    <tr
-                                                                      key={
-                                                                        item.id
+                                                            info?.hospital?.payments.map(
+                                                              (
+                                                                item,
+                                                                index,
+                                                              ) => {
+                                                                return (
+                                                                  <tr
+                                                                    key={
+                                                                      item.id
+                                                                    }
+                                                                  >
+                                                                    <td>
+                                                                      $
+                                                                      {
+                                                                        item?.paid_amount
                                                                       }
-                                                                    >
-                                                                      <td>
-                                                                        $
-                                                                        {
-                                                                          item?.paid_amount
-                                                                        }
-                                                                      </td>
+                                                                    </td>
+                                                                    <td>method</td>
+                                                                    <td>
+                                                                      {new Date(
+                                                                        item.payment_Date,
+                                                                      ).toLocaleDateString(
+                                                                        "en-GB",
+                                                                      )}
+                                                                    </td>
 
-                                                                      <td>
-                                                                        {new Date(
-                                                                          item.payment_Date,
-                                                                        ).toLocaleDateString(
-                                                                          "en-GB",
-                                                                        )}
-                                                                      </td>
+                                                                    <td>
+                                                                      {item.notes ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {item
+                                                                        .paid_to
+                                                                        .name ||
+                                                                        "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                      {item
+                                                                        .paid_for
+                                                                        .name ||
+                                                                        "-"}
+                                                                    </td>
 
-                                                                      <td>
-                                                                        {item.notes ||
-                                                                          "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        {item
-                                                                          .paid_to
-                                                                          .name ||
-                                                                          "-"}
-                                                                      </td>
-                                                                      <td>
-                                                                        {item
-                                                                          .paid_for
-                                                                          .name ||
-                                                                          "-"}
-                                                                      </td>
-
-                                                                      <td>
-                                                                        {item?.attachFile ? (
-                                                                          <button
-                                                                            className="btn btn-sm btn-primary"
-                                                                            onClick={() =>
-                                                                              window.open(
-                                                                                `${baseu11}${item.attachFile}`,
-                                                                                "_blank",
-                                                                              )
-                                                                            }
-                                                                          >
-                                                                            View
-                                                                          </button>
-                                                                        ) : (
-                                                                          "No File"
-                                                                        )}
-                                                                      </td>
-                                                                      {/* <td>
+                                                                    <td>
+                                                                      {item?.attachFile ? (
+                                                                        <button
+                                                                          className="btn btn-sm btn-primary"
+                                                                          onClick={() =>
+                                                                            window.open(
+                                                                              `${baseu11}${item.attachFile}`,
+                                                                              "_blank",
+                                                                            )
+                                                                          }
+                                                                        >
+                                                                          View
+                                                                        </button>
+                                                                      ) : (
+                                                                        "No File"
+                                                                      )}
+                                                                    </td>
+                                                                    <td>no pdf</td>
+                                                                    <td>
                                                                       <div className="action-icon">
                                                                         <div className="action-icon">
                                                                           <i
@@ -4811,50 +4885,48 @@ function PatientDetail() {
                                                                           ></i>
                                                                         </div>
                                                                       </div>
-                                                                    </td> */}
-                                                                    </tr>
-                                                                  );
-                                                                },
-                                                              )
-                                                            ) : (
-                                                              <tr>
-                                                                <td
-                                                                  colSpan="5"
-                                                                  style={{
-                                                                    textAlign:
-                                                                      "center",
-                                                                  }}
-                                                                >
-                                                                  No Data Found
-                                                                </td>
-                                                              </tr>
-                                                            )}
-                                                          </tbody>
-                                                        </table>
-                                                      </div>
+                                                                    </td>
+                                                                  </tr>
+                                                                );
+                                                              },
+                                                            )
+                                                          ) : (
+                                                            <tr>
+                                                              <td
+                                                                colSpan="9"
+                                                                style={{
+                                                                  textAlign:
+                                                                    "center",
+                                                                }}
+                                                              >
+                                                                No Data Found
+                                                              </td>
+                                                            </tr>
+                                                          )}
+                                                        </tbody>
+                                                      </table>
                                                     </div>
                                                   </div>
                                                 </div>
                                               </div>
                                             </div>
                                           </div>
-
                                           <div className="card-footer">
                                             <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
                                                   <h6 className="mb-0">
-                                                    Total Amount:
+                                                    Paid
                                                   </h6>
                                                   <p>
-                                                    $
-                                                    {
-                                                      info?.hospital
-                                                        ?.totalAmount
-                                                    }
+                                                    $78665
                                                   </p>
                                                 </div>
                                               </div>
+                                            </div>
+                                          </div>
+                                          <div className="card-footer">
+                                            <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
                                                   <h6 className="mb-0">
@@ -4873,32 +4945,32 @@ function PatientDetail() {
                                       <div className="col-md-12">
                                         <div className="card customstylecard">
                                           <div className="card-header d-flex align-items-center justify-content-between">
-                                                    <div>
-                                            <h6>OMCA</h6>
-                                                    </div>
+                                            <div>
+                                              <h6>OMCA</h6>
+                                            </div>
 
                                             {/* <div className=""> */}
-                                              {/* <a href="">
+                                            {/* <a href="">
                                                 <i class="fa-solid fa-download me-2"></i>
                                                 Download Pdf
                                               </a> */}
                                             {/* </div> */}
                                             <div className="">
-                                           
-                                          <button
-                                            className="add-button"
-                                            onClick={(e) =>
-                                              handleAction(
-                                                e,
-                                                "services",
-                                                info,
-                                                info.treatment_name,
-                                              )
-                                            }
-                                          >
-                                            + Add Services
-                                          </button>
-                                        
+
+                                              <button
+                                                className="add-button"
+                                                onClick={(e) =>
+                                                  handleAction(
+                                                    e,
+                                                    "services",
+                                                    info,
+                                                    info.treatment_name,
+                                                  )
+                                                }
+                                              >
+                                                + Add Services
+                                              </button>
+
 
                                             </div>
                                           </div>
@@ -4926,10 +4998,10 @@ function PatientDetail() {
                                                         <tbody>
                                                           {info?.omca
                                                             ?.extraServices &&
-                                                          info.omca.extraServices.filter(
-                                                            (item) =>
-                                                              item.price,
-                                                          ).length > 0 ? (
+                                                            info.omca.extraServices.filter(
+                                                              (item) =>
+                                                                item.price,
+                                                            ).length > 0 ? (
                                                             info.omca.extraServices.map(
                                                               (item, index) => {
                                                                 if (!item.price)
@@ -4954,19 +5026,19 @@ function PatientDetail() {
                                                                     <td>
                                                                       {item.startTime
                                                                         ? new Date(
-                                                                            item.startTime,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
+                                                                          item.startTime,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )
                                                                         : "-"}
                                                                     </td>
                                                                     <td>
                                                                       {item.endTime
                                                                         ? new Date(
-                                                                            item.endTime,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
+                                                                          item.endTime,
+                                                                        ).toLocaleDateString(
+                                                                          "en-GB",
+                                                                        )
                                                                         : "-"}
                                                                     </td>
                                                                     <td>
@@ -5037,8 +5109,8 @@ function PatientDetail() {
                                                         <tbody>
                                                           {info?.omca
                                                             ?.freeServices &&
-                                                          info.omca.freeServices
-                                                            .length > 0 ? (
+                                                            info.omca.freeServices
+                                                              .length > 0 ? (
                                                             info.omca.freeServices.map(
                                                               (item, index) => {
                                                                 return (
@@ -5143,7 +5215,7 @@ function PatientDetail() {
                                                         </thead>
                                                         <tbody>
                                                           {guestHouseBooking &&
-                                                          guestHouseBooking.length >
+                                                            guestHouseBooking.length >
                                                             0 ? (
                                                             guestHouseBooking.map(
                                                               (item, index) => {
@@ -5277,8 +5349,8 @@ function PatientDetail() {
                                                         <tbody>
                                                           {info?.omca
                                                             ?.payments &&
-                                                          info?.omca?.payments
-                                                            .length > 0 ? (
+                                                            info?.omca?.payments
+                                                              .length > 0 ? (
                                                             info?.omca?.payments.map(
                                                               (item, index) => {
                                                                 return (
@@ -5460,7 +5532,7 @@ function PatientDetail() {
                                                 <tbody>
                                                   {info?.pharmacy
                                                     ?.pharmacyCharges?.length >
-                                                  0 ? (
+                                                    0 ? (
                                                     info.pharmacy?.pharmacyCharges?.map(
                                                       (item, index) => (
                                                         <tr key={item._id}>
@@ -5712,7 +5784,7 @@ function PatientDetail() {
 
                                                 <TableBody>
                                                   {attandantFilered.length ===
-                                                  0 ? (
+                                                    0 ? (
                                                     <TableRow>
                                                       <TableCell
                                                         colSpan={7}
@@ -5803,9 +5875,9 @@ function PatientDetail() {
                                                                 item?.AttendeeId
                                                                   ?.attendant_passport,
                                                               ) &&
-                                                              item.AttendeeId
-                                                                .attendant_passport
-                                                                .length > 0 ? (
+                                                                item.AttendeeId
+                                                                  .attendant_passport
+                                                                  .length > 0 ? (
                                                                 item.AttendeeId.attendant_passport.map(
                                                                   (
                                                                     file,
@@ -5813,7 +5885,7 @@ function PatientDetail() {
                                                                   ) => {
                                                                     const filePath =
                                                                       typeof file ===
-                                                                      "object"
+                                                                        "object"
                                                                         ? file?.path
                                                                         : file;
 
@@ -5948,7 +6020,7 @@ function PatientDetail() {
                                                   </TableHead>
                                                   <TableBody>
                                                     {paymentsFilered &&
-                                                    paymentsFilered.length >
+                                                      paymentsFilered.length >
                                                       0 ? (
                                                       paymentsFilered.map(
                                                         (item) => (
@@ -6018,7 +6090,7 @@ function PatientDetail() {
                                                             </TableCell> */}
 
                                                             {usrFount ===
-                                                            "Admin" ? (
+                                                              "Admin" ? (
                                                               <>
                                                                 <TableCell>
                                                                   <button
@@ -6028,9 +6100,9 @@ function PatientDetail() {
                                                                         "/Admin/Patient-Pdfdetails",
                                                                         {
                                                                           state:
-                                                                            {
-                                                                              data: item?._id,
-                                                                            },
+                                                                          {
+                                                                            data: item?._id,
+                                                                          },
                                                                         },
                                                                       );
                                                                     }}
@@ -6141,7 +6213,7 @@ function PatientDetail() {
                                                 </TableHead>
                                                 <TableBody>
                                                   {reportsFilered1 &&
-                                                  reportsFilered1.length > 0 ? (
+                                                    reportsFilered1.length > 0 ? (
                                                     reportsFilered1.map(
                                                       (item) => (
                                                         <TableRow
@@ -6164,12 +6236,12 @@ function PatientDetail() {
                                                           </TableCell>
                                                           <TableCell>
                                                             {item?.platform ===
-                                                            1
+                                                              1
                                                               ? "CRM"
                                                               : "Hospital"}
                                                           </TableCell>
                                                           {usrFount ===
-                                                          "Admin" ? (
+                                                            "Admin" ? (
                                                             <>
                                                               {" "}
                                                               <TableCell>
@@ -6311,10 +6383,10 @@ function PatientDetail() {
                                                     <td>
                                                       {item.appointment_Date
                                                         ? new Date(
-                                                            item.appointment_Date,
-                                                          )
-                                                            .toISOString()
-                                                            .slice(0, 10)
+                                                          item.appointment_Date,
+                                                        )
+                                                          .toISOString()
+                                                          .slice(0, 10)
                                                         : ""}
                                                     </td>
                                                     <td>{item.note}</td>
@@ -6398,7 +6470,7 @@ function PatientDetail() {
                                               </thead>
                                               <tbody>
                                                 {notesTable &&
-                                                notesTable.length > 0 ? (
+                                                  notesTable.length > 0 ? (
                                                   notesTable.map(
                                                     (item, index) => {
                                                       return (
@@ -6413,15 +6485,15 @@ function PatientDetail() {
                                                           <td>
                                                             {item?.date
                                                               ? new Date(
-                                                                  item.date,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                )
+                                                                item.date,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )
                                                               : "-"}
                                                           </td>
                                                           <td>
                                                             {item.platform ==
-                                                            "1"
+                                                              "1"
                                                               ? "CRM"
                                                               : "Hospital"}{" "}
                                                           </td>
@@ -6430,26 +6502,26 @@ function PatientDetail() {
                                                               ?.treatmentNoteImages
                                                               ?.length > 0
                                                               ? item.treatmentNoteImages.map(
-                                                                  (
-                                                                    img,
-                                                                    index,
-                                                                  ) => (
-                                                                    <button
-                                                                      key={
-                                                                        index
-                                                                      }
-                                                                      className="btn btn-sm btn-primary me-1"
-                                                                      onClick={() =>
-                                                                        window.open(
-                                                                          `https://sisccltd.com/omca_crm/${img}`,
-                                                                          "_blank",
-                                                                        )
-                                                                      }
-                                                                    >
-                                                                      View
-                                                                    </button>
-                                                                  ),
-                                                                )
+                                                                (
+                                                                  img,
+                                                                  index,
+                                                                ) => (
+                                                                  <button
+                                                                    key={
+                                                                      index
+                                                                    }
+                                                                    className="btn btn-sm btn-primary me-1"
+                                                                    onClick={() =>
+                                                                      window.open(
+                                                                        `https://sisccltd.com/omca_crm/${img}`,
+                                                                        "_blank",
+                                                                      )
+                                                                    }
+                                                                  >
+                                                                    View
+                                                                  </button>
+                                                                ),
+                                                              )
                                                               : "-"}
                                                           </td>
 
@@ -6503,7 +6575,8 @@ function PatientDetail() {
                           );
                         })}
                       </>
-                    )}
+                    )
+                    }
                   </div>
                 </div>
               </div>
@@ -6581,29 +6654,29 @@ function PatientDetail() {
                                     <TableCell className="d-flex gap-2">
                                       {item?.attendant_passport?.length > 0
                                         ? item.attendant_passport.map(
-                                            (file, fIndex) => {
-                                              const filePath =
-                                                typeof file === "object"
-                                                  ? file?.path
-                                                  : file;
-                                              return (
-                                                <div key={fIndex}>
-                                                  <a
-                                                    href={`https://sisccltd.com/omca_crm/${filePath}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="viewbtn"
-                                                  >
-                                                    View{" "}
-                                                    {item.attendant_passport
-                                                      .length > 1
-                                                      ? fIndex + 1
-                                                      : ""}
-                                                  </a>
-                                                </div>
-                                              );
-                                            },
-                                          )
+                                          (file, fIndex) => {
+                                            const filePath =
+                                              typeof file === "object"
+                                                ? file?.path
+                                                : file;
+                                            return (
+                                              <div key={fIndex}>
+                                                <a
+                                                  href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  className="viewbtn"
+                                                >
+                                                  View{" "}
+                                                  {item.attendant_passport
+                                                    .length > 1
+                                                    ? fIndex + 1
+                                                    : ""}
+                                                </a>
+                                              </div>
+                                            );
+                                          },
+                                        )
                                         : "Not Uploaded"}
                                     </TableCell>
                                     <TableCell className="action-icon">
@@ -6632,7 +6705,7 @@ function PatientDetail() {
             </div>
           </div>
         </div>
-      </div>
+      </div >
       <React.Fragment>
         <Dialog
           fullWidth
