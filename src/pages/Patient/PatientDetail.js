@@ -4791,7 +4791,7 @@ function PatientDetail() {
                                                             <th>Paid For</th>
                                                             <th>Document</th>
                                                             <th>Pdf</th>
-                                                            <th>Action</th>
+                                                            {/* <th>Action</th> */}
                                                           </tr>
                                                         </thead>
                                                         <tbody>
@@ -4861,7 +4861,7 @@ function PatientDetail() {
                                                                       )}
                                                                     </td>
                                                                     <td>no pdf</td>
-                                                                    <td>
+                                                                    {/* <td>
                                                                       <div className="action-icon">
                                                                         <div className="action-icon">
                                                                           <i
@@ -4885,7 +4885,7 @@ function PatientDetail() {
                                                                           ></i>
                                                                         </div>
                                                                       </div>
-                                                                    </td>
+                                                                    </td> */}
                                                                   </tr>
                                                                 );
                                                               },
@@ -4919,7 +4919,7 @@ function PatientDetail() {
                                                     Paid
                                                   </h6>
                                                   <p>
-                                                    $78665
+                                                    $7{info?.hospital?.paidAmount}
                                                   </p>
                                                 </div>
                                               </div>
@@ -5320,7 +5320,7 @@ function PatientDetail() {
                                                     Total Amount:
                                                   </h6>
                                                   <p>
-                                                    ${guestHouseBookingobj.totalAmount}
+                                                    ${info?.omca?.totalAmount}
                                                   </p>
                                                 </div>
                                               </div>
@@ -5465,7 +5465,7 @@ function PatientDetail() {
                                                     Paid
                                                   </h6>
                                                   <p>
-                                                    $78665
+                                                    ${info?.omca?.paidAmount}
                                                   </p>
                                                 </div>
                                               </div>
@@ -5479,7 +5479,7 @@ function PatientDetail() {
                                                     Due Amount:
                                                   </h6>
                                                   <p>
-                                                    ${guestHouseBookingobj.dueAmount}
+                                                    ${info?.omca?.dueAmount}
                                                   </p>
                                                 </div>
                                               </div>
@@ -5733,7 +5733,8 @@ function PatientDetail() {
                                                     Paid
                                                   </h6>
                                                   <p>
-                                                    $78665
+                                                    $ {info?.pharmacy
+                                                        ?.paidAmount}
                                                   </p>
                                                 </div>
                                               </div>
