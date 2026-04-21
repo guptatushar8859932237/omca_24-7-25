@@ -62,7 +62,7 @@ export default function Patient() {
   const [searchApiData, setSearchApiData] = useState([]);
   const [pdfRowLimit, setPdfRowLimit] = useState(null);
   const [orderBy, setOrderBy] = useState("");
-  const [order, setOrder] = useState("asc");
+  const [order, setOrder] = useState("");
   const [report, setReport] = useState({
     country: " ",
     gender: " ",
@@ -70,12 +70,9 @@ export default function Patient() {
   });
 
   const [searchParams] = useSearchParams();
-
   const statusFromUrl = searchParams.get("status");
   const typeFromUrl = searchParams.get("type");
   const dashboardFilterApplied = useRef(false);
-  // Read dashboard filter values ONCE from location.state at mount time.
-  // We capture them into a ref so they survive the state-clearing navigate.
   const initialStatusFilter = useRef(location.state?.status || "");
   const initialTypeFilter = useRef(location.state?.type || "");
 
@@ -92,16 +89,18 @@ export default function Patient() {
     }
   }, [Treatment]);
   useEffect(() => {
-    dispatch(
-      GetAllPatients({
-        page,
-        limit: rowsPerPage,
-        search: searchTerm,
-        p_status: statusFromUrl || "",
-        patient_type_new: typeFromUrl || "",
-      }),
-    );
-  }, [dispatch, page, rowsPerPage, searchTerm, statusFromUrl, typeFromUrl]);
+  dispatch(
+    GetAllPatients({
+      page,
+      limit: rowsPerPage,
+      search: searchTerm,
+      p_status: statusFromUrl || "",
+      patient_type_new: typeFromUrl || "",
+      sortField: orderBy,
+      sortOrder: order,
+    })
+  );
+}, [dispatch, page, rowsPerPage, searchTerm, statusFromUrl, typeFromUrl, orderBy, order]);
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     setPage(1);
@@ -413,45 +412,14 @@ export default function Patient() {
       await filterdataapi(onVaue, "type");
     }
   };
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === "asc";
-    const direction = isAsc ? "desc" : "asc";
-    setOrder(direction);
-    setOrderBy(property);
-    const sortedRows = [...rows].sort((a, b) => {
-      let valueA = "";
-      let valueB = "";
-      if (property === "patient_disease") {
-        valueA = a.patient_disease?.map((d) => d.disease_name).join(", ") || "";
-        valueB = b.patient_disease?.map((d) => d.disease_name).join(", ") || "";
-      } else {
-        valueA = a[property] || "";
-        valueB = b[property] || "";
-      }
-      return direction === "asc"
-        ? valueA.localeCompare(valueB)
-        : valueB.localeCompare(valueA);
-    });
-    setRows(sortedRows);
-  };
-  // const handleRequestSort = (property) => {
-  //   const isAsc = orderBy === property && order === "asc";
-  //   const direction = isAsc ? "desc" : "asc";
+ const handleRequestSort = (property) => {
+  const isAsc = orderBy === property && order === "asc";
+  const direction = isAsc ? "desc" : "asc";
 
-  //   setOrder(direction);
-  //   setOrderBy(property);
-
-  //   const sortedRows = [...rows].sort((a, b) => {
-  //     const valueA = a[property] || "";
-  //     const valueB = b[property] || "";
-
-  //     if (valueA < valueB) return direction === "asc" ? -1 : 1;
-  //     if (valueA > valueB) return direction === "asc" ? 1 : -1;
-  //     return 0;
-  //   });
-
-  //   setRows(sortedRows);
-  // };
+  setOrder(direction);
+  setOrderBy(property);
+};
+ 
   return (
     <>
       <div className="page-wrapper">
@@ -650,11 +618,11 @@ export default function Patient() {
                           )}
                           <TableCell>
                             <TableSortLabel
-                              active={orderBy === "patientNumber"}
+                              active={orderBy === "patientId"}
                               direction={
-                                orderBy === "patientNumber" ? order : "asc"
+                                orderBy === "patientId" ? order : "asc"
                               }
-                              onClick={() => handleRequestSort("patientNumber")}
+                              onClick={() => handleRequestSort("patientId")}
                             >
                               Patient Id
                             </TableSortLabel>
@@ -810,7 +778,6 @@ export default function Patient() {
                                         "..."
                                       : info.patient_name}
                                   </TableCell>
-
                                   <TableCell>{info.treatingIn}</TableCell>
                                   <TableCell>
                                     {new Date(
@@ -827,7 +794,6 @@ export default function Patient() {
                                   </TableCell>
                                   <TableCell>{info.country}</TableCell>
                                   {/* <TableCell>{info.country}</TableCell> */}
-
                                   {showActions === true ? (
                                     <>
                                       <TableCell>

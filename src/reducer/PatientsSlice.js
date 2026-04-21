@@ -3,27 +3,45 @@ import axios from "axios"
 import { baseurl } from "../Basurl/Baseurl"
 export const GetAllPatients = createAsyncThunk(
   "patient/GetAllPatients",
-  async ({ page = 1, search = '', limit = 25, p_status = '', patient_type_new = '' }, { rejectWithValue }) => {
+  async (
+    {
+      page = 1,
+      search = "",
+      limit = 25,
+      p_status = "",
+      patient_type_new = "",
+      sortField = "",
+      sortOrder = "",
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      
       const queryParams = new URLSearchParams();
+
       queryParams.append("page", page);
       queryParams.append("search", search);
       queryParams.append("limit", limit);
-      
-      
+
       if (p_status) {
         queryParams.append("p_status", p_status);
       }
-      
-      
+
       if (patient_type_new) {
         queryParams.append("patient_type_new", patient_type_new);
       }
 
+      // ✅ ADD THIS 🔥
+      if (sortField) {
+        queryParams.append("sortField", sortField);
+      }
+
+      if (sortOrder) {
+        queryParams.append("sortOrder", sortOrder);
+      }
+
       const response = await axios.post(
         `${baseurl}all_patients?${queryParams.toString()}`,
-        {}, 
+        {},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -31,6 +49,7 @@ export const GetAllPatients = createAsyncThunk(
           },
         }
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
