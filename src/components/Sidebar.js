@@ -98,9 +98,7 @@ export default function Sidebar() {
             )} */}
             {menuItems.map((item) => {
               const hasPermission = permissions.includes(item.path);
-
-              // If General Enquiries → always show
-              if ( hasPermission) {
+              if (hasPermission) {
                 return (
                   <li key={item.path}>
                     <NavLink
