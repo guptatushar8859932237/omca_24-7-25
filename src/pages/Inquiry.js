@@ -82,16 +82,32 @@ export default function Inquiry() {
   const handleNoteChange = (e) => {
     setNote(e.target.value);
   };
-
+  const permissions = localStorage.getItem("permissionArray");
+  console.log(permissions);
   const handleRecommendChange = (e) => {
     setRecommend(e.target.value);
   };
-
+  const tabsConfig = [
+    { label: "Enquiry", value: 0, permission: "/Enquiries" },
+    { label: "Ambulance Service", value: 1, permission: "/Ambulance_Service" },
+    {
+      label: "Air Medical Escort",
+      value: 2,
+      permission: "/Air_Medical_Escort",
+    },
+    {
+      label: "Treatment Estimate",
+      value: 3,
+      permission: "/Treatment_Estimate",
+    },
+  ];
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
   };
-
+  const filteredTabs = tabsConfig.filter((tab) =>
+    permissions.includes(tab.permission),
+  );
   const handleNotesdataqw = async (e) => {
     e.preventDefault();
     if (!note || !recommend || images.length === 0) {
@@ -102,7 +118,7 @@ export default function Inquiry() {
       formData.append("review_notes", note);
       formData.append("Recommendations", recommend);
       formData.append("enquiryId", enqId);
-      formData.append('user_type',statusRole)
+      formData.append("user_type", statusRole);
       images.forEach((img) => {
         formData.append("images", img);
       });
@@ -716,13 +732,13 @@ export default function Inquiry() {
       });
       if (response.data.success) {
         console.log(response.data);
-        console.log('a')
+        console.log("a");
         get3tabdata(
           response.data.user_ids,
           response.data.accessCountries,
           response.data.roleStatuses,
         );
-        console.log('b')
+        console.log("b");
         setGetcountries(response.data.accessCountries);
         setRoleStatuses(response.data.roleStatuses);
       }
@@ -735,8 +751,7 @@ export default function Inquiry() {
       <div className="page-wrapper">
         <div className="content">
           <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
-
-            {
+            {/* {
               role==="Admin"?  <Tabs value={tabValue} onChange={handleTabChange}>
                 <Tab label="Enquiry" />
                 <Tab label="Ambulance Service" />
@@ -754,7 +769,12 @@ export default function Inquiry() {
                 <Tab label="Air Medical Escort" />
                 <Tab label="Treatment Estimate" />
               </Tabs>
-            )}
+            )} */}
+            <Tabs value={tabValue} onChange={handleTabChange}>
+              {filteredTabs.map((tab) => (
+                <Tab key={tab.value} label={tab.label} />
+              ))}
+            </Tabs>
           </Box>
           <div className="row">
             <div className="col-md-12">
