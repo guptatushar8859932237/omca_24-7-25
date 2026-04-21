@@ -3,14 +3,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
-  Modal, Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Pagination,
+  Stack,
+  Modal,
+  Box,
   Dialog,
   DialogContent,
   FormControl,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -21,15 +32,17 @@ import Swal from "sweetalert2";
 export default function NursinfCare() {
   const dispatch = useDispatch();
 
-  const { testForms: formData, loading, error } = useSelector(
-    (state) => state.testForms
-  );
+  const {
+    testForms: formData,
+    loading,
+    error,
+  } = useSelector((state) => state.testForms);
 
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
-const [order, setOrder] = useState("asc");
-const [orderBy, setOrderBy] = useState(""); 
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("");
   // Popup states
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -64,43 +77,43 @@ const [orderBy, setOrderBy] = useState("");
     );
   });
 
-const handleSort = (field) => {
-  const isAsc = orderBy === field && order === "asc";
-  setOrder(isAsc ? "desc" : "asc");
-  setOrderBy(field);
-};
+  const handleSort = (field) => {
+    const isAsc = orderBy === field && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(field);
+  };
 
-const sortedData = [...filteredData].sort((a, b) => {
-  if (!orderBy) return 0;
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (!orderBy) return 0;
 
-  let valA = a[orderBy] || "";
-  let valB = b[orderBy] || "";
+    let valA = a[orderBy] || "";
+    let valB = b[orderBy] || "";
 
-  // Date handling
-  if (orderBy === "created_at") {
-    return order === "asc"
-      ? new Date(valA) - new Date(valB)
-      : new Date(valB) - new Date(valA);
-  }
+    // Date handling
+    if (orderBy === "created_at") {
+      return order === "asc"
+        ? new Date(valA) - new Date(valB)
+        : new Date(valB) - new Date(valA);
+    }
 
-  // Number handling
-  if (!isNaN(valA) && !isNaN(valB)) {
-    return order === "asc" ? valA - valB : valB - valA;
-  }
+    // Number handling
+    if (!isNaN(valA) && !isNaN(valB)) {
+      return order === "asc" ? valA - valB : valB - valA;
+    }
 
-  // String handling
-  valA = valA.toString().toLowerCase();
-  valB = valB.toString().toLowerCase();
+    // String handling
+    valA = valA.toString().toLowerCase();
+    valB = valB.toString().toLowerCase();
 
-  if (valA < valB) return order === "asc" ? -1 : 1;
-  if (valA > valB) return order === "asc" ? 1 : -1;
+    if (valA < valB) return order === "asc" ? -1 : 1;
+    if (valA > valB) return order === "asc" ? 1 : -1;
 
-  return 0;
-});
-const paginatedData = sortedData.slice(
-  page * rowsPerPage,
-  page * rowsPerPage + rowsPerPage
-);
+    return 0;
+  });
+  const paginatedData = sortedData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
 
   // Open popup
   const handleView = (record) => {
@@ -117,40 +130,38 @@ const paginatedData = sortedData.slice(
       <p>{value || "-"}</p>
     </div>
   );
- const handleChangtype = async (e, b) => {
-  console.log(e, b);
+  const handleChangtype = async (e, b) => {
+    console.log(e, b);
 
-  const data = {
-    id: b?.id,
-    model: "PatientContactEnquiry",
-    status: e?.value || e?.target?.value
-  };
+    const data = {
+      id: b?.id,
+      model: "PatientContactEnquiry",
+      status: e?.value || e?.target?.value,
+    };
 
-  try {
-    const response = await axios.post(
-      `${AdminBaseUrl}update_user_request_status`,
-      data
-    );
-  dispatch(testForms());
-    if (response?.data?.success) {
-      Swal.fire("Success", "Status Updated Successfully", "success");
+    try {
+      const response = await axios.post(
+        `${AdminBaseUrl}update_user_request_status`,
+        data,
+      );
+      dispatch(testForms());
+      if (response?.data?.success) {
+        Swal.fire("Success", "Status Updated Successfully", "success");
+      }
+    } catch (error) {
+      console.log(error);
+
+      Swal.fire("Error", "Something went wrong", "error");
     }
-
-  } catch (error) {
-    console.log(error);
-
-    Swal.fire("Error", "Something went wrong", "error");
-  }
-};
+  };
   return (
     <div>
-
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
           <h2>Contact Us</h2>
-        </div >
+        </div>
         <div>
           <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
             <TextField
@@ -178,64 +189,58 @@ const paginatedData = sortedData.slice(
       </div>
       {/* Search */}
 
-
       {/* Table */}
-      <TableContainer component={Paper}
-        style={{ overflowX: "auto" }}>
-        <Table
-          stickyHeader
-          aria-label="sticky table"
-          className="table-no-card"
-        >
+      <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+        <Table stickyHeader aria-label="sticky table" className="table-no-card">
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-                <TableCell sortDirection={orderBy === "name" ? order : false}>
-      <TableSortLabel
-        active={orderBy === "name"}
-        direction={orderBy === "name" ? order : "asc"}
-        onClick={() => handleSort("name")}
-      >
-        Name
-      </TableSortLabel>
-    </TableCell>
-               <TableCell sortDirection={orderBy === "email" ? order : false}>
-      <TableSortLabel
-        active={orderBy === "email"}
-        direction={orderBy === "email" ? order : "asc"}
-        onClick={() => handleSort("email")}
-      >
-        Email
-      </TableSortLabel>
-    </TableCell>
+              <TableCell sortDirection={orderBy === "name" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "name"}
+                  direction={orderBy === "name" ? order : "asc"}
+                  onClick={() => handleSort("name")}
+                >
+                  Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === "email" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "email"}
+                  direction={orderBy === "email" ? order : "asc"}
+                  onClick={() => handleSort("email")}
+                >
+                  Email
+                </TableSortLabel>
+              </TableCell>
               <TableCell sortDirection={orderBy === "phone" ? order : false}>
-      <TableSortLabel
-        active={orderBy === "phone"}
-        direction={orderBy === "phone" ? order : "asc"}
-        onClick={() => handleSort("phone")}
-      >
-        Phone
-      </TableSortLabel>
-    </TableCell>
+                <TableSortLabel
+                  active={orderBy === "phone"}
+                  direction={orderBy === "phone" ? order : "asc"}
+                  onClick={() => handleSort("phone")}
+                >
+                  Phone
+                </TableSortLabel>
+              </TableCell>
               <TableCell sortDirection={orderBy === "city" ? order : false}>
-      <TableSortLabel
-        active={orderBy === "city"}
-        direction={orderBy === "city" ? order : "asc"}
-        onClick={() => handleSort("city")}
-      >
-        City
-      </TableSortLabel>
-    </TableCell>
+                <TableSortLabel
+                  active={orderBy === "city"}
+                  direction={orderBy === "city" ? order : "asc"}
+                  onClick={() => handleSort("city")}
+                >
+                  City
+                </TableSortLabel>
+              </TableCell>
 
-               <TableCell sortDirection={orderBy === "status" ? order : false}>
-      <TableSortLabel
-        active={orderBy === "status"}
-        direction={orderBy === "status" ? order : "asc"}
-        onClick={() => handleSort("status")}
-      >
-        Status
-      </TableSortLabel>
-    </TableCell>
+              <TableCell sortDirection={orderBy === "status" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "status"}
+                  direction={orderBy === "status" ? order : "asc"}
+                  onClick={() => handleSort("status")}
+                >
+                  Status
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -248,39 +253,32 @@ const paginatedData = sortedData.slice(
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item.city}</TableCell>
-                   <TableCell>
-                                                                                                                                                    <FormControl
-                                                                                                                                                      sx={{ m: 1, minWidth: 120 }}
-                                                                                                                                                      size="small"
-                                                                                                                                                      className="cont-main"
-                                                                                                                                                    >
-                                                                                                                                                      <Select
-                                                                                                                                                        value={item.status}
-                                                                                                                                                        onChange={(e) =>
-                                                                                                                                                          handleChangtype(e, item)
-                                                                                                                                                        }
-                                                                                                                                                        displayEmpty
-                                                                                                                                                        inputProps={{
-                                                                                                                                                          "aria-label": "Without label",
-                                                                                                                                                        }}
-                                                                                                                                                        className="status-direct"
-                                                                                                                                                      >
-                                                                                                                                                        <MenuItem value="Pending">
-                                                                                                                                                          Pending
-                                                                                                                                                        </MenuItem>
-                                                                                                                                                        <MenuItem value="In-Process">
-                                                                                                                                                          In-Process
-                                                                                                                                                        </MenuItem>
-                                                                                                                                                        <MenuItem value="Closed">
-                                                                                                                                                          Closed
-                                                                                                                                                        </MenuItem>
-                                                                                                                                                      </Select>
-                                                                                                                                                    </FormControl>
-                                                                                                                                                  </TableCell>
+                  <TableCell>
+                    <FormControl
+                      sx={{ m: 1, minWidth: 120 }}
+                      size="small"
+                      className="cont-main"
+                    >
+                      <Select
+                        value={item.status}
+                        onChange={(e) => handleChangtype(e, item)}
+                        displayEmpty
+                        inputProps={{
+                          "aria-label": "Without label",
+                        }}
+                        className="status-direct"
+                      >
+                        <MenuItem value="Pending">Pending</MenuItem>
+                        <MenuItem value="In-Process">In-Process</MenuItem>
+                        <MenuItem value="Completed">Completed</MenuItem>
+                        <MenuItem value="Cancel">Cancel</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
-                      style={{cursor:"pointer"}}
+                      style={{ cursor: "pointer" }}
                       onClick={() => handleView(item)}
                     />
                     {/* <button
@@ -324,12 +322,13 @@ const paginatedData = sortedData.slice(
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
-        open={open} onClose={handleClose}
+        open={open}
+        onClose={handleClose}
       >
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Contact Us</h6>
+              <h6>Contact Us</h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>
@@ -382,25 +381,45 @@ const paginatedData = sortedData.slice(
                           <InfoItem label="Name" value={selectedRecord.name} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Email" value={selectedRecord.email} />
+                          <InfoItem
+                            label="Email"
+                            value={selectedRecord.email}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Phone Number" value={selectedRecord.phone} />
+                          <InfoItem
+                            label="Phone Number"
+                            value={selectedRecord.phone}
+                          />
                         </div>
                         <div className="col-md-4">
                           <InfoItem label="City" value={selectedRecord.city} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Country" value={selectedRecord.country} />
+                          <InfoItem
+                            label="Country"
+                            value={selectedRecord.country}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Title" value={selectedRecord.title} />
+                          <InfoItem
+                            label="Title"
+                            value={selectedRecord.title}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Description" value={selectedRecord.description} />
+                          <InfoItem
+                            label="Description"
+                            value={selectedRecord.description}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Created At" value={new Date(selectedRecord.created_at).toLocaleDateString("en-GB")} />
+                          <InfoItem
+                            label="Created At"
+                            value={new Date(
+                              selectedRecord.created_at,
+                            ).toLocaleDateString("en-GB")}
+                          />
                         </div>
                       </div>
                     </div>
@@ -410,7 +429,6 @@ const paginatedData = sortedData.slice(
             </Box>
           )}
         </DialogContent>
-
       </Dialog>
     </div>
   );

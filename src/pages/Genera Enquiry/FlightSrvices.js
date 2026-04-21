@@ -41,7 +41,7 @@ export default function FlightSrvices() {
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [order, setOrder] = useState("asc");
-const [orderBy, setOrderBy] = useState("");
+  const [orderBy, setOrderBy] = useState("");
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
@@ -54,13 +54,13 @@ const [orderBy, setOrderBy] = useState("");
     setFilterValue("");
     setPage(0);
   };
-const handleSort = (field) => {
-  const isAsc = orderBy === field && order === "asc";
-  setOrder(isAsc ? "desc" : "asc");
-  setOrderBy(field);
-};
+  const handleSort = (field) => {
+    const isAsc = orderBy === field && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(field);
+  };
 
-const filteredData = medicalVisaData.filter((item) => {
+  const filteredData = medicalVisaData.filter((item) => {
     const search = filterValue.toLowerCase();
     return (
       item.first_name?.toLowerCase().includes(search) ||
@@ -77,39 +77,38 @@ const filteredData = medicalVisaData.filter((item) => {
     );
   });
 
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (!orderBy) return 0;
 
-const sortedData = [...filteredData].sort((a, b) => {
-  if (!orderBy) return 0;
+    let valA = a[orderBy] || "";
+    let valB = b[orderBy] || "";
 
-  let valA = a[orderBy] || "";
-  let valB = b[orderBy] || "";
+    // Date sorting
+    if (orderBy === "select_date") {
+      return order === "asc"
+        ? new Date(valA) - new Date(valB)
+        : new Date(valB) - new Date(valA);
+    }
 
-  // Date sorting
-  if (orderBy === "select_date") {
-    return order === "asc"
-      ? new Date(valA) - new Date(valB)
-      : new Date(valB) - new Date(valA);
-  }
+    // Number sorting
+    if (!isNaN(valA) && !isNaN(valB)) {
+      return order === "asc" ? valA - valB : valB - valA;
+    }
 
-  // Number sorting
-  if (!isNaN(valA) && !isNaN(valB)) {
-    return order === "asc" ? valA - valB : valB - valA;
-  }
+    // String sorting
+    valA = valA.toString().toLowerCase();
+    valB = valB.toString().toLowerCase();
 
-  // String sorting
-  valA = valA.toString().toLowerCase();
-  valB = valB.toString().toLowerCase();
+    if (valA < valB) return order === "asc" ? -1 : 1;
+    if (valA > valB) return order === "asc" ? 1 : -1;
 
-  if (valA < valB) return order === "asc" ? -1 : 1;
-  if (valA > valB) return order === "asc" ? 1 : -1;
+    return 0;
+  });
 
-  return 0;
-});
-  
- const paginatedData = sortedData.slice(
-  page * rowsPerPage,
-  page * rowsPerPage + rowsPerPage
-);
+  const paginatedData = sortedData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
   // Open popup
   const handleView = (record) => {
     setSelectedRecord(record);
@@ -184,51 +183,55 @@ const sortedData = [...filteredData].sort((a, b) => {
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-             <TableCell sortDirection={orderBy === "first_name" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "first_name"}
-    direction={orderBy === "first_name" ? order : "asc"}
-    onClick={() => handleSort("first_name")}
-  >
-    Name
-  </TableSortLabel>
-</TableCell>
-            <TableCell sortDirection={orderBy === "email" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "email"}
-    direction={orderBy === "email" ? order : "asc"}
-    onClick={() => handleSort("email")}
-  >
-    Email
-  </TableSortLabel>
-</TableCell>
-            <TableCell sortDirection={orderBy === "phone" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "phone"}
-    direction={orderBy === "phone" ? order : "asc"}
-    onClick={() => handleSort("phone")}
-  >
-    Phone
-  </TableSortLabel>
-</TableCell>
-             <TableCell sortDirection={orderBy === "select_date" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "select_date"}
-    direction={orderBy === "select_date" ? order : "asc"}
-    onClick={() => handleSort("select_date")}
-  >
-    Date
-  </TableSortLabel>
-</TableCell>
-            <TableCell sortDirection={orderBy === "status" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "status"}
-    direction={orderBy === "status" ? order : "asc"}
-    onClick={() => handleSort("status")}
-  >
-    Status
-  </TableSortLabel>
-</TableCell>
+              <TableCell
+                sortDirection={orderBy === "first_name" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "first_name"}
+                  direction={orderBy === "first_name" ? order : "asc"}
+                  onClick={() => handleSort("first_name")}
+                >
+                  Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === "email" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "email"}
+                  direction={orderBy === "email" ? order : "asc"}
+                  onClick={() => handleSort("email")}
+                >
+                  Email
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === "phone" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "phone"}
+                  direction={orderBy === "phone" ? order : "asc"}
+                  onClick={() => handleSort("phone")}
+                >
+                  Phone
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                sortDirection={orderBy === "select_date" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "select_date"}
+                  direction={orderBy === "select_date" ? order : "asc"}
+                  onClick={() => handleSort("select_date")}
+                >
+                  Date
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === "status" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "status"}
+                  direction={orderBy === "status" ? order : "asc"}
+                  onClick={() => handleSort("status")}
+                >
+                  Status
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -260,7 +263,8 @@ const sortedData = [...filteredData].sort((a, b) => {
                       >
                         <MenuItem value="Pending">Pending</MenuItem>
                         <MenuItem value="In-Process">In-Process</MenuItem>
-                        <MenuItem value="Closed">Closed</MenuItem>
+                        <MenuItem value="Completed">Completed</MenuItem>
+                        <MenuItem value="Cancel">Cancel</MenuItem>
                       </Select>
                     </FormControl>
                   </TableCell>

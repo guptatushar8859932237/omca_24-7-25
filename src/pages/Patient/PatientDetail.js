@@ -4387,7 +4387,11 @@ function PatientDetail() {
                                             Notes
                                           </button>
                                         </li>
-                                        {!info?.Hospital_details?.some(
+                                        {/* {
+                                                  info?.hospital?.details
+                                                    ?.hospital_Name ?
+                                              
+                                        !info?.Hospital_details?.some(
                                           (item) => item.hospital_Name,
                                         ) && (
                                           <li className="nav-item">
@@ -4405,8 +4409,27 @@ function PatientDetail() {
                                               + Add Hospital
                                             </button>
                                           </li>
-                                        )}
-                                        <li className="nav-item">
+                                        ):""} */}
+                                        {
+  !info?.hospital?.details?.hospital_Name && (
+    <li className="nav-item">
+      <button
+        className="nav-link"
+        onClick={(e) =>
+          handleAction(
+            e,
+            "hospital",
+            info,
+            info.treatment_name
+          )
+        }
+      >
+        + Add Hospital
+      </button>
+    </li>
+  )
+}
+                                        {/* <li className="nav-item">
                                           <button
                                             className="nav-link"
                                             onClick={(e) =>
@@ -4420,7 +4443,7 @@ function PatientDetail() {
                                           >
                                             + Add Services
                                           </button>
-                                        </li>
+                                        </li> */}
                                       </ul>
                                     </div>
                                     <div
@@ -4849,13 +4872,34 @@ function PatientDetail() {
                                       {/* for omca services */}
                                       <div className="col-md-12">
                                         <div className="card customstylecard">
-                                          <div className="card-header d-flex align-items-center justify-content-bettween">
+                                          <div className="card-header d-flex align-items-center justify-content-between">
+                                                    <div>
                                             <h6>OMCA</h6>
-                                            <div className="">
-                                              <a href="">
+                                                    </div>
+
+                                            {/* <div className=""> */}
+                                              {/* <a href="">
                                                 <i class="fa-solid fa-download me-2"></i>
                                                 Download Pdf
-                                              </a>
+                                              </a> */}
+                                            {/* </div> */}
+                                            <div className="">
+                                           
+                                          <button
+                                            className="add-button"
+                                            onClick={(e) =>
+                                              handleAction(
+                                                e,
+                                                "services",
+                                                info,
+                                                info.treatment_name,
+                                              )
+                                            }
+                                          >
+                                            + Add Services
+                                          </button>
+                                        
+
                                             </div>
                                           </div>
                                           <div className="card-body">

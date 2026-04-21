@@ -1,18 +1,28 @@
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
-  Modal, Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Pagination,
+  Stack,
+  Modal,
+  Box,
   Dialog,
   DialogContent,
   FormControl,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 
 import ClearIcon from "@mui/icons-material/Clear";
@@ -23,15 +33,17 @@ import Swal from "sweetalert2";
 export default function PickUpanddrops() {
   const dispatch = useDispatch();
 
-  const { testForms: formData, loading, error } = useSelector(
-    (state) => state.testForms
-  );
+  const {
+    testForms: formData,
+    loading,
+    error,
+  } = useSelector((state) => state.testForms);
 
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
-const [order, setOrder] = useState("asc");
-const [orderBy, setOrderBy] = useState("");
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("");
   // Popup states
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -52,101 +64,99 @@ const [orderBy, setOrderBy] = useState("");
     setPage(0);
   };
 
- // 1. Filter first
-const filteredData = medicalVisaData.filter((item) => {
-  const search = filterValue.toLowerCase();
+  // 1. Filter first
+  const filteredData = medicalVisaData.filter((item) => {
+    const search = filterValue.toLowerCase();
 
-  return (
-    item.name?.toLowerCase().includes(search) ||
-    item.email?.toLowerCase().includes(search) ||
-    item.city?.toLowerCase().includes(search) ||
-    item.phone?.toLowerCase().includes(search) ||
-    item.perfired_time?.toLowerCase().includes(search) ||
-    item.pickup_location?.toLowerCase().includes(search) ||
-    item.travel_date?.toLowerCase().includes(search) ||
-    item.drop_location?.toLowerCase().includes(search)
+    return (
+      item.name?.toLowerCase().includes(search) ||
+      item.email?.toLowerCase().includes(search) ||
+      item.city?.toLowerCase().includes(search) ||
+      item.phone?.toLowerCase().includes(search) ||
+      item.perfired_time?.toLowerCase().includes(search) ||
+      item.pickup_location?.toLowerCase().includes(search) ||
+      item.travel_date?.toLowerCase().includes(search) ||
+      item.drop_location?.toLowerCase().includes(search)
+    );
+  });
+
+  // 2. Sort after filtering
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (!orderBy) return 0;
+
+    let valA = a[orderBy] || "";
+    let valB = b[orderBy] || "";
+
+    // Date handling
+    if (orderBy === "pickup_date") {
+      return order === "asc"
+        ? new Date(valA) - new Date(valB)
+        : new Date(valB) - new Date(valA);
+    }
+
+    // Number handling
+    if (!isNaN(valA) && !isNaN(valB)) {
+      return order === "asc" ? valA - valB : valB - valA;
+    }
+
+    // String handling
+    valA = valA.toString().toLowerCase();
+    valB = valB.toString().toLowerCase();
+
+    if (valA < valB) return order === "asc" ? -1 : 1;
+    if (valA > valB) return order === "asc" ? 1 : -1;
+
+    return 0;
+  });
+
+  // 3. Paginate last
+  const paginatedData = sortedData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
   );
-});
 
+  // const paginatedData = sortedData.slice(
+  //   page * rowsPerPage,
+  //   page * rowsPerPage + rowsPerPage
+  // );
 
-// 2. Sort after filtering
-const sortedData = [...filteredData].sort((a, b) => {
-  if (!orderBy) return 0;
-
-  let valA = a[orderBy] || "";
-  let valB = b[orderBy] || "";
-
-  // Date handling
-  if (orderBy === "pickup_date") {
-    return order === "asc"
-      ? new Date(valA) - new Date(valB)
-      : new Date(valB) - new Date(valA);
-  }
-
-  // Number handling
-  if (!isNaN(valA) && !isNaN(valB)) {
-    return order === "asc" ? valA - valB : valB - valA;
-  }
-
-  // String handling
-  valA = valA.toString().toLowerCase();
-  valB = valB.toString().toLowerCase();
-
-  if (valA < valB) return order === "asc" ? -1 : 1;
-  if (valA > valB) return order === "asc" ? 1 : -1;
-
-  return 0;
-});
-
-
-// 3. Paginate last
-const paginatedData = sortedData.slice(
-  page * rowsPerPage,
-  page * rowsPerPage + rowsPerPage
-);
-
-// const paginatedData = sortedData.slice(
-//   page * rowsPerPage,
-//   page * rowsPerPage + rowsPerPage
-// );
-
-const handleSort = (field) => {
-  const isAsc = orderBy === field && order === "asc";
-  setOrder(isAsc ? "desc" : "asc");
-  setOrderBy(field);
-};
+  const handleSort = (field) => {
+    const isAsc = orderBy === field && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(field);
+  };
   // Open popup
   const handleView = (record) => {
     setSelectedRecord(record);
     setOpen(true);
   };
-//   const sortedData = [...filteredData].sort((a, b) => {
-//   if (!orderBy) return 0;
+  //   const sortedData = [...filteredData].sort((a, b) => {
+  //   if (!orderBy) return 0;
 
-//   let valA = a[orderBy] || "";
-//   let valB = b[orderBy] || "";
+  //   let valA = a[orderBy] || "";
+  //   let valB = b[orderBy] || "";
 
-//   // Date handling
-//   if (orderBy === "pickup_date") {
-//     return order === "asc"
-//       ? new Date(valA) - new Date(valB)
-//       : new Date(valB) - new Date(valA);
-//   }
+  //   // Date handling
+  //   if (orderBy === "pickup_date") {
+  //     return order === "asc"
+  //       ? new Date(valA) - new Date(valB)
+  //       : new Date(valB) - new Date(valA);
+  //   }
 
-//   // Number handling
-//   if (!isNaN(valA) && !isNaN(valB)) {
-//     return order === "asc" ? valA - valB : valB - valA;
-//   }
+  //   // Number handling
+  //   if (!isNaN(valA) && !isNaN(valB)) {
+  //     return order === "asc" ? valA - valB : valB - valA;
+  //   }
 
-//   // String handling
-//   valA = valA.toString().toLowerCase();
-//   valB = valB.toString().toLowerCase();
+  //   // String handling
+  //   valA = valA.toString().toLowerCase();
+  //   valB = valB.toString().toLowerCase();
 
-//   if (valA < valB) return order === "asc" ? -1 : 1;
-//   if (valA > valB) return order === "asc" ? 1 : -1;
+  //   if (valA < valB) return order === "asc" ? -1 : 1;
+  //   if (valA > valB) return order === "asc" ? 1 : -1;
 
-//   return 0;
-// });
+  //   return 0;
+  // });
   const fullWidth = true;
   const maxWidth = "lg"; // xs | sm | md | lg | xl
 
@@ -159,41 +169,39 @@ const handleSort = (field) => {
     </div>
   );
 
-   const handleChangtype = async (e, b) => {
-  console.log(e, b);
+  const handleChangtype = async (e, b) => {
+    console.log(e, b);
 
-  const data = {
-    id: b?.id,
-    model: "Pickup",
-    status: e?.value || e?.target?.value
-  };
+    const data = {
+      id: b?.id,
+      model: "Pickup",
+      status: e?.value || e?.target?.value,
+    };
 
-  try {
-    const response = await axios.post(
-      `${AdminBaseUrl}update_user_request_status`,
-      data
-    );
-  dispatch(testForms());
-    if (response?.data?.success) {
-      Swal.fire("Success", "Status Updated Successfully", "success");
+    try {
+      const response = await axios.post(
+        `${AdminBaseUrl}update_user_request_status`,
+        data,
+      );
+      dispatch(testForms());
+      if (response?.data?.success) {
+        Swal.fire("Success", "Status Updated Successfully", "success");
+      }
+    } catch (error) {
+      console.log(error);
+
+      Swal.fire("Error", "Something went wrong", "error");
     }
-
-  } catch (error) {
-    console.log(error);
-
-    Swal.fire("Error", "Something went wrong", "error");
-  }
-};
+  };
 
   return (
     <div>
-
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
           <h2>Pickup and Drop</h2>
-        </div >
+        </div>
         <div>
           <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
             <TextField
@@ -221,81 +229,83 @@ const handleSort = (field) => {
       </div>
       {/* Search */}
 
-
       {/* Table */}
-      <TableContainer component={Paper}
-        style={{ overflowX: "auto" }}>
-        <Table
-          stickyHeader
-          aria-label="sticky table"
-          className="table-no-card"
-        >
+      <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+        <Table stickyHeader aria-label="sticky table" className="table-no-card">
           <TableHead>
             <TableRow>
               <TableCell>Sr No.</TableCell>
-             <TableCell sortDirection={orderBy === "name" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "name"}
-    direction={orderBy === "name" ? order : "asc"}
-    onClick={() => handleSort("name")}
-  >
-    Name
-  </TableSortLabel>
-</TableCell>
-            <TableCell sortDirection={orderBy === "email" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "email"}
-    direction={orderBy === "email" ? order : "asc"}
-    onClick={() => handleSort("email")}
-  >
-    Email
-  </TableSortLabel>
-</TableCell>
-           <TableCell sortDirection={orderBy === "phone" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "phone"}
-    direction={orderBy === "phone" ? order : "asc"}
-    onClick={() => handleSort("phone")}
-  >
-    Phone
-  </TableSortLabel>
-</TableCell>
-             <TableCell sortDirection={orderBy === "pickup_location" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "pickup_location"}
-    direction={orderBy === "pickup_location" ? order : "asc"}
-    onClick={() => handleSort("pickup_location")}
-  >
-    Pickup Location
-  </TableSortLabel>
-</TableCell>
-           <TableCell sortDirection={orderBy === "destination_location" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "destination_location"}
-    direction={orderBy === "destination_location" ? order : "asc"}
-    onClick={() => handleSort("destination_location")}
-  >
-    Drop Location
-  </TableSortLabel>
-</TableCell>
-           <TableCell sortDirection={orderBy === "pickup_date" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "pickup_date"}
-    direction={orderBy === "pickup_date" ? order : "asc"}
-    onClick={() => handleSort("pickup_date")}
-  >
-    Travel Date
-  </TableSortLabel>
-</TableCell>
-           <TableCell sortDirection={orderBy === "status" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "status"}
-    direction={orderBy === "status" ? order : "asc"}
-    onClick={() => handleSort("status")}
-  >
-    Status
-  </TableSortLabel>
-</TableCell>
+              <TableCell sortDirection={orderBy === "name" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "name"}
+                  direction={orderBy === "name" ? order : "asc"}
+                  onClick={() => handleSort("name")}
+                >
+                  Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === "email" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "email"}
+                  direction={orderBy === "email" ? order : "asc"}
+                  onClick={() => handleSort("email")}
+                >
+                  Email
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === "phone" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "phone"}
+                  direction={orderBy === "phone" ? order : "asc"}
+                  onClick={() => handleSort("phone")}
+                >
+                  Phone
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                sortDirection={orderBy === "pickup_location" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "pickup_location"}
+                  direction={orderBy === "pickup_location" ? order : "asc"}
+                  onClick={() => handleSort("pickup_location")}
+                >
+                  Pickup Location
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                sortDirection={
+                  orderBy === "destination_location" ? order : false
+                }
+              >
+                <TableSortLabel
+                  active={orderBy === "destination_location"}
+                  direction={orderBy === "destination_location" ? order : "asc"}
+                  onClick={() => handleSort("destination_location")}
+                >
+                  Drop Location
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                sortDirection={orderBy === "pickup_date" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "pickup_date"}
+                  direction={orderBy === "pickup_date" ? order : "asc"}
+                  onClick={() => handleSort("pickup_date")}
+                >
+                  Travel Date
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === "status" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "status"}
+                  direction={orderBy === "status" ? order : "asc"}
+                  onClick={() => handleSort("status")}
+                >
+                  Status
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -309,40 +319,35 @@ const handleSort = (field) => {
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item.pickup_location}</TableCell>
                   <TableCell>{item.destination_location}</TableCell>
-                  <TableCell>{new Date(item.pickup_date).toLocaleDateString('en-GB')}</TableCell>
                   <TableCell>
-                                                                                              <FormControl
-                                                                                                sx={{ m: 1, minWidth: 120 }}
-                                                                                                size="small"
-                                                                                                className="cont-main"
-                                                                                              >
-                                                                                                <Select
-                                                                                                  value={item.status}
-                                                                                                  onChange={(e) =>
-                                                                                                    handleChangtype(e, item)
-                                                                                                  }
-                                                                                                  displayEmpty
-                                                                                                  inputProps={{
-                                                                                                    "aria-label": "Without label",
-                                                                                                  }}
-                                                                                                  className="status-direct"
-                                                                                                >
-                                                                                                  <MenuItem value="Pending">
-                                                                                                    Pending
-                                                                                                  </MenuItem>
-                                                                                                  <MenuItem value="In-Process">
-                                                                                                    In-Process
-                                                                                                  </MenuItem>
-                                                                                                  <MenuItem value="Closed">
-                                                                                                    Closed
-                                                                                                  </MenuItem>
-                                                                                                </Select>
-                                                                                              </FormControl>
-                                                                                            </TableCell>
+                    {new Date(item.pickup_date).toLocaleDateString("en-GB")}
+                  </TableCell>
+                  <TableCell>
+                    <FormControl
+                      sx={{ m: 1, minWidth: 120 }}
+                      size="small"
+                      className="cont-main"
+                    >
+                      <Select
+                        value={item.status}
+                        onChange={(e) => handleChangtype(e, item)}
+                        displayEmpty
+                        inputProps={{
+                          "aria-label": "Without label",
+                        }}
+                        className="status-direct"
+                      >
+                        <MenuItem value="Pending">Pending</MenuItem>
+                        <MenuItem value="In-Process">In-Process</MenuItem>
+                        <MenuItem value="Completed">Completed</MenuItem>
+                        <MenuItem value="Cancel">Cancel</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </TableCell>
                   <TableCell>
                     <VisibilityIcon
                       className="eye-icon"
-                      style={{cursor:"pointer"}}
+                      style={{ cursor: "pointer" }}
                       onClick={() => handleView(item)}
                     />
                     {/* <button
@@ -386,12 +391,13 @@ const handleSort = (field) => {
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
-        open={open} onClose={handleClose}
+        open={open}
+        onClose={handleClose}
       >
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Pick Up & Drop Service </h6>
+              <h6>Pick Up & Drop Service </h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>
@@ -399,14 +405,14 @@ const handleSort = (field) => {
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-           {selectedRecord && (
+          {selectedRecord && (
             <Box>
               <div className="row">
                 {/* personal */}
                 <div className="col-md-12 mb-3">
                   <div className="all-hd mb-3">
-                        <h6>User Information</h6>
-                      </div>
+                    <h6>User Information</h6>
+                  </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
@@ -414,46 +420,72 @@ const handleSort = (field) => {
                           <InfoItem label="Name" value={selectedRecord.name} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Email" value={selectedRecord.email} />
+                          <InfoItem
+                            label="Email"
+                            value={selectedRecord.email}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Phone Number" value={selectedRecord.phone} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="all-hd mb-3 mt-3">
-                        <h6>Pickup Details</h6>
-                      </div>
-                  <div className="card">
-                    <div className="card-body">
-                      <div className="row">
-                        <div className="col-md-4">
-                          <InfoItem label="Pickup Address / Location" value={selectedRecord.pickup_location} />
-                        </div>
-                        <div className="col-md-4">
-                          <InfoItem label="Pickup Location Type" value={selectedRecord.pickup_location_type} />
-                        </div>
-                        <div className="col-md-4">
-                          <InfoItem label="Pickup  Date" value={new Date(selectedRecord.pickup_date).toLocaleDateString('en-GB')} />
-                        </div>
-                        <div className="col-md-4">
-                          <InfoItem label=" Pickup Time" value={selectedRecord.pickup_time} />
+                          <InfoItem
+                            label="Phone Number"
+                            value={selectedRecord.phone}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="all-hd mb-3 mt-3">
-                        <h6>Destination Details</h6>
-                      </div>
+                    <h6>Pickup Details</h6>
+                  </div>
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="Destination Address / Location" value={selectedRecord.destination_location} />
+                          <InfoItem
+                            label="Pickup Address / Location"
+                            value={selectedRecord.pickup_location}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Destination Location Type" value={selectedRecord.destination_location_type} />
+                          <InfoItem
+                            label="Pickup Location Type"
+                            value={selectedRecord.pickup_location_type}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Pickup  Date"
+                            value={new Date(
+                              selectedRecord.pickup_date,
+                            ).toLocaleDateString("en-GB")}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label=" Pickup Time"
+                            value={selectedRecord.pickup_time}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="all-hd mb-3 mt-3">
+                    <h6>Destination Details</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Destination Address / Location"
+                            value={selectedRecord.destination_location}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Destination Location Type"
+                            value={selectedRecord.destination_location_type}
+                          />
                         </div>
                       </div>
                     </div>
@@ -463,7 +495,6 @@ const handleSort = (field) => {
             </Box>
           )}
         </DialogContent>
-
       </Dialog>
     </div>
   );

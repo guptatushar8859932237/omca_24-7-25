@@ -1,16 +1,26 @@
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, TextField, InputAdornment, IconButton, Pagination, Stack,
-  Modal, Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Pagination,
+  Stack,
+  Modal,
+  Box,
   FormControl,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -21,11 +31,13 @@ import Swal from "sweetalert2";
 
 export default function MedicalVisa() {
   const dispatch = useDispatch();
-  const { testForms: formData, loading, error } = useSelector(
-    (state) => state.testForms
-  );
+  const {
+    testForms: formData,
+    loading,
+    error,
+  } = useSelector((state) => state.testForms);
   const [order, setOrder] = useState("asc"); // asc | desc
-const [orderBy, setOrderBy] = useState("");
+  const [orderBy, setOrderBy] = useState("");
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
@@ -56,36 +68,36 @@ const [orderBy, setOrderBy] = useState("");
   });
 
   const handleSort = (field) => {
-  const isAsc = orderBy === field && order === "asc";
-  setOrder(isAsc ? "desc" : "asc");
-  setOrderBy(field);
-};
+    const isAsc = orderBy === field && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(field);
+  };
 
-const sortedData = [...filteredData].sort((a, b) => {
-  if (!orderBy) return 0;
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (!orderBy) return 0;
 
-  let valA = a[orderBy] || "";
-  let valB = b[orderBy] || "";
+    let valA = a[orderBy] || "";
+    let valB = b[orderBy] || "";
 
-  // number handling
-  if (!isNaN(valA) && !isNaN(valB)) {
-    return order === "asc" ? valA - valB : valB - valA;
-  }
+    // number handling
+    if (!isNaN(valA) && !isNaN(valB)) {
+      return order === "asc" ? valA - valB : valB - valA;
+    }
 
-  // string handling
-  valA = valA.toString().toLowerCase();
-  valB = valB.toString().toLowerCase();
+    // string handling
+    valA = valA.toString().toLowerCase();
+    valB = valB.toString().toLowerCase();
 
-  if (valA < valB) return order === "asc" ? -1 : 1;
-  if (valA > valB) return order === "asc" ? 1 : -1;
+    if (valA < valB) return order === "asc" ? -1 : 1;
+    if (valA > valB) return order === "asc" ? 1 : -1;
 
-  return 0;
-});
+    return 0;
+  });
 
-const paginatedData = sortedData.slice(
-  page * rowsPerPage,
-  page * rowsPerPage + rowsPerPage
-);
+  const paginatedData = sortedData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
   const handleView = (record) => {
     setSelectedRecord(record);
     setOpen(true);
@@ -101,42 +113,36 @@ const paginatedData = sortedData.slice(
       <p>{value || "-"}</p>
     </div>
   );
+  const handleChangtype = async (e, b) => {
+    console.log(e, b);
+    const data = {
+      id: b?.id,
+      model: "Medical",
+      status: e?.value || e?.target?.value,
+    };
+    try {
+      const response = await axios.post(
+        `${AdminBaseUrl}update_user_request_status`,
+        data,
+      );
+      dispatch(testForms());
+      if (response?.data?.success) {
+        Swal.fire("Success", "Status Updated Successfully", "success");
+      }
+    } catch (error) {
+      console.log(error);
 
-const handleChangtype = async (e, b) => {
-  console.log(e, b);
-
-  const data = {
-    id: b?.id,
-    model: "Medical",
-    status: e?.value || e?.target?.value
-  };
-
-  try {
-    const response = await axios.post(
-      `${AdminBaseUrl}update_user_request_status`,
-      data
-    );
-  dispatch(testForms());
-    if (response?.data?.success) {
-      Swal.fire("Success", "Status Updated Successfully", "success");
+      Swal.fire("Error", "Something went wrong", "error");
     }
-
-  } catch (error) {
-    console.log(error);
-
-    Swal.fire("Error", "Something went wrong", "error");
-  }
-};
+  };
   return (
     <div>
-
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
           <h2>Medical Visa </h2>
-
-        </div >
+        </div>
         <div>
           <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
             <TextField
@@ -163,83 +169,81 @@ const handleChangtype = async (e, b) => {
         </div>
       </div>
       {/* Search */}
-
-
       {/* Table */}
-      <TableContainer component={Paper}
-        style={{ overflowX: "auto" }}>
-        <Table
-          stickyHeader
-          aria-label="sticky table"
-          className="table-no-card"
-        >
+      <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+        <Table stickyHeader aria-label="sticky table" className="table-no-card">
           <TableHead>
             <TableRow>
-               <TableCell>Sr No.</TableCell>
-            <TableCell sortDirection={orderBy === "first_name" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "first_name"}
-    direction={orderBy === "first_name" ? order : "asc"}
-    onClick={() => handleSort("first_name")}
-  >
-    First Name
-  </TableSortLabel>
-</TableCell>
+              <TableCell>Sr No.</TableCell>
+              <TableCell
+                sortDirection={orderBy === "first_name" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "first_name"}
+                  direction={orderBy === "first_name" ? order : "asc"}
+                  onClick={() => handleSort("first_name")}
+                >
+                  First Name
+                </TableSortLabel>
+              </TableCell>
               {/* <TableCell>First Name</TableCell> */}
-             <TableCell sortDirection={orderBy === "last_name" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "last_name"}
-    direction={orderBy === "last_name" ? order : "asc"}
-    onClick={() => handleSort("last_name")}
-  >
-    Last Name
-  </TableSortLabel>
-</TableCell>
-             <TableCell sortDirection={orderBy === "country" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "country"}
-    direction={orderBy === "country" ? order : "asc"}
-    onClick={() => handleSort("country")}
-  >
-Country
-  </TableSortLabel>
-</TableCell>
-             <TableCell sortDirection={orderBy === "passport_number" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "passport_number"}
-    direction={orderBy === "passport_number" ? order : "asc"}
-    onClick={() => handleSort("passport_number")}
-  >
-    Passport No
-  </TableSortLabel>
-</TableCell>
-             <TableCell>
-  <TableSortLabel
-    active={orderBy === "phone_number"}
-    direction={orderBy === "phone_number" ? order : "asc"}
-    onClick={() => handleSort("phone_number")}
-  >
-    Phone
-  </TableSortLabel>
-</TableCell>
-            <TableCell>
-  <TableSortLabel
-    active={orderBy === "applying_for"}
-    direction={orderBy === "applying_for" ? order : "asc"}
-    onClick={() => handleSort("applying_for")}
-  >
-    Applying For
-  </TableSortLabel>
-</TableCell>
-             <TableCell sortDirection={orderBy === "status" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "status"}
-    direction={orderBy === "status" ? order : "asc"}
-    onClick={() => handleSort("status")}
-  >
-    Status
-  </TableSortLabel>
-</TableCell>
+              <TableCell
+                sortDirection={orderBy === "last_name" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "last_name"}
+                  direction={orderBy === "last_name" ? order : "asc"}
+                  onClick={() => handleSort("last_name")}
+                >
+                  Last Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === "country" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "country"}
+                  direction={orderBy === "country" ? order : "asc"}
+                  onClick={() => handleSort("country")}
+                >
+                  Country
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                sortDirection={orderBy === "passport_number" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "passport_number"}
+                  direction={orderBy === "passport_number" ? order : "asc"}
+                  onClick={() => handleSort("passport_number")}
+                >
+                  Passport No
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === "phone_number"}
+                  direction={orderBy === "phone_number" ? order : "asc"}
+                  onClick={() => handleSort("phone_number")}
+                >
+                  Phone
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === "applying_for"}
+                  direction={orderBy === "applying_for" ? order : "asc"}
+                  onClick={() => handleSort("applying_for")}
+                >
+                  Applying For
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sortDirection={orderBy === "status" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "status"}
+                  direction={orderBy === "status" ? order : "asc"}
+                  onClick={() => handleSort("status")}>
+                  Status
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -253,7 +257,7 @@ Country
                   <TableCell>{item.nationality}</TableCell>
                   <TableCell>{item.passport_number}</TableCell>
                   <TableCell>{item.phone_number}</TableCell>
-                  <TableCell>{item.applying_for?.replaceAll("_", " ")}</TableCell>
+                  <TableCell>{item.applying_for?.replaceAll("_", " ")} </TableCell>
                   <TableCell>
                     <FormControl
                       sx={{ m: 1, minWidth: 120 }}
@@ -262,24 +266,17 @@ Country
                     >
                       <Select
                         value={item.status}
-                        onChange={(e) =>
-                          handleChangtype(e, item)
-                        }
+                        onChange={(e) => handleChangtype(e, item)}
                         displayEmpty
                         inputProps={{
                           "aria-label": "Without label",
                         }}
                         className="status-direct"
                       >
-                        <MenuItem value="Pending">
-                          Pending
-                        </MenuItem>
-                        <MenuItem value="In-Process">
-                          In-Process
-                        </MenuItem>
-                        <MenuItem value="Closed">
-                          Closed
-                        </MenuItem>
+                        <MenuItem value="Pending">Pending</MenuItem>
+                        <MenuItem value="In-Process">In-Process</MenuItem>
+                        <MenuItem value="Completed">Completed</MenuItem>
+                        <MenuItem value="Cancel">Cancel</MenuItem>
                       </Select>
                     </FormControl>
                   </TableCell>
@@ -331,12 +328,13 @@ Country
       <Dialog
         fullWidth={fullWidth}
         maxWidth={maxWidth}
-        open={open} onClose={handleClose}
+        open={open}
+        onClose={handleClose}
       >
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              < h6>Medical Visa </h6>
+              <h6>Medical Visa </h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>
@@ -344,7 +342,6 @@ Country
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-
           {/* {selectedRecord && (
             <div className="table-responsive dataset">
               <table className="table table-bordered mb-0">
@@ -412,25 +409,48 @@ Country
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="First Name" value={selectedRecord.first_name} />
+                          <InfoItem
+                            label="First Name"
+                            value={selectedRecord.first_name}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Middle Name" value={selectedRecord.middle_name} />
+                          <InfoItem
+                            label="Middle Name"
+                            value={selectedRecord.middle_name}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Last Name" value={selectedRecord.last_name} />
+                          <InfoItem
+                            label="Last Name"
+                            value={selectedRecord.last_name}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Email" value={selectedRecord.email} />
+                          <InfoItem
+                            label="Email"
+                            value={selectedRecord.email}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Dob" value={new Date(selectedRecord.dob).toLocaleDateString("en-GB")} />
+                          <InfoItem
+                            label="Dob"
+                            value={new Date(
+                              selectedRecord.dob,
+                            ).toLocaleDateString("en-GB")}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Whatsapp Number" value={selectedRecord.whatsApp_number} />
+                          <InfoItem
+                            label="Whatsapp Number"
+                            value={selectedRecord.whatsApp_number}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Phone Number" value={selectedRecord.phone_number} />
+                          <InfoItem
+                            label="Phone Number"
+                            value={selectedRecord.phone_number}
+                          />
                         </div>
                       </div>
                     </div>
@@ -445,19 +465,34 @@ Country
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="Nationality" value={selectedRecord.nationality} />
+                          <InfoItem
+                            label="Nationality"
+                            value={selectedRecord.nationality}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Country of Birth" value={selectedRecord.country_of_birth} />
+                          <InfoItem
+                            label="Country of Birth"
+                            value={selectedRecord.country_of_birth}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Country Residence" value={selectedRecord.country_residence} />
+                          <InfoItem
+                            label="Country Residence"
+                            value={selectedRecord.country_residence}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Present Address" value={selectedRecord.present_address} />
+                          <InfoItem
+                            label="Present Address"
+                            value={selectedRecord.present_address}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Permanent Address" value={selectedRecord.permanent_address} />
+                          <InfoItem
+                            label="Permanent Address"
+                            value={selectedRecord.permanent_address}
+                          />
                         </div>
                       </div>
                     </div>
@@ -475,19 +510,38 @@ Country
                           <InfoItem label="From" value={selectedRecord.from} />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Applying For" value={selectedRecord.applying_for} />
+                          <InfoItem
+                            label="Applying For"
+                            value={selectedRecord.applying_for}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Return Date" value={new Date(selectedRecord.return_date).toLocaleDateString("en-GB")} />
+                          <InfoItem
+                            label="Return Date"
+                            value={new Date(
+                              selectedRecord.return_date,
+                            ).toLocaleDateString("en-GB")}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Arrival Date" value={new Date(selectedRecord.arrival_date).toLocaleDateString("en-GB")} />
+                          <InfoItem
+                            label="Arrival Date"
+                            value={new Date(
+                              selectedRecord.arrival_date,
+                            ).toLocaleDateString("en-GB")}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Airport Arrival" value={selectedRecord.airport_arrival} />
+                          <InfoItem
+                            label="Airport Arrival"
+                            value={selectedRecord.airport_arrival}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Passport Number" value={selectedRecord.passport_number} />
+                          <InfoItem
+                            label="Passport Number"
+                            value={selectedRecord.passport_number}
+                          />
                         </div>
                       </div>
                     </div>
@@ -502,16 +556,28 @@ Country
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-6">
-                          <InfoItem label="Name" value={selectedRecord.father_name} />
+                          <InfoItem
+                            label="Name"
+                            value={selectedRecord.father_name}
+                          />
                         </div>
                         <div className="col-md-6">
-                          <InfoItem label="Nationality" value={selectedRecord.father_nationality} />
+                          <InfoItem
+                            label="Nationality"
+                            value={selectedRecord.father_nationality}
+                          />
                         </div>
                         <div className="col-md-6">
-                          <InfoItem label="Place of birth" value={selectedRecord.father_place_of_birth} />
+                          <InfoItem
+                            label="Place of birth"
+                            value={selectedRecord.father_place_of_birth}
+                          />
                         </div>
                         <div className="col-md-6">
-                          <InfoItem label="Country of birth" value={selectedRecord.father_country_of_birth} />
+                          <InfoItem
+                            label="Country of birth"
+                            value={selectedRecord.father_country_of_birth}
+                          />
                         </div>
                       </div>
                     </div>
@@ -526,16 +592,28 @@ Country
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-6">
-                          <InfoItem label="Name" value={selectedRecord.mother_name} />
+                          <InfoItem
+                            label="Name"
+                            value={selectedRecord.mother_name}
+                          />
                         </div>
                         <div className="col-md-6">
-                          <InfoItem label="Nationality" value={selectedRecord.mother_nationality} />
+                          <InfoItem
+                            label="Nationality"
+                            value={selectedRecord.mother_nationality}
+                          />
                         </div>
                         <div className="col-md-6">
-                          <InfoItem label="Place of birth" value={selectedRecord.mother_place_of_birth} />
+                          <InfoItem
+                            label="Place of birth"
+                            value={selectedRecord.mother_place_of_birth}
+                          />
                         </div>
                         <div className="col-md-6">
-                          <InfoItem label="Country of birth" value={selectedRecord.mother_country_birth} />
+                          <InfoItem
+                            label="Country of birth"
+                            value={selectedRecord.mother_country_birth}
+                          />
                         </div>
                       </div>
                     </div>
@@ -550,22 +628,40 @@ Country
                     <div className="card-body">
                       <div className="row">
                         <div className="col-md-4">
-                          <InfoItem label="Name" value={selectedRecord.reference_name} />
+                          <InfoItem
+                            label="Name"
+                            value={selectedRecord.reference_name}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Permanent Address" value={selectedRecord.reference_permanent_address} />
+                          <InfoItem
+                            label="Permanent Address"
+                            value={selectedRecord.reference_permanent_address}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Phone Number" value={selectedRecord.reference_phone_number} />
+                          <InfoItem
+                            label="Phone Number"
+                            value={selectedRecord.reference_phone_number}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Country Name" value={selectedRecord.reference_name_country} />
+                          <InfoItem
+                            label="Country Name"
+                            value={selectedRecord.reference_name_country}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Permanent Address-2" value={selectedRecord.reference_permanent_address_2} />
+                          <InfoItem
+                            label="Permanent Address-2"
+                            value={selectedRecord.reference_permanent_address_2}
+                          />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem label="Phone Number-2" value={selectedRecord.reference_phone_number_2} />
+                          <InfoItem
+                            label="Phone Number-2"
+                            value={selectedRecord.reference_phone_number_2}
+                          />
                         </div>
                       </div>
                     </div>
@@ -602,14 +698,11 @@ Country
                 </div> */}
                 <div className="col-md-12 mt-3">
                   <div className="all-hd mb-3">
-                    <h6>Document  Details</h6>
+                    <h6>Document Details</h6>
                   </div>
                   <div className="card">
-                    <div
-                      className="card-body">
-
+                    <div className="card-body">
                       <div className="row">
-
                         {/* Document 1 */}
                         <div className="col-md-4 mb-3">
                           <div className="border rounded p-2 text-center">
@@ -618,11 +711,13 @@ Country
                             </h6>
                             <img
                               src={`https://omcacrm.com/omca/public/upload/photo/${selectedRecord.applicant_photo}`}
-
-
                               alt="doc-1"
                               className="img-fluid rounded"
-                              style={{ height: "180px", objectFit: "cover", width: "100%" }}
+                              style={{
+                                height: "180px",
+                                objectFit: "cover",
+                                width: "100%",
+                              }}
                             />
                           </div>
                         </div>
@@ -637,7 +732,11 @@ Country
                               src={`https://omcacrm.com/omca/public/upload/medicalvisa/${selectedRecord.medical_visa}`}
                               alt="doc-2"
                               className="img-fluid rounded"
-                              style={{ height: "180px", objectFit: "cover", width: "100%" }}
+                              style={{
+                                height: "180px",
+                                objectFit: "cover",
+                                width: "100%",
+                              }}
                             />
                           </div>
                         </div>
@@ -646,30 +745,30 @@ Country
                         <div className="col-md-4 mb-3">
                           <div className="border rounded p-2 text-center">
                             <h6 className="mb-2 fw-bold">
-                              {selectedRecord.reference_doc_name_3 || "Passport"}
+                              {selectedRecord.reference_doc_name_3 ||
+                                "Passport"}
                             </h6>
                             <img
                               src={`https://omcacrm.com/omca/public/upload/passport/${selectedRecord.passport_copy}`}
                               alt="doc-3"
                               className="img-fluid rounded"
-                              style={{ height: "180px", objectFit: "cover", width: "100%" }}
+                              style={{
+                                height: "180px",
+                                objectFit: "cover",
+                                width: "100%",
+                              }}
                             />
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>
                 </div>
-
               </div>
             </Box>
           )}
-
         </DialogContent>
-
       </Dialog>
-
     </div>
   );
 }
