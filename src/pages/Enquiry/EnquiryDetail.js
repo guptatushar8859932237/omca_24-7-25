@@ -275,11 +275,11 @@ export default function EnquiryDetail() {
                     <div className="field-set">
                       <label>Patient Profile<span className="text-danger"></span></label>
                       <div className="engpatimg mt-0">
-                       {row.patient_Profile && (
-  <div className="viewbtn">
-    <a href={`${imageUrl}${row.patient_Profile}`}>View</a>
-  </div>
-)}
+                        {row.patient_Profile && (
+                          <div className="viewbtn">
+                            <a href={`${imageUrl}${row.patient_Profile}`}>View</a>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -317,69 +317,6 @@ export default function EnquiryDetail() {
                     </div>
                   </div>
                 </div>
-                  <div className="row">
-                          <div className="treat-hd">
-           <h6>Doctor Review</h6>
-                            <span className="line"></span></div>
-                    <div className="col-md-12">
-  <div className="row">  {/* 👈 ye important hai */}
-
-    <div className="col-md-4">
-      <div className="field-set">
-        <label>Review Notes</label>
-        <input
-          className="form-control"
-          type="text"
-          value={row?.doctorReview?.review_notes || ""}
-          readOnly
-        />
-      </div>
-    </div>
-
-    <div className="col-md-4">
-      <div className="field-set">
-        <label>Recommendations</label>
-        <input
-          className="form-control"
-          type="text"
-          value={row?.doctorReview?.Recommendations || ""}
-          readOnly
-        />
-      </div>
-    </div>
-
-    <div className="col-md-4">
-      <div className="field-set">
-        <label>Documents</label>
-
-      {row?.doctorReview?.images?.length > 0 ? (
-  row.doctorReview.images.map((img, index) => {
-    const fullUrl = img.startsWith("http")
-      ? img
-      : imageUrl + img;
-
-  return (
-  <div key={index}>
-    <button
-      type="button"
-      className="viewbtn"
-      onClick={() => window.open(fullUrl, "_blank")}
-    >
-      View
-    </button>
-  </div>
-);
-  })
-) : (
-  <p>No Documents</p>
-)}
-      </div>
-    </div>
-
-  </div>
-</div>
-                  </div>
-
                 <div className="treat-hd">
                   {
                     row.patient_relation ?
@@ -509,12 +446,131 @@ export default function EnquiryDetail() {
                     </>
                   )
                 }
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="card-box">
+                      <div className="treat-hd">
+                        <h6>Doctor Review</h6>
+                        <span className="line"></span>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Review Notes</label>
+                            <input
+                              className="form-control"
+                              type="text"
+                              value={row?.doctorReview?.review_notes || ""}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Recommendations</label>
+                            <input
+                              className="form-control"
+                              type="text"
+                              value={row?.doctorReview?.Recommendations || ""}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>Documents</label>
+                            {row?.doctorReview?.images?.length > 0 ? (
+                              row.doctorReview.images.map((img, index) => {
+                                const fullUrl = img.startsWith("http")
+                                  ? img
+                                  : imageUrl + img;
 
+                                return (
+                                  <div key={index}>
+                                    <button
+                                      type="button"
+                                      className="viewbtn"
+                                      onClick={() => window.open(fullUrl, "_blank")}
+                                    >
+                                      View
+                                    </button>
+                                  </div>
+                                );
+                              })
+                            ) : (
+                              <p>No Documents</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="treat-hd">
+                        <h6>Comments</h6>
+                        <span className="line"></span>
+                      </div>
+                      <div className="row gy-3">
+                        <div className="col-md-12">
+                          <div className="card customstylecard">
+                            <div className="card-body">
+                              <div className="note-view">
+                                <h3 className="card-title">Patient Note - Test user</h3>
+                              </div>
+                              <div className="experience-box">
+                                <ul className="experience-list">
+                                  <li className="mb-0">
+                                    <div className="experience-user">
+                                      <div className="before-circle"></div>
+                                    </div>
+                                    <div className="experience-content">
+                                      <div className="timeline-content">
+                                        <a href="#/" className="name">
+                                          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                        </a>
+                                        <a href="">View Documents</a>
+                                        <div>Date-21/04/26</div>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-md-12">
+                          <div className="card customstylecard">
+                            <div className="card-body">
+                              <div className="note-view">
+                                <h3 className="card-title">Doctor Note - Test max</h3>
+                              </div>
+                              <div className="experience-box">
+                                <ul className="experience-list">
+                                  <li className="mb-0">
+                                    <div className="experience-user">
+                                      <div className="before-circle"></div>
+                                    </div>
+                                    <div className="experience-content">
+                                      <div className="timeline-content">
+                                        <a href="#/" className="name">
+                                          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                        </a>
+                                        <a href="">View Documents</a>
+                                        <div>Date-21/04/26</div>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </form>
             </div>
           </div>
-        </div>
-      </div>
+        </div >
+      </div >
     </>
   );
 }
