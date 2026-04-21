@@ -4948,15 +4948,7 @@ function PatientDetail() {
                                             <div>
                                               <h6>OMCA</h6>
                                             </div>
-
-                                            {/* <div className=""> */}
-                                            {/* <a href="">
-                                                <i class="fa-solid fa-download me-2"></i>
-                                                Download Pdf
-                                              </a> */}
-                                            {/* </div> */}
                                             <div className="">
-
                                               <button
                                                 className="add-button"
                                                 onClick={(e) =>
@@ -4970,8 +4962,6 @@ function PatientDetail() {
                                               >
                                                 + Add Services
                                               </button>
-
-
                                             </div>
                                           </div>
                                           <div className="card-body">
@@ -5172,14 +5162,10 @@ function PatientDetail() {
                                                   </div>
                                                 </div>
                                               </div>
-                                            </div>
-                                            <div className="row gx-3 gy-3 mt-2">
                                               <div className="col-md-12">
                                                 <div className="card patientreat">
                                                   <div className="card-header service-list d-flex justify-content-between">
-                                                    <h6>
-                                                      Guest House Services
-                                                    </h6>
+                                                    <h6>Guest House Services</h6>
                                                     <div>
                                                       <button
                                                         className="add-button"
@@ -5198,16 +5184,12 @@ function PatientDetail() {
                                                       <table className="table-card w-100">
                                                         <thead>
                                                           <tr>
-                                                            <th>
-                                                              Guest House Name
-                                                            </th>
+                                                            <th>Guest House Name</th>
                                                             <th>Check In</th>
                                                             <th>Check Out</th>
                                                             <th>Total Rooms</th>
                                                             <th>Amount</th>
-                                                            <th>
-                                                              Payment Date
-                                                            </th>
+                                                            <th>Payment Date</th>
                                                             <th>Notes</th>
                                                             <th>Document</th>
                                                             <th>Action</th>
@@ -5330,7 +5312,24 @@ function PatientDetail() {
                                                       </table>
                                                     </div>
                                                   </div>
-                                                  <div className="card-body mt-3">
+                                                </div>
+                                              </div>
+                                              <div className="col-md-12">
+                                                <div className="total-amount">
+                                                  <h6 className="mb-0">
+                                                    Total Amount:
+                                                  </h6>
+                                                  <p>
+                                                    ${guestHouseBookingobj.totalAmount}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              <div className="col-md-12">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Payment</h6>
+                                                  </div>
+                                                  <div className="card-body">
                                                     <div className="table-responsive table-no-card">
                                                       <table className="table-card w-100">
                                                         <thead>
@@ -5463,28 +5462,24 @@ function PatientDetail() {
                                               <div className="col-md-12">
                                                 <div className="total-amount">
                                                   <h6 className="mb-0">
-                                                    Total Amount:
+                                                    Paid
                                                   </h6>
                                                   <p>
-                                                    $
-                                                    {
-                                                      guestHouseBookingobj.totalAmount
-                                                    }
-                                                    {/* ${Number(info?.omca?.totalAmount || 0) + Number(guestHouseBookingobj?.total_amount || 0)} */}
+                                                    $78665
                                                   </p>
                                                 </div>
                                               </div>
+                                            </div>
+                                          </div>
+                                          <div className="card-footer">
+                                            <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
                                                   <h6 className="mb-0">
                                                     Due Amount:
                                                   </h6>
                                                   <p>
-                                                    $
-                                                    {
-                                                      guestHouseBookingobj.dueAmount
-                                                    }
-                                                    {/* {Number(info?.omca?.dueAmount || 0) + Number(guestHouseBookingobj?.due_amount || 0)} */}
+                                                    ${guestHouseBookingobj.dueAmount}
                                                   </p>
                                                 </div>
                                               </div>
@@ -5519,187 +5514,97 @@ function PatientDetail() {
                                             </div>
                                           </div>
                                           <div className="card-body">
-                                            <div className="table-responsive table-no-card">
-                                              <table className="table-card w-100">
-                                                <thead>
-                                                  <tr>
-                                                    <th>Pharmacy Name</th>
-                                                    <th>Price</th>
-                                                    <th>Date</th>
-                                                    <th>Action</th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody>
-                                                  {info?.pharmacy
-                                                    ?.pharmacyCharges?.length >
-                                                    0 ? (
-                                                    info.pharmacy?.pharmacyCharges?.map(
-                                                      (item, index) => (
-                                                        <tr key={item._id}>
-                                                          <td>
-                                                            {item?.service_name ||
-                                                              "-"}
-                                                          </td>
-                                                          <td>
-                                                            $
-                                                            {item?.price || "-"}
-                                                          </td>
-                                                          <td>
-                                                            {new Date(
-                                                              item?.date,
-                                                            ).toLocaleDateString(
-                                                              "en-GB",
-                                                            ) || "-"}
-                                                          </td>
-                                                          <td>
-                                                            <div className="action-icon">
-                                                              <i
-                                                                className="fa-solid fa-pen-to-square"
-                                                                onClick={() => {
-                                                                  handleeditpharmacycharge(
-                                                                    item,
-                                                                    info,
-                                                                  );
-                                                                }}
-                                                              ></i>
+                                            <div className="row gx-3 gy-3">
+                                              <div className="col-md-12">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Pharmacy</h6>
+                                                  </div>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>Pharmacy Name</th>
+                                                            <th>Price</th>
+                                                            <th>Date</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {info?.pharmacy
+                                                            ?.pharmacyCharges?.length >
+                                                            0 ? (
+                                                            info.pharmacy?.pharmacyCharges?.map(
+                                                              (item, index) => (
+                                                                <tr key={item._id}>
+                                                                  <td>
+                                                                    {item?.service_name ||
+                                                                      "-"}
+                                                                  </td>
+                                                                  <td>
+                                                                    $
+                                                                    {item?.price || "-"}
+                                                                  </td>
+                                                                  <td>
+                                                                    {new Date(
+                                                                      item?.date,
+                                                                    ).toLocaleDateString(
+                                                                      "en-GB",
+                                                                    ) || "-"}
+                                                                  </td>
+                                                                  <td>
+                                                                    <div className="action-icon">
+                                                                      <i
+                                                                        className="fa-solid fa-pen-to-square"
+                                                                        onClick={() => {
+                                                                          handleeditpharmacycharge(
+                                                                            item,
+                                                                            info,
+                                                                          );
+                                                                        }}
+                                                                      ></i>
 
-                                                              <i
-                                                                className="fa-solid fa-trash text-danger"
-                                                                style={{
-                                                                  cursor:
-                                                                    "pointer",
-                                                                }}
-                                                                onClick={() =>
-                                                                  deletepharmacy(
-                                                                    info,
-                                                                    index,
-                                                                  )
+                                                                      <i
+                                                                        className="fa-solid fa-trash text-danger"
+                                                                        style={{
+                                                                          cursor:
+                                                                            "pointer",
+                                                                        }}
+                                                                        onClick={() =>
+                                                                          deletepharmacy(
+                                                                            info,
+                                                                            index,
+                                                                          )
+                                                                        }
+                                                                      ></i>
+                                                                    </div>
+                                                                  </td>
+                                                                </tr>
+                                                              ),
+                                                            )
+                                                          ) : (
+                                                            <tr>
+                                                              <td
+                                                                colSpan={
+                                                                  usrFount === "Admin"
+                                                                    ? 9
+                                                                    : 7
                                                                 }
-                                                              ></i>
-                                                            </div>
-                                                          </td>
-                                                        </tr>
-                                                      ),
-                                                    )
-                                                  ) : (
-                                                    <tr>
-                                                      <td
-                                                        colSpan={
-                                                          usrFount === "Admin"
-                                                            ? 9
-                                                            : 7
-                                                        }
-                                                        style={{
-                                                          textAlign: "center",
-                                                        }}
-                                                      >
-                                                        No Data Found
-                                                      </td>
-                                                    </tr>
-                                                  )}
-                                                </tbody>
-                                              </table>
-                                            </div>
-                                          </div>
-                                          <div className="card-body">
-                                            <div className="table-responsive table-no-card">
-                                              <table className="table-card w-100">
-                                                <thead>
-                                                  <tr>
-                                                    {/* <th>Payment</th> */}
-                                                    <th>Paid Amount</th>
-                                                    <th>Date</th>
-                                                    <th>Notes</th>
-                                                    <th>Paid To</th>
-                                                    <th>Paid For</th>
-                                                    <th>Method</th>
-                                                    {/* <th>paid_amount</th> */}
-                                                  </tr>
-                                                </thead>
-                                                <tbody>
-                                                  {info?.pharmacy?.payments
-                                                    ?.length > 0 ? (
-                                                    info?.pharmacy?.payments?.map(
-                                                      (item, index) => (
-                                                        <tr key={item._id}>
-                                                          {/* <td>
-                                                            {item?.service_name ||
-                                                              "-"}
-                                                          </td> */}
-                                                          <td>
-                                                            $
-                                                            {item?.paid_amount ||
-                                                              "-"}
-                                                          </td>
-                                                          <td>
-                                                            {new Date(
-                                                              item?.payment_Date,
-                                                            ).toLocaleDateString(
-                                                              "en-GB",
-                                                            ) || "-"}
-                                                          </td>
-                                                          <td>{item.notes}</td>
-                                                          <td>
-                                                            {item.paid_for.name}
-                                                          </td>
-                                                          <td>
-                                                            {item.paid_to.name}
-                                                          </td>
-                                                          <td>
-                                                            {item.paymentMethod}
-                                                          </td>
-                                                          {/* <td>
-                                                            <div className="action-icon">
-                                                              <i
-                                                                className="fa-solid fa-pen-to-square"
-                                                                onClick={() => {
-                                                                  handleeditpharmacycharge(
-                                                                    item,
-                                                                    info,
-                                                                  );
-                                                                }}
-                                                              ></i>
-
-                                                              <i
-                                                                className="fa-solid fa-trash text-danger"
                                                                 style={{
-                                                                  cursor:
-                                                                    "pointer",
+                                                                  textAlign: "center",
                                                                 }}
-                                                                onClick={() =>
-                                                                  deletepharmacy(
-                                                                    info,
-                                                                    index,
-                                                                  )
-                                                                }
-                                                              ></i>
-                                                            </div>
-                                                          </td> */}
-                                                        </tr>
-                                                      ),
-                                                    )
-                                                  ) : (
-                                                    <tr>
-                                                      <td
-                                                        colSpan={
-                                                          usrFount === "Admin"
-                                                            ? 9
-                                                            : 7
-                                                        }
-                                                        style={{
-                                                          textAlign: "center",
-                                                        }}
-                                                      >
-                                                        No Data Found
-                                                      </td>
-                                                    </tr>
-                                                  )}
-                                                </tbody>
-                                              </table>
-                                            </div>
-                                          </div>
-                                          <div className="card-footer">
-                                            <div className="row justify-content-end">
+                                                              >
+                                                                No Data Found
+                                                              </td>
+                                                            </tr>
+                                                          )}
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
                                               <div className="col-md-12">
                                                 <div className="total-amount">
                                                   <h6 className="mb-0">
@@ -5714,6 +5619,128 @@ function PatientDetail() {
                                                   </p>
                                                 </div>
                                               </div>
+                                              <div className="col-md-12">
+                                                <div className="card patientreat">
+                                                  <div className="card-header service-list">
+                                                    <h6>Payment</h6>
+                                                  </div>
+                                                  <div className="card-body">
+                                                    <div className="table-responsive table-no-card">
+                                                      <table className="table-card w-100">
+                                                        <thead>
+                                                          <tr>
+                                                            {/* <th>Payment</th> */}
+                                                            <th>Paid Amount</th>
+                                                            <th>Date</th>
+                                                            <th>Notes</th>
+                                                            <th>Paid To</th>
+                                                            <th>Paid For</th>
+                                                            <th>Method</th>
+                                                            {/* <th>paid_amount</th> */}
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          {info?.pharmacy?.payments
+                                                            ?.length > 0 ? (
+                                                            info?.pharmacy?.payments?.map(
+                                                              (item, index) => (
+                                                                <tr key={item._id}>
+                                                                  {/* <td>
+                                                            {item?.service_name ||
+                                                              "-"}
+                                                          </td> */}
+                                                                  <td>
+                                                                    $
+                                                                    {item?.paid_amount ||
+                                                                      "-"}
+                                                                  </td>
+                                                                  <td>
+                                                                    {new Date(
+                                                                      item?.payment_Date,
+                                                                    ).toLocaleDateString(
+                                                                      "en-GB",
+                                                                    ) || "-"}
+                                                                  </td>
+                                                                  <td>{item.notes}</td>
+                                                                  <td>
+                                                                    {item.paid_for.name}
+                                                                  </td>
+                                                                  <td>
+                                                                    {item.paid_to.name}
+                                                                  </td>
+                                                                  <td>
+                                                                    {item.paymentMethod}
+                                                                  </td>
+                                                                  {/* <td>
+                                                            <div className="action-icon">
+                                                              <i
+                                                                className="fa-solid fa-pen-to-square"
+                                                                onClick={() => {
+                                                                  handleeditpharmacycharge(
+                                                                    item,
+                                                                    info,
+                                                                  );
+                                                                }}
+                                                              ></i>
+
+                                                              <i
+                                                                className="fa-solid fa-trash text-danger"
+                                                                style={{
+                                                                  cursor:
+                                                                    "pointer",
+                                                                }}
+                                                                onClick={() =>
+                                                                  deletepharmacy(
+                                                                    info,
+                                                                    index,
+                                                                  )
+                                                                }
+                                                              ></i>
+                                                            </div>
+                                                          </td> */}
+                                                                </tr>
+                                                              ),
+                                                            )
+                                                          ) : (
+                                                            <tr>
+                                                              <td
+                                                                colSpan={
+                                                                  usrFount === "Admin"
+                                                                    ? 9
+                                                                    : 7
+                                                                }
+                                                                style={{
+                                                                  textAlign: "center",
+                                                                }}
+                                                              >
+                                                                No Data Found
+                                                              </td>
+                                                            </tr>
+                                                          )}
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className="card-footer">
+                                            <div className="row justify-content-end">
+                                              <div className="col-md-12">
+                                                <div className="total-amount">
+                                                  <h6 className="mb-0">
+                                                    Paid
+                                                  </h6>
+                                                  <p>
+                                                    $78665
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className="card-footer">
+                                            <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
                                                   <h6 className="mb-0">
@@ -6704,7 +6731,7 @@ function PatientDetail() {
               </div>
             </div>
           </div>
-        </div>
+        </div >
       </div >
       <React.Fragment>
         <Dialog
