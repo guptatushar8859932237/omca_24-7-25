@@ -1,8 +1,24 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+
 export default function Sidebar() {
-  const permissions = localStorage.getItem("permissionArray");
-  console.log(permissions);
+  // PARSE: Comma-separated string ko array me convert karo
+  let permissionsRaw = localStorage.getItem("permissionArray") || "";
+  
+  // Split by comma and normalize (trim + ensure leading slash)
+  let permissions = permissionsRaw
+    .split(',')
+    .map(p => p.trim())
+    .filter(p => p.length > 0)
+    .map(p => p.startsWith('/') ? p : `/${p}`); //Add slash if missing!
+
+  console.log("Parsed permissions:", permissions);
+
+
+  // ENQUIRY CHECK: Show "Enquiries" if any of these permissions are present
+  const enquiryEndpoints = ["/Enquiries", "/Air_Medical_Escort", "/Ambulance_Service", "/Treatment_Estimate"];
+  const hasEnquiryAccess = enquiryEndpoints.some(ep => permissions.includes(ep));
+
   const menuItems = [
     { path: "/Dashboard", icon: "fa-dashboard", label: "Dashboard" },
     {
@@ -10,6 +26,7 @@ export default function Sidebar() {
       actualPath: "/Admin/Inquiry",
       icon: "fa-comments-o",
       label: "Enquiries",
+      condition: hasEnquiryAccess,
     },
     {
       path: "/General_Enquiries",
@@ -35,13 +52,6 @@ export default function Sidebar() {
       icon: "fa-server",
       label: "Manage Services",
     },
-    // {
-    //   path: "/Manage_Treatments",
-    //   actualPath: "/Admin/Treatments",
-    //   icon: "fa-stethoscope",
-    //   label: "Manage Treatments",
-    // },
-    // { path: "/Manage_Hospitals", actualPath: "/Admin/Hospitals", icon: "fa-hospital-o", label: "Manage Hospitals" },
     {
       path: "/Manage_Countries",
       actualPath: "/Admin/Countries",
@@ -60,7 +70,6 @@ export default function Sidebar() {
       icon: "fa-lock",
       label: "Manage Permission",
     },
-    // { path: "/Manage_Currency", actualPath: "/Admin/currency", icon: "fa-user-md", label: "Manage Currency" },
     {
       path: "/History",
       actualPath: "/Admin/History",
@@ -80,24 +89,20 @@ export default function Sidebar() {
       label: "Payments",
     },
   ];
+
   return (
     <div className="sidebar" id="sidebar">
       <div className="sidebar-inner slimscroll">
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
-            {/* {menuItems.map((item) =>
-              permissions.includes(item.path) ? ( // Check if permission exists
-                <li key={item.path}>
-                  <NavLink to={item.actualPath || item.path} className={({ isActive }) => (isActive ? "active" : "")}>
-                    <i className={`fa ${item.icon}`}></i> <span>{item.label}</span> 
-                  </NavLink>
-                </li>
-              ) :  <NavLink to={menuItems} className={({ isActive }) => (isActive ? "active" : "")}>
-                    <i className={`fa ${item.icon}`}></i> <span>{item.label}</span> 
-                  </NavLink>
-            )} */}
             {menuItems.map((item) => {
-              const hasPermission = permissions.includes(item.path);
+              // CONDITION CHECK: custom condition ya normal permission
+              const hasPermission = item.condition !== undefined
+                ? item.condition
+                : permissions.includes(item.path);
+
+              console.log(` ${item.label}: ${hasPermission ? "SHOW" : " HIDE"} (${item.path})`);
+
               if (hasPermission) {
                 return (
                   <li key={item.path}>
@@ -111,7 +116,6 @@ export default function Sidebar() {
                   </li>
                 );
               }
-              // If NOT allowed → hide (or show disabled)
               return null;
             })}
           </ul>

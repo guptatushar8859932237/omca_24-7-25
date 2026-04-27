@@ -263,16 +263,50 @@ export const ImportEnquirys = createAsyncThunk(
     }
   }
 );
+
+export const AddDoctorReview = createAsyncThunk(
+  "Enquiry/AddDoctorReview",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${baseurl}addDoctorReview`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "An unknown error occurred" }
+      );
+    }
+  }
+);
+
+
+
+
+
 const EnquirySlice = createSlice({
   name: "Enquiry",
   initialState: {
     Enquiry: [],
     loading: false,
     error: null,
+    doctorReviewData: null,
+    doctorComments: [],
+    reviewLoading: false,
+    reviewError: null,
+    reviewSuccessMessage: null,
   },
   reducers: {
     addEnquiry: (state, action) => {
       state.EnquirySlice.push(action.payload);
+    },
+    clearReviewState: (state) => {
+      state.reviewLoading = false;
+      state.reviewError = null;
+      state.reviewSuccessMessage = null;
     },
   },
   extraReducers: (builder) => {
@@ -354,8 +388,23 @@ const EnquirySlice = createSlice({
       .addCase(ImportEnquirys.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(AddDoctorReview.pending, (state) => {
+        state.reviewLoading = true;
+        state.reviewError = null;
+        state.reviewSuccessMessage = null;
+      })
+      .addCase(AddDoctorReview.fulfilled, (state, action) => {
+        state.reviewLoading = false;
+        state.doctorReviewData = action.payload.data;
+        state.doctorComments = action.payload.data.comments || [];
+        state.reviewSuccessMessage = action.payload.message;
+      })
+      .addCase(AddDoctorReview.rejected, (state, action) => {
+        state.reviewLoading = false;
+        state.reviewError = action.payload;
       });
   },
 });
 export default EnquirySlice.reducer;
-export const { addEnquiry } = EnquirySlice.actions;
+export const { addEnquiry, clearReviewState } = EnquirySlice.actions;

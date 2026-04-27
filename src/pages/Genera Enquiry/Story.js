@@ -279,7 +279,7 @@ export default function Stay() {
                   direction={orderBy === "date" ? order : "asc"}
                   onClick={() => handleSort("date")}
                 >
-                  Check-in Date
+                  Check In
                 </TableSortLabel>
               </TableCell>
               <TableCell sortDirection={orderBy === "status" ? order : false}>
@@ -303,7 +303,7 @@ export default function Stay() {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.guesthouse}</TableCell>
                   <TableCell>
-                    {new Date(item.date).toLocaleDateString("en-GB")}
+                    {new Date(item.checkin).toLocaleDateString("en-GB")}
                   </TableCell>
                   <TableCell>
                     <FormControl
@@ -429,6 +429,12 @@ export default function Stay() {
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
+                            <div className="col-md-4">
+                          <InfoItem
+                            label="Booking ID"
+                            value={selectedRecord.booking_id}
+                          />
+                        </div>
                         <div className="col-md-4">
                           <InfoItem label="Name" value={selectedRecord.name} />
                         </div>
@@ -444,21 +450,29 @@ export default function Stay() {
                             value={selectedRecord.phone}
                           />
                         </div>
-                        <div className="col-md-4">
+                        {/* <div className="col-md-4">
                           <InfoItem
                             label="Length of Stay"
                             value={selectedRecord.length_of_story}
                           />
-                        </div>
+                        </div> */}
                         <div className="col-md-4">
                           <InfoItem
-                            label="Date"
+                            label="Check In"
                             value={new Date(
-                              selectedRecord.date,
+                              selectedRecord.checkin,
                             ).toLocaleDateString("en-GB")}
                           />
                         </div>
                         <div className="col-md-4">
+                          <InfoItem
+                            label="Check Out"
+                            value={new Date(
+                              selectedRecord.checkout,
+                            ).toLocaleDateString("en-GB")}
+                          />
+                        </div>
+                        {/* <div className="col-md-4">
                           <InfoItem label="City" value={selectedRecord.city} />
                         </div>
                         <div className="col-md-4">
@@ -466,29 +480,48 @@ export default function Stay() {
                             label="Number of People"
                             value={selectedRecord.number_of_people}
                           />
-                        </div>
+                        </div> */}
                         <div className="col-md-4">
                           <InfoItem
-                            label="Total Stay "
-                            value={`${selectedRecord.length_of_story} Days`}
+                            label="Passport Number"
+                            value={`${selectedRecord.passport_number} `}
                           />
                         </div>
-                        <div className="col-md-4">
-                          <InfoItem
-                            label="Booking ID"
-                            value={selectedRecord.booking_id}
-                          />
-                        </div>
+                    
                         <div className="col-md-4">
                           <InfoItem
                             label="Guest House"
                             value={selectedRecord.guesthouse}
                           />
                         </div>
-                        <div className="col-md-4">
+                          <div className="col-md-4">
                           <InfoItem
                             label="Room Type"
                             value={selectedRecord.guesthouse_room_type}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Rooms"
+                            value={selectedRecord.rooms}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Adults"
+                            value={selectedRecord.adults}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Children"
+                            value={selectedRecord.children}
+                          />
+                        </div>
+                     <div className="col-md-4">
+                          <InfoItem
+                            label=" Status"
+                            value={selectedRecord.status}
                           />
                         </div>
                       </div>
@@ -502,12 +535,7 @@ export default function Stay() {
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
-                        <div className="col-md-4">
-                          <InfoItem
-                            label="Payment Id"
-                            value={selectedRecord.payment_id}
-                          />
-                        </div>
+             
                         <div className="col-md-4">
                           <InfoItem
                             label="Payment Amount"
@@ -520,6 +548,7 @@ export default function Stay() {
                             value={selectedRecord.payment_status}
                           />
                         </div>
+                     
                       </div>
                     </div>
                   </div>

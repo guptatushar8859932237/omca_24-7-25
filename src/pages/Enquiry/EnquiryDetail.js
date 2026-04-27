@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
-import avtar from "../../img/avtarImg.jpg"
+import avtar from "../../img/avtarImg.jpg";
 // 🔹 file type check
 const getFileType = (file) => {
   const ext = file.split(".").pop().toLowerCase();
@@ -70,6 +70,74 @@ export default function EnquiryDetail() {
   const handleclick = () => {
     window.history.back();
   };
+
+
+  const renderComments = () => {
+    const comments = row?.doctorReview?.comments || [];
+
+    if (comments.length === 0) {
+      return <p className="text-muted">No comments available</p>;
+    }
+
+    return comments.map((comment, index) => (
+      <div className="col-md-12" key={comment._id || index}>
+        <div className="card customstylecard">
+          <div className="card-body">
+            <div className="note-view">
+              <h3 className="card-title">{comment.user_type} Note</h3>
+            </div>
+            <div className="experience-box">
+              <ul className="experience-list">
+                <li className="mb-0">
+                  <div className="experience-user">
+                    <div className="before-circle"></div>
+                  </div>
+                  <div className="experience-content">
+                    <div className="timeline-content">
+                      <a href="#/" className="name">
+                        {comment.Notes}
+                      </a>
+
+                      {/* Show images if present */}
+                      {comment.images && comment.images.length > 0 && (
+                        <div className="mt-2 mb-2">
+                          {comment.images.map((img, imgIndex) => {
+                            const fullUrl = img.startsWith("http")
+                              ? img
+                              : imageUrl + img;
+                            return (
+                              <button
+                                key={imgIndex}
+                                type="button"
+                                className="viewbtn btn-sm me-2"
+                                onClick={() => window.open(fullUrl, "_blank")}
+                              >
+                                View Document {imgIndex + 1}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      <div>
+                        Date -{" "}
+                        {comment.Date
+                          ? new Date(comment.Date).toLocaleDateString("en-GB")
+                          : new Date(comment.createdAt).toLocaleDateString(
+                              "en-GB",
+                            )}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    ));
+  };
+
   return (
     <>
       <div>
@@ -94,7 +162,9 @@ export default function EnquiryDetail() {
                 <div class="row">
                   <div class="col-md-4">
                     <div className="field-set">
-                      <label>Enquiry Id<span className="text-danger"></span></label>
+                      <label>
+                        Enquiry Id<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -105,7 +175,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div class="col-md-4">
                     <div className="field-set">
-                      <label>NIC / Passport<span className="text-danger"></span></label>
+                      <label>
+                        NIC / Passport<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -116,7 +188,8 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Phone No. / WhatsApp
+                      <label>
+                        Phone No. / WhatsApp
                         <span className="text-danger"></span>
                       </label>
                       <div className="country-code">
@@ -137,7 +210,10 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Emergency Contact Number<span className="text-danger"></span></label>
+                      <label>
+                        Emergency Contact Number
+                        <span className="text-danger"></span>
+                      </label>
                       <div className="country-code">
                         <input
                           class="form-control code-dial"
@@ -156,7 +232,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Patient Name<span className="text-danger"></span></label>
+                      <label>
+                        Patient Name<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -167,7 +245,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Gender<span className="text-danger"></span></label>
+                      <label>
+                        Gender<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -178,7 +258,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Age<span className="text-danger"></span></label>
+                      <label>
+                        Age<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -189,7 +271,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Enq status<span className="text-danger"></span></label>
+                      <label>
+                        Enq status<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -200,7 +284,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Email<span className="text-danger"></span></label>
+                      <label>
+                        Email<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -211,7 +297,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Country<span className="text-danger"></span></label>
+                      <label>
+                        Country<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="email"
@@ -222,7 +310,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Town<span className="text-danger"></span></label>
+                      <label>
+                        Town<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -233,7 +323,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Address<span className="text-danger"></span></label>
+                      <label>
+                        Address<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -244,13 +336,14 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Patient ID proof<span className="text-danger"></span></label>
+                      <label>
+                        Patient ID proof<span className="text-danger"></span>
+                      </label>
                       <div className="engpatimg mt-0">
                         {Array.isArray(row?.patient_id_proof) &&
                           row.patient_id_proof.length > 0 &&
                           row.patient_id_proof.map((file, index) => (
                             <div key={index} className="file-preview">
-
                               {/* <span className="delete-icon">
                                 <i className="fa-solid fa-xmark"></i>
                               </span> */}
@@ -263,21 +356,22 @@ export default function EnquiryDetail() {
                               >
                                 View
                               </a>
-
                             </div>
-                          ))
-                        }
+                          ))}
                       </div>
-
                     </div>
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Patient Profile<span className="text-danger"></span></label>
+                      <label>
+                        Patient Profile<span className="text-danger"></span>
+                      </label>
                       <div className="engpatimg mt-0">
                         {row.patient_Profile && (
                           <div className="viewbtn">
-                            <a href={`${imageUrl}${row.patient_Profile}`}>View</a>
+                            <a href={`${imageUrl}${row.patient_Profile}`}>
+                              View
+                            </a>
                           </div>
                         )}
                       </div>
@@ -285,7 +379,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Referral Name<span className="text-danger"></span></label>
+                      <label>
+                        Referral Name<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -296,7 +392,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Treatment Name<span className="text-danger"></span></label>
+                      <label>
+                        Treatment Name<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -307,7 +405,9 @@ export default function EnquiryDetail() {
                   </div>
                   <div className="col-md-4">
                     <div className="field-set">
-                      <label>Treating In Country<span className="text-danger"></span></label>
+                      <label>
+                        Treating In Country<span className="text-danger"></span>
+                      </label>
                       <input
                         class="form-control"
                         type="text"
@@ -318,134 +418,154 @@ export default function EnquiryDetail() {
                   </div>
                 </div>
                 <div className="treat-hd">
-                  {
-                    row.patient_relation ?
-                      <h6>Attendant Details</h6>
-                      : ""}
+                  {row.patient_relation ? <h6>Attendant Details</h6> : ""}
                   <span className="line"></span>
                 </div>
-                {
-                  row.patient_relation ?
+                {row.patient_relation ? (
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="field-set">
+                        <label>
+                          Attendant Full Name
+                          <span className="text-danger"></span>
+                        </label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          value={row.patient_relation_name}
+                          readonly=""
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="field-set">
+                        <label>
+                          Relationship with Patient
+                          <span className="text-danger"></span>
+                        </label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          value={row.patient_relation}
+                          readonly=""
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="field-set">
+                        <label>
+                          Attendant Contact Number
+                          <span className="text-danger"></span>
+                        </label>
+                        <div className="country-code">
+                          <input
+                            class="form-control code-dial"
+                            type="text"
+                            value={row.phoneCode}
+                            readonly=""
+                          />
+                          <input
+                            class="form-control code-in"
+                            type="text"
+                            value={row.patient_relation_no}
+                            readonly=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="field-set">
+                        <label>
+                          Attendant ID Proof
+                          <span className="text-danger"></span>
+                        </label>
+                        <div className="engpatimg">
+                          {Array.isArray(row.patient_relation_id) &&
+                          row.patient_relation_id.length > 0 ? (
+                            row.patient_relation_id.map((file, index) => (
+                              <div key={index} className="doc-box viewbtn">
+                                <a href={`${image}${file}`}>View</a>
+                              </div>
+                            ))
+                          ) : (
+                            <img src={avtar} alt="No Document" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="field-set">
+                        <label>
+                          Attendant Address<span className="text-danger"></span>
+                        </label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          value={row.patient_relation_address}
+                          readonly=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+                {row.discussionNotes?.length === 0 ? (
+                  ""
+                ) : (
+                  <>
                     <div className="row">
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Attendant Full Name<span className="text-danger"></span></label>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value={row.patient_relation_name}
-                            readonly=""
-                          />
+                      <div className="col-md-12">
+                        <div className="treat-hd">
+                          <h6>Discussion Notes</h6>
+                          <span className="line"></span>
                         </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Relationship with Patient<span className="text-danger"></span></label>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value={row.patient_relation}
-                            readonly=""
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Attendant Contact Number
-                            <span className="text-danger"></span>
-                          </label>
-                          <div className="country-code">
-                            <input
-                              class="form-control code-dial"
-                              type="text"
-                              value={row.phoneCode}
-                              readonly=""
-                            />
-                            <input
-                              class="form-control code-in"
-                              type="text"
-                              value={row.patient_relation_no}
-                              readonly=""
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Attendant ID Proof<span className="text-danger"></span></label>
-                          <div className="engpatimg">
-                            {Array.isArray(row.patient_relation_id) && row.patient_relation_id.length > 0 ? (
-                              row.patient_relation_id.map((file, index) => (
-                                <div key={index} className="doc-box viewbtn">
-                                  <a href={`${image}${file}`} >View</a>
-                                </div>
-                              ))
-                            ) : (
-                              <img src={avtar} alt="No Document" />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Attendant Address<span className="text-danger"></span></label>
-                          <input
-                            class="form-control"
-                            type="text"
-                            value={row.patient_relation_address}
-                            readonly=""
-                          />
-                        </div>
-                      </div>
-                    </div> : ""
-                }
-                {
-                  row.discussionNotes?.length === 0 ? ("") : (
-                    <>
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="treat-hd">
-                            <h6>Discussion Notes</h6>
-                            <span className="line"></span>
-                          </div>
-                          <div className="tab-pane" id="bottom-tab3">
-                            {row.discussionNotes?.length === 0 ? (
-                              "No notes for patient"
-                            ) : (
-                              <>
-                                {row.discussionNotes?.map((info, index) => (
-                                  <div className="card-box">
-                                    <div className="note-view">
-                                      <h3 className="card-title">Note-{index + 1}</h3>
-                                    </div>
-                                    <div className="experience-box">
-                                      <ul className="experience-list">
-                                        <li>
-                                          <div className="experience-user">
-                                            <div className="before-circle"></div>
-                                          </div>
-                                          <div className="experience-content">
-                                            <div className="timeline-content">
-                                              <a href="#/" className="name">
-                                                {info.note}
-                                              </a>
-                                              <div>date-{new Date(info.date).toLocaleDateString("en-GB")}</div>
-                                              {/* {/ <span className="time">treatment due payment-{info.treatment_due_payment}</span>  */}
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
+                        <div className="tab-pane" id="bottom-tab3">
+                          {row.discussionNotes?.length === 0 ? (
+                            "No notes for patient"
+                          ) : (
+                            <>
+                              {row.discussionNotes?.map((info, index) => (
+                                <div className="card-box">
+                                  <div className="note-view">
+                                    <h3 className="card-title">
+                                      Note-{index + 1}
+                                    </h3>
                                   </div>
-                                ))}
-                              </>
-                            )}
-                          </div>
+                                  <div className="experience-box">
+                                    <ul className="experience-list">
+                                      <li>
+                                        <div className="experience-user">
+                                          <div className="before-circle"></div>
+                                        </div>
+                                        <div className="experience-content">
+                                          <div className="timeline-content">
+                                            <a href="#/" className="name">
+                                              {info.note}
+                                            </a>
+                                            <div>
+                                              date-
+                                              {new Date(
+                                                info.date,
+                                              ).toLocaleDateString("en-GB")}
+                                            </div>
+                                            {/* {/ <span className="time">treatment due payment-{info.treatment_due_payment}</span>  */}
+                                          </div>
+                                        </div>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              ))}
+                            </>
+                          )}
                         </div>
                       </div>
-                    </>
-                  )
-                }
+                    </div>
+                  </>
+                )}
+                {
+                  row?.doctorReview?.review_notes ?
                 <div className="row">
                   <div className="col-md-12">
                     <div className="card-box">
@@ -490,7 +610,9 @@ export default function EnquiryDetail() {
                                     <button
                                       type="button"
                                       className="viewbtn"
-                                      onClick={() => window.open(fullUrl, "_blank")}
+                                      onClick={() =>
+                                        window.open(fullUrl, "_blank")
+                                      }
                                     >
                                       View
                                     </button>
@@ -507,70 +629,16 @@ export default function EnquiryDetail() {
                         <h6>Comments</h6>
                         <span className="line"></span>
                       </div>
-                      <div className="row gy-3">
-                        <div className="col-md-12">
-                          <div className="card customstylecard">
-                            <div className="card-body">
-                              <div className="note-view">
-                                <h3 className="card-title">Patient Note - Test user</h3>
-                              </div>
-                              <div className="experience-box">
-                                <ul className="experience-list">
-                                  <li className="mb-0">
-                                    <div className="experience-user">
-                                      <div className="before-circle"></div>
-                                    </div>
-                                    <div className="experience-content">
-                                      <div className="timeline-content">
-                                        <a href="#/" className="name">
-                                          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                                        </a>
-                                        <a href="">View Documents</a>
-                                        <div>Date-21/04/26</div>
-                                      </div>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-md-12">
-                          <div className="card customstylecard">
-                            <div className="card-body">
-                              <div className="note-view">
-                                <h3 className="card-title">Doctor Note - Test max</h3>
-                              </div>
-                              <div className="experience-box">
-                                <ul className="experience-list">
-                                  <li className="mb-0">
-                                    <div className="experience-user">
-                                      <div className="before-circle"></div>
-                                    </div>
-                                    <div className="experience-content">
-                                      <div className="timeline-content">
-                                        <a href="#/" className="name">
-                                          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                                        </a>
-                                        <a href="">View Documents</a>
-                                        <div>Date-21/04/26</div>
-                                      </div>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <div className="row gy-3">{renderComments()}</div>
                     </div>
                   </div>
-                </div>
+                </div>:""
+                }
               </form>
             </div>
           </div>
-        </div >
-      </div >
+        </div>
+      </div>
     </>
   );
 }

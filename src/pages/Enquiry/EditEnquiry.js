@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { EditEnquiryType, GetAllEnquiry } from "../../reducer/EnquirySlice";
+import { EditEnquiryType, GetAllEnquiry, AddDoctorReview, clearReviewState } from "../../reducer/EnquirySlice";
 import { GetAllCountries, GetAllCountries2 } from "../../reducer/Countries";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
-import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
+import { FormControl, MenuItem, OutlinedInput, Select, Modal, Box, Typography, Button } from "@mui/material";
 import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
 import axios from "axios";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
+
 const getFileType = (file) => {
   const ext = file.split(".").pop().toLowerCase();
   if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
@@ -20,21 +21,42 @@ const getFileType = (file) => {
   if (["xls", "xlsx"].includes(ext)) return "excel";
   return "other";
 };
+
+// Modal style
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 500,
+  bgcolor: 'background.paper',
+  borderRadius: 2,
+  boxShadow: 24,
+  p: 4,
+};
+
 export default function EditEnquiry() {
   const dispatch = useDispatch();
   const MAX_FILE_SIZE = 2 * 1024 * 1024;
   const location = useLocation();
   const navigate = useNavigate();
-  const { Enquiry, loading } = useSelector((state) => state.Enquiry);
+  const { Enquiry, loading, doctorReviewData, doctorComments, reviewLoading, reviewError, reviewSuccessMessage } = useSelector((state) => state.Enquiry);
   const [previewImage, setPreviewImage] = useState(null);
   const { Treatment, error } = useSelector((state) => state.Treatment);
   const { Countries } = useSelector((state) => state.Countries);
   const [editenquiry, setEnquiry] = useState("");
+  
+  // Modal states
+  const [openModal, setOpenModal] = useState(false);
+  const [reviewNotes, setReviewNotes] = useState("");
+  const [reviewImages, setReviewImages] = useState([]);
+
   useEffect(() => {
     dispatch(GetAllCountries2());
     dispatch(GetAllEnquiry());
     dispatch(GetAllTreatment());
   }, [dispatch]);
+
   useEffect(() => {
     if (location.state?.enquiryId && Enquiry.length > 0) {
       const selectedUser = Enquiry.find(
@@ -44,6 +66,7 @@ export default function EditEnquiry() {
       setEnquiry(selectedUser || {});
     }
   }, [location.state?.enquiryId, Enquiry]);
+
   const basicSchema = Yup.object().shape({
     name: Yup.string().required("Name is required").min(2).max(50),
     email: Yup.string()
@@ -88,14 +111,6 @@ export default function EditEnquiry() {
         return schema.notRequired();
       },
     ),
-    // patient_relation_no: Yup.string().when("has_relation", {
-    //   is: true,
-    //   then: (schema) =>
-    //     schema
-    //       .matches(/^[0-9]+$/, "Only digits are allowed")
-    //       .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
-    //   otherwise: (schema) => schema.notRequired(),
-    // }),
     patient_relation: Yup.string().when("has_relation", {
       is: true,
       then: (schema) => schema.required("Attendant Relationship is required"),
@@ -144,6 +159,7 @@ export default function EditEnquiry() {
       },
     ),
   });
+
   useEffect(() => {
     const initTooltips = () => {
       if (!window.bootstrap) return;
@@ -153,7 +169,7 @@ export default function EditEnquiry() {
       tooltipTriggerList.forEach((el) => {
         if (!el._tooltip) {
           el._tooltip = new window.bootstrap.Tooltip(el, {
-            placement: el.getAttribute("data-bs-placement") || "top", // fallback
+            placement: el.getAttribute("data-bs-placement") || "top",
             trigger: "hover focus",
           });
         }
@@ -161,6 +177,51 @@ export default function EditEnquiry() {
     };
     setTimeout(initTooltips, 300);
   });
+
+  // Handle Add Doctor Review Submit
+  const handleAddDoctorReview = async () => {
+    if (!reviewNotes.trim()) {
+      Swal.fire("Error!", "Review notes are required", "error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("enquiryId", editenquiry.enquiryId);
+    formData.append("review_notes", reviewNotes);
+    formData.append("user_type", "doctor");
+    
+    if (reviewImages && reviewImages.length > 0) {
+      reviewImages.forEach((file) => {
+        // formData.append("images[]", file);
+         formData.append("images", file);
+      });
+    }
+
+    dispatch(AddDoctorReview(formData));
+  };
+
+  useEffect(() => {
+    if (reviewSuccessMessage) {
+      Swal.fire("Success!", reviewSuccessMessage, "success");
+      setReviewNotes("");
+      setReviewImages([]);
+      setOpenModal(false);
+      dispatch(clearReviewState());
+      // Refresh enquiry data if needed, though the slice now has the latest data
+      dispatch(GetAllEnquiry());
+    }
+    if (reviewError) {
+      Swal.fire("Error!", reviewError.message || "Failed to add review", "error");
+      dispatch(clearReviewState());
+    }
+  }, [reviewSuccessMessage, reviewError, dispatch]);
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setReviewNotes("");
+    setReviewImages([]);
+  };
+
   const handleDeletePatientIdProof = (index) => {
     Swal.fire({
       title: "Delete this image?",
@@ -190,6 +251,7 @@ export default function EditEnquiry() {
       }
     });
   };
+
   const handleDeleteAttendantIdProof = async (index) => {
     Swal.fire({
       title: "Delete this image?",
@@ -219,6 +281,7 @@ export default function EditEnquiry() {
       }
     });
   };
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -278,7 +341,6 @@ export default function EditEnquiry() {
                     editenquiry?.doctorReview?.review_notes || "",
                   doctorReviewRecommendations:
                     editenquiry?.doctorReview?.Recommendations || "",
-                  // doctor_images: editenquiry?.doctorReview?.images || [],
                 }}
                 validationSchema={basicSchema}
                 onSubmit={async (values, { setSubmitting }) => {
@@ -671,55 +733,6 @@ export default function EditEnquiry() {
                               (i)
                             </span>
                           </label>
-                          {/* <input
-                            className="form-control"
-                            type="file"
-                            name="patient_Profile"
-                            accept="image/*,application/pdf"
-                            onChange={(e) => {
-  const file = e.currentTarget.files[0];
-
-  if (file) {
-    setPreviewImage(URL.createObjectURL(file));
-    setFieldValue("patient_Profile", file);
-  }
-}}
-                          />
-                          <div className="engpatimg">
-                            <div className="viewbtn">
-                              <a
-                                href={`${imageUrl}${editenquiry.patient_Profile}`}
-                              >
-                                View
-                              </a>
-                            </div>
-                               <div className="engpatimg">
-                                                          {previewImage ? (
-                                                            <button
-                                                              type="button"
-                                                              className="viewbtn"
-                                                              onClick={() =>
-                                                                window.open(previewImage, "_blank")
-                                                              }
-                                                            >
-                                                              View
-                                                            </button>
-                                                          ) : editenquiry.patient_Profile ? (
-                                                            <button
-                                                              type="button"
-                                                              className="viewbtn"
-                                                              onClick={() =>
-                                                                window.open(
-                                                                  `${image}/${editenquiry.patient_Profile}`,
-                                                                  "_blank",
-                                                                )
-                                                              }
-                                                            >
-                                                              View
-                                                            </button>
-                                                          ) : null}
-                                                        </div>
-                          </div> */}
                           <input
                             className="form-control"
                             type="file"
@@ -736,7 +749,6 @@ export default function EditEnquiry() {
                           />
 
                           <div className="engpatimg">
-                            {/* New Uploaded */}
                             {previewImage ? (
                               <button
                                 type="button"
@@ -748,7 +760,6 @@ export default function EditEnquiry() {
                                 View
                               </button>
                             ) : editenquiry?.patient_Profile ? (
-                              /* Existing from API */
                               <button
                                 type="button"
                                 className="viewbtn"
@@ -873,67 +884,129 @@ export default function EditEnquiry() {
                         </div>
                       </div>
 
+                      {/* Doctor Review Section */}
                       <div className="col-md-12">
-                        <h5>Doctor Review</h5>
-                      </div>
-
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Review Notes</label>
-                          <Field
-                            as="textarea"
-                            name="doctorReviewNotes"
-                            className="form-control"
-                          />
+                        <div className="d-flex justify-content-between align-items-center mb-3 mt-4">
+                          <h5 className="card-title">Doctor Review</h5>
+                          <Button 
+                            variant="contained" 
+                            color="primary"
+                            onClick={() => setOpenModal(true)}
+                            size="small"
+                          >
+                            Add Comment
+                          </Button>
                         </div>
                       </div>
 
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Recommendations</label>
-                          <Field
-                            as="textarea"
-                            name="doctorReviewRecommendations"
-                            className="form-control"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>Upload Images</label>
-                          <input
-                            type="file"
-                            className="form-control"
-                            multiple
-                            onChange={(e) => {
-                              const files = Array.from(e.target.files);
-                              setFieldValue("doctor_images", files);
-                            }}
-                          />
-
-                          {/* Show existing images */}
-                          <div className="engpatimg">
-                            {editenquiry?.doctorReview?.images?.map(
-                              (img, index) => {
-                                const fullUrl = `${imageUrl}${img}`;
-                                return (
-                                  <button
-                                    key={index}
-                                    type="button"
-                                    className="viewbtn"
-                                    onClick={() =>
-                                      window.open(fullUrl, "_blank")
-                                    }
-                                  >
-                                    View {index + 1}
-                                  </button>
-                                );
-                              },
-                            )}
+                      {/* Latest Review Display */}
+                      {(doctorReviewData || editenquiry?.doctorReview) && (
+                        <div className="col-md-12">
+                          <div className="card-box mb-4">
+                            <h6 className="text-primary mb-3">Latest Review</h6>
+                            <div className="row">
+                              <div className="col-md-6">
+                                <div className="field-set">
+                                  <label>Review Notes</label>
+                                  <div className="form-control" style={{ minHeight: '60px', backgroundColor: '#f9f9f9' }}>
+                                    {doctorReviewData?.review_notes || editenquiry?.doctorReview?.review_notes || "N/A"}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-md-6">
+                                <div className="field-set">
+                                  <label>Recommendations</label>
+                                  <div className="form-control" style={{ minHeight: '60px', backgroundColor: '#f9f9f9' }}>
+                                    {doctorReviewData?.Recommendations || editenquiry?.doctorReview?.Recommendations || "N/A"}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-md-12 mt-2">
+                                <label>Images</label>
+                                <div className="engpatimg">
+                                  {(doctorReviewData?.images || editenquiry?.doctorReview?.images || []).map((img, index) => (
+                                    <button
+                                      key={index}
+                                      type="button"
+                                      className="viewbtn"
+                                      onClick={() => window.open(`${imageUrl}${img}`, "_blank")}
+                                    >
+                                      View {index + 1}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )}
+
+                      {/* Comments History Display */}
+                      {((doctorComments && doctorComments.length > 0) || (editenquiry?.doctorReview?.comments && editenquiry.doctorReview.comments.length > 0)) && (
+                        <div className="col-md-12">
+                          <div className="treat-hd">
+                            <h6>Comments History</h6>
+                            <span className="line"></span>
+                          </div>
+                          <div className="row gy-3">
+                            {(doctorComments.length > 0 ? doctorComments : (editenquiry?.doctorReview?.comments || [])).map((comment, index) => (
+                              <div className="col-md-12" key={comment._id || index}>
+                                <div className="card customstylecard">
+                                  <div className="card-body">
+                                    <div className="note-view">
+                                      <h3 className="card-title">{comment.user_type} Note</h3>
+                                    </div>
+                                    <div className="experience-box">
+                                      <ul className="experience-list">
+                                        <li className="mb-0">
+                                          <div className="experience-user">
+                                            <div className="before-circle"></div>
+                                          </div>
+                                          <div className="experience-content">
+                                            <div className="timeline-content">
+                                              <a href="#/" className="name">
+                                                {comment.Notes}
+                                              </a>
+
+                                              {/* Show images if present */}
+                                              {comment.images && comment.images.length > 0 && (
+                                                <div className="mt-2 mb-2">
+                                                  {comment.images.map((img, imgIndex) => {
+                                                    const fullUrl = img.startsWith("http")
+                                                      ? img
+                                                      : imageUrl + img;
+                                                    return (
+                                                      <button
+                                                        key={imgIndex}
+                                                        type="button"
+                                                        className="viewbtn btn-sm me-2"
+                                                        onClick={() => window.open(fullUrl, "_blank")}
+                                                      >
+                                                        View Document {imgIndex + 1}
+                                                      </button>
+                                                    );
+                                                  })}
+                                                </div>
+                                              )}
+
+                                              <div>
+                                                {" "}
+                                                {comment.Date
+                                                  ? new Date(comment.Date).toLocaleDateString("en-GB")
+                                                  : new Date(comment.createdAt).toLocaleDateString("en-GB")}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="col-md-12">
                         <div className="form-check mb-3">
@@ -1087,7 +1160,6 @@ export default function EditEnquiry() {
                                         },
                                       )
                                     : ""
-                                  // <img src={avtar} alt="default" />
                                 }
                               </div>
                               <ErrorMessage
@@ -1144,6 +1216,73 @@ export default function EditEnquiry() {
           </div>
         </div>
       </div>
+
+      {/* Add Comment Modal */}
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
+            Add Doctor Review
+          </Typography>
+          
+          <div className="mb-3">
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+              Review Notes <span className="text-danger">*</span>
+            </label>
+            <textarea
+              className="form-control"
+              rows="4"
+              value={reviewNotes}
+              onChange={(e) => setReviewNotes(e.target.value)}
+              placeholder="Enter review notes..."
+              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ced4da' }}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+              Upload Images <span className="text-danger">*</span>
+            </label>
+            <input
+              type="file"
+              className="form-control"
+              multiple
+              accept="image/*"
+              onChange={(e) => {
+                const files = Array.from(e.target.files);
+                setReviewImages(files);
+              }}
+            />
+            {reviewImages.length > 0 && (
+              <small className="text-muted mt-1 d-block">
+                {reviewImages.length} file(s) selected
+              </small>
+            )}
+          </div>
+
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
+            <Button 
+              variant="outlined" 
+              onClick={handleCloseModal}
+              disabled={reviewLoading}
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="contained" 
+              color="primary"
+              onClick={handleAddDoctorReview}
+              disabled={reviewLoading}
+            >
+              {reviewLoading ? "Submitting..." : "Submit"}
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </div>
   );
 }

@@ -82,7 +82,7 @@ export default function Inquiry() {
   const handleNoteChange = (e) => {
     setNote(e.target.value);
   };
-  const permissions = localStorage.getItem("permissionArray");
+  const permissions = localStorage.getItem("permissionArray") || "";
   console.log(permissions);
   const handleRecommendChange = (e) => {
     setRecommend(e.target.value);
@@ -217,10 +217,15 @@ export default function Inquiry() {
 
   useEffect(() => {
     const savedTab = localStorage.getItem("tabenquiry");
-    if (savedTab !== null) {
+    const permittedValues = filteredTabs.map((t) => t.value);
+
+    if (savedTab !== null && permittedValues.includes(Number(savedTab))) {
       setTabValue(Number(savedTab));
+    } else if (permittedValues.length > 0) {
+      setTabValue(permittedValues[0]);
+      localStorage.setItem("tabenquiry", permittedValues[0]);
     }
-  }, []);
+  }, [permissions, filteredTabs.length]);
   console.log(searchApiData);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -940,7 +945,16 @@ export default function Inquiry() {
                               Date / Time
                             </TableSortLabel>
                           </TableCell>
-                          <TableCell>Status</TableCell>
+                          <TableCell>
+                          <TableSortLabel
+  active={orderBy === "Enquiry_status"}
+  direction={orderBy === "Enquiry_status" ? orderDirection : "asc"}
+  onClick={() => handleRequestSort("Enquiry_status")}
+>
+  Status
+</TableSortLabel>
+</TableCell>
+                          {/* <TableCell>Status</TableCell> */}
                           <TableCell>Actions</TableCell>
                           {tabValue === 0 ? (
                             <>

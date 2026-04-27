@@ -446,17 +446,18 @@ export default function Vil() {
 
   //   return 0;
   // });
+
   const fullWidth = true;
   const maxWidth = "lg"; // xs | sm | md | lg | xl
 
   const handleClose = () => setOpen(false);
   /* ========= Reusable Info Item ========= */
   const InfoItem = ({ label, value }) => (
-    <div className="">
-      <h6>{label}</h6>
-      <p>{value || "-"}</p>
-    </div>
-  );
+  <div>
+    <strong>{label}</strong>
+    <div>{value}</div>
+  </div>
+);
 
   const handleChangtype = async (e, b) => {
     console.log(e, b);
@@ -712,11 +713,17 @@ export default function Vil() {
                           />
                         </div>
                         <div className="col-md-4">
-                          <InfoItem
-                            label="Home Care Services"
-                            value={selectedRecord.home_care_services}
-                          />
-                        </div>
+  <InfoItem
+    label="Home Care Services"
+    value={
+      <div
+        dangerouslySetInnerHTML={{
+          __html: selectedRecord.home_care_services,
+        }}
+      />
+    }
+  />
+</div>
                        
                         
                       </div>

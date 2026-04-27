@@ -62,6 +62,7 @@ import Ambulanceserviceview from "./pages/Enquiry/Ambulanceserviceview";
 import EnquiryDetailAmbulance from "./pages/Enquiry/EnquiryDetailAmbulance";
 import Airambulanceview from "./pages/Enquiry/Airambulanceview";
 import Medicalescortservice from "./pages/Enquiry/Medicalescortservice";
+import GerGeneraalEnquiry from "./pages/Genera Enquiry/GerGeneralEnquiry"
 function App() {
   console.log("22/04/25");
   return (
@@ -216,7 +217,7 @@ function App() {
               <Route
                 index
                 path="/Admin/General_Enquiries"
-                element={<GerGeneralEnquiry />}
+                element={<GerGeneraalEnquiry />}
               />
 
               <Route index path="/Admin/add-Enquiry" element={<AddEnquiry />} />
