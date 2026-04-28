@@ -4618,7 +4618,6 @@ function PatientDetail() {
                                             <div className="">
                                               <a href="">
                                                 <i class="fa-solid fa-download me-2"></i>
-                                                Download Pdf
                                               </a>
                                             </div>
                                           </div>
@@ -5560,7 +5559,6 @@ function PatientDetail() {
                                               <div className="">
                                                 <a href="">
                                                   <i class="fa-solid fa-download me-2"></i>
-                                                  Download Pdf
                                                 </a>
                                               </div>
                                             </div>
