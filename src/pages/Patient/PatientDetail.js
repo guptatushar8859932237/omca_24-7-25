@@ -17,7 +17,13 @@ import TextField from "@mui/material/TextField";
 import Swal from "sweetalert2";
 import Autocomplete from "@mui/material/Autocomplete";
 import { AppointmentForPatient } from "../../reducer/PatientTreatmentSlice";
-import { AdminBaseUrl, baseu11, baseurl, image } from "../../Basurl/Baseurl";
+import {
+  AdminBaseUrl,
+  baseu11,
+  baseurl,
+  image,
+  imageUrl,
+} from "../../Basurl/Baseurl";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 import { ExtraServices } from "../../reducer/PatientTreatmentSlice";
 import axios from "axios";
@@ -35,7 +41,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-
 function PatientDetail() {
   const navigate = useNavigate();
   const [openGuesthouse, setOpenGuesthouse] = useState(false);
@@ -125,6 +130,7 @@ function PatientDetail() {
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
   const [hospitalId, setHospitalId] = useState("");
+  const [doctorReviewNotes, setDoctorReviewNotes] = useState("");
   const [notesTable, setNotesTable] = useState([]);
   const [valuedata, setValuedata] = useState("");
   const [hospitalData, setHospitalData] = useState({
@@ -830,7 +836,6 @@ function PatientDetail() {
       );
     }
   };
-
   const hospitalStatuses = [
     "Under Review",
     "Under Surgery",
@@ -839,184 +844,6 @@ function PatientDetail() {
     "Under Recovery",
     "Discharged",
   ];
-  // const editatednde = async (e) => {
-  //   e.preventDefault();
-
-  //   const formData = new FormData();
-  //   formData.append("attendant_fullname", filesData.attendant_fullname);
-  //   formData.append("attendant_relation", filesData.attendant_relation);
-  //   formData.append("attendant_contact",  filesData.attendant_contact);
-  //   formData.append("country", filesData.country);
-  //   formData.append("attendant_address",  filesData.attendant_address);
-  //   filesData.Attende_passport.forEach((file) => {
-  //     formData.append("attendant_passport", file);
-  //   });
-  //   console.log(filesData);
-  //   try {
-  //     const response = await axios.post(
-  //       `${baseurl}updateAttendeeDetails/69ca0b6c31c45f1f6613d126`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       },
-  //     );
-  //     if (response.data.success) {
-  //       // getDataapi3(attendId);
-  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  //       setOpen2(false);
-  //       Swal.fire("Attendant  Details Added Successfully!", "", "success");
-  //       setFilesData({
-  //         attendant_fullname: "",
-  //         attendant_relation: "",
-  //         attendant_contact: "",
-  //         Attende_passport: null,
-  //         Attende_photo: null,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     Swal.fire(
-  //       "Error!",
-  //       error?.response?.data?.message || error.message,
-  //       "error",
-  //     );
-  //   }
-  // };
-  // const editatednde = async (e) => {
-  //   e.preventDefault();
-
-  //   const formData = new FormData();
-
-  //   formData.append("attendant_fullname", filesData.attendant_fullname);
-  //   formData.append("attendant_relation", filesData.attendant_relation);
-  //   formData.append("attendant_contact", filesData.attendant_contact);
-  //   formData.append("country", filesData.country);
-  //   formData.append("attendant_address", filesData.attendant_address);
-
-  //   // ✅ SAFE CHECK
-  //   if (filesData?.Attende_passport && filesData.Attende_passport.length > 0) {
-  //     filesData.Attende_passport.forEach((file) => {
-  //       formData.append("attendant_passport", file);
-  //     });
-  //   }
-
-  //   try {
-  //     const response = await axios.put(
-  //       `${baseurl}updateAttendeeDetails/${filesData._id}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     if (response.data.success) {
-  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  //       getattendantnewai()
-  //       setOpen2(false);
-
-  //       Swal.fire("Attendant Details Updated Successfully!", "", "success");
-
-  //       setFilesData({
-  //         attendant_fullname: "",
-  //         attendant_relation: "",
-  //         attendant_contact: "",
-  //         Attende_passport: null,
-  //         Attende_photo: null,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     Swal.fire(
-  //       "Error!",
-  //       error?.response?.data?.message || error.message,
-  //       "error"
-  //     );
-  //   }
-  // };
-  // const editatednde = async (e) => {
-  //   e.preventDefault();
-
-  //   const {
-  //     attendant_fullname,
-  //     attendant_relation,
-  //     attendant_contact,
-  //     country,
-  //     attendant_address,
-  //   } = filesData;
-
-  //   // ✅ Validation
-  //   if (!attendant_fullname?.trim()) {
-  //     return Swal.fire("Error!", "Attendant fullname is required", "error");
-  //   }
-
-  //   if (!attendant_relation?.trim()) {
-  //     return Swal.fire("Error!", "Attendant relation is required", "error");
-  //   }
-
-  //   if (!attendant_contact?.toString().trim()) {
-  //     return Swal.fire("Error!", "Attendant contact is required", "error");
-  //   }
-
-  //   if (!country?.trim()) {
-  //     return Swal.fire("Error!", "Country is required", "error");
-  //   }
-
-  //   if (!attendant_address?.trim()) {
-  //     return Swal.fire("Error!", "Attendant address is required", "error");
-  //   }
-
-  //   // ✅ If all valid → proceed
-  //   const formData = new FormData();
-
-  //   formData.append("attendant_fullname", attendant_fullname);
-  //   formData.append("attendant_relation", attendant_relation);
-  //   formData.append("attendant_contact", attendant_contact);
-  //   formData.append("country", country);
-  //   formData.append("attendant_address", attendant_address);
-
-  //   filesData.Attende_passport.forEach((file) => {
-  //     formData.append("attendant_passport", file);
-  //   });
-
-  //   try {
-  //     const response = await axios.put(
-  //       `${baseurl}updateAttendeeDetails/${filesData._id}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     if (response.data.success) {
-  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  //       getattendantnewai();
-  //       setOpen2(false);
-
-  //       Swal.fire("Success!", "Attendant Details Updated Successfully!", "success");
-
-  //       setFilesData({
-  //         attendant_fullname: "",
-  //         attendant_relation: "",
-  //         attendant_contact: "",
-  //         country: "",
-  //         attendant_address: "",
-  //         Attende_passport: null,
-  //         Attende_photo: null,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     Swal.fire(
-  //       "Error!",
-  //       error?.response?.data?.message || error.message,
-  //       "error"
-  //     );
-  //   }
-  // };
-
   const editatednde = async (e) => {
     e.preventDefault();
     const {
@@ -1054,7 +881,6 @@ function PatientDetail() {
         formData.append("attendant_passport", file);
       });
     }
-
     try {
       const response = await axios.put(
         `${baseurl}updateAttendeeDetails/${filesData._id}`,
@@ -1065,18 +891,15 @@ function PatientDetail() {
           },
         },
       );
-
       if (response.data.success) {
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         getattendantnewai();
         setOpen2(false);
-
         Swal.fire(
           "Success!",
           "Attendant Details Updated Successfully!",
           "success",
         );
-
         setFilesData({
           attendant_fullname: "",
           attendant_relation: "",
@@ -1095,7 +918,6 @@ function PatientDetail() {
       );
     }
   };
-
   const handechangesearch = (e) => {
     console.log(e.target.value);
     setDrreviewnotes(e.target.value);
@@ -1104,7 +926,6 @@ function PatientDetail() {
   useEffect(() => {
     getattendantnewai();
   }, []);
-
   const getattendantnewai = async () => {
     try {
       const response = await axios.get(
@@ -1115,7 +936,6 @@ function PatientDetail() {
       console.log(error);
     }
   };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFilesData((prev) => ({
@@ -1240,8 +1060,6 @@ function PatientDetail() {
   };
   const handleAddTritmentPayment = async () => {
     console.log(treatmentId, selectedTreatmentId);
-
-    // ✅ Validation
     if (!valueofappointmentpaidto) {
       Swal.fire({
         icon: "error",
@@ -1250,7 +1068,6 @@ function PatientDetail() {
       });
       return;
     }
-
     if (!iniData?.paid_for) {
       Swal.fire({
         icon: "error",
@@ -1291,7 +1108,6 @@ function PatientDetail() {
       });
       return;
     }
-
     try {
       const formData = new FormData();
       formData.append("id", treatmentId || selectedTreatmentId);
@@ -1302,22 +1118,16 @@ function PatientDetail() {
       formData.append("paid_to", valueofappointmentpaidto);
       formData.append("paid_for", iniData?.paid_for);
       formData.append("platform", 1);
-
       if (iniData?.attachFile) {
         formData.append("attachFile", iniData.attachFile);
       }
-
       await dispatch(AddNewTretmentPayment(formData)).unwrap();
-
       getDataapi3(selectedTreatmentId);
       setOpen3(false);
-
       Swal.fire("Success!", "Payment Details Added Successfully!", "success");
-
       if (location.state?.patientId) {
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
       }
-
       setTreatmentId("");
       setData({
         paid_amount: "",
@@ -1327,9 +1137,7 @@ function PatientDetail() {
     } catch (err) {
       const errorMessage =
         typeof err === "string" ? err : err?.message || "Something went wrong";
-
       setOpen3(false);
-
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -1405,7 +1213,6 @@ function PatientDetail() {
     acc[info.treatment_id].push(info);
     return acc;
   }, {});
-
   const getMappedStatus = (status) => {
     const hospitalStatuses = [
       "Under Review",
@@ -1415,11 +1222,9 @@ function PatientDetail() {
       "Discharged",
       "Assigned to Hospital",
     ];
-
     if (hospitalStatuses.includes(status)) {
       return "Assigned to Hospital";
     }
-
     return status || "";
   };
   const penModal = (a, b) => {
@@ -1540,7 +1345,6 @@ function PatientDetail() {
   };
   const handleClickEditReport = async () => {
     console.log("a", treatmentId);
-
     if (!iniData?.reportTitle?.trim()) {
       return Swal.fire("Error", "Report Title is required", "error");
     }
@@ -1555,31 +1359,21 @@ function PatientDetail() {
           Swal.showLoading();
         },
       });
-
       const formData = new FormData();
-
       formData.append("reportTitle", iniData.reportTitle);
-
-      // ✅ date fix
       formData.append(
         "treatment_report_date",
         new Date(iniData.treatment_report_date).toISOString().split("T")[0],
       );
-
       formData.append("platform", 1);
-
-      // ✅ attachFile check
       if (iniData?.attachFile) {
         formData.append("attachFile", iniData.attachFile);
       }
-
-      // ✅ multiple images check
       if (Array.isArray(imagefile)) {
         imagefile.forEach((file) => {
           formData.append("treatmentReport", file);
         });
       }
-
       const response = await axios.put(
         `${baseurl}editReport/${iniData._id}`,
         formData,
@@ -1590,7 +1384,6 @@ function PatientDetail() {
           },
         },
       );
-
       if (response?.data?.success) {
         Swal.fire({
           icon: "success",
@@ -1599,7 +1392,6 @@ function PatientDetail() {
           timer: 1500,
           showConfirmButton: false,
         });
-
         handleClose10();
         getDataapi3(treatmentId.treatmentId);
       } else {
@@ -1624,11 +1416,9 @@ function PatientDetail() {
     if (!iniData.reportTitle) {
       return Swal.fire("Error", "Report Title is required", "error");
     }
-
     if (!iniData.treatment_report_date) {
       return Swal.fire("Error", "Report Date is required", "error");
     }
-
     if (!imagefile || imagefile.length === 0) {
       return Swal.fire(
         "Error",
@@ -1636,20 +1426,15 @@ function PatientDetail() {
         "error",
       );
     }
-    // 🔥 VALIDATION END
-
     try {
       const formData = new FormData();
       formData.append("reportTitle", iniData.reportTitle);
       formData.append("treatment_report_date", iniData.treatment_report_date);
       formData.append("platform", 1);
-
       formData.append("attachFile", iniData.attachFile);
-
       imagefile.forEach((file) => {
         formData.append("treatmentReport", file);
       });
-
       const response = await axios.post(
         `${baseurl}addReports/${treatmentId}`,
         formData,
@@ -1659,14 +1444,12 @@ function PatientDetail() {
           },
         },
       );
-
       if (response?.data?.success) {
         Swal.fire({
           icon: "success",
           title: "Success",
           text: "Report Added Successfully!",
         });
-
         handleClose10();
         getDataapi3(treatmentId);
       } else {
@@ -1686,53 +1469,6 @@ function PatientDetail() {
       });
     }
   };
-  // const handleClickSubmit = async () => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("reportTitle", iniData.reportTitle);
-  //     formData.append("treatment_report_date", iniData.treatment_report_date);
-  //     formData.append("platform", 1);
-  //     if (iniData.attachFile) {
-  //       formData.append("attachFile", iniData.attachFile);
-  //     }
-  //     imagefile.forEach((file) => {
-  //       formData.append("treatmentReport", file);
-  //     });
-  //     const response = await axios.post(
-  //       `${baseurl}addReports/${treatmentId}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       },
-  //     );
-  //     if (response?.data?.success) {
-  //       handleClose10();
-  //       getDataapi3(treatmentId);
-  //       Swal.fire({
-  //         icon: "success",
-  //         title: "Success",
-  //         text: "Report Added Successfully!",
-  //       });
-  //       handleClose10(); // close modal
-  //     } else {
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "Error",
-  //         text: response?.data?.message || "Failed to add report",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error",
-  //       text:
-  //         error?.response?.data?.message ||
-  //         "Something went wrong. Please try again.",
-  //     });
-  //   }
-  // };
   const handleopenNotesModal = (id) => {
     const response = notes.filter((item) => {
       return item.id === id;
@@ -1766,9 +1502,7 @@ function PatientDetail() {
       } else {
         toast.error("somethign went wornh");
       }
-    } catch (error) {
-      // console.log(error);
-    }
+    } catch (error) {}
   };
   const gtdatareportsdata = async () => {
     try {
@@ -1786,9 +1520,7 @@ function PatientDetail() {
         setReportdataget(response.data.data);
       } else {
       }
-    } catch (error) {
-      // console.log("Error:", error);
-    }
+    } catch (error) {}
   };
   const handledelete = async (info) => {
     console.log(info);
@@ -2943,6 +2675,7 @@ function PatientDetail() {
         `${baseurl}getAllTreatmentData/${location.state.patientId}/${tId}`,
       );
       const data = response.data.data;
+      setDoctorReviewNotes(response.data.data);
       console.log("API DATA:", data);
       const filteredAppointments = (data.appointment || []).filter(
         (item) => item.treatment_id === tId,
@@ -4561,9 +4294,7 @@ function PatientDetail() {
                                       className={`collapse-icon ${openIndex === index ? "rotate" : ""}`}
                                       onClick={() => {
                                         const isOpening = openIndex !== index;
-
                                         setOpenIndex(isOpening ? index : null);
-
                                         if (isOpening) {
                                           patient_guesthouse(info.treatment_id);
                                         }
@@ -6291,7 +6022,6 @@ function PatientDetail() {
                                               </button>
                                             </div>
                                           </div>
-
                                           <div className="table-responsive">
                                             <TableContainer component={Paper}>
                                               <Table className="table-no-card">
@@ -6412,6 +6142,59 @@ function PatientDetail() {
                                                       </TableCell>
                                                     </TableRow>
                                                   )}
+                                                </TableBody>
+                                              </Table>
+                                            </TableContainer>
+                                            <div className="mt-5">
+                                              <h4>Doctor Review</h4>
+                                            </div>
+                                            <TableContainer component={Paper} >
+                                              <Table className="table-no-card">
+                                                <TableHead>
+                                                  <TableRow>
+                                                    <TableCell>
+                                                      Recommendation
+                                                    </TableCell>
+                                                    <TableCell>Notes</TableCell>
+                                                    <TableCell>
+                                                      Documentation
+                                                    </TableCell>
+                                                  </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                  <TableRow>
+                                                    <TableCell>
+                                                      {
+                                                        doctorReviewNotes
+                                                          ?.doctorReview
+                                                          ?.review_notes
+                                                      }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {
+                                                        doctorReviewNotes
+                                                          ?.doctorReview
+                                                          ?.Recommendations
+                                                      }
+                                                    </TableCell>
+                                                 <TableCell>
+  {doctorReviewNotes?.doctorReview?.images?.length > 0 ? (
+    <button
+    className="viewbtn"
+      onClick={() =>
+        window.open(
+          `${imageUrl}/${doctorReviewNotes.doctorReview.images[0]}`,
+          "_blank"
+        )
+      }
+    >
+      View Doc
+    </button>
+  ) : (
+    <span>No Docs</span>
+  )}
+</TableCell>
+                                                  </TableRow>
                                                 </TableBody>
                                               </Table>
                                             </TableContainer>
@@ -8100,9 +7883,6 @@ function PatientDetail() {
                           </>
                         );
                       })}
-                      {/* <option value="OMCA">OMCA</option>
-                      <option value="Hospital">Hospital</option>
-                      <option value="Pharmacy">Pharmacy</option> */}
                     </select>
                   </div>
                   <div className="field-set">
@@ -8124,12 +7904,6 @@ function PatientDetail() {
                           </>
                         );
                       })}
-
-                      {/* <option value="treatment">Treatment</option>
-                      <option value="service">Service</option>
-                      <option value="guest_house">Guest House</option>
-                      <option value="pharmacy">Pharmacy</option>
-                      <option value="hospital_charges">Hospital Charges</option> */}
                     </select>
                   </div>
                   <div className="field-set">
