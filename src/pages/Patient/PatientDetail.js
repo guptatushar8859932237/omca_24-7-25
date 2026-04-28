@@ -50,7 +50,9 @@ function PatientDetail() {
   const [pickuptime, setPickuptime] = useState("");
   const [treatmentIds1, setTreatmentIds1] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
+  const [openModalDovPlan, setOpenModalDovPlan] = useState(false);
   const [images, setImages] = useState([]);
+  const [files,setFiles]=useState(null)
   const [openIndex, setOpenIndex] = useState(0);
   const [selectedAttendants, setSelectedAttendants] = useState([]);
   const [treatemntData1, setTreatemntData1] = useState([]);
@@ -59,6 +61,15 @@ function PatientDetail() {
   const [getAttendeDetails, setGetAttendeDetails] = useState([]);
   const [attandantnew, setAttandantnew] = useState([]);
   const [guestHouseBooking, setGuestHouseBooking] = useState([]);
+  const [datainfo,setDatainfo]=useState('')
+  const [dataHospitalID,setDataHospitalID]=useState('')
+  const [dataStatus,setDataStatus]=useState('')
+
+  // setDatainfo(info)
+  //   setDataHospitalID(hospitalId)
+  //   setDataStatus(status)
+
+
   const [guestHouseBookingobj, setGuestHouseBookingobj] = useState({});
   const [hospitalDetails, setHospitalDetails] = useState({});
   const [errors, setErrors] = useState({});
@@ -2112,6 +2123,11 @@ function PatientDetail() {
       await swalOnTop.fire("Error", errorMsg, "error");
     }
   };
+
+  const handlechangeGdoc =(e)=>{
+     const selectedFiles = Array.from(e.target.files); // 👈 important
+  setFiles(selectedFiles);
+  }
   const handleAddTritmentPaymenttestsubmit = async () => {
     try {
       if (!dataPerforma) {
@@ -2254,11 +2270,17 @@ function PatientDetail() {
   };
   const handleclickApprove = (hospitalids, b) => {};
   const approveReject = async (info, hospitalId, status) => {
-    const payload = { status };
+    setDatainfo(info)
+    setDataHospitalID(hospitalId)
+    setDataStatus(status)
+    setOpenModalDovPlan(true)
+  };
+const apihitpost =async()=>{
+   
     try {
       const response = await axios.put(
-        `${baseurl}updateHospitalStatus/${info._id}/${hospitalId}`,
-        payload,
+        `${baseurl}updateHospitalStatus/${datainfo._id}/${dataHospitalID}`,
+        {status:dataStatus},
       );
       if (response?.data?.success) {
         await Swal.fire({
@@ -2284,7 +2306,11 @@ function PatientDetail() {
 
       await Swal.fire("Error", errorMsg, "error");
     }
-  };
+  }
+
+  const closemodaldocumnt =()=>{
+    setOpenModalDovPlan(false)
+  }
   const handleclickEdAppointment = (a) => {
     navigate("/Admin/Edit-patient-treatment", {
       state: { data: a, patientid: location.state.patientId },
@@ -4028,81 +4054,60 @@ function PatientDetail() {
                                       </p>
                                     </div>
                                   </div>
-                                  {/* <div className="col-md-2">
-                                    <div className="">
-                                      <h5>Action</h5>
-                                      <div className="action-icon">
-                                        <i
-                                          className="fa-solid fa-trash"
-                                          // onClick={() =>
-                                          //   EditDelete(index, info)
-                                          // }
-                                        ></i>
-                                      </div>
+                                </div>
+                                {info?.doctorReview?.review_notes ? (
+                                  <div className="row">
+                                    <div className="mt-3">
+                                      <h4>Doctor Review</h4>
                                     </div>
-                                  </div> */}
-                                </div>
-                                {
-                                                        info
-                                                          ?.doctorReview
-                                                          ?.review_notes
-                                                      ?
-                                <div className="row">
-                                  <div className="mt-3">
-                                              <h4>Doctor Review</h4>
-                                            </div>
-                                            <TableContainer component={Paper} >
-                                              <Table className="table-no-card">
-                                                <TableHead>
-                                                  <TableRow>
-                                                    <TableCell>
-                                                      Recommendation
-                                                    </TableCell>
-                                                    <TableCell>Notes</TableCell>
-                                                    <TableCell>
-                                                      Documentation
-                                                    </TableCell>
-                                                  </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                  <TableRow>
-                                                    <TableCell>
-                                                      {
-                                                        info
-                                                          ?.doctorReview
-                                                          ?.review_notes
-                                                      }
-                                                    </TableCell>
-                                                    <TableCell>
-                                                      {
-                                                        info
-                                                          ?.doctorReview
-                                                          ?.Recommendations
-                                                      }
-                                                    </TableCell>
-                                                 <TableCell>
-  {info?.doctorReview?.images?.length > 0 ? (
-    <button
-    className="viewbtn"
-      onClick={() =>
-        window.open(
-          `${imageUrl}/${info.doctorReview.images[0]}`,
-          "_blank"
-        )
-      }
-    >
-      View Doc
-    </button>
-  ) : (
-    <span>No Docs</span>
-  )}
-</TableCell>
-                                                  </TableRow>
-                                                </TableBody>
-                                              </Table>
-                                            </TableContainer>
-                                </div>
-                                :""}
+                                    <TableContainer component={Paper}>
+                                      <Table className="table-no-card">
+                                        <TableHead>
+                                          <TableRow>
+                                            <TableCell>
+                                              Recommendation
+                                            </TableCell>
+                                            <TableCell>Notes</TableCell>
+                                            <TableCell>Documentation</TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          <TableRow>
+                                            <TableCell>
+                                              {info?.doctorReview?.review_notes}
+                                            </TableCell>
+                                            <TableCell>
+                                              {
+                                                info?.doctorReview
+                                                  ?.Recommendations
+                                              }
+                                            </TableCell>
+                                            <TableCell>
+                                              {info?.doctorReview?.images
+                                                ?.length > 0 ? (
+                                                <button
+                                                  className="viewbtn"
+                                                  onClick={() =>
+                                                    window.open(
+                                                      `${imageUrl}/${info.doctorReview.images[0]}`,
+                                                      "_blank",
+                                                    )
+                                                  }
+                                                >
+                                                  View Doc
+                                                </button>
+                                              ) : (
+                                                <span>No Docs</span>
+                                              )}
+                                            </TableCell>
+                                          </TableRow>
+                                        </TableBody>
+                                      </Table>
+                                    </TableContainer>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
                               </div>
                             </div>
                           );
@@ -6209,7 +6214,7 @@ function PatientDetail() {
                                             <div className="mt-5">
                                               <h4>Doctor Review</h4>
                                             </div>
-                                            <TableContainer component={Paper} >
+                                            <TableContainer component={Paper}>
                                               <Table className="table-no-card">
                                                 <TableHead>
                                                   <TableRow>
@@ -6238,23 +6243,25 @@ function PatientDetail() {
                                                           ?.Recommendations
                                                       }
                                                     </TableCell>
-                                                 <TableCell>
-  {doctorReviewNotes?.doctorReview?.images?.length > 0 ? (
-    <button
-    className="viewbtn"
-      onClick={() =>
-        window.open(
-          `${imageUrl}/${doctorReviewNotes.doctorReview.images[0]}`,
-          "_blank"
-        )
-      }
-    >
-      View Doc
-    </button>
-  ) : (
-    <span>No Docs</span>
-  )}
-</TableCell>
+                                                    <TableCell>
+                                                      {doctorReviewNotes
+                                                        ?.doctorReview?.images
+                                                        ?.length > 0 ? (
+                                                        <button
+                                                          className="viewbtn"
+                                                          onClick={() =>
+                                                            window.open(
+                                                              `${imageUrl}/${doctorReviewNotes.doctorReview.images[0]}`,
+                                                              "_blank",
+                                                            )
+                                                          }
+                                                        >
+                                                          View Doc
+                                                        </button>
+                                                      ) : (
+                                                        <span>No Docs</span>
+                                                      )}
+                                                    </TableCell>
                                                   </TableRow>
                                                 </TableBody>
                                               </Table>
@@ -8159,6 +8166,59 @@ function PatientDetail() {
                         Submit
                       </Button>
                     )}
+                  </DialogActions>
+                </div>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={openModalDovPlan}
+          onClose={closemodaldocumnt}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6> Add Document</h6>
+            </div>
+            <div className="cross-icon" onClick={closemodaldocumnt}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box view-table-detail">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <div id="contact-form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                     Document<span className="text-danger">*</span>
+                    </label>
+                   <input
+  type="file"
+  className="form-control"
+  multiple
+  onChange={handlechangeGdoc}
+/>
+                  </div>
+                  <DialogActions className="submit-main">
+                      <Button
+                        onClick={apihitpost}
+                        variant="contained"
+                      >
+                        Add Document
+                      </Button>
                   </DialogActions>
                 </div>
               </Box>
