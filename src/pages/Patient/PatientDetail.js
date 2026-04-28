@@ -3940,7 +3940,7 @@ function PatientDetail() {
                     ) : (
                       <>
                         {treatemntData1?.map((info, index) => {
-                          // console.log(info, "array data");
+                          console.log(info, "array data");
                           return (
                             <div className="card-box" key={index}>
                               <div className="treatment-header">
@@ -4042,6 +4042,67 @@ function PatientDetail() {
                                     </div>
                                   </div> */}
                                 </div>
+                                {
+                                                        info
+                                                          ?.doctorReview
+                                                          ?.review_notes
+                                                      ?
+                                <div className="row">
+                                  <div className="mt-3">
+                                              <h4>Doctor Review</h4>
+                                            </div>
+                                            <TableContainer component={Paper} >
+                                              <Table className="table-no-card">
+                                                <TableHead>
+                                                  <TableRow>
+                                                    <TableCell>
+                                                      Recommendation
+                                                    </TableCell>
+                                                    <TableCell>Notes</TableCell>
+                                                    <TableCell>
+                                                      Documentation
+                                                    </TableCell>
+                                                  </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                  <TableRow>
+                                                    <TableCell>
+                                                      {
+                                                        info
+                                                          ?.doctorReview
+                                                          ?.review_notes
+                                                      }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {
+                                                        info
+                                                          ?.doctorReview
+                                                          ?.Recommendations
+                                                      }
+                                                    </TableCell>
+                                                 <TableCell>
+  {info?.doctorReview?.images?.length > 0 ? (
+    <button
+    className="viewbtn"
+      onClick={() =>
+        window.open(
+          `${imageUrl}/${info.doctorReview.images[0]}`,
+          "_blank"
+        )
+      }
+    >
+      View Doc
+    </button>
+  ) : (
+    <span>No Docs</span>
+  )}
+</TableCell>
+                                                  </TableRow>
+                                                </TableBody>
+                                              </Table>
+                                            </TableContainer>
+                                </div>
+                                :""}
                               </div>
                             </div>
                           );
