@@ -68,10 +68,6 @@ function PatientDetail() {
   const [dataStatus, setDataStatus] = useState("");
   const hospitalRef = useRef();
   const omcaRef = useRef();
-  // setDatainfo(info)
-  //   setDataHospitalID(hospitalId)
-  //   setDataStatus(status)
-
   const [guestHouseBookingobj, setGuestHouseBookingobj] = useState({});
   const [hospitalDetails, setHospitalDetails] = useState({});
   const [errors, setErrors] = useState({});
@@ -237,11 +233,8 @@ function PatientDetail() {
   // pdf-download
   const handleDownloadPDF = (ref, fileName = "download.pdf") => {
     const element = ref?.current;
-
     if (!element) return; // ✅ safety
-
     element.classList.add("pdf-mode");
-
     const opt = {
       margin: 0, // 🔥 thoda spacing (top, left, bottom, right)
       filename: fileName, // ✅ dynamic filename
@@ -256,7 +249,6 @@ function PatientDetail() {
         orientation: "portrait",
       },
     };
-
     html2pdf()
       .set(opt)
       .from(element)
@@ -272,7 +264,6 @@ function PatientDetail() {
     setIsEditGuesthouse(true);
     setOpenGuesthouse(true);
   };
-
   const handleclickGuestHouse = (info) => {
     setTreatmentIds1(info.treatment_id);
     setOpenGuesthouse(true);
@@ -319,7 +310,6 @@ function PatientDetail() {
       setChkservice(PatientTreatments.services);
     }
   }, [PatientTreatments]);
-  // console.log(chkservice);
   const handleClose = () => {
     sethospitalharge("");
     setOpen(false);
@@ -371,7 +361,6 @@ function PatientDetail() {
   const handleclosePerforma = () => {
     setOpen32(false);
   };
-
   const handleEditreport = (id, info) => {
     setTreatmentId(id, info.treatmentId);
     setIniData(id);
@@ -432,7 +421,6 @@ function PatientDetail() {
   useEffect(() => {
     GetActiveService();
   }, []);
-
   const handlesubmitdata = async () => {
     const servipostdata = {
       services: {
@@ -508,21 +496,14 @@ function PatientDetail() {
       console.error("Error fetching treatment data", error);
     }
   };
-
   useEffect(() => {
     getAllPaidTo();
   }, []);
-
   const handlesubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
     setIsSubmitting(true);
     setBlogErr({ hospitalcharge: false });
-    // if (!hospitalcharge) {
-    //   setBlogErr((prev) => ({ ...prev, hospitalcharge: true }));
-    //   setIsSubmitting(false);
-    //   return;
-    // }
     const result = await dispatch(
       AddHospitalForPatient({
         id: location.state.patientId,
@@ -604,7 +585,6 @@ function PatientDetail() {
       });
     }
   };
-
   const handleDelete212 = async (item) => {
     console.log(item);
     const swalWithBootstrapButtons = Swal.mixin({
@@ -858,7 +838,6 @@ function PatientDetail() {
         },
       );
       if (response.data.success) {
-        // getDataapi3(attendId);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         setOpen2(false);
         getattendantnewai();
@@ -917,8 +896,6 @@ function PatientDetail() {
     formData.append("attendant_contact", attendant_contact);
     formData.append("country", country);
     formData.append("attendant_address", attendant_address);
-
-    // ✅ Optional passport
     if (filesData?.Attende_passport && filesData.Attende_passport.length > 0) {
       filesData.Attende_passport.forEach((file) => {
         formData.append("attendant_passport", file);
@@ -2292,17 +2269,35 @@ function PatientDetail() {
   };
   const apihitpost = async () => {
     try {
+      if (!files || files.length === 0) {
+        await Swal.fire({
+          icon: "warning",
+          title: "Document Required",
+          text: "Please upload a document before submitting",
+        });
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("status", dataStatus);
+
+      files.forEach((file) => {
+        formData.append("documents", file);
+      });
+
       const response = await axios.put(
         `${baseurl}updateHospitalStatus/${datainfo._id}/${dataHospitalID}`,
-        { status: dataStatus },
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
+
       if (response?.data?.success) {
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: `Hospitals approved successfully`,
-          confirmButtonText: "OK",
-        });
+        await Swal.fire("Success", "Hospital approved successfully", "success");
+        closemodaldocumnt();
         getTreatmentPlan();
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
       } else {
@@ -4069,6 +4064,31 @@ function PatientDetail() {
                                     </div>
                                   </div>
                                 </div>
+                                {info?.documents?.length > 0 ? (
+                                  <div className="row">
+                                    <div className="mt-3">
+                                      <h4>Documents</h4>
+                                    </div>
+
+                                    {info.documents.map((doc, index) => (
+                                      <div className="col-auto" key={index}>
+                                        <button
+                                          className="viewbtn me-2"
+                                          onClick={() =>
+                                            window.open(
+                                              `${imageUrl}/${doc.file}`,
+                                              "_blank",
+                                            )
+                                          }
+                                        >
+                                          View Doc
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span>No Docs</span>
+                                )}
                                 {info?.doctorReview?.review_notes ? (
                                   <>
                                     <div className="row">
@@ -4791,7 +4811,7 @@ function PatientDetail() {
                                                                           item?.paid_amount
                                                                         }
                                                                       </td>
-                                                                      
+
                                                                       <td>
                                                                         {new Date(
                                                                           item.payment_Date,
@@ -4799,8 +4819,10 @@ function PatientDetail() {
                                                                           "en-GB",
                                                                         )}
                                                                       </td>
-<td>
-                                                                      {item.paymentMethod}
+                                                                      <td>
+                                                                        {
+                                                                          item.paymentMethod
+                                                                        }
                                                                       </td>
                                                                       <td>
                                                                         {item.notes ||
@@ -5435,31 +5457,6 @@ function PatientDetail() {
                                                                           "No File"
                                                                         )}
                                                                       </td>
-                                                                      {/* <td>
-                                                                      <div className="action-icon">
-                                                                        <div className="action-icon">
-                                                                          <i
-                                                                            className="fa-solid fa-pen-to-square"
-                                                                            onClick={() => {
-                                                                              hadnlcecEdopenmodalGuestHouse(
-                                                                                item,
-                                                                                info,
-                                                                              );
-                                                                            }}
-                                                                          ></i>
-                                                                          <i
-                                                                            className="fa-solid fa-trash"
-                                                                            onClick={() => {
-                                                                              handledelteguestHouse(
-                                                                                item,
-                                                                                info,
-                                                                                index,
-                                                                              );
-                                                                            }}
-                                                                          ></i>
-                                                                        </div>
-                                                                      </div>
-                                                                    </td> */}
                                                                     </tr>
                                                                   );
                                                                 },
@@ -6238,23 +6235,23 @@ function PatientDetail() {
                                           <div className="top-collpse">
                                             <div className="treat-buttons d-flex justify-content-between">
                                               <div>
-                                              <h4>Reports</h4>
+                                                <h4>Reports</h4>
                                               </div>
                                               <div>
-                                              <button
-                                                className="add-button"
-                                                onClick={(e) =>
-                                                  handleClickOpen10(
-                                                    e,
-                                                    selectedTreatmentId,
-                                                  )
-                                                }
-                                              >
-                                                <span>
-                                                  <i className="fa fa-plus"></i>
-                                                </span>
-                                                Add Report
-                                              </button>
+                                                <button
+                                                  className="add-button"
+                                                  onClick={(e) =>
+                                                    handleClickOpen10(
+                                                      e,
+                                                      selectedTreatmentId,
+                                                    )
+                                                  }
+                                                >
+                                                  <span>
+                                                    <i className="fa fa-plus"></i>
+                                                  </span>
+                                                  Add Report
+                                                </button>
                                               </div>
                                             </div>
                                           </div>
@@ -6381,6 +6378,38 @@ function PatientDetail() {
                                                 </TableBody>
                                               </Table>
                                             </TableContainer>
+
+                                            {doctorReviewNotes?.documents
+                                              ?.length > 0 ? (
+                                              <div className="row">
+                                                <div className="mt-3">
+                                                  <h4>Documents</h4>
+                                                </div>
+
+                                                {doctorReviewNotes.documents.map(
+                                                  (doc, index) => (
+                                                    <div
+                                                      className="col-auto"
+                                                      key={index}
+                                                    >
+                                                      <button
+                                                        className="viewbtn me-2"
+                                                        onClick={() =>
+                                                          window.open(
+                                                            `${imageUrl}/${doc.file}`,
+                                                            "_blank",
+                                                          )
+                                                        }
+                                                      >
+                                                        View Doc
+                                                      </button>
+                                                    </div>
+                                                  ),
+                                                )}
+                                              </div>
+                                            ) : (
+                                              <span>No Docs</span>
+                                            )}
                                             <div className="mt-5">
                                               <h4>Doctor Review</h4>
                                             </div>
@@ -6436,127 +6465,132 @@ function PatientDetail() {
                                                 </TableBody>
                                               </Table>
                                             </TableContainer>
-                                               <TableContainer
-                                        component={Paper}
-                                        className="pb-4"
-                                      >
-                                        {doctorReviewNotes?.doctorReview?.comments &&
-                                          doctorReviewNotes?.doctorReview?.comments.length >
-                                            0 && (
-                                            <div className="col-md-12">
-                                              <div className="treat-hd mt-3">
-                                                <h6>Comments</h6>
-                                                <span className="line"></span>
-                                              </div>
-                                              <div className="row gy-3">
-                                                {doctorReviewNotes?.doctorReview?.comments.map(
-                                                  (comment, commentIndex) => (
-                                                    <div
-                                                      className="col-md-12"
-                                                      key={
-                                                        comment._id ||
-                                                        commentIndex
-                                                      }
-                                                    >
-                                                      <div className="card customstylecard">
-                                                        <div className="card-body">
-                                                          <div className="note-view">
-                                                            <h3 className="card-title">
-                                                              {
-                                                                comment.user_type
-                                                              }{" "}
-                                                              Note
-                                                            </h3>
-                                                          </div>
-                                                          <div className="experience-box">
-                                                            <ul className="experience-list">
-                                                              <li className="mb-0">
-                                                                <div className="experience-user">
-                                                                  <div className="before-circle"></div>
-                                                                </div>
-                                                                <div className="experience-content">
-                                                                  <div className="timeline-content">
-                                                                    <a
-                                                                      href="#/"
-                                                                      className="name"
-                                                                    >
-                                                                      {
-                                                                        comment.Notes
-                                                                      }
-                                                                    </a>
-
-                                                                    {/* Show images if present */}
-                                                                    {comment.images &&
-                                                                      comment
-                                                                        .images
-                                                                        .length >
-                                                                        0 && (
-                                                                        <div className="mt-2 mb-2">
-                                                                          {comment.images.map(
-                                                                            (
-                                                                              img,
-                                                                              imgIndex,
-                                                                            ) => {
-                                                                              const fullUrl =
-                                                                                img.startsWith(
-                                                                                  "http",
-                                                                                )
-                                                                                  ? img
-                                                                                  : image +
-                                                                                    img;
-                                                                              return (
-                                                                                <button
-                                                                                  key={
-                                                                                    imgIndex
-                                                                                  }
-                                                                                  type="button"
-                                                                                  className="viewbtn btn-sm me-2"
-                                                                                  onClick={() =>
-                                                                                    window.open(
-                                                                                      fullUrl,
-                                                                                      "_blank",
-                                                                                    )
-                                                                                  }
-                                                                                >
-                                                                                  View
-                                                                                  Document{" "}
-                                                                                  {imgIndex +
-                                                                                    1}
-                                                                                </button>
-                                                                              );
-                                                                            },
-                                                                          )}
-                                                                        </div>
-                                                                      )}
-
-                                                                    <div>
-                                                                      Date -{" "}
-                                                                      {comment.Date
-                                                                        ? new Date(
-                                                                            comment.Date,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
-                                                                        : new Date(
-                                                                            comment.createdAt,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )}
-                                                                    </div>
-                                                                  </div>
-                                                                </div>
-                                                              </li>
-                                                            </ul>
-                                                          </div>
-                                                        </div>
-                                                      </div>
+                                            <TableContainer
+                                              component={Paper}
+                                              className="pb-4"
+                                            >
+                                              {doctorReviewNotes?.doctorReview
+                                                ?.comments &&
+                                                doctorReviewNotes?.doctorReview
+                                                  ?.comments.length > 0 && (
+                                                  <div className="col-md-12">
+                                                    <div className="treat-hd mt-3">
+                                                      <h6>Comments</h6>
+                                                      <span className="line"></span>
                                                     </div>
-                                                  ),
+                                                    <div className="row gy-3">
+                                                      {doctorReviewNotes?.doctorReview?.comments.map(
+                                                        (
+                                                          comment,
+                                                          commentIndex,
+                                                        ) => (
+                                                          <div
+                                                            className="col-md-12"
+                                                            key={
+                                                              comment._id ||
+                                                              commentIndex
+                                                            }
+                                                          >
+                                                            <div className="card customstylecard">
+                                                              <div className="card-body">
+                                                                <div className="note-view">
+                                                                  <h3 className="card-title">
+                                                                    {
+                                                                      comment.user_type
+                                                                    }{" "}
+                                                                    Note
+                                                                  </h3>
+                                                                </div>
+                                                                <div className="experience-box">
+                                                                  <ul className="experience-list">
+                                                                    <li className="mb-0">
+                                                                      <div className="experience-user">
+                                                                        <div className="before-circle"></div>
+                                                                      </div>
+                                                                      <div className="experience-content">
+                                                                        <div className="timeline-content">
+                                                                          <a
+                                                                            href="#/"
+                                                                            className="name"
+                                                                          >
+                                                                            {
+                                                                              comment.Notes
+                                                                            }
+                                                                          </a>
+
+                                                                          {/* Show images if present */}
+                                                                          {comment.images &&
+                                                                            comment
+                                                                              .images
+                                                                              .length >
+                                                                              0 && (
+                                                                              <div className="mt-2 mb-2">
+                                                                                {comment.images.map(
+                                                                                  (
+                                                                                    img,
+                                                                                    imgIndex,
+                                                                                  ) => {
+                                                                                    const fullUrl =
+                                                                                      img.startsWith(
+                                                                                        "http",
+                                                                                      )
+                                                                                        ? img
+                                                                                        : image +
+                                                                                          img;
+                                                                                    return (
+                                                                                      <button
+                                                                                        key={
+                                                                                          imgIndex
+                                                                                        }
+                                                                                        type="button"
+                                                                                        className="viewbtn btn-sm me-2"
+                                                                                        onClick={() =>
+                                                                                          window.open(
+                                                                                            fullUrl,
+                                                                                            "_blank",
+                                                                                          )
+                                                                                        }
+                                                                                      >
+                                                                                        View
+                                                                                        Document{" "}
+                                                                                        {imgIndex +
+                                                                                          1}
+                                                                                      </button>
+                                                                                    );
+                                                                                  },
+                                                                                )}
+                                                                              </div>
+                                                                            )}
+
+                                                                          <div>
+                                                                            Date
+                                                                            -{" "}
+                                                                            {comment.Date
+                                                                              ? new Date(
+                                                                                  comment.Date,
+                                                                                ).toLocaleDateString(
+                                                                                  "en-GB",
+                                                                                )
+                                                                              : new Date(
+                                                                                  comment.createdAt,
+                                                                                ).toLocaleDateString(
+                                                                                  "en-GB",
+                                                                                )}
+                                                                          </div>
+                                                                        </div>
+                                                                      </div>
+                                                                    </li>
+                                                                  </ul>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        ),
+                                                      )}
+                                                    </div>
+                                                  </div>
                                                 )}
-                                              </div>
-                                            </div>
-                                          )}
-                                      </TableContainer>
+                                            </TableContainer>
                                           </div>
                                         </div>
                                       </div>
