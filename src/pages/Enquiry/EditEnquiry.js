@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
-import { FormControl, MenuItem, OutlinedInput, Select, Modal, Box, Typography, Button } from "@mui/material";
+import { FormControl, MenuItem, OutlinedInput, Select, Modal, Box, Typography, Button, Dialog, DialogActions, DialogContent } from "@mui/material";
 import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
@@ -42,6 +42,9 @@ export default function EditEnquiry() {
   const { Treatment, error } = useSelector((state) => state.Treatment);
   const { Countries } = useSelector((state) => state.Countries);
   const [editenquiry, setEnquiry] = useState("");
+  const [fullWidth, setFullWidth] = React.useState(true);
+  const [maxWidth, setMaxWidth] = React.useState("sm");
+  // Modal states
   const [openModal, setOpenModal] = useState(false);
   const [reviewNotes, setReviewNotes] = useState("");
   const [reviewImages, setReviewImages] = useState([]);
@@ -178,9 +181,11 @@ export default function EditEnquiry() {
     formData.append("enquiryId", editenquiry.enquiryId);
     formData.append("review_notes", reviewNotes);
     formData.append("user_type", "doctor");
+
     if (reviewImages && reviewImages.length > 0) {
       reviewImages.forEach((file) => {
-         formData.append("images", file);
+        // formData.append("images[]", file);
+        formData.append("images", file);
       });
     }
     dispatch(AddDoctorReview(formData));
@@ -200,6 +205,11 @@ export default function EditEnquiry() {
       dispatch(clearReviewState());
     }
   }, [reviewSuccessMessage, reviewError, dispatch]);
+
+  const openmodalFunction = () => {
+    setOpenModal(true);
+  }
+
   const handleCloseModal = () => {
     setOpenModal(false);
     setReviewNotes("");
@@ -266,783 +276,203 @@ export default function EditEnquiry() {
   return (
     <div className="page-wrapper">
       <div className="content">
-        <div className="row">
+        <div className="row gx-3">
           <div className="col-md-12">
-            <h4 className="page-title">
-              <span>
-                <i
-                  className="fi fi-sr-angle-double-small-left"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => window.history.back()}
-                ></i>
-              </span>
-              Edit Enquiry
-            </h4>
+            <div className="topmainhd">
+              <h6><i class="fa-solid fa-arrow-left-long me-2" onClick={() => window.history.back()}></i>Edit Enquiry</h6>
+            </div>
           </div>
-        </div>
-        <div className="main_content">
-          <div className="row">
-            <div className="col-lg-12">
-              <Formik
-                enableReinitialize
-                initialValues={{
-                  name: editenquiry?.name || "",
-                  age: editenquiry?.age || "",
-                  town: editenquiry?.town || "",
-                  email: editenquiry?.email || "",
-                  gender: editenquiry?.gender || "",
-                  dial_code: editenquiry?.phoneCode || "",
-                  discussion_notes: editenquiry?.discussion_notes || [],
-                  has_relation: !!(
-                    editenquiry?.patient_relation_name ||
-                    editenquiry?.patient_relation ||
-                    editenquiry?.patient_relation_no
-                  ),
-                  emergency_contact_no: editenquiry?.emergency_contact || "",
-                  patient_relation_name:
-                    editenquiry?.patient_relation_name || "",
-                  country: editenquiry?.country || "",
-                  treatingIn: editenquiry?.treatingIn || "",
-                  disease_name: editenquiry?.disease_name || "",
-                  address: editenquiry?.address || "",
-                  patient_emergency_contact_no:
-                    editenquiry?.patient_emergency_contact_no || "",
-                  patient_relation: editenquiry?.patient_relation || "",
-                  Referral_Name: editenquiry?.Referral_Name || "",
-                  address: editenquiry?.address || "",
-                  passport_num: editenquiry?.passport_num || "",
-                  patient_relation_no: editenquiry?.patient_relation_no || "",
-                  disease_id: editenquiry?.disease_id || "",
-                  patient_relation_address:
-                    editenquiry?.patient_relation_address || "",
-                  patient_relation_id: editenquiry?.patient_relation_id || [],
-                  patient_id_proof: editenquiry?.patient_id_proof || [],
-                  patient_Profile: editenquiry?.patient_Profile || "",
-                  doctorReviewNotes:
-                    editenquiry?.doctorReview?.review_notes || "",
-                  doctorReviewRecommendations:
-                    editenquiry?.doctorReview?.Recommendations || "",
-                }}
-                validationSchema={basicSchema}
-                onSubmit={async (values, { setSubmitting }) => {
-                  const formData = new FormData();
-                  for (const key in values) {
-                    if (
-                      key !== "patient_id_proof" &&
-                      key !== "patient_Profile" &&
-                      key !== "patient_relation_id" &&
-                      key !== "discussion_notes"
-                    ) {
-                      formData.append(key, values[key]);
+          <div className="col-md-12">
+            <Formik
+              enableReinitialize
+              initialValues={{
+                name: editenquiry?.name || "",
+                age: editenquiry?.age || "",
+                town: editenquiry?.town || "",
+                email: editenquiry?.email || "",
+                gender: editenquiry?.gender || "",
+                dial_code: editenquiry?.phoneCode || "",
+                discussion_notes: editenquiry?.discussion_notes || [],
+                has_relation: !!(
+                  editenquiry?.patient_relation_name ||
+                  editenquiry?.patient_relation ||
+                  editenquiry?.patient_relation_no
+                ),
+                emergency_contact_no: editenquiry?.emergency_contact || "",
+                patient_relation_name:
+                  editenquiry?.patient_relation_name || "",
+                country: editenquiry?.country || "",
+                treatingIn: editenquiry?.treatingIn || "",
+                disease_name: editenquiry?.disease_name || "",
+                address: editenquiry?.address || "",
+                patient_emergency_contact_no:
+                  editenquiry?.patient_emergency_contact_no || "",
+                patient_relation: editenquiry?.patient_relation || "",
+                Referral_Name: editenquiry?.Referral_Name || "",
+                address: editenquiry?.address || "",
+                passport_num: editenquiry?.passport_num || "",
+                patient_relation_no: editenquiry?.patient_relation_no || "",
+                disease_id: editenquiry?.disease_id || "",
+                patient_relation_address:
+                  editenquiry?.patient_relation_address || "",
+                patient_relation_id: editenquiry?.patient_relation_id || [],
+                patient_id_proof: editenquiry?.patient_id_proof || [],
+                patient_Profile: editenquiry?.patient_Profile || "",
+                doctorReviewNotes:
+                  editenquiry?.doctorReview?.review_notes || "",
+                doctorReviewRecommendations:
+                  editenquiry?.doctorReview?.Recommendations || "",
+              }}
+              validationSchema={basicSchema}
+              onSubmit={async (values, { setSubmitting }) => {
+                const formData = new FormData();
+                for (const key in values) {
+                  if (
+                    key !== "patient_id_proof" &&
+                    key !== "patient_Profile" &&
+                    key !== "patient_relation_id" &&
+                    key !== "discussion_notes"
+                  ) {
+                    formData.append(key, values[key]);
+                  }
+                }
+                formData.append(
+                  "discussionNotes",
+                  JSON.stringify(values.discussion_notes),
+                );
+                formData.append(
+                  "doctor_review_notes",
+                  values.doctorReviewNotes,
+                );
+                formData.append(
+                  "doctor_recommendations",
+                  values.doctorReviewRecommendations,
+                );
+                if (
+                  values.patient_id_proof &&
+                  values.patient_id_proof.length > 0
+                ) {
+                  values.patient_id_proof.forEach((file) => {
+                    formData.append("patient_id_proof", file);
+                  });
+                }
+                if (values.doctor_images && values.doctor_images.length > 0) {
+                  values.doctor_images.forEach((file) => {
+                    if (typeof file !== "string") {
+                      formData.append("doctor_review_images", file);
                     }
-                  }
-                  formData.append(
-                    "discussionNotes",
-                    JSON.stringify(values.discussion_notes),
-                  );
-                  formData.append(
-                    "doctor_review_notes",
-                    values.doctorReviewNotes,
-                  );
-                  formData.append(
-                    "doctor_recommendations",
-                    values.doctorReviewRecommendations,
-                  );
-                  if (
-                    values.patient_id_proof &&
-                    values.patient_id_proof.length > 0
-                  ) {
-                    values.patient_id_proof.forEach((file) => {
-                      formData.append("patient_id_proof", file);
-                    });
-                  }
-                  if (values.doctor_images && values.doctor_images.length > 0) {
-                    values.doctor_images.forEach((file) => {
-                      if (typeof file !== "string") {
-                        formData.append("doctor_review_images", file);
-                      }
-                    });
-                  }
-                  if (values.patient_Profile instanceof File) {
-                    formData.append("patient_Profile", values.patient_Profile);
-                  }
-                  if (
-                    values.patient_relation_id &&
-                    values.patient_relation_id.length > 0
-                  ) {
-                    values.patient_relation_id.forEach((file) => {
-                      if (typeof file !== "string") {
-                        formData.append("patient_relation_id", file);
-                      }
-                    });
-                  }
-                  try {
-                    console.log(formData);
-                    await dispatch(
-                      EditEnquiryType({
-                        id: editenquiry.enquiryId,
-                        formData,
-                      }),
-                    ).unwrap();
-                    Swal.fire("Enquiry updated successfully!", "", "success");
-                    navigate("/Admin/Inquiry");
-                  } catch (err) {
-                    Swal.fire("Error!", err?.message || "An error occurred");
-                  }
-                  setSubmitting(false);
-                }}
-              >
-                {({ values, isSubmitting, setFieldValue }) => (
-                  <Form encType="multipart/form-data">
-                    <div className="row">
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            NIC / Passport
-                            <span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="passport_num"
-                            type="text"
-                          />
-                          <ErrorMessage
-                            name="passport_num"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Country<span className="text-danger">*</span>
-                          </label>
-                          <Field name="country">
-                            {({ field, form: { setFieldValue }, meta }) => (
-                              <FormControl
-                                fullWidth
-                                size="small"
-                                error={!!meta.touched && !!meta.error}
-                              >
-                                <Select
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const selected = Countries.find(
-                                      (c) => c.name === e.target.value,
-                                    );
-                                    setFieldValue("country", e.target.value);
-                                    setFieldValue(
-                                      "dial_code",
-                                      selected?.dial_code || "",
-                                    );
-                                  }}
-                                >
-                                  <MenuItem value="">
-                                    <em>Select Country</em>
-                                  </MenuItem>
-                                  {Countries.map((country, i) => (
-                                    <MenuItem key={i} value={country.name}>
-                                      {country.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                <ErrorMessage
-                                  name="country"
-                                  component="div"
-                                  style={{ color: "red" }}
-                                />
-                              </FormControl>
-                            )}
-                          </Field>
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            {" "}
-                            Phone No. / WhatsApp
-                            <span className="text-danger">*</span>
-                          </label>
-                          <div className="country-code">
-                            <Field
-                              className="form-control code-dial"
-                              name="dial_code"
-                              disabled
-                            />
-                            <Field
-                              className="form-control code-in"
-                              name="emergency_contact_no"
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="emergency_contact_no"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Patient's Name<span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="name"
-                            type="text"
-                          />
-                          <ErrorMessage
-                            name="name"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set gender-select">
-                          <label className="gen-label">
-                            Gender<span className="text-danger">*</span>
-                          </label>
-                          <div className="form-check-inline">
-                            <label className="form-check-label">
+                  });
+                }
+                if (values.patient_Profile instanceof File) {
+                  formData.append("patient_Profile", values.patient_Profile);
+                }
+                if (
+                  values.patient_relation_id &&
+                  values.patient_relation_id.length > 0
+                ) {
+                  values.patient_relation_id.forEach((file) => {
+                    if (typeof file !== "string") {
+                      formData.append("patient_relation_id", file);
+                    }
+                  });
+                }
+                try {
+                  console.log(formData);
+                  await dispatch(
+                    EditEnquiryType({
+                      id: editenquiry.enquiryId,
+                      formData,
+                    }),
+                  ).unwrap();
+                  Swal.fire("Enquiry updated successfully!", "", "success");
+                  navigate("/Admin/Inquiry");
+                } catch (err) {
+                  Swal.fire("Error!", err?.message || "An error occurred");
+                }
+                setSubmitting(false);
+              }}
+            >
+              {({ values, isSubmitting, setFieldValue }) => (
+                <Form encType="multipart/form-data">
+                  <div className="row gx-3 gy-3">
+                    <div className="col-md-12">
+                      <div className="main_content">
+                        <div className="row gx-3 gy-3">
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>
+                                NIC / Passport
+                                <span className="text-danger">*</span>
+                              </label>
                               <Field
-                                type="radio"
-                                name="gender"
-                                value="Male"
-                                className="form-check-input"
-                              />{" "}
-                              Male
-                            </label>
-                          </div>
-                          <div className="form-check-inline">
-                            <label className="form-check-label">
-                              <Field
-                                type="radio"
-                                name="gender"
-                                value="Female"
-                                className="form-check-input"
-                              />{" "}
-                              Female
-                            </label>
-                          </div>
-                          <div className="form-check-inline">
-                            <label className="form-check-label">
-                              <Field
-                                type="radio"
-                                name="gender"
-                                value="Others"
-                                className="form-check-input"
-                              />{" "}
-                              Others
-                            </label>
-                          </div>
-                        </div>
-                        <ErrorMessage
-                          name="gender"
-                          component="div"
-                          style={{ color: "red" }}
-                        />
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Age<span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="age"
-                            type="number"
-                          />
-                          <ErrorMessage
-                            name="age"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Email<span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="email"
-                            type="email"
-                          />
-                          <ErrorMessage
-                            name="email"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Town<span className="text-danger">*</span>
-                          </label>
-                          <Field className="form-control" name="town" />
-                          <ErrorMessage
-                            name="town"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Address<span className="text-danger">*</span>
-                          </label>
-                          <Field className="form-control" name="address" />
-                          <ErrorMessage
-                            name="address"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Emergency Contact No
-                            <span className="text-danger"></span>
-                          </label>
-                          <div className="country-code">
-                            <Field
-                              className="form-control code-dial"
-                              name="dial_code"
-                              disabled
-                            />
-                            <Field
-                              className="form-control code-in"
-                              name="patient_emergency_contact_no"
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="patient_emergency_contact_no"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Patient Id Proof
-                            <span className="text-danger"></span>{" "}
-                            <span
-                              className="text-danger"
-                              data-bs-placement="right"
-                              data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
-                            >
-                              (i)
-                            </span>
-                          </label>
-                          <input
-                            className="form-control"
-                            type="file"
-                            name="patient_id_proof"
-                            accept="image/*,application/pdf"
-                            multiple
-                            onChange={(e) => {
-                              const files = Array.from(e.currentTarget.files);
-                              setFieldValue("patient_id_proof", files);
-                            }}
-                          />
-                          <div className="engpatimg">
-                            {Array.isArray(editenquiry?.patient_id_proof) &&
-                              editenquiry.patient_id_proof.length > 0 &&
-                              editenquiry.patient_id_proof.map(
-                                (file, index) => {
-                                  const type = getFileType(file);
-                                  const fileUrl = `${imageUrl}${file}`;
-                                  return (
-                                    <div className="file-preview" key={index}>
-                                      <span
-                                        className="delete-icon"
-                                        onClick={() =>
-                                          handleDeletePatientIdProof(index)
-                                        }
-                                      >
-                                        <i className="fa-solid fa-xmark"></i>
-                                      </span>
-                                      <button
-                                        type="button"
-                                        className="viewbtn"
-                                        onClick={() =>
-                                          window.open(fileUrl, "_blank")
-                                        }
-                                      >
-                                        {type === "image" && "View"}
-                                        {type === "pdf" && "View"}
-                                        {type === "word" && "View"}
-                                        {type === "excel" && "View"}
-                                        {![
-                                          "image",
-                                          "pdf",
-                                          "word",
-                                          "excel",
-                                        ].includes(type) && "View"}
-                                      </button>
-                                    </div>
-                                  );
-                                },
-                              )}
-                          </div>
-                          <ErrorMessage
-                            name="patient_id_proof"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Patient Profile<span className="text-danger"></span>{" "}
-                            <span
-                              className="text-danger"
-                              data-bs-placement="right"
-                              data-bs-toggle="tooltip"
-                              title="Accept only (.jpeg, .jpg, .png, .jfif ) Max size: 2 MB per file"
-                            >
-                              (i)
-                            </span>
-                          </label>
-                          <input
-                            className="form-control"
-                            type="file"
-                            name="patient_Profile"
-                            accept="image/*,application/pdf"
-                            onChange={(e) => {
-                              const file = e.currentTarget.files[0];
-
-                              if (file) {
-                                setPreviewImage(URL.createObjectURL(file));
-                                setFieldValue("patient_Profile", file);
-                              }
-                            }}
-                          />
-                          <div className="engpatimg">
-                            {previewImage ? (
-                              <button
-                                type="button"
-                                className="viewbtn"
-                                onClick={() =>
-                                  window.open(previewImage, "_blank")
-                                }
-                              >
-                                View
-                              </button>
-                            ) : editenquiry?.patient_Profile ? (
-                              <button
-                                type="button"
-                                className="viewbtn"
-                                onClick={() =>
-                                  window.open(
-                                    `${imageUrl}${editenquiry.patient_Profile}`,
-                                    "_blank",
-                                  )
-                                }
-                              >
-                                View
-                              </button>
-                            ) : null}
-                          </div>
-                          <ErrorMessage
-                            name="patient_Profile"
-                            component="div"
-                            className="text-danger"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Referral Name<span className="text-danger"></span>
-                          </label>
-                          <Field
-                            className="form-control"
-                            name="Referral_Name"
-                          />
-                          <ErrorMessage
-                            name="Referral_Name"
-                            component="div"
-                            style={{ color: "red" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Treatment name
-                            <span className="text-danger"></span>
-                          </label>
-                          <Autocomplete
-                            options={Treatment || []}
-                            getOptionLabel={(option) => option.name || ""}
-                            value={
-                              Treatment?.find(
-                                (item) => item.name === values.disease_name,
-                              ) || null
-                            }
-                            onChange={(e, value) => {
-                              setFieldValue("disease_name", value?.name || "");
-                              setFieldValue(
-                                "treatment_course_id",
-                                value?.course_id || null,
-                              );
-                              setFieldValue("disease_id", value?.id || null);
-                            }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                placeholder="Select Treatment"
-                                error={Boolean(
-                                  values.disease_name === "" &&
-                                  basicSchema?.fields?.disease_name,
-                                )}
+                                className="form-control"
+                                name="passport_num"
+                                type="text"
                               />
-                            )}
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
-                                padding: "0px",
-                                "&:hover fieldset": {
-                                  borderColor: "#ced4da",
-                                },
-                              },
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="field-set">
-                          <label>
-                            Treating In Country
-                            <span className="text-danger"></span>
-                          </label>
-                          <Field name="treatingIn">
-                            {({ field, form: { setFieldValue }, meta }) => (
-                              <FormControl
-                                fullWidth
-                                size="small"
-                                error={!!meta.touched && !!meta.error}
-                              >
-                                <Select
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const selected = Countries.find(
-                                      (c) => c.name === e.target.value,
-                                    );
-                                    setFieldValue("treatingIn", e.target.value);
-                                  }}
-                                  MenuProps={{
-                                    PaperProps: {
-                                      style: {
-                                        maxHeight: 250,
-                                      },
-                                    },
-                                  }}
-                                >
-                                  <MenuItem value="">
-                                    <em>Select Country</em>
-                                  </MenuItem>
-                                  {Countries.map((country, i) => (
-                                    <MenuItem key={i} value={country.name}>
-                                      {country.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl>
-                            )}
-                          </Field>
-                        </div>
-                      </div>
-                      <div className="col-md-12">
-                        <div className="d-flex justify-content-between align-items-center mb-3 mt-4">
-                          <h5 className="card-title">Doctor Review</h5>
-                          <Button 
-                            variant="contained" 
-                            color="primary"
-                            onClick={() => setOpenModal(true)}
-                            size="small"
-                          >
-                            Add Comment
-                          </Button>
-                        </div>
-                      </div>
-                      {(doctorReviewData || editenquiry?.doctorReview) && (
-                        <div className="col-md-12">
-                          <div className="card-box mb-4">
-                            <h6 className="text-primary mb-3">Latest Review</h6>
-                            <div className="row">
-                              <div className="col-md-6">
-                                <div className="field-set">
-                                  <label>Review Notes</label>
-                                  <div className="form-control" style={{ minHeight: '60px', backgroundColor: '#f9f9f9' }}>
-                                    {doctorReviewData?.review_notes || editenquiry?.doctorReview?.review_notes || "N/A"}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-md-6">
-                                <div className="field-set">
-                                  <label>Recommendations</label>
-                                  <div className="form-control" style={{ minHeight: '60px', backgroundColor: '#f9f9f9' }}>
-                                    {doctorReviewData?.Recommendations || editenquiry?.doctorReview?.Recommendations || "N/A"}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-md-12 mt-2">
-                                <label>Images</label>
-                                <div className="engpatimg">
-                                  {(doctorReviewData?.images || editenquiry?.doctorReview?.images || []).map((img, index) => (
-                                    <button
-                                      key={index}
-                                      type="button"
-                                      className="viewbtn"
-                                      onClick={() => window.open(`${imageUrl}${img}`, "_blank")}
+                              <ErrorMessage
+                                name="passport_num"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>
+                                Country<span className="text-danger">*</span>
+                              </label>
+                              <Field name="country">
+                                {({ field, form: { setFieldValue }, meta }) => (
+                                  <FormControl
+                                    fullWidth
+                                    size="small"
+                                    error={!!meta.touched && !!meta.error}
+                                  >
+                                    <Select
+                                      value={field.value}
+                                      onChange={(e) => {
+                                        const selected = Countries.find(
+                                          (c) => c.name === e.target.value,
+                                        );
+                                        setFieldValue("country", e.target.value);
+                                        setFieldValue(
+                                          "dial_code",
+                                          selected?.dial_code || "",
+                                        );
+                                      }}
+                                      MenuProps={{
+                                        PaperProps: {
+                                          style: {
+                                            maxHeight: 250,
+                                          },
+                                        },
+                                      }}
                                     >
-                                      View {index + 1}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
+                                      <MenuItem value="">
+                                        <em>Select Country</em>
+                                      </MenuItem>
+                                      {Countries.map((country, i) => (
+                                        <MenuItem key={i} value={country.name}>
+                                          {country.name}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                    <ErrorMessage
+                                      name="country"
+                                      component="div"
+                                      style={{ color: "red" }}
+                                    />
+                                  </FormControl>
+                                )}
+                              </Field>
                             </div>
                           </div>
-                        </div>
-                      )}
-                      {((doctorComments && doctorComments.length > 0) || (editenquiry?.doctorReview?.comments && editenquiry.doctorReview.comments.length > 0)) && (
-                        <div className="col-md-12">
-                          <div className="treat-hd">
-                            <h6>Comments History</h6>
-                            <span className="line"></span>
-                          </div>
-                          <div className="row gy-3">
-                            {(doctorComments.length > 0 ? doctorComments : (editenquiry?.doctorReview?.comments || [])).map((comment, index) => (
-                              <div className="col-md-12" key={comment._id || index}>
-                                <div className="card customstylecard">
-                                  <div className="card-body">
-                                    <div className="note-view">
-                                      <h3 className="card-title">{comment.user_type} Note</h3>
-                                    </div>
-                                    <div className="experience-box">
-                                      <ul className="experience-list">
-                                        <li className="mb-0">
-                                          <div className="experience-user">
-                                            <div className="before-circle"></div>
-                                          </div>
-                                          <div className="experience-content">
-                                            <div className="timeline-content">
-                                              <a href="#/" className="name">
-                                                {comment.Notes}
-                                              </a>
-
-                                              {/* Show images if present */}
-                                              {comment.images && comment.images.length > 0 && (
-                                                <div className="mt-2 mb-2">
-                                                  {comment.images.map((img, imgIndex) => {
-                                                    const fullUrl = img.startsWith("http")
-                                                      ? img
-                                                      : imageUrl + img;
-                                                    return (
-                                                      <button
-                                                        key={imgIndex}
-                                                        type="button"
-                                                        className="viewbtn btn-sm me-2"
-                                                        onClick={() => window.open(fullUrl, "_blank")}
-                                                      >
-                                                        View Document {imgIndex + 1}
-                                                      </button>
-                                                    );
-                                                  })}
-                                                </div>
-                                              )}
-
-                                              <div>
-                                                {" "}
-                                                {comment.Date
-                                                  ? new Date(comment.Date).toLocaleDateString("en-GB")
-                                                  : new Date(comment.createdAt).toLocaleDateString("en-GB")}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      <div className="col-md-12">
-                        <div className="form-check mb-3">
-                          <Field
-                            type="checkbox"
-                            name="has_relation"
-                            className="form-check-input"
-                            id="hasRelation"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="hasRelation"
-                          >
-                            Add Attendant
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    {values.has_relation && (
-                      <>
-                        <div className="treat-hd">
-                          <h6>Attendant Detail's</h6>
-                          <span className="line"></span>
-                        </div>
-                        <div className="row">
                           <div className="col-md-4">
-                            <div className="field-set">
+                            <div className="set-field">
                               <label>
-                                Attendant Full Name
+                                {" "}
+                                Phone No. / WhatsApp
                                 <span className="text-danger">*</span>
-                              </label>
-                              <Field
-                                className="form-control"
-                                name="patient_relation_name"
-                              />
-                              <ErrorMessage
-                                name="patient_relation_name"
-                                component="div"
-                                style={{ color: "red" }}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-4">
-                            <div className="field-set">
-                              <label>
-                                Attendant Relationship With Patient
-                                <span className="text-danger">*</span>
-                              </label>
-                              <Field
-                                className="form-control"
-                                name="patient_relation"
-                              />
-                              <ErrorMessage
-                                name="patient_relation"
-                                component="div"
-                                style={{ color: "red" }}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-4">
-                            <div className="field-set">
-                              <label>
-                                Attendant Contact Number
-                                <span className="text-danger"></span>
                               </label>
                               <div className="country-code">
                                 <Field
@@ -1052,127 +482,716 @@ export default function EditEnquiry() {
                                 />
                                 <Field
                                   className="form-control code-in"
-                                  name="patient_relation_no"
+                                  name="emergency_contact_no"
                                 />
                               </div>
                               <ErrorMessage
-                                name="patient_relation_no"
+                                name="emergency_contact_no"
                                 component="div"
-                                className="text-danger"
+                                style={{ color: "red" }}
                               />
                             </div>
                           </div>
                           <div className="col-md-4">
-                            <div className="field-set">
+                            <div className="set-field">
+                              <label>Patient's Name<span className="text-danger">*</span></label>
+                              <Field
+                                className="form-control"
+                                name="name"
+                                type="text"
+                              />
+                              <ErrorMessage
+                                name="name"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field gender-select">
+                              <label className="gen-label">
+                                Gender<span className="text-danger">*</span>
+                              </label>
+                              <div className="form-check-inline">
+                                <label className="form-check-label">
+                                  <Field
+                                    type="radio"
+                                    name="gender"
+                                    value="Male"
+                                    className="form-check-input"
+                                  />{" "}
+                                  Male
+                                </label>
+                              </div>
+                              <div className="form-check-inline">
+                                <label className="form-check-label">
+                                  <Field
+                                    type="radio"
+                                    name="gender"
+                                    value="Female"
+                                    className="form-check-input"
+                                  />{" "}
+                                  Female
+                                </label>
+                              </div>
+                              <div className="form-check-inline">
+                                <label className="form-check-label">
+                                  <Field
+                                    type="radio"
+                                    name="gender"
+                                    value="Others"
+                                    className="form-check-input"
+                                  />{" "}
+                                  Others
+                                </label>
+                              </div>
+                            </div>
+                            <ErrorMessage
+                              name="gender"
+                              component="div"
+                              style={{ color: "red" }}
+                            />
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field">
                               <label>
-                                Attendant ID Proof
+                                Age<span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="age"
+                                type="number"
+                              />
+                              <ErrorMessage
+                                name="age"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>
+                                Email<span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="email"
+                                type="email"
+                              />
+                              <ErrorMessage
+                                name="email"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>
+                                Town<span className="text-danger">*</span>
+                              </label>
+                              <Field className="form-control" name="town" />
+                              <ErrorMessage
+                                name="town"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>
+                                Address<span className="text-danger">*</span>
+                              </label>
+                              <Field className="form-control" name="address" />
+                              <ErrorMessage
+                                name="address"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>Emergency Contact No<span className="text-danger">*</span></label>
+                              <div className="country-code">
+                                <Field
+                                  className="form-control code-dial"
+                                  name="dial_code"
+                                  disabled
+                                />
+                                <Field
+                                  className="form-control code-in"
+                                  name="patient_emergency_contact_no"
+                                />
+                              </div>
+                              <ErrorMessage
+                                name="patient_emergency_contact_no"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>
+                                Patient Id Proof
+                                <span className="text-danger"></span>{" "}
                                 <span
                                   className="text-danger"
-                                  data-bs-toggle="tooltip"
-                                  title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
-                                  Max size: 2 MB per file"
                                   data-bs-placement="right"
+                                  data-bs-toggle="tooltip"
+                                  title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf) Max size: 2 MB per file"
                                 >
-                                  * (i)
+                                  (i)
                                 </span>
                               </label>
                               <input
                                 className="form-control"
                                 type="file"
-                                name="patient_relation_id"
+                                name="patient_id_proof"
                                 accept="image/*,application/pdf"
                                 multiple
                                 onChange={(e) => {
-                                  const files = Array.from(
-                                    e.currentTarget.files,
-                                  );
-                                  setFieldValue("patient_relation_id", files);
+                                  const files = Array.from(e.currentTarget.files);
+                                  setFieldValue("patient_id_proof", files);
                                 }}
                               />
                               <div className="engpatimg">
-                                {
-                                  Array.isArray(
-                                    editenquiry.patient_relation_id,
-                                  ) &&
-                                  editenquiry.patient_relation_id.length > 0
-                                    ? editenquiry.patient_relation_id.map(
-                                        (file, index) => {
-                                          const fileUrl = `${imageUrl}${file}`;
-                                          return (
-                                            <div className="">
-                                              <div
-                                                className="file-preview"
-                                                key={index}
-                                              >
-                                                <span
-                                                  className="delete-icon"
-                                                  onClick={() =>
-                                                    handleDeleteAttendantIdProof(
-                                                      index,
-                                                    )
-                                                  }
-                                                >
-                                                  <i class="fa-solid fa-xmark"></i>
-                                                </span>
-                                                <button
-                                                  type="button"
-                                                  className="viewbtn"
-                                                  onClick={() =>
-                                                    window.open(
-                                                      fileUrl,
-                                                      "_blank",
-                                                    )
-                                                  }
-                                                >
-                                                  View
-                                                </button>
-                                              </div>
-                                            </div>
-                                          );
-                                        },
-                                      )
-                                    : ""
-                                }
+                                {Array.isArray(editenquiry?.patient_id_proof) &&
+                                  editenquiry.patient_id_proof.length > 0 &&
+                                  editenquiry.patient_id_proof.map(
+                                    (file, index) => {
+                                      const type = getFileType(file);
+                                      const fileUrl = `${imageUrl}${file}`;
+
+                                      return (
+                                        <div className="file-preview" key={index}>
+                                          <span
+                                            className="delete-icon"
+                                            onClick={() =>
+                                              handleDeletePatientIdProof(index)
+                                            }
+                                          >
+                                            <i className="fa-solid fa-xmark"></i>
+                                          </span>
+                                          <button
+                                            type="button"
+                                            className="viewbtn"
+                                            onClick={() =>
+                                              window.open(fileUrl, "_blank")
+                                            }
+                                          >
+                                            {type === "image" && "View"}
+                                            {type === "pdf" && "View"}
+                                            {type === "word" && "View"}
+                                            {type === "excel" && "View"}
+                                            {![
+                                              "image",
+                                              "pdf",
+                                              "word",
+                                              "excel",
+                                            ].includes(type) && "View"}
+                                          </button>
+                                        </div>
+                                      );
+                                    },
+                                  )}
                               </div>
                               <ErrorMessage
-                                name="patient_relation_id"
+                                name="patient_id_proof"
                                 component="div"
                                 className="text-danger"
                               />
                             </div>
                           </div>
                           <div className="col-md-4">
-                            <div className="field-set">
+                            <div className="set-field">
                               <label>
-                                Attendant Address
-                                <span className="text-danger"></span>
+                                Patient Profile<span className="text-danger"></span>{" "}
+                                <span
+                                  className="text-danger"
+                                  data-bs-placement="right"
+                                  data-bs-toggle="tooltip"
+                                  title="Accept only (.jpeg, .jpg, .png, .jfif ) Max size: 2 MB per file"
+                                >
+                                  (i)
+                                </span>
                               </label>
-                              <Field
+                              <input
                                 className="form-control"
-                                name="patient_relation_address"
+                                type="file"
+                                name="patient_Profile"
+                                accept="image/*,application/pdf"
+                                onChange={(e) => {
+                                  const file = e.currentTarget.files[0];
+
+                                  if (file) {
+                                    setPreviewImage(URL.createObjectURL(file));
+                                    setFieldValue("patient_Profile", file);
+                                  }
+                                }}
+                              />
+
+                              <div className="engpatimg">
+                                {previewImage ? (
+                                  <button
+                                    type="button"
+                                    className="viewbtn"
+                                    onClick={() =>
+                                      window.open(previewImage, "_blank")
+                                    }
+                                  >
+                                    View
+                                  </button>
+                                ) : editenquiry?.patient_Profile ? (
+                                  <button
+                                    type="button"
+                                    className="viewbtn"
+                                    onClick={() =>
+                                      window.open(
+                                        `${imageUrl}${editenquiry.patient_Profile}`,
+                                        "_blank",
+                                      )
+                                    }
+                                  >
+                                    View
+                                  </button>
+                                ) : null}
+                              </div>
+                              <ErrorMessage
+                                name="patient_Profile"
+                                component="div"
+                                className="text-danger"
                               />
                             </div>
                           </div>
-                        </div>
-                      </>
-                    )}
-                    {values.discussion_notes?.map((note, index) => (
-                      <div className="card-box" key={index}>
-                        <div className="note-view">
-                          <h3 className="card-title">Note-{index + 1}</h3>
-                        </div>
-                        <Field
-                          as="textarea"
-                          name={`discussion_notes.${index}.note`}
-                          className="form-control"
-                        />
-                        <div>
-                          Date -{" "}
-                          {new Date(note.date).toLocaleDateString("en-GB")}
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>
+                                Referral Name<span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                className="form-control"
+                                name="Referral_Name"
+                              />
+                              <ErrorMessage
+                                name="Referral_Name"
+                                component="div"
+                                style={{ color: "red" }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>
+                                Treatment name
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Autocomplete
+                                options={Treatment || []}
+                                getOptionLabel={(option) => option.name || ""}
+                                value={
+                                  Treatment?.find(
+                                    (item) => item.name === values.disease_name,
+                                  ) || null
+                                }
+                                onChange={(e, value) => {
+                                  setFieldValue("disease_name", value?.name || "");
+                                  setFieldValue(
+                                    "treatment_course_id",
+                                    value?.course_id || null,
+                                  );
+                                  setFieldValue("disease_id", value?.id || null);
+                                }}
+                                ListboxProps={{
+                                  style: {
+                                    maxHeight: 250,
+                                    overflow: "auto"
+                                  }
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    placeholder="Select Treatment"
+                                    error={Boolean(
+                                      values.disease_name === "" &&
+                                      basicSchema?.fields?.disease_name,
+                                    )}
+                                  />
+                                )}
+                                sx={{
+                                  "& .MuiOutlinedInput-root": {
+                                    padding: "0px",
+                                    "&:hover fieldset": {
+                                      borderColor: "#ced4da",
+                                    },
+                                  },
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="set-field">
+                              <label>Treating In Country<span className="text-danger">*</span></label>
+                              <Field name="treatingIn">
+                                {({ field, form: { setFieldValue }, meta }) => (
+                                  <FormControl
+                                    fullWidth
+                                    size="small"
+                                    error={!!meta.touched && !!meta.error}
+                                  >
+                                    <Select
+                                      value={field.value}
+                                      onChange={(e) => {
+                                        const selected = Countries.find(
+                                          (c) => c.name === e.target.value,
+                                        );
+                                        setFieldValue("treatingIn", e.target.value);
+                                      }}
+                                      MenuProps={{
+                                        PaperProps: {
+                                          style: {
+                                            maxHeight: 250,
+                                          },
+                                        },
+                                      }}
+                                    >
+                                      <MenuItem value="">
+                                        <em>Select Country</em>
+                                      </MenuItem>
+                                      {Countries.map((country, i) => (
+                                        <MenuItem key={i} value={country.name}>
+                                          {country.name}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                  </FormControl>
+                                )}
+                              </Field>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    ))}
-                    <div className="">
+                    </div>
+                    <div className="col-md-12">
+                      <div className="main_content">
+                        <div className="comnthis">
+                          <h6>Notes</h6>
+                        </div>
+                        {values.discussion_notes?.map((note, index) => (
+                          <div className="set-field" key={index}>
+                            <div className="noteadv">
+                              <label>Note-{index + 1}</label>
+                              <h6>Date - {new Date(note.date).toLocaleDateString("en-GB")}</h6>
+                            </div>
+                            <Field
+                              as="textarea"
+                              name={`discussion_notes.${index}.note`}
+                              className="form-control"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="col-md-12">
+                      <div className="main_content">
+                        <div className="row gx-3 gy-3">
+                          <div className="col-md-12">
+                            <div className="comnthis">
+                              <h6>Doctor Review</h6>
+                            </div>
+                            <div className="row gx-3 gy-3">
+                              {(doctorReviewData || editenquiry?.doctorReview) && (
+                                <>
+                                  <div className="col-md-4">
+                                    <div className="set-field">
+                                      <label>Review Notes</label>
+                                      <textarea className="form-control">
+                                        {doctorReviewData?.review_notes || editenquiry?.doctorReview?.review_notes || "N/A"}
+                                      </textarea>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-4">
+                                    <div className="set-field">
+                                      <label>Recommendations</label>
+                                      <textarea className="form-control">
+                                        {doctorReviewData?.Recommendations || editenquiry?.doctorReview?.Recommendations || "N/A"}
+                                      </textarea>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-4">
+                                    <div className="set-field">
+                                      <label>Images</label>
+                                      <div className="engpatimg">
+                                        {(doctorReviewData?.images || editenquiry?.doctorReview?.images || []).map((img, index) => (
+                                          <button
+                                            key={index}
+                                            type="button"
+                                            className="viewbtn"
+                                            onClick={() => window.open(`${imageUrl}${img}`, "_blank")}
+                                          >
+                                            View {index + 1}
+                                          </button>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          {((doctorComments && doctorComments.length > 0) || (editenquiry?.doctorReview?.comments && editenquiry.doctorReview.comments.length > 0)) && (
+                            <div className="col-md-12">
+                              <div className="docre-hd">
+                                <div className="comnthis">
+                                  <h6 className="mb-0">Comments</h6>
+                                </div>
+                                <button className="add-button" type="button" onClick={openmodalFunction}>Add Comment</button>
+                              </div>
+                              <div className="row gx-3 gy-3">
+                                {(doctorComments.length > 0 ? doctorComments : (editenquiry?.doctorReview?.comments || [])).map((comment, index) => (
+                                  <div className="col-md-12" key={comment._id || index}>
+                                    <div className="card customstylecard">
+                                      <div className="card-body">
+                                        <div className="note-view">
+                                          <h3 className="card-title">{comment.user_type} Note</h3>
+                                        </div>
+                                        <div className="experience-box">
+                                          <ul className="experience-list">
+                                            <li className="mb-0">
+                                              <div className="experience-user">
+                                                <div className="before-circle"></div>
+                                              </div>
+                                              <div className="experience-content">
+                                                <div className="timeline-content">
+                                                  <a href="#/" className="name">
+                                                    {comment.Notes}
+                                                  </a>
+                                                  {/* Show images if present */}
+                                                  {comment.images && comment.images.length > 0 && (
+                                                    <div className="">
+                                                      {comment.images.map((img, imgIndex) => {
+                                                        const fullUrl = img.startsWith("http")
+                                                          ? img
+                                                          : imageUrl + img;
+                                                        return (
+                                                          <button
+                                                            key={imgIndex}
+                                                            type="button"
+                                                            className="viewbtn me-2"
+                                                            onClick={() => window.open(fullUrl, "_blank")}
+                                                          >
+                                                            View {imgIndex + 1}
+                                                          </button>
+                                                        );
+                                                      })}
+                                                    </div>
+                                                  )}
+
+                                                  <div>
+                                                    {" "}
+                                                    {comment.Date
+                                                      ? new Date(comment.Date).toLocaleDateString("en-GB")
+                                                      : new Date(comment.createdAt).toLocaleDateString("en-GB")}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </li>
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-12">
+                      <div className="main_content">
+                        <div className="row gx-3 gy-3">
+                          <div className="col-md-12">
+                            <div className="comnthis">
+                              <h6>Attendant Details</h6>
+                            </div>
+                            <div className="form-check">
+                              <Field
+                                type="checkbox"
+                                name="has_relation"
+                                className="form-check-input"
+                                id="hasRelation"
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="hasRelation"
+                              >
+                                Add Attendant
+                              </label>
+                            </div>
+                          </div>
+                          <div className="col-md-12">
+                            {values.has_relation && (
+                              <>
+                                <div className="row gx-3 gy-3">
+                                  <div className="col-md-4">
+                                    <div className="set-field">
+                                      <label>
+                                        Attendant Full Name
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <Field
+                                        className="form-control"
+                                        name="patient_relation_name"
+                                      />
+                                      <ErrorMessage
+                                        name="patient_relation_name"
+                                        component="div"
+                                        style={{ color: "red" }}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-md-4">
+                                    <div className="set-field">
+                                      <label>
+                                        Attendant Relationship With Patient
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <Field
+                                        className="form-control"
+                                        name="patient_relation"
+                                      />
+                                      <ErrorMessage
+                                        name="patient_relation"
+                                        component="div"
+                                        style={{ color: "red" }}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-md-4">
+                                    <div className="set-field">
+                                      <label>
+                                        Attendant Contact Number
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <div className="country-code">
+                                        <Field
+                                          className="form-control code-dial"
+                                          name="dial_code"
+                                          disabled
+                                        />
+                                        <Field
+                                          className="form-control code-in"
+                                          name="patient_relation_no"
+                                        />
+                                      </div>
+                                      <ErrorMessage
+                                        name="patient_relation_no"
+                                        component="div"
+                                        className="text-danger"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-md-4">
+                                    <div className="set-field">
+                                      <label>
+                                        Attendant ID Proof
+                                        <span
+                                          className="text-danger"
+                                          data-bs-toggle="tooltip"
+                                          title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
+                                            Max size: 2 MB per file"
+                                          data-bs-placement="right"
+                                        > (i)</span>
+                                      </label>
+                                      <input
+                                        className="form-control"
+                                        type="file"
+                                        name="patient_relation_id"
+                                        accept="image/*,application/pdf"
+                                        multiple
+                                        onChange={(e) => {
+                                          const files = Array.from(
+                                            e.currentTarget.files,
+                                          );
+                                          setFieldValue("patient_relation_id", files);
+                                        }}
+                                      />
+                                      <div className="engpatimg">
+                                        {
+                                          Array.isArray(
+                                            editenquiry.patient_relation_id,
+                                          ) &&
+                                            editenquiry.patient_relation_id.length > 0
+                                            ? editenquiry.patient_relation_id.map(
+                                              (file, index) => {
+                                                const fileUrl = `${imageUrl}${file}`;
+                                                return (
+                                                  <div className="">
+                                                    <div
+                                                      className="file-preview"
+                                                      key={index}
+                                                    >
+                                                      <span
+                                                        className="delete-icon"
+                                                        onClick={() =>
+                                                          handleDeleteAttendantIdProof(
+                                                            index,
+                                                          )
+                                                        }
+                                                      >
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                      </span>
+                                                      <button
+                                                        type="button"
+                                                        className="viewbtn"
+                                                        onClick={() =>
+                                                          window.open(
+                                                            fileUrl,
+                                                            "_blank",
+                                                          )
+                                                        }
+                                                      >
+                                                        View
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                );
+                                              },
+                                            )
+                                            : ""
+                                        }
+                                      </div>
+                                      <ErrorMessage
+                                        name="patient_relation_id"
+                                        component="div"
+                                        className="text-danger"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-md-4">
+                                    <div className="set-field">
+                                      <label>
+                                        Attendant Address
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <Field
+                                        className="form-control"
+                                        name="patient_relation_address"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-12">
                       <button
                         type="submit"
                         className="submit-btn"
@@ -1181,75 +1200,85 @@ export default function EditEnquiry() {
                         {loading ? "Submitting..." : "Submit"}
                       </button>
                     </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       </div>
-      <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={modalStyle}>
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
-            Add Doctor Review
-          </Typography>
-          <div className="mb-3">
-            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-              Review Notes <span className="text-danger">*</span>
-            </label>
-            <textarea
-              className="form-control"
-              rows="4"
-              value={reviewNotes}
-              onChange={(e) => setReviewNotes(e.target.value)}
-              placeholder="Enter review notes..."
-              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ced4da' }}
-            />
+      {/* add doctor review modal */}
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={openModal}
+          onClose={handleCloseModal}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Doctor Review</h6>
+            </div>
+            <div className="cross-icon" onClick={handleCloseModal}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
           </div>
-          <div className="mb-3">
-            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-              Upload Images <span className="text-danger">*</span>
-            </label>
-            <input
-              type="file"
-              className="form-control"
-              multiple
-              accept="image/*"
-              onChange={(e) => {
-                const files = Array.from(e.target.files);
-                setReviewImages(files);
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
               }}
-            />
-            {reviewImages.length > 0 && (
-              <small className="text-muted mt-1 d-block">
-                {reviewImages.length} file(s) selected
-              </small>
-            )}
-          </div>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
-            <Button 
-              variant="outlined" 
-              onClick={handleCloseModal}
-              disabled={reviewLoading}
+              className="contact-form"
             >
-              Cancel
-            </Button>
-            <Button 
-              variant="contained" 
-              color="primary"
-              onClick={handleAddDoctorReview}
-              disabled={reviewLoading}
-            >
-              {reviewLoading ? "Submitting..." : "Submit"}
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
+              <div className="row gx-3 gy-3">
+                <div className="col-md-12">
+                  <div className="set-field">
+                    <label>Review Notes <span className="text-danger">*</span></label>
+                    <textarea className="form-control" rows="2"
+                      value={reviewNotes}
+                      onChange={(e) => setReviewNotes(e.target.value)}
+                      placeholder="Enter review notes..." />
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <div className="set-field">
+                    <label>Upload Images <span className="text-danger">*</span> </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      multiple
+                      accept="image/*"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files);
+                        setReviewImages(files);
+                      }}
+                    />
+                    {reviewImages.length > 0 && (
+                      <small className="text-muted mt-1 d-block">
+                        {reviewImages.length} file(s) selected
+                      </small>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <DialogActions className="submit-main mt-3">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  onClick={handleAddDoctorReview}
+                  disabled={reviewLoading}
+                >
+                  {reviewLoading ? "Submitting..." : "Submit"}
+                </Button>
+              </DialogActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
     </div>
   );
 }

@@ -84,7 +84,7 @@ export default function EnquiryDetail() {
         <div className="card customstylecard">
           <div className="card-body">
             <div className="note-view">
-              <h3 className="card-title">{comment.user_type} Note</h3>
+              <h6>{comment.user_type} Note</h6>
             </div>
             <div className="experience-box">
               <ul className="experience-list">
@@ -100,7 +100,7 @@ export default function EnquiryDetail() {
 
                       {/* Show images if present */}
                       {comment.images && comment.images.length > 0 && (
-                        <div className="mt-2 mb-2">
+                        <div className="">
                           {comment.images.map((img, imgIndex) => {
                             const fullUrl = img.startsWith("http")
                               ? img
@@ -109,10 +109,10 @@ export default function EnquiryDetail() {
                               <button
                                 key={imgIndex}
                                 type="button"
-                                className="viewbtn btn-sm me-2"
+                                className="viewbtn me-2"
                                 onClick={() => window.open(fullUrl, "_blank")}
                               >
-                                View Document {imgIndex + 1}
+                                View {imgIndex + 1}
                               </button>
                             );
                           })}
@@ -124,8 +124,8 @@ export default function EnquiryDetail() {
                         {comment.Date
                           ? new Date(comment.Date).toLocaleDateString("en-GB")
                           : new Date(comment.createdAt).toLocaleDateString(
-                              "en-GB",
-                            )}
+                            "en-GB",
+                          )}
                       </div>
                     </div>
                   </div>
@@ -140,216 +140,98 @@ export default function EnquiryDetail() {
 
   return (
     <>
-      <div>
-        <div class="page-wrapper">
-          <div class="content">
-            <div className="row">
-              <div className="col-md-12">
-                <h4 className="page-title">
-                  <span>
-                    <i
-                      class="fi fi-sr-angle-double-small-left"
-                      onClick={handleclick}
-                      style={{ cursor: "pointer" }}
-                    ></i>
-                  </span>
-                  View Enquiry
-                </h4>
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="row gx-3 gy-3">
+            <div className="col-md-12">
+              <div className="topmainhd">
+                <h6><i class="fa-solid fa-arrow-left-long me-2" onClick={handleclick}></i>View Enquiry</h6>
               </div>
             </div>
-            <div class="main_content">
-              <form>
-                <div class="row">
-                  <div class="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Enquiry Id<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.enquiryId}
-                        readonly=""
-                      />
+            <div className="col-md-12 gy-0">
+              <div className="main_content">
+                <div className="row gx-3 gy-3">
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Enquiry Id</h6>
+                      <p>{row.enquiryId}</p>
                     </div>
                   </div>
                   <div class="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        NIC / Passport<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.passport_num}
-                        readonly=""
-                      />
+                    <div className="">
+                      <h6>NIC / Passport</h6>
+                      <p>{row.passport_num}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Phone No. / WhatsApp
-                        <span className="text-danger"></span>
-                      </label>
-                      <div className="country-code">
-                        <input
-                          class="form-control code-dial"
-                          type="text"
-                          value={row.phoneCode}
-                          readonly=""
-                        />
-                        <input
-                          class="form-control code-in"
-                          type="text"
-                          value={row.emergency_contact_no}
-                          readonly=""
-                        />
-                      </div>
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Phone No. / WhatsApp</h6>
+                      <p>{row.phoneCode}{row.emergency_contact_no}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Emergency Contact Number
-                        <span className="text-danger"></span>
-                      </label>
-                      <div className="country-code">
-                        <input
-                          class="form-control code-dial"
-                          type="text"
-                          value={row.phoneCode}
-                          readonly=""
-                        />
-                        <input
-                          class="form-control code-in"
-                          type="text"
-                          value={row.patient_emergency_contact_no}
-                          readonly=""
-                        />
-                      </div>
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Emergency Contact Number</h6>
+                      <p>{row.phoneCode}{row.patient_emergency_contact_no}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Patient Name<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.name}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Patient Name</h6>
+                      <p>{row.name}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Gender<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.gender}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Gender</h6>
+                      <p>{row.gender}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Age<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.age}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Age</h6>
+                      <p>{row.age}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Enq status<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.enq_status}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Enq status</h6>
+                      <p>{row.enq_status}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Email<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.email}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Email</h6>
+                      <p>{row.email}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Country<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="email"
-                        value={row.country}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Country</h6>
+                      <p>{row.country}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Town<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.town}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Town</h6>
+                      <p>{row.town}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Address<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.address}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Address</h6>
+                      <p>{row.address}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Patient ID proof<span className="text-danger"></span>
-                      </label>
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Patient ID proof</h6>
                       <div className="engpatimg mt-0">
                         {Array.isArray(row?.patient_id_proof) &&
                           row.patient_id_proof.length > 0 &&
                           row.patient_id_proof.map((file, index) => (
                             <div key={index} className="file-preview">
-                              {/* <span className="delete-icon">
-                                <i className="fa-solid fa-xmark"></i>
-                              </span> */}
-
-                              <a
-                                href={`${image}${file}`}
+                              <a href={`${image}${file}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="viewbtn"
@@ -362,10 +244,8 @@ export default function EnquiryDetail() {
                     </div>
                   </div>
                   <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Patient Profile<span className="text-danger"></span>
-                      </label>
+                    <div className="">
+                      <h6>Patient Profile</h6>
                       <div className="engpatimg mt-0">
                         {row.patient_Profile && (
                           <div className="viewbtn">
@@ -377,228 +257,104 @@ export default function EnquiryDetail() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Referral Name<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.Referral_Name}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Referral Name</h6>
+                      <p>{row.Referral_Name}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Treatment Name<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.disease_name}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Treatment Name</h6>
+                      <p>{row.disease_name}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="field-set">
-                      <label>
-                        Treating In Country<span className="text-danger"></span>
-                      </label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        value={row.treatingIn}
-                        readonly=""
-                      />
+                  <div class="col-md-4">
+                    <div className="">
+                      <h6>Treating In Country</h6>
+                      <p>{row.treatingIn}</p>
                     </div>
                   </div>
                 </div>
-                <div className="treat-hd">
-                  {row.patient_relation ? <h6>Attendant Details</h6> : ""}
-                  <span className="line"></span>
-                </div>
-                {row.patient_relation ? (
-                  <div className="row">
-                    <div className="col-md-4">
-                      <div className="field-set">
-                        <label>
-                          Attendant Full Name
-                          <span className="text-danger"></span>
-                        </label>
-                        <input
-                          class="form-control"
-                          type="text"
-                          value={row.patient_relation_name}
-                          readonly=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="field-set">
-                        <label>
-                          Relationship with Patient
-                          <span className="text-danger"></span>
-                        </label>
-                        <input
-                          class="form-control"
-                          type="text"
-                          value={row.patient_relation}
-                          readonly=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="field-set">
-                        <label>
-                          Attendant Contact Number
-                          <span className="text-danger"></span>
-                        </label>
-                        <div className="country-code">
-                          <input
-                            class="form-control code-dial"
-                            type="text"
-                            value={row.phoneCode}
-                            readonly=""
-                          />
-                          <input
-                            class="form-control code-in"
-                            type="text"
-                            value={row.patient_relation_no}
-                            readonly=""
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="field-set">
-                        <label>
-                          Attendant ID Proof
-                          <span className="text-danger"></span>
-                        </label>
-                        <div className="engpatimg">
-                          {Array.isArray(row.patient_relation_id) &&
-                          row.patient_relation_id.length > 0 ? (
-                            row.patient_relation_id.map((file, index) => (
-                              <div key={index} className="doc-box viewbtn">
-                                <a href={`${image}${file}`}>View</a>
-                              </div>
-                            ))
-                          ) : (
-                            <img src={avtar} alt="No Document" />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="field-set">
-                        <label>
-                          Attendant Address<span className="text-danger"></span>
-                        </label>
-                        <input
-                          class="form-control"
-                          type="text"
-                          value={row.patient_relation_address}
-                          readonly=""
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  ""
-                )}
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="main_content">
                 {row.discussionNotes?.length === 0 ? (
                   ""
                 ) : (
                   <>
-                    <div className="row">
+                    <div className="row gx-3">
                       <div className="col-md-12">
-                        <div className="treat-hd">
-                          <h6>Discussion Notes</h6>
-                          <span className="line"></span>
+                        <div className="comnthis">
+                          <h6>Notes</h6>
                         </div>
-                        <div className="tab-pane" id="bottom-tab3">
-                          {row.discussionNotes?.length === 0 ? (
-                            "No notes for patient"
-                          ) : (
-                            <>
-                              {row.discussionNotes?.map((info, index) => (
-                                <div className="card-box">
-                                  <div className="note-view">
-                                    <h3 className="card-title">
-                                      Note-{index + 1}
-                                    </h3>
-                                  </div>
-                                  <div className="experience-box">
-                                    <ul className="experience-list">
-                                      <li>
-                                        <div className="experience-user">
-                                          <div className="before-circle"></div>
-                                        </div>
-                                        <div className="experience-content">
-                                          <div className="timeline-content">
-                                            <a href="#/" className="name">
-                                              {info.note}
-                                            </a>
-                                            <div>
-                                              date-
-                                              {new Date(
-                                                info.date,
-                                              ).toLocaleDateString("en-GB")}
-                                            </div>
-                                            {/* {/ <span className="time">treatment due payment-{info.treatment_due_payment}</span>  */}
-                                          </div>
-                                        </div>
-                                      </li>
-                                    </ul>
-                                  </div>
+                        {row.discussionNotes?.length === 0 ? (
+                          "No notes for patient"
+                        ) : (
+                          <>
+                            {row.discussionNotes?.map((info, index) => (
+                              <div className="">
+                                <div className="note-view">
+                                  <h6>Note-{index + 1}</h6>
                                 </div>
-                              ))}
-                            </>
-                          )}
-                        </div>
+                                <div className="experience-box">
+                                  <ul className="experience-list">
+                                    <li>
+                                      <div className="experience-user">
+                                        <div className="before-circle"></div>
+                                      </div>
+                                      <div className="experience-content">
+                                        <div className="timeline-content">
+                                          <a href="#/" className="name">
+                                            {info.note}
+                                          </a>
+                                          <div>
+                                            Date-
+                                            {new Date(
+                                              info.date,
+                                            ).toLocaleDateString("en-GB")}
+                                          </div>
+                                          {/* {/ <span className="time">treatment due payment-{info.treatment_due_payment}</span>  */}
+                                        </div>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            ))}
+                          </>
+                        )}
                       </div>
                     </div>
                   </>
                 )}
-                {
-                  row?.doctorReview?.review_notes ?
-                <div className="row">
-                  <div className="col-md-12">
-                    <div className="card-box">
-                      <div className="treat-hd">
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="main_content">
+                {row?.doctorReview?.review_notes ?
+                  <div className="row gx-3">
+                    <div className="col-md-12">
+                      <div className="comnthis">
                         <h6>Doctor Review</h6>
-                        <span className="line"></span>
                       </div>
-                      <div className="row">
+                      <div className="row gx-3 gy-3">
                         <div className="col-md-4">
-                          <div className="field-set">
-                            <label>Review Notes</label>
-                            <input
-                              className="form-control"
-                              type="text"
-                              value={row?.doctorReview?.review_notes || ""}
-                              readOnly
-                            />
+                          <div className="">
+                            <h6>Review Notes</h6>
+                            <p>{row?.doctorReview?.review_notes || ""}</p>
                           </div>
                         </div>
                         <div className="col-md-4">
-                          <div className="field-set">
-                            <label>Recommendations</label>
-                            <input
-                              className="form-control"
-                              type="text"
-                              value={row?.doctorReview?.Recommendations || ""}
-                              readOnly
-                            />
+                          <div className="">
+                            <h6>Recommendations</h6>
+                            <p>{row?.doctorReview?.Recommendations || ""}</p>
                           </div>
                         </div>
                         <div className="col-md-4">
-                          <div className="field-set">
-                            <label>Documents</label>
+                          <div className="">
+                            <h6>Documents</h6>
                             {row?.doctorReview?.images?.length > 0 ? (
                               row.doctorReview.images.map((img, index) => {
                                 const fullUrl = img.startsWith("http")
@@ -625,16 +381,70 @@ export default function EnquiryDetail() {
                           </div>
                         </div>
                       </div>
-                      <div className="treat-hd">
+                    </div>
+                    <div className="col-md-12">
+                      <div className="comnthis">
                         <h6>Comments</h6>
-                        <span className="line"></span>
                       </div>
                       <div className="row gy-3">{renderComments()}</div>
                     </div>
                   </div>
-                </div>:""
-                }
-              </form>
+                  : ""}
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="main_content">
+                <div className="comnthis">
+                  {row.patient_relation ? <h6>Attendant Details</h6> : ""}
+                </div>
+                {row.patient_relation ? (
+                  <div className="row gx-3 gy-3">
+                    <div className="col-md-4">
+                      <div className="">
+                        <h6>Attendant Full Name</h6>
+                        <p>{row.patient_relation_name}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="">
+                        <h6>Relationship with Patient</h6>
+                        <p>{row.patient_relation}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="">
+                        <h6>Attendant Contact Number</h6>
+                        <p>{row.phoneCode}{row.patient_relation_no}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="">
+                        <h6>Attendant ID Proof</h6>
+                        <div className="engpatimg">
+                          {Array.isArray(row.patient_relation_id) &&
+                            row.patient_relation_id.length > 0 ? (
+                            row.patient_relation_id.map((file, index) => (
+                              <div key={index} className="doc-box viewbtn">
+                                <a href={`${image}${file}`}>View</a>
+                              </div>
+                            ))
+                          ) : (
+                            <img src={avtar} alt="No Document" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="">
+                        <h6>Attendant Address</h6>
+                        <p>{row.patient_relation_address}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           </div>
         </div>
