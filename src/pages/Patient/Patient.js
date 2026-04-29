@@ -105,12 +105,23 @@ export default function Patient() {
     setSearchTerm(e.target.value);
     setPage(1);
   };
-  useEffect(() => {
-    if (patient) {
-      setRows(patient);
-      setSearchApiData(patient);
-    }
-  }, [patient]);
+useEffect(() => {
+  // If API returns empty or undefined → clear table
+  if (!patient || patient.length === 0) {
+    setRows([]);
+    setSearchApiData([]);
+  } else {
+    setRows(patient);
+    setSearchApiData(patient);
+  }
+}, [patient]);
+useEffect(() => {
+  // If API gives 404 or error → clear table
+  if (error) {
+    setRows([]);
+    setSearchApiData([]);
+  }
+}, [error]);
   const EditButton = (e, id) => {
     navigate("/Admin/edit-patient", {
       state: {

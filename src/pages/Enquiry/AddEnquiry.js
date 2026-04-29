@@ -266,6 +266,7 @@ export default function AddEnquiry() {
                                     country: selectedCountry?.name || "",
                                     dial_code: selectedCountry?.dial_code || "",
                                     passport_num: value,
+                                      emergency_contact_no: value,
                                   }));
 
                                   Swal.fire(
@@ -406,6 +407,7 @@ export default function AddEnquiry() {
                                     country: selectedCountry?.name || "",
                                     dial_code: selectedCountry?.dial_code || "",
                                     emergency_contact_no: value,
+                                    
                                   }));
                                   Swal.fire(
                                     "Patient Found",

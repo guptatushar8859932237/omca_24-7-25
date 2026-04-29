@@ -3,41 +3,18 @@ import axios from "axios"
 import { baseurl } from "../Basurl/Baseurl"
 export const GetAllPatients = createAsyncThunk(
   "patient/GetAllPatients",
-  async (
-    {
-      page = 1,
-      search = "",
-      limit = 25,
-      p_status = "",
-      patient_type_new = "",
-      sortField = "",
-      sortOrder = "",
-    },
-    { rejectWithValue }
-  ) => {
+  async (params, { rejectWithValue }) => {
     try {
       const queryParams = new URLSearchParams();
 
-      queryParams.append("page", page);
-      queryParams.append("search", search);
-      queryParams.append("limit", limit);
+      queryParams.append("page", params.page || 1);
+      queryParams.append("search", params.search || "");
+      queryParams.append("limit", params.limit || 25);
 
-      if (p_status) {
-        queryParams.append("p_status", p_status);
-      }
-
-      if (patient_type_new) {
-        queryParams.append("patient_type_new", patient_type_new);
-      }
-
-      // ✅ ADD THIS 🔥
-      if (sortField) {
-        queryParams.append("sortField", sortField);
-      }
-
-      if (sortOrder) {
-        queryParams.append("sortOrder", sortOrder);
-      }
+      if (params.p_status) queryParams.append("p_status", params.p_status);
+      if (params.patient_type_new) queryParams.append("patient_type_new", params.patient_type_new);
+      if (params.sortField) queryParams.append("sortField", params.sortField);
+      if (params.sortOrder) queryParams.append("sortOrder", params.sortOrder);
 
       const response = await axios.post(
         `${baseurl}all_patients?${queryParams.toString()}`,
@@ -45,13 +22,26 @@ export const GetAllPatients = createAsyncThunk(
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
           },
         }
       );
 
       return response.data;
+
     } catch (error) {
+      // ✅ HANDLE 404 HERE
+      if (error.response?.status === 404) {
+        return {
+          details: [],   // 👈 important
+          pagination: {
+            totalRecords: 0,
+            currentPage: 1,
+            totalPages: 0,
+            perPage: 25,
+          },
+        };
+      }
+
       return rejectWithValue(
         error.response?.data || { message: "Failed to fetch patients" }
       );

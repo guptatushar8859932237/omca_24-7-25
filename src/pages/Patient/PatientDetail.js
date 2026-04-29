@@ -1916,7 +1916,6 @@ function PatientDetail() {
           error.response?.data?.message ||
           "Something went wrong. Please try again",
       });
-      // console.log(error);
     }
   };
   const EditDelete = async (a, b) => {
@@ -1947,8 +1946,7 @@ function PatientDetail() {
           text: "Note deleted successfully",
           timer: 1500,
           showConfirmButton: false,
-        });
-
+        });                                                                                                                                                                  
         getDataapi3(b.treatment_id);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         handleCloseEditModal(); // or close delete modal if you have one
@@ -1969,13 +1967,11 @@ function PatientDetail() {
       });
     }
   };
-
   const handleKeyPress = (e) => {
     if (!/[0-9]/.test(e.key)) {
       e.preventDefault();
     }
   };
-
   const EditFreeDelete = async (a, b, c) => {
     const confirmResult = await Swal.fire({
       title: "Are you sure?",
@@ -2037,12 +2033,10 @@ function PatientDetail() {
       );
       if (response.data.success) {
         const hospitalData = response.data.data;
-
         const updatedList = [
           { _id: "all", name: "Select All" }, // 👈 YEH LINE ADD
           ...hospitalData,
         ];
-
         setHospitlID(updatedList);
       }
     } catch (error) {}
@@ -2119,11 +2113,9 @@ function PatientDetail() {
         error?.response?.data?.message ||
         error?.message ||
         "Server error occurred";
-
       await swalOnTop.fire("Error", errorMsg, "error");
     }
   };
-
   const handlechangeGdoc =(e)=>{
      const selectedFiles = Array.from(e.target.files); // 👈 important
   setFiles(selectedFiles);
@@ -2165,8 +2157,6 @@ function PatientDetail() {
   };
   const handledelteguestHouse = async (item, info, index) => {
     console.log(item, info, index);
-
-    // 🔥 Confirm popup
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You want to delete this record!",
@@ -2176,22 +2166,17 @@ function PatientDetail() {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     });
-
     if (result.isConfirmed) {
       try {
         const response = await axios.post(
           `${baseurl}deleteGuestHouseCharge/${item.id}`,
         );
-
-        // ✅ Success
         if (response?.data?.success) {
           Swal.fire({
             icon: "success",
             title: "Deleted!",
             text: response.data.message || "Record deleted successfully",
           });
-
-          // 🔄 optional: refresh list
           patient_guesthouse(item.treatment_id); // ya jo bhi API tum use kar rahe ho refresh ke liye
           dispatch(GetPatientTreatments({ id: location.state.patientId }));
         } else {
@@ -2203,8 +2188,6 @@ function PatientDetail() {
         }
       } catch (error) {
         console.error(error);
-
-        // ❌ Error
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -2214,7 +2197,6 @@ function PatientDetail() {
       }
     }
   };
-
   const AddpaymentOnchnage123 = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -2276,7 +2258,6 @@ function PatientDetail() {
     setOpenModalDovPlan(true)
   };
 const apihitpost =async()=>{
-   
     try {
       const response = await axios.put(
         `${baseurl}updateHospitalStatus/${datainfo._id}/${dataHospitalID}`,

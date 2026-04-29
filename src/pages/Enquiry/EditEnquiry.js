@@ -12,7 +12,6 @@ import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
 import axios from "axios";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
-
 const getFileType = (file) => {
   const ext = file.split(".").pop().toLowerCase();
   if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
@@ -21,7 +20,6 @@ const getFileType = (file) => {
   if (["xls", "xlsx"].includes(ext)) return "excel";
   return "other";
 };
-
 // Modal style
 const modalStyle = {
   position: 'absolute',
@@ -34,7 +32,6 @@ const modalStyle = {
   boxShadow: 24,
   p: 4,
 };
-
 export default function EditEnquiry() {
   const dispatch = useDispatch();
   const MAX_FILE_SIZE = 2 * 1024 * 1024;
@@ -45,18 +42,14 @@ export default function EditEnquiry() {
   const { Treatment, error } = useSelector((state) => state.Treatment);
   const { Countries } = useSelector((state) => state.Countries);
   const [editenquiry, setEnquiry] = useState("");
-  
-  // Modal states
   const [openModal, setOpenModal] = useState(false);
   const [reviewNotes, setReviewNotes] = useState("");
   const [reviewImages, setReviewImages] = useState([]);
-
   useEffect(() => {
     dispatch(GetAllCountries2());
     dispatch(GetAllEnquiry());
     dispatch(GetAllTreatment());
   }, [dispatch]);
-
   useEffect(() => {
     if (location.state?.enquiryId && Enquiry.length > 0) {
       const selectedUser = Enquiry.find(
@@ -66,7 +59,6 @@ export default function EditEnquiry() {
       setEnquiry(selectedUser || {});
     }
   }, [location.state?.enquiryId, Enquiry]);
-
   const basicSchema = Yup.object().shape({
     name: Yup.string().required("Name is required").min(2).max(50),
     email: Yup.string()
@@ -159,7 +151,6 @@ export default function EditEnquiry() {
       },
     ),
   });
-
   useEffect(() => {
     const initTooltips = () => {
       if (!window.bootstrap) return;
@@ -177,29 +168,23 @@ export default function EditEnquiry() {
     };
     setTimeout(initTooltips, 300);
   });
-
   // Handle Add Doctor Review Submit
   const handleAddDoctorReview = async () => {
     if (!reviewNotes.trim()) {
       Swal.fire("Error!", "Review notes are required", "error");
       return;
     }
-
     const formData = new FormData();
     formData.append("enquiryId", editenquiry.enquiryId);
     formData.append("review_notes", reviewNotes);
     formData.append("user_type", "doctor");
-    
     if (reviewImages && reviewImages.length > 0) {
       reviewImages.forEach((file) => {
-        // formData.append("images[]", file);
          formData.append("images", file);
       });
     }
-
     dispatch(AddDoctorReview(formData));
   };
-
   useEffect(() => {
     if (reviewSuccessMessage) {
       Swal.fire("Success!", reviewSuccessMessage, "success");
@@ -215,13 +200,11 @@ export default function EditEnquiry() {
       dispatch(clearReviewState());
     }
   }, [reviewSuccessMessage, reviewError, dispatch]);
-
   const handleCloseModal = () => {
     setOpenModal(false);
     setReviewNotes("");
     setReviewImages([]);
   };
-
   const handleDeletePatientIdProof = (index) => {
     Swal.fire({
       title: "Delete this image?",
@@ -251,7 +234,6 @@ export default function EditEnquiry() {
       }
     });
   };
-
   const handleDeleteAttendantIdProof = async (index) => {
     Swal.fire({
       title: "Delete this image?",
@@ -281,7 +263,6 @@ export default function EditEnquiry() {
       }
     });
   };
-
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -679,7 +660,6 @@ export default function EditEnquiry() {
                                 (file, index) => {
                                   const type = getFileType(file);
                                   const fileUrl = `${imageUrl}${file}`;
-
                                   return (
                                     <div className="file-preview" key={index}>
                                       <span
@@ -747,7 +727,6 @@ export default function EditEnquiry() {
                               }
                             }}
                           />
-
                           <div className="engpatimg">
                             {previewImage ? (
                               <button
@@ -883,8 +862,6 @@ export default function EditEnquiry() {
                           </Field>
                         </div>
                       </div>
-
-                      {/* Doctor Review Section */}
                       <div className="col-md-12">
                         <div className="d-flex justify-content-between align-items-center mb-3 mt-4">
                           <h5 className="card-title">Doctor Review</h5>
@@ -898,8 +875,6 @@ export default function EditEnquiry() {
                           </Button>
                         </div>
                       </div>
-
-                      {/* Latest Review Display */}
                       {(doctorReviewData || editenquiry?.doctorReview) && (
                         <div className="col-md-12">
                           <div className="card-box mb-4">
@@ -940,8 +915,6 @@ export default function EditEnquiry() {
                           </div>
                         </div>
                       )}
-
-                      {/* Comments History Display */}
                       {((doctorComments && doctorComments.length > 0) || (editenquiry?.doctorReview?.comments && editenquiry.doctorReview.comments.length > 0)) && (
                         <div className="col-md-12">
                           <div className="treat-hd">
@@ -1007,7 +980,6 @@ export default function EditEnquiry() {
                           </div>
                         </div>
                       )}
-
                       <div className="col-md-12">
                         <div className="form-check mb-3">
                           <Field
@@ -1216,8 +1188,6 @@ export default function EditEnquiry() {
           </div>
         </div>
       </div>
-
-      {/* Add Comment Modal */}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -1228,7 +1198,6 @@ export default function EditEnquiry() {
           <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
             Add Doctor Review
           </Typography>
-          
           <div className="mb-3">
             <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
               Review Notes <span className="text-danger">*</span>
@@ -1242,7 +1211,6 @@ export default function EditEnquiry() {
               style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ced4da' }}
             />
           </div>
-
           <div className="mb-3">
             <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
               Upload Images <span className="text-danger">*</span>
@@ -1263,7 +1231,6 @@ export default function EditEnquiry() {
               </small>
             )}
           </div>
-
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
             <Button 
               variant="outlined" 
