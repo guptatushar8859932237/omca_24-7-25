@@ -4791,9 +4791,7 @@ function PatientDetail() {
                                                                           item?.paid_amount
                                                                         }
                                                                       </td>
-                                                                      <td>
-                                                                        method
-                                                                      </td>
+                                                                      
                                                                       <td>
                                                                         {new Date(
                                                                           item.payment_Date,
@@ -4801,7 +4799,9 @@ function PatientDetail() {
                                                                           "en-GB",
                                                                         )}
                                                                       </td>
-
+<td>
+                                                                      {item.paymentMethod}
+                                                                      </td>
                                                                       <td>
                                                                         {item.notes ||
                                                                           "-"}
@@ -6236,7 +6236,11 @@ function PatientDetail() {
                                       <div className="row">
                                         <div className="col-md-12">
                                           <div className="top-collpse">
-                                            <div className="treat-buttons">
+                                            <div className="treat-buttons d-flex justify-content-between">
+                                              <div>
+                                              <h4>Reports</h4>
+                                              </div>
+                                              <div>
                                               <button
                                                 className="add-button"
                                                 onClick={(e) =>
@@ -6251,6 +6255,7 @@ function PatientDetail() {
                                                 </span>
                                                 Add Report
                                               </button>
+                                              </div>
                                             </div>
                                           </div>
                                           <div className="table-responsive">
@@ -6431,6 +6436,127 @@ function PatientDetail() {
                                                 </TableBody>
                                               </Table>
                                             </TableContainer>
+                                               <TableContainer
+                                        component={Paper}
+                                        className="pb-4"
+                                      >
+                                        {doctorReviewNotes?.doctorReview?.comments &&
+                                          doctorReviewNotes?.doctorReview?.comments.length >
+                                            0 && (
+                                            <div className="col-md-12">
+                                              <div className="treat-hd mt-3">
+                                                <h6>Comments</h6>
+                                                <span className="line"></span>
+                                              </div>
+                                              <div className="row gy-3">
+                                                {doctorReviewNotes?.doctorReview?.comments.map(
+                                                  (comment, commentIndex) => (
+                                                    <div
+                                                      className="col-md-12"
+                                                      key={
+                                                        comment._id ||
+                                                        commentIndex
+                                                      }
+                                                    >
+                                                      <div className="card customstylecard">
+                                                        <div className="card-body">
+                                                          <div className="note-view">
+                                                            <h3 className="card-title">
+                                                              {
+                                                                comment.user_type
+                                                              }{" "}
+                                                              Note
+                                                            </h3>
+                                                          </div>
+                                                          <div className="experience-box">
+                                                            <ul className="experience-list">
+                                                              <li className="mb-0">
+                                                                <div className="experience-user">
+                                                                  <div className="before-circle"></div>
+                                                                </div>
+                                                                <div className="experience-content">
+                                                                  <div className="timeline-content">
+                                                                    <a
+                                                                      href="#/"
+                                                                      className="name"
+                                                                    >
+                                                                      {
+                                                                        comment.Notes
+                                                                      }
+                                                                    </a>
+
+                                                                    {/* Show images if present */}
+                                                                    {comment.images &&
+                                                                      comment
+                                                                        .images
+                                                                        .length >
+                                                                        0 && (
+                                                                        <div className="mt-2 mb-2">
+                                                                          {comment.images.map(
+                                                                            (
+                                                                              img,
+                                                                              imgIndex,
+                                                                            ) => {
+                                                                              const fullUrl =
+                                                                                img.startsWith(
+                                                                                  "http",
+                                                                                )
+                                                                                  ? img
+                                                                                  : image +
+                                                                                    img;
+                                                                              return (
+                                                                                <button
+                                                                                  key={
+                                                                                    imgIndex
+                                                                                  }
+                                                                                  type="button"
+                                                                                  className="viewbtn btn-sm me-2"
+                                                                                  onClick={() =>
+                                                                                    window.open(
+                                                                                      fullUrl,
+                                                                                      "_blank",
+                                                                                    )
+                                                                                  }
+                                                                                >
+                                                                                  View
+                                                                                  Document{" "}
+                                                                                  {imgIndex +
+                                                                                    1}
+                                                                                </button>
+                                                                              );
+                                                                            },
+                                                                          )}
+                                                                        </div>
+                                                                      )}
+
+                                                                    <div>
+                                                                      Date -{" "}
+                                                                      {comment.Date
+                                                                        ? new Date(
+                                                                            comment.Date,
+                                                                          ).toLocaleDateString(
+                                                                            "en-GB",
+                                                                          )
+                                                                        : new Date(
+                                                                            comment.createdAt,
+                                                                          ).toLocaleDateString(
+                                                                            "en-GB",
+                                                                          )}
+                                                                    </div>
+                                                                  </div>
+                                                                </div>
+                                                              </li>
+                                                            </ul>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  ),
+                                                )}
+                                              </div>
+                                            </div>
+                                          )}
+                                      </TableContainer>
                                           </div>
                                         </div>
                                       </div>
@@ -6982,7 +7108,7 @@ function PatientDetail() {
                 <Box>
                   <div className="field-set">
                     <label>
-                      Select Reports<span className="text-danger"></span>
+                      Select Reports<span className="text-danger">*</span>
                     </label>
                     <input
                       type="file"
