@@ -946,14 +946,14 @@ export default function Inquiry() {
                             </TableSortLabel>
                           </TableCell>
                           <TableCell>
-                          <TableSortLabel
-  active={orderBy === "Enquiry_status"}
-  direction={orderBy === "Enquiry_status" ? orderDirection : "asc"}
-  onClick={() => handleRequestSort("Enquiry_status")}
->
-  Status
-</TableSortLabel>
-</TableCell>
+                            <TableSortLabel
+                              active={orderBy === "Enquiry_status"}
+                              direction={orderBy === "Enquiry_status" ? orderDirection : "asc"}
+                              onClick={() => handleRequestSort("Enquiry_status")}
+                            >
+                              Status
+                            </TableSortLabel>
+                          </TableCell>
                           {/* <TableCell>Status</TableCell> */}
                           <TableCell>Actions</TableCell>
                           {tabValue === 0 ? (
@@ -969,16 +969,16 @@ export default function Inquiry() {
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
                         ).length > 0 ? (
                           (pdfRowLimit
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage,
-                              )
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
                           ).map((info, i) => (
                             <TableRow
                               role="checkbox"
@@ -1034,7 +1034,7 @@ export default function Inquiry() {
                                           : info.Enquiry_status === "Hold"
                                             ? "2"
                                             : info.Enquiry_status ===
-                                                "Follow-Up"
+                                              "Follow-Up"
                                               ? "3"
                                               : info.Enquiry_status === "Dead"
                                                 ? "4"
@@ -1096,11 +1096,11 @@ export default function Inquiry() {
 
                                     {localStorage.getItem("Role") ===
                                       "Admin" && (
-                                      <i
-                                        className="fa-solid fa-trash"
-                                        onClick={() => handledelete(info)}
-                                      ></i>
-                                    )}
+                                        <i
+                                          className="fa-solid fa-trash"
+                                          onClick={() => handledelete(info)}
+                                        ></i>
+                                      )}
                                   </>
                                 ) : (
                                   // 🔥 NEW DELETE FOR OTHER TABS
