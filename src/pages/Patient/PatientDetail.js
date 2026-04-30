@@ -4069,7 +4069,6 @@ function PatientDetail() {
                                     <div className="mt-3">
                                       <h4>Treatment plan</h4>
                                     </div>
-
                                     {info.documents.map((doc, index) => (
                                       <div className="col-auto" key={index}>
                                         <button
@@ -4087,7 +4086,7 @@ function PatientDetail() {
                                     ))}
                                   </div>
                                 ) : (
-                                  <span>No Docs</span>
+                                  <span></span>
                                 )}
                                 {info?.doctorReview?.review_notes ? (
                                   <>
@@ -4137,14 +4136,13 @@ function PatientDetail() {
                                                     View Doc
                                                   </button>
                                                 ) : (
-                                                  <span>No Docs</span>
+                                                  <span></span>
                                                 )}
                                               </TableCell>
                                             </TableRow>
                                           </TableBody>
                                         </Table>
                                       </TableContainer>
-
                                       <TableContainer
                                         component={Paper}
                                         className="pb-4"
@@ -6408,7 +6406,7 @@ function PatientDetail() {
                                                 )}
                                               </div>
                                             ) : (
-                                              <span>No Docs</span>
+                                              <span></span>
                                             )}
                                             <div className="mt-5">
                                               <h4>Doctor Review</h4>
@@ -6458,7 +6456,7 @@ function PatientDetail() {
                                                           View Doc
                                                         </button>
                                                       ) : (
-                                                        <span>No Docs</span>
+                                                        <span></span>
                                                       )}
                                                     </TableCell>
                                                   </TableRow>

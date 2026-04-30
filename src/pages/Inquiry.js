@@ -202,18 +202,18 @@ export default function Inquiry() {
     dispatch(GetAllEnquiry());
     console.log(error, Enquiry);
   }, [dispatch]);
-  useEffect(() => {
-    if (Array.isArray(Enquiry) && Enquiry.length > 0) {
-      const filtered = Enquiry.filter(
-        (item) => item.Enquiry_status !== "Confirmed",
-      );
-      setRows(filtered);
-      setSearchApiData(filtered);
-    } else {
-      setRows([]);
-      setSearchApiData([]);
-    }
-  }, [Enquiry]);
+  // useEffect(() => {
+  //   if (Array.isArray(Enquiry) && Enquiry.length > 0) {
+  //     const filtered = Enquiry.filter(
+  //       (item) => item.Enquiry_status !== "Confirmed",
+  //     );
+  //     setRows(filtered);
+  //     setSearchApiData(filtered);
+  //   } else {
+  //     setRows([]);
+  //     setSearchApiData([]);
+  //   }
+  // }, [Enquiry]);
 
   useEffect(() => {
     const savedTab = localStorage.getItem("tabenquiry");
@@ -268,10 +268,12 @@ export default function Inquiry() {
       );
 
       if (res?.data?.success) {
+        dispatch(testForms()); 
+          await get3tabdata(datauserId, getcountries, roleStatuses);
+        // 👈 this will hit get_requestvipapp
         Swal.fire("Deleted!", "Record deleted successfully", "success");
 
         // ✅ IMPORTANT: refresh data
-        dispatch(testForms()); // 👈 this will hit get_requestvipapp
       }
     } catch (error) {
       console.log(error);
@@ -336,6 +338,7 @@ export default function Inquiry() {
         data,
       );
       dispatch(testForms());
+        await get3tabdata(datauserId, getcountries, roleStatuses);
       if (response?.data?.success) {
         // Swal.fire("Success", "Status Updated Successfully", "success");
       }
@@ -344,10 +347,18 @@ export default function Inquiry() {
       Swal.fire("Error", "Something went wrong", "error");
     }
   };
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-    localStorage.setItem("tabenquiry", newValue);
-  };
+const handleTabChange = (event, newValue) => {
+  setTabValue(newValue);
+  localStorage.setItem("tabenquiry", newValue);
+
+  setRows([]);
+  setSearchApiData([]);
+};
+
+// data set hone ke baad
+useEffect(() => {
+  // setLoadingTab(false);
+}, [rows]);
   const handleChange = async (event, id, tabValue, data) => {
     console.log(event, id, tabValue, data);
     const { value } = event.target;
@@ -692,26 +703,102 @@ export default function Inquiry() {
     setRows(sortedData);
   };
   useEffect(() => {
-    let filtered = [];
-    switch (tabValue) {
-      case 0:
-        filtered = normalizeData(Enquiry || [], "enquiry");
-        break;
-      case 1:
-        filtered = normalizeData(ambulanceData, "ambulance");
-        break;
-      case 2:
-        filtered = normalizeData(airAmbulanceData, "air");
-        break;
-      case 3:
-        filtered = normalizeData(treatmentData, "treatment");
-        break;
-      default:
-        filtered = [];
-    }
-    setRows(filtered);
-    setSearchApiData(filtered);
-  }, [tabValue, Enquiry, ambulanceData, airAmbulanceData, treatmentData]);
+  let filtered = [];
+
+  if (tabValue === 0 && Enquiry?.length) {
+    filtered = normalizeData(Enquiry, "enquiry");
+  }
+
+  if (tabValue === 1 && ambulanceData?.length) {
+    filtered = normalizeData(ambulanceData, "ambulance");
+  }
+
+  if (tabValue === 2 && airAmbulanceData?.length) {
+    filtered = normalizeData(airAmbulanceData, "air");
+  }
+
+  if (tabValue === 3 && treatmentData?.length) {
+    filtered = normalizeData(treatmentData, "treatment");
+  }
+
+  setRows(filtered);
+  setSearchApiData(filtered);
+}, [tabValue, Enquiry, ambulanceData, airAmbulanceData, treatmentData]);
+//   useEffect(() => {
+//   let filtered = [];
+
+//   if (tabValue === 0) {
+//     filtered = normalizeData(Enquiry || [], "enquiry");
+//   }
+
+//   if (tabValue === 1) {
+//     filtered = normalizeData(ambulanceData, "ambulance");
+//   }
+
+//   if (tabValue === 2) {
+//     filtered = normalizeData(airAmbulanceData, "air");
+//   }
+
+//   if (tabValue === 3) {
+//     filtered = normalizeData(treatmentData, "treatment");
+//   }
+
+//   setRows(filtered);
+//   setSearchApiData(filtered);
+// }, [tabValue]); // ✅ ONLY tabValue
+
+// useEffect(() => {
+//   if (tabValue === 0) {
+//     const data = normalizeData(Enquiry || [], "enquiry");
+//     setRows(data);
+//     setSearchApiData(data);
+//   }
+// }, [Enquiry]);
+
+// useEffect(() => {
+//   if (tabValue === 1) {
+//     const data = normalizeData(ambulanceData, "ambulance");
+//     setRows(data);
+//     setSearchApiData(data);
+//   }
+// }, [ambulanceData]);
+
+// useEffect(() => {
+//   if (tabValue === 2) {
+//     const data = normalizeData(airAmbulanceData, "air");
+//     setRows(data);
+//     setSearchApiData(data);
+//   }
+// }, [airAmbulanceData]);
+
+// useEffect(() => {
+//   if (tabValue === 3) {
+//     const data = normalizeData(treatmentData, "treatment");
+//     setRows(data);
+//     setSearchApiData(data);
+//   }
+// }, [treatmentData]);
+  // useEffect(() => {
+  //   let filtered = [];
+  //   switch (tabValue) {
+  //     case 0:
+  //       filtered = normalizeData(Enquiry || [], "enquiry");
+  //       break;
+  //     case 1:
+  //       filtered = normalizeData(ambulanceData, "ambulance");
+  //       break;
+  //     case 2:
+  //       filtered = normalizeData(airAmbulanceData, "air");
+  //       break;
+  //     case 3:
+  //       filtered = normalizeData(treatmentData, "treatment");
+  //       break;
+  //     default:
+  //       filtered = [];
+  //   }
+  //   setRows(filtered);
+  //   setSearchApiData(filtered);
+  // }, [tabValue, Enquiry, ambulanceData, airAmbulanceData, treatmentData]);
   const normalizeData = (data, type) => {
     return data.map((item) => ({
       enquiryId: item.enquiryId || item.id || 0,
@@ -775,17 +862,17 @@ export default function Inquiry() {
                 <Tab label="Treatment Estimate" />
               </Tabs>
             )} */}
-            <Tabs value={tabValue} onChange={handleTabChange}>
-              {filteredTabs.map((tab) => (
-                <Tab key={tab.value} label={tab.label} />
-              ))}
-            </Tabs>
+           <Tabs value={tabValue} onChange={handleTabChange}>
+  {filteredTabs.map((tab) => (
+    <Tab key={tab.value} label={tab.label} value={tab.value} />
+  ))}
+</Tabs>
           </Box>
           <div className="row">
             <div className="col-md-12">
               <div className="country-top">
                 <div className="">
-                  {/* <h4 className="page-title mb-0">
+                  <h4 className="page-title mb-0">
                     {tabValue === 0
                       ? "Enquiries"
                       : tabValue === 1
@@ -795,7 +882,7 @@ export default function Inquiry() {
                           : tabValue === 3
                             ? "Treatment Estimate"
                             : ""}
-                  </h4> */}
+                  </h4>
                 </div>
                 <div className="search-btn-main">
                   <div className="mr-3">
@@ -1163,7 +1250,31 @@ export default function Inquiry() {
           </div>
         </div>
       </div>
-      <React.Fragment>
+     
+      <div
+        id="delete_appointment"
+        className="modal fade delete-modal"
+        role="dialog"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body text-center">
+              <img src="assets/img/sent.png" alt="" width="50" height="46" />
+              <h3>Are you sure want to delete this Appointment?</h3>
+              <div className="m-t-20">
+                {" "}
+                <a href="#" className="btn btn-white" data-dismiss="modal">
+                  Close
+                </a>
+                <button type="submit" className="btn btn-danger">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}
           maxWidth={maxWidth}
@@ -1222,29 +1333,6 @@ export default function Inquiry() {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-      <div
-        id="delete_appointment"
-        className="modal fade delete-modal"
-        role="dialog"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-body text-center">
-              <img src="assets/img/sent.png" alt="" width="50" height="46" />
-              <h3>Are you sure want to delete this Appointment?</h3>
-              <div className="m-t-20">
-                {" "}
-                <a href="#" className="btn btn-white" data-dismiss="modal">
-                  Close
-                </a>
-                <button type="submit" className="btn btn-danger">
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <React.Fragment>
         <Dialog
           fullWidth={fullWidth}
