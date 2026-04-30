@@ -237,49 +237,42 @@ export default function Inquiry() {
       },
     });
   };
-  const handleDeleteExternal = async (row) => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to delete this request?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, Delete",
-    });
-
-    if (!result.isConfirmed) return;
-
-    try {
-      const payload = {
-        id: row.raw.id,
-        model:
-          tabValue === 1
-            ? "AmbulanceRequest"
-            : tabValue === 2
-              ? "AirAmbulance"
-              : tabValue === 3
-                ? "PatientQuery"
-                : "",
-        status: "Deleted", // 👈 ya "delete" jo backend accept kare
-      };
-
-      const res = await axios.post(
-        `${AdminBaseUrl}update_user_request_status`,
-        payload,
-      );
-
-      if (res?.data?.success) {
-        dispatch(testForms()); 
-          await get3tabdata(datauserId, getcountries, roleStatuses);
-        // 👈 this will hit get_requestvipapp
-        Swal.fire("Deleted!", "Record deleted successfully", "success");
-
-        // ✅ IMPORTANT: refresh data
-      }
-    } catch (error) {
-      console.log(error);
-      Swal.fire("Error!", "Something went wrong", "error");
+ const handleDeleteExternal = async (row) => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "Do you want to delete this request?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, Delete",
+  });
+  if (!result.isConfirmed) return;
+  try {
+    const payload = {
+      id: row.raw?.id || row.enquiryId, // ✅ safe id
+      model:
+        tabValue === 1
+          ? "AmbulanceRequest"
+          : tabValue === 2
+          ? "AirAmbulance"
+          : tabValue === 3
+          ? "PatientQuery"
+          : "",
+      status: "Deleted",
+    };
+    const res = await axios.post(
+      `${AdminBaseUrl}update_user_request_status`,
+      payload
+    );
+    if (res?.data?.success) {
+      Swal.fire("Deleted!", "Record deleted successfully", "success");
+      await dispatch(testForms());   // external data
+      await getUserId();            // tab data reload
     }
-  };
+  } catch (error) {
+    console.log(error);
+    Swal.fire("Error!", "Something went wrong", "error");
+  }
+};
   const ViewDetail = (e, type, info) => {
     console.log(e, type, info);
     const routeMap = {
@@ -338,7 +331,7 @@ export default function Inquiry() {
         data,
       );
       dispatch(testForms());
-        await get3tabdata(datauserId, getcountries, roleStatuses);
+        // await get3tabdata(datauserId, getcountries, roleStatuses);
       if (response?.data?.success) {
         // Swal.fire("Success", "Status Updated Successfully", "success");
       }
