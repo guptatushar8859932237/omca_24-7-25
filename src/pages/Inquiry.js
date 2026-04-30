@@ -343,12 +343,9 @@ export default function Inquiry() {
 const handleTabChange = (event, newValue) => {
   setTabValue(newValue);
   localStorage.setItem("tabenquiry", newValue);
-
   setRows([]);
   setSearchApiData([]);
 };
-
-// data set hone ke baad
 useEffect(() => {
   // setLoadingTab(false);
 }, [rows]);
@@ -455,20 +452,17 @@ useEffect(() => {
         timer: 3000,
         showConfirmButton: false,
       });
-
       return response.data;
     } catch (err) {
       console.error(
         "Error downloading the sample file:",
         err.response?.data?.message || err.message,
       );
-
       Swal.fire({
         icon: "error",
         title: "Download Failed",
         text: err.response?.data?.message || "Something went wrong!",
       });
-
       throw err;
     }
   };

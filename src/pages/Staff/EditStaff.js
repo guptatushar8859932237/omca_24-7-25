@@ -21,6 +21,7 @@ export default function EditStaff() {
   const dispatch = useDispatch();
   const { staff } = useSelector((state) => state.staff);
   const { Countries } = useSelector((state) => state.Countries);
+  const [roles123,setRoles123] = useState([]);
   const [editStaff, setEditStaff] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const statusOptions = [
@@ -29,6 +30,21 @@ export default function EditStaff() {
     "Insurance",
     "Insurance + Private",
   ];
+  useEffect(()=>{
+    getRolesuser()
+  },[])
+
+  const getRolesuser =async()=>{
+    try {
+    const response =await axios.get(`${baseurl}getAllRoles`) 
+    console.log(response.data.data)
+    if(response.data.data){
+      setRoles123(response.data.data)
+    }     
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
     dispatch(GetAllStaffUser());
     dispatch(GetAllCountries2());
@@ -363,14 +379,13 @@ export default function EditStaff() {
                       <Field as="select" name="role" className="form-control">
                         <option value="">Select Role</option>
                         {/* <option value="Admin">Admin</option> */}
-                        <option value="Manager">Manager</option>
-                        <option value="Receptionist">Receptionist</option>
-                        <option value="Doctor">Doctor</option>
-                        <option value="Nurse">Nurse</option>
-                        <option value="Insurance Partner">Insurance Partner</option>
-                        <option value="Physiotherapist">Physiotherapist</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Coordinator">Coordinator</option>
+                 {
+                  roles123?.map((item,index)=>{
+                    return(
+                      <option value={item.role}>{item.role}</option>
+                    )
+                  })
+                 }
                       </Field>
                       <ErrorMessage
                         name="role"
@@ -379,7 +394,6 @@ export default function EditStaff() {
                       />
                     </div>
                   </div>
-
                   {/* <div className="col-sm-3">
                     <div className="field-set gender-select">
                       <label>Is Edit *</label>

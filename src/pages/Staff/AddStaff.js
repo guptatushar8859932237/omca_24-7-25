@@ -18,6 +18,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { GetAllCountries, GetAllCountries2 } from "../../reducer/Countries";
 import axios from "axios";
 import { baseurl } from "../../Basurl/Baseurl";
+import { getRoles } from "@testing-library/react";
 export default function AddStaff() {
   // const { Countries } = useSelector((state) => state.Countries);
 
@@ -29,6 +30,7 @@ export default function AddStaff() {
    
   ];
   const dispatch = useDispatch();
+  const [roles, setRoles] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const { Countries } = useSelector((state) => state.Countries);
   // const [Countries,setCountries]=useState([])
@@ -137,8 +139,23 @@ export default function AddStaff() {
 //       ),
 //   });
   useEffect(() => {
+  getRoles()
+  }, []);
+  useEffect(() => {
     dispatch(GetAllCountries2());
   }, [dispatch]);
+
+ const getRoles = async () => {
+  try {
+    const response = await axios.get(`${baseurl}getAllRoles`);
+
+    if (response?.data?.data) {
+      setRoles(response.data.data);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
     // const { Countries } = useSelector((state) => state.Countries);
   return (
     <>
@@ -369,14 +386,13 @@ export default function AddStaff() {
                         </label>
                         <Field as="select" className="form-control" name="role">
                           <option value="">Select Role</option>
-                          <option value="Manager">Manager</option>
-                          <option value="Receptionist">Receptionist</option>
-                          <option value="Doctor">Doctor</option>
-                          <option value="Nurse">Nurse</option> 
-                          <option value="Insurance Partner">Insurance Partner</option> 
-                          <option value="Physiotherapist">Physiotherapist</option>
-                          <option value="Finance">Finance</option>
-                          <option value="Coordinator">Coordinator</option>
+                          {
+                            roles.map((item,index)=>{
+                              return(
+                                <option value={item.role}>{item.role}</option>
+                              )
+                            })
+                          }
                         </Field>
                         <ErrorMessage
                           name="role"
