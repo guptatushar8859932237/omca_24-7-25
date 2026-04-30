@@ -547,7 +547,7 @@ export default function AddEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Emergency Contact No With Country Code<span className="text-danger">*</span></label>
+                              <label>Emergency Contact No With Country Code<span className="text-danger"></span></label>
                               <div className="country-code">
                                 <Field
                                   className="form-control code-dial"
@@ -678,7 +678,7 @@ export default function AddEnquiry() {
                           <div className="col-md-4">
                             <div className="set-field">
                               <label>
-                                Referral Name<span className="text-danger">*</span>
+                                Referral Name<span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -693,7 +693,7 @@ export default function AddEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Treatment Name<span className="text-danger">*</span></label>
+                              <label>Treatment Name<span className="text-danger"></span></label>
                               <Field name="disease_name">
                                 {({ form, meta }) => (
                                   <>

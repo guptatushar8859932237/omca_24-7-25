@@ -9,19 +9,14 @@ import axios from "axios";
 import { image, baseurl } from "../../Basurl/Baseurl";
 import { GetAllStaffUser } from "../../reducer/StaffSlice";
 import { GetAllCountries2 } from "../../reducer/Countries";
-import {
-  FormControl,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from "@mui/material";
+import { FormControl, MenuItem, OutlinedInput, Select } from "@mui/material";
 export default function EditStaff() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
   const { staff } = useSelector((state) => state.staff);
   const { Countries } = useSelector((state) => state.Countries);
-  const [roles123,setRoles123] = useState([]);
+  const [roles123, setRoles123] = useState([]);
   const [editStaff, setEditStaff] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const statusOptions = [
@@ -30,21 +25,21 @@ export default function EditStaff() {
     "Insurance",
     "Insurance + Private",
   ];
-  useEffect(()=>{
-    getRolesuser()
-  },[])
+  useEffect(() => {
+    getRolesuser();
+  }, []);
 
-  const getRolesuser =async()=>{
+  const getRolesuser = async () => {
     try {
-    const response =await axios.get(`${baseurl}getAllRoles`) 
-    console.log(response.data.data)
-    if(response.data.data){
-      setRoles123(response.data.data)
-    }     
+      const response = await axios.get(`${baseurl}getAllRoles`);
+      console.log(response.data.data);
+      if (response.data.data) {
+        setRoles123(response.data.data);
+      }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   useEffect(() => {
     dispatch(GetAllStaffUser());
     dispatch(GetAllCountries2());
@@ -63,7 +58,16 @@ export default function EditStaff() {
     name: Yup.string().required("Name is required"),
     role: Yup.string()
       .oneOf(
-        ["Manager", "Staff", "Finance", "Coordinator", "Receptionist","Insurance Partner","Physiotherapist" , "Nurse"],
+        [
+          "Manager",
+          "Staff",
+          "Finance",
+          "Coordinator",
+          "Receptionist",
+          "Insurance Partner",
+          "Physiotherapist",
+          "Nurse",
+        ],
         "Invalid role",
       )
       .required("Role is required"),
@@ -99,10 +103,10 @@ export default function EditStaff() {
       formData.append("gender", values.gender);
       formData.append("country", values.country);
       formData.append("dial_code", values.dial_code);
-  formData.append(
-  "roleStatuses",
-  JSON.stringify(values.roleStatuses.filter(Boolean))
-);
+      formData.append(
+        "roleStatuses",
+        JSON.stringify(values.roleStatuses.filter(Boolean)),
+      );
       formData.append(
         "accessCountries",
         JSON.stringify(values.accessCountries),
@@ -151,9 +155,9 @@ export default function EditStaff() {
               country: editStaff.country || "",
               dial_code: editStaff.dial_code || "",
               profileImage: editStaff.profileImage || null,
-             roleStatuses: editStaff.roleStatuses || [],
-  //              isEdit: editStaff.isEdit || "0",   // FIXED
-  // isDelete: editStaff.isDelete || "0", // FIXED
+              roleStatuses: editStaff.roleStatuses || [],
+              //              isEdit: editStaff.isEdit || "0",   // FIXED
+              // isDelete: editStaff.isDelete || "0", // FIXED
               accessCountries: editStaff.accessCountries || [],
             }}
             validationSchema={validationSchema}
@@ -315,8 +319,6 @@ export default function EditStaff() {
                         value={values.accessCountries}
                         onChange={(event) => {
                           const value = event.target.value;
-
-                          // Select All logic
                           if (value.includes("All")) {
                             if (
                               values.accessCountries.length === Countries.length
@@ -338,7 +340,6 @@ export default function EditStaff() {
                           PaperProps: { style: { maxHeight: 300 } },
                         }}
                       >
-                        {/* Select All */}
                         <MenuItem value="All">
                           <Checkbox
                             checked={
@@ -351,8 +352,6 @@ export default function EditStaff() {
                           />
                           <ListItemText primary="Select All" />
                         </MenuItem>
-
-                        {/* Country list */}
                         {Countries?.map((con) => (
                           <MenuItem key={con._id} value={con.name}>
                             <Checkbox
@@ -365,27 +364,20 @@ export default function EditStaff() {
                         ))}
                       </Select>
                     </FormControl>
-
                     <ErrorMessage
                       name="accessCountries"
                       component="div"
                       className="text-danger"
                     />
                   </div>
-
                   <div className="col-sm-6">
                     <div className="field-set">
                       <label>Role *</label>
                       <Field as="select" name="role" className="form-control">
                         <option value="">Select Role</option>
-                        {/* <option value="Admin">Admin</option> */}
-                 {
-                  roles123?.map((item,index)=>{
-                    return(
-                      <option value={item.role}>{item.role}</option>
-                    )
-                  })
-                 }
+                        {roles123?.map((item, index) => {
+                          return <option value={item.role}>{item.role}</option>;
+                        })}
                       </Field>
                       <ErrorMessage
                         name="role"
@@ -405,7 +397,6 @@ export default function EditStaff() {
                         <Field type="radio" name="isEdit" value="0" />{" "}
                         No
                       </div>
-                    
                       <ErrorMessage
                         name="isEdit"
                         component="div"
@@ -413,8 +404,7 @@ export default function EditStaff() {
                       />
                     </div>
                   </div>
-
-                  <div className="col-sm-3">
+ssName="col-sm-3">
                     <div className="field-set gender-select">
                       <label>Is Delete *</label>
                       <br />
@@ -502,21 +492,24 @@ export default function EditStaff() {
                         value={values.roleStatuses}
                         name="roleStatuses"
                         onChange={(event) => {
-  let value = event.target.value;
+                          let value = event.target.value;
 
-  // ❌ Remove empty values
-  value = value.filter((v) => v !== "");
+                          // ❌ Remove empty values
+                          value = value.filter((v) => v !== "");
 
-  if (value.includes("All")) {
-    if (values.roleStatuses.length === statusOptions.length) {
-      setFieldValue("roleStatuses", []);
-    } else {
-      setFieldValue("roleStatuses", statusOptions);
-    }
-  } else {
-    setFieldValue("roleStatuses", value);
-  }
-}}
+                          if (value.includes("All")) {
+                            if (
+                              values.roleStatuses.length ===
+                              statusOptions.length
+                            ) {
+                              setFieldValue("roleStatuses", []);
+                            } else {
+                              setFieldValue("roleStatuses", statusOptions);
+                            }
+                          } else {
+                            setFieldValue("roleStatuses", value);
+                          }
+                        }}
                         className=""
                         renderValue={(selected) => selected.join(", ")}
                         MenuProps={{
@@ -526,7 +519,10 @@ export default function EditStaff() {
                           disableAutoFocusItem: true,
                         }}
                       >
-                        <MenuItem className="custmselect staffpermiss" value="All">
+                        <MenuItem
+                          className="custmselect staffpermiss"
+                          value="All"
+                        >
                           <Checkbox
                             checked={
                               values.roleStatuses.length ===
@@ -537,16 +533,26 @@ export default function EditStaff() {
                               values.roleStatuses.length < statusOptions.length
                             }
                           />
-                          <ListItemText className="custmselect" primary="Select All" />
+                          <ListItemText
+                            className="custmselect"
+                            primary="Select All"
+                          />
                         </MenuItem>
                         {statusOptions.map((roleStatuses) => (
-                          <MenuItem className="custmselect staffpermiss" key={roleStatuses} value={roleStatuses}>
+                          <MenuItem
+                            className="custmselect staffpermiss"
+                            key={roleStatuses}
+                            value={roleStatuses}
+                          >
                             <Checkbox
                               checked={
                                 values.roleStatuses.indexOf(roleStatuses) > -1
                               }
                             />
-                            <ListItemText className="custmselect" primary={roleStatuses} />
+                            <ListItemText
+                              className="custmselect"
+                              primary={roleStatuses}
+                            />
                           </MenuItem>
                         ))}
                       </Select>

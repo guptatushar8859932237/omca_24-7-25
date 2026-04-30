@@ -614,7 +614,7 @@ export default function EditEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Emergency Contact No<span className="text-danger">*</span></label>
+                              <label>Emergency Contact No<span className="text-danger"></span></label>
                               <div className="country-code">
                                 <Field
                                   className="form-control code-dial"
@@ -770,7 +770,7 @@ export default function EditEnquiry() {
                           <div className="col-md-4">
                             <div className="set-field">
                               <label>
-                                Referral Name<span className="text-danger">*</span>
+                                Referral Name<span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -787,7 +787,7 @@ export default function EditEnquiry() {
                             <div className="set-field">
                               <label>
                                 Treatment name
-                                <span className="text-danger">*</span>
+                                <span className="text-danger"></span>
                               </label>
                               <Autocomplete
                                 options={Treatment || []}
