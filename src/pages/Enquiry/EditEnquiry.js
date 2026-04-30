@@ -932,7 +932,7 @@ export default function EditEnquiry() {
                                             className="viewbtn"
                                             onClick={() => window.open(`${imageUrl}${img}`, "_blank")}
                                           >
-                                            View {index + 1}
+                                            View 
                                           </button>
                                         ))}
                                       </div>
@@ -983,7 +983,7 @@ export default function EditEnquiry() {
                                                             className="viewbtn me-2"
                                                             onClick={() => window.open(fullUrl, "_blank")}
                                                           >
-                                                            View {imgIndex + 1}
+                                                            View 
                                                           </button>
                                                         );
                                                       })}
@@ -1246,7 +1246,7 @@ export default function EditEnquiry() {
                 </div>
                 <div className="col-md-12">
                   <div className="set-field">
-                    <label>Upload Images <span className="text-danger">*</span> </label>
+                    <label>Upload Images <span className="text-danger"></span> </label>
                     <input
                       type="file"
                       className="form-control"

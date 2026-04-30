@@ -3665,12 +3665,12 @@ function PatientDetail() {
                   {ispatient?.contact_no && (
                     <p>
                       <i className="fa-solid fa-phone"></i>
-                      <span>{ispatient.contact_no}</span>
+                      <span>{ispatient.phoneCode}{" "}{ispatient.contact_no}</span>
                     </p>
                   )}
                   <p>
                     <i class="fa-solid fa-phone"></i>
-                    <span>{ispatient?.emergency_contact_no}</span>
+                    <span>{ispatient.phoneCode}{" "}{ispatient?.emergency_contact_no}</span>
                   </p>
                   <p>
                     <i class="fa-solid fa-envelope"></i>
@@ -3975,7 +3975,7 @@ function PatientDetail() {
                     ) : (
                       <>
                         {treatemntData1?.map((info, index) => {
-                          console.log(info, "array data");
+                          // console.log(info, "array data");
                           return (
                             <div className="card-box" key={index}>
                               <div className="treatment-header">
@@ -4067,7 +4067,7 @@ function PatientDetail() {
                                 {info?.documents?.length > 0 ? (
                                   <div className="row">
                                     <div className="mt-3">
-                                      <h4>Documents</h4>
+                                      <h4>Treatment plan</h4>
                                     </div>
 
                                     {info.documents.map((doc, index) => (
@@ -4859,7 +4859,7 @@ function PatientDetail() {
                                                                         )}
                                                                       </td>
                                                                       <td>
-                                                                        no pdf
+                                                                       -
                                                                       </td>
                                                                       {/* <td>
                                                                       <div className="action-icon">

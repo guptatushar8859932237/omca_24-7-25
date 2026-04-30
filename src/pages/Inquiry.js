@@ -785,7 +785,7 @@ export default function Inquiry() {
             <div className="col-md-12">
               <div className="country-top">
                 <div className="">
-                  <h4 className="page-title mb-0">
+                  {/* <h4 className="page-title mb-0">
                     {tabValue === 0
                       ? "Enquiries"
                       : tabValue === 1
@@ -795,7 +795,7 @@ export default function Inquiry() {
                           : tabValue === 3
                             ? "Treatment Estimate"
                             : ""}
-                  </h4>
+                  </h4> */}
                 </div>
                 <div className="search-btn-main">
                   <div className="mr-3">

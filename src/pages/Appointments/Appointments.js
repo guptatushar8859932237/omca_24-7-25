@@ -327,17 +327,14 @@ export default function Appointments() {
   const handleSortAPP = (field) => {
     const isAsc = orderByAPP === field && orderDirectionAPP === "asc";
     const direction = isAsc ? "desc" : "asc";
-
     setOrderByAPP(field);
     setOrderDirectionAPP(direction);
-
     const sorted = sortData(dataApp, field, direction);
     setDataApp(sorted);
   };
-
   return (
     <>
-      <div className="page-wrapper">
+      <div className="page-wrapper" style={{marginTop:"70px"}}>
         <Box
           sx={{
             borderBottom: 1,

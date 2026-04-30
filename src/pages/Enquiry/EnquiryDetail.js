@@ -35,7 +35,7 @@ const FilePreview = ({ file }) => {
       className="btn btn-outline-primary btn-sm"
       onClick={() => window.open(fileUrl, "_blank")}
     >
-      View Document
+      View 
     </button>
   );
 };
