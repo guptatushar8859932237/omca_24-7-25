@@ -134,9 +134,7 @@ export default function Roles() {
                                 </Stack>
         </TableContainer>
       </div>
-
-      {/* MODAL */}
-      <Dialog open={popupopen} onClose={() => setPopupopen(false)}>
+      {/* <Dialog open={popupopen} onClose={() => setPopupopen(false)}>
         <DialogContent>
           <Box className="contact-form">
             <label>Enter Role *</label>
@@ -153,7 +151,60 @@ export default function Roles() {
             </DialogActions>
           </Box>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+    
+    <React.Fragment>
+  <Dialog
+    fullWidth={true}
+    maxWidth="sm"
+    open={popupopen}
+    onClose={() => setPopupopen(false)}
+  >
+    {/* Header */}
+    <div className="main-card-header">
+      <div className="note-hd">
+        <h6>Add Role</h6>
+      </div>
+      <div
+        className="cross-icon"
+        onClick={() => setPopupopen(false)}
+      >
+        <i className="fa-solid fa-xmark"></i>
+      </div>
+    </div>
+
+    {/* Body */}
+    <DialogContent className="main-box">
+      <Box
+        noValidate
+        component="form"
+        className="contact-form"
+      >
+        <div className="field-set">
+          <label>
+            Role<span className="text-danger">*</span>
+          </label>
+          <textarea
+            className="form-control"
+            placeholder="Enter role"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
+        </div>
+
+        {/* Submit */}
+        <DialogActions className="submit-main">
+          <Button
+            variant="contained"
+            onClick={handleAddRole}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Box>
+    </DialogContent>
+  </Dialog>
+</React.Fragment>
     </div>
   );
 }

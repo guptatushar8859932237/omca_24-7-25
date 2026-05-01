@@ -1,8 +1,11 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
+import { AdminBaseUrl, baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import avtar from "../../img/avtarImg.jpg";
+import Swal from "sweetalert2";
+import { Box, Button, Dialog, DialogActions, DialogContent } from "@mui/material";
+import React from "react";
 const getFileType = (file) => {
   const ext = file.split(".").pop().toLowerCase();
   if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
@@ -38,6 +41,9 @@ const FilePreview = ({ file }) => {
 
 export default function Airambulanceview() {
   const location = useLocation();
+  const [openCommentModal, setOpenCommentModal] = useState(false);
+const [commentText, setCommentText] = useState("");
+const [commentImages, setCommentImages] = useState([]);
   const [row, setRows] = useState("");
   console.log(location.state);
   const fetchJobTitles = async () => {
@@ -65,9 +71,50 @@ export default function Airambulanceview() {
   const handleclick = () => {
     window.history.back();
   };
-  const  addcomment =()=>{
+  const addcomment = () => {
+  setOpenCommentModal(true);
+};
 
+const closeCommentModal = () => {
+  setOpenCommentModal(false);
+  setCommentText("");
+  setCommentImages([]);
+};
+const handleImageChange = (e) => {
+  setCommentImages([...e.target.files]);
+};
+const userType = localStorage.getItem("Role");
+const handleSubmitComment = async () => {
+  console.log(row)
+  if (!commentText) {
+    return Swal.fire("Error", "Comment is required", "warning");
   }
+  try {
+    const formData = new FormData();
+    formData.append("review_id", row?.doctor_review?.id);
+    formData.append("comment", commentText);
+    formData.append("user_type",userType );
+    commentImages.forEach((file) => {
+      formData.append("images[]", file);
+    });
+    const res = await axios.post(
+      `${AdminBaseUrl}review/comment/add`,
+      formData
+    );
+
+    if (res?.data?.success) {
+      Swal.fire("Success", "Comment added", "success");
+      closeCommentModal();
+      fetchJobTitles(); // refresh data
+    }
+  } catch (error) {
+    Swal.fire(
+      "Error",
+      error?.response?.data?.message || "Something went wrong",
+      "error"
+    );
+  }
+};
   return (
     <>
       <div class="page-wrapper">
@@ -661,6 +708,62 @@ export default function Airambulanceview() {
               </div>
           </div>
         </div>
+       <React.Fragment>
+  <Dialog
+  fullWidth={true}
+  maxWidth="sm"
+  open={openCommentModal}   // ✅ FIXED
+  onClose={closeCommentModal}
+>
+    <div className="main-card-header">
+      <div className="note-hd">
+        <h6>Add Comment</h6>
+      </div>
+      <div className="cross-icon" onClick={closeCommentModal}>
+        <i className="fa-solid fa-xmark"></i>
+      </div>
+    </div>
+    <DialogContent className="main-box">
+      <Box
+        noValidate
+        component="form"
+        className="contact-form"
+      >
+        <div className="field-set">
+          <label>
+            Comment<span className="text-danger">*</span>
+          </label>
+          <textarea
+            className="form-control"
+            placeholder="Enter comment"
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+          />
+        </div>
+
+        {/* Image Upload */}
+        <div className="field-set">
+          <label>Upload Images</label>
+          <input
+            type="file"
+            className="form-control"
+            multiple
+            onChange={handleImageChange}
+          />
+        </div>
+
+        <DialogActions className="submit-main">
+          <Button
+            variant="contained"
+            onClick={handleSubmitComment}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Box>
+    </DialogContent>
+  </Dialog>
+</React.Fragment>
       </div>
     </>
   );
