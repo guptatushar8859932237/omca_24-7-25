@@ -88,6 +88,12 @@ export default function Sidebar() {
       icon: "fa-line-chart",
       label: "Payments",
     },
+    {
+      path: "/Manage_Roles",
+      actualPath: "/Admin/roles",
+      icon: "fa-line-chart",
+      label: "Manage Roles",
+    },
   ];
 
   return (

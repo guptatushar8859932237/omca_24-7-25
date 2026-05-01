@@ -63,6 +63,7 @@ import EnquiryDetailAmbulance from "./pages/Enquiry/EnquiryDetailAmbulance";
 import Airambulanceview from "./pages/Enquiry/Airambulanceview";
 import Medicalescortservice from "./pages/Enquiry/Medicalescortservice";
 import GerGeneraalEnquiry from "./pages/Genera Enquiry/GerGeneralEnquiry"
+import Roles from "./pages/Roles/Roles";
 function App() {
   console.log("22/04/25");
   return (
@@ -250,6 +251,11 @@ function App() {
                 index
                 path="/Admin/airambulanceview"
                 element={<Airambulanceview />}
+              />
+              <Route
+                index
+                path="/Admin/roles"
+                element={<Roles />}
               />
               <Route
                 index

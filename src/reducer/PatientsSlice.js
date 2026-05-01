@@ -15,7 +15,6 @@ export const GetAllPatients = createAsyncThunk(
       if (params.patient_type_new) queryParams.append("patient_type_new", params.patient_type_new);
       if (params.sortField) queryParams.append("sortField", params.sortField);
       if (params.sortOrder) queryParams.append("sortOrder", params.sortOrder);
-
       const response = await axios.post(
         `${baseurl}all_patients?${queryParams.toString()}`,
         {},
@@ -25,14 +24,12 @@ export const GetAllPatients = createAsyncThunk(
           },
         }
       );
-
       return response.data;
-
     } catch (error) {
       // ✅ HANDLE 404 HERE
       if (error.response?.status === 404) {
         return {
-          details: [],   // 👈 important
+          details: [],  
           pagination: {
             totalRecords: 0,
             currentPage: 1,

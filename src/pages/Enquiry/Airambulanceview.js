@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
-import avtar from "../../img/avtarImg.jpg"
+import avtar from "../../img/avtarImg.jpg";
 const getFileType = (file) => {
   const ext = file.split(".").pop().toLowerCase();
   if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
@@ -43,14 +43,14 @@ export default function Airambulanceview() {
   const fetchJobTitles = async () => {
     const payload = {
       id: location.state.id,
-      type: "AirAmbulance"
-    }
+      type: "AirAmbulance",
+    };
     await axios
       .post(`https://omcacrm.com/omca/api/crm/other_enquiry_details`, payload)
       .then((response) => {
         if (response.data.success) {
           console.log(response.data);
-          setRows(response.data.data)
+          setRows(response.data.data);
         } else {
           console.error("Failed to fetch job titles:", response.data.message);
         }
@@ -65,6 +65,9 @@ export default function Airambulanceview() {
   const handleclick = () => {
     window.history.back();
   };
+  const  addcomment =()=>{
+
+  }
   return (
     <>
       <div class="page-wrapper">
@@ -84,11 +87,12 @@ export default function Airambulanceview() {
             </div>
           </div>
           <div class="main_content">
-            <form>
               <div class="row">
                 <div class="col-md-3">
                   <div className="field-set">
-                    <label>Enquiry Id<span className="text-danger"></span></label>
+                    <label>
+                      Enquiry Id<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -99,7 +103,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Patient Name<span className="text-danger"></span></label>
+                    <label>
+                      Patient Name<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -110,7 +116,8 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Phone Number
+                    <label>
+                      Phone Number
                       <span className="text-danger"></span>
                     </label>
                     <div className="country-code">
@@ -131,7 +138,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Email<span className="text-danger"></span></label>
+                    <label>
+                      Email<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -142,7 +151,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Passport Number<span className="text-danger"></span></label>
+                    <label>
+                      Passport Number<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -153,7 +164,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Treating In Country<span className="text-danger"></span></label>
+                    <label>
+                      Treating In Country<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -170,7 +183,9 @@ export default function Airambulanceview() {
               <div class="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>From<span className="text-danger"></span></label>
+                    <label>
+                      From<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -181,7 +196,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>To<span className="text-danger"></span></label>
+                    <label>
+                      To<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -192,7 +209,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Travel Date<span className="text-danger"></span></label>
+                    <label>
+                      Travel Date<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -203,7 +222,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Arrival Time<span className="text-danger"></span></label>
+                    <label>
+                      Arrival Time<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -214,7 +235,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Number of Traveller<span className="text-danger"></span></label>
+                    <label>
+                      Number of Traveller<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -225,7 +248,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Services<span className="text-danger"></span></label>
+                    <label>
+                      Services<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -242,7 +267,9 @@ export default function Airambulanceview() {
               <div class="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Consciousness Status<span className="text-danger"></span></label>
+                    <label>
+                      Consciousness Status<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -253,7 +280,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Breathing Difficulty<span className="text-danger"></span></label>
+                    <label>
+                      Breathing Difficulty<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -264,7 +293,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Level of Urgency<span className="text-danger"></span></label>
+                    <label>
+                      Level of Urgency<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -275,7 +306,10 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Bleeding or Trauma Details<span className="text-danger"></span></label>
+                    <label>
+                      Bleeding or Trauma Details
+                      <span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="email"
@@ -292,7 +326,9 @@ export default function Airambulanceview() {
               <div class="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Destination Address<span className="text-danger"></span></label>
+                    <label>
+                      Destination Address<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -303,7 +339,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Hospital Name<span className="text-danger"></span></label>
+                    <label>
+                      Hospital Name<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -314,7 +352,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Department or Ward<span className="text-danger"></span></label>
+                    <label>
+                      Department or Ward<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -331,7 +371,10 @@ export default function Airambulanceview() {
               <div class="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Reason For Ambulance Request / Chief Complaint<span className="text-danger"></span></label>
+                    <label>
+                      Reason For Ambulance Request / Chief Complaint
+                      <span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -342,7 +385,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Patient Condition<span className="text-danger"></span></label>
+                    <label>
+                      Patient Condition<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -353,7 +398,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Ambulance Type<span className="text-danger"></span></label>
+                    <label>
+                      Ambulance Type<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -364,7 +411,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Special Needs<span className="text-danger"></span></label>
+                    <label>
+                      Special Needs<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -381,7 +430,10 @@ export default function Airambulanceview() {
               <div class="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Name of Caller / Attendant<span className="text-danger"></span></label>
+                    <label>
+                      Name of Caller / Attendant
+                      <span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -392,7 +444,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Relation to Patient<span className="text-danger"></span></label>
+                    <label>
+                      Relation to Patient<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -403,7 +457,10 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Alternate Contact Number <span className="text-danger"></span></label>
+                    <label>
+                      Alternate Contact Number{" "}
+                      <span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -420,7 +477,9 @@ export default function Airambulanceview() {
               <div class="row">
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Payment Method<span className="text-danger"></span></label>
+                    <label>
+                      Payment Method<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -431,7 +490,9 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Insurance Details<span className="text-danger"></span></label>
+                    <label>
+                      Insurance Details<span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -442,7 +503,10 @@ export default function Airambulanceview() {
                 </div>
                 <div className="col-md-3">
                   <div className="field-set">
-                    <label>Approval / Reference Number <span className="text-danger"></span></label>
+                    <label>
+                      Approval / Reference Number{" "}
+                      <span className="text-danger"></span>
+                    </label>
                     <input
                       class="form-control"
                       type="text"
@@ -453,28 +517,148 @@ export default function Airambulanceview() {
                 </div>
               </div>
               <div className="treat-hd">
+                <h6>Doctor Review</h6>
+                <span className="line"></span>
+              </div>
+              <div class="row">
+                <div className="col-md-3">
+                  <div className="field-set">
+                    <label>
+                      Review Notes<span className="text-danger"></span>
+                    </label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      value={row?.doctor_review?.review_notes}
+                      readonly=""
+                    />
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="field-set">
+                    <label>
+                      Recommendations<span className="text-danger"></span>
+                    </label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      value={row?.doctor_review?.recommendations}
+                      readonly=""
+                    />
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div>
+                    <label>
+                      Images<span className="text-danger"></span>
+                    </label>
+                    <br />
+                    {Array.isArray(row?.doctor_review?.images) &&
+                    row?.doctor_review?.images.length > 0
+                      ? row.doctor_review.images.map((rep, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            className="viewbtn"
+                            onClick={() => window.open(rep, "_blank")}
+                          >
+                            View
+                          </button>
+                        ))
+                      : "-"}
+                  </div>
+                </div>
+              </div>
+              <div className="treat-hd d-flex justify-content-between">
+                <div>
+
+                <h6>Comment</h6>
+                <span className="line"></span>
+                </div>
+                <div>
+                    <button className="add-button" onClick={addcomment}>Add Comment</button>
+                </div>
+              </div>
+             <div className="row">
+  {row?.doctor_review?.comments?.length > 0 ? (
+    row.doctor_review.comments.map((item, index) => (
+      <div
+        key={item.id || index}
+        className="col-12 mb-3 p-3"
+        style={{
+          border: "1px solid #ddd",
+          borderRadius: "10px",
+          background: "#f9f9f9",
+        }}
+      >
+        {/* User Type */}
+        {/* <h6 style={{ marginBottom: "5px", color: "#555" }}>
+          {item?.user_type}
+        </h6> */}
+
+        {/* Comment */}
+        <div className="row d-flex">
+         
+        <p style={{ marginBottom: "10px" }}>
+          {item?.comment}
+        </p>
+
+        {/* Images */}
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  { item.images.map((rep, index) =>
+                        <button
+                          key={index}
+                          type="button"
+                          className="viewbtn"
+                          onClick={() => window.open(rep, "_blank")}
+                        >
+                          View
+                        </button>
+                      )
+                 }
+          {/* {item?.images?.map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              alt="comment"
+              style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "8px",
+                objectFit: "cover",
+                cursor: "pointer",
+              }}
+              onClick={() => window.open(img, "_blank")}
+            />
+          ))} */}
+        </div>
+      </div>
+      </div>
+    ))
+  ) : (
+    <p>No comments available</p>
+  )}
+</div>
+              <div className="treat-hd">
                 <h6>Reports</h6>
                 <span className="line"></span>
               </div>
               <div>
-                {Array.isArray(row?.reports) && row.reports.length > 0 ? (
-                  row.reports.map((rep, index) =>
-                    rep?.report ? (
-                      <button
-                        key={index}
-                        type="button"
-                        className="viewbtn"
-                        onClick={() => window.open(rep.report, "_blank")}
-                      >
-                        View
-                      </button>
-                    ) : null
-                  )
-                ) : (
-                  "-"
-                )}
+                {Array.isArray(row?.reports) && row.reports.length > 0
+                  ? row.reports.map((rep, index) =>
+                      rep?.report ? (
+                        <button
+                          key={index}
+                          type="button"
+                          className="viewbtn"
+                          onClick={() => window.open(rep.report, "_blank")}
+                        >
+                          View
+                        </button>
+                      ) : null,
+                    )
+                  : "-"}
               </div>
-            </form>
           </div>
         </div>
       </div>

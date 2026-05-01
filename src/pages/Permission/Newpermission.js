@@ -136,7 +136,7 @@ const handleassignAtendent = async () => {
               <h4 className="page-title mb-0">Manage Permissions</h4>
               <div>
 
-              <button className="add-button me-2" onClick={addrole}>Add Role</button>
+              {/* <button className="add-button me-2" onClick={addrole}>Add Role</button> */}
               <button className="add-button" onClick={handleSubmit}>Save Changes</button>
 
               </div>

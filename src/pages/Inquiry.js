@@ -53,6 +53,7 @@ export default function Inquiry() {
   const [open4, setOpen4] = React.useState(false);
   const [open9, setOpen9] = React.useState(false);
   const [filterValue, setFilterValue] = useState("");
+  const [tratmentenqId, setTratmentenqId] = useState("");
   const [page, setPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
   const [orderDirection, setOrderDirection] = useState("asc");
@@ -108,33 +109,153 @@ export default function Inquiry() {
   const filteredTabs = tabsConfig.filter((tab) =>
     permissions.includes(tab.permission),
   );
-  const handleNotesdataqw = async (e) => {
-    e.preventDefault();
-    if (!note || !recommend || images.length === 0) {
-      return Swal.fire("Error", "All fields are required", "error");
-    }
-    try {
-      const formData = new FormData();
-      formData.append("review_notes", note);
-      formData.append("Recommendations", recommend);
-      formData.append("enquiryId", enqId);
-      formData.append("user_type", statusRole);
+  // const handleNotesdataqw = async (e) => {
+  //   e.preventDefault();
+  //   if (!note || !recommend || images.length === 0) {
+  //     return Swal.fire("Error", "All fields are required", "error");
+  //   }
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("review_notes", note);
+  //     formData.append("Recommendations", recommend);
+  //     formData.append("enquiryId", enqId);
+  //     formData.append("user_type", statusRole);
+  //     images.forEach((img) => {
+  //       formData.append("images", img);
+  //     });
+  //     const response = await axios.post(`${baseurl}addDoctorReview`, formData);
+  //     if (response.data.success) {
+  //       handleClose4();
+  //       Swal.fire("Success", "Data submitted successfully", "success");
+  //       setNote("");
+  //       setRecommend("");
+  //       setImages([]);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     Swal.fire("Error", "Something went wrong", "error");
+  //   }
+  // };
+// const handleNotesdataqw = async (e) => {
+//   console.log(tabValue)
+//   e.preventDefault();
+//   if (!note || !recommend || images.length === 0) {
+//     return Swal.fire("Error", "All fields are required", "error");
+//   }
+//   try {
+//     const formData = new FormData();
+//     formData.append("review_notes", note);
+//     formData.append("recommendations", recommend);
+//     formData.append("user_type", statusRole);
+//     formData.append("enquiry_id", enqId);
+//     images.forEach((img) => {
+//       formData.append("images[]", img);
+//     });
+//     let response;
+//     if (tabValue === 0) {
+//         images.forEach((img) => {
+//       formData.append("images", img);
+//     });
+//       response = await axios.post(
+//         `${baseurl}addDoctorReview`,
+//         formData
+//       );
+//     } else {
+//       // 👉 OTHER TABS → NEW API
+//       const typeMap = {
+//         1: "ambulance",
+//         2: "air_medical",
+//         3: "treatment",
+//       };
+//       formData.append("reference_id", enqId);
+//       formData.append("model_type", typeMap[tabValue]);
+//       response = await axios.post(
+//         `${AdminBaseUrl}review/store`,
+//         formData
+//       );
+//     }
+//     if (response.data.success) {
+//       handleClose4();
+//       Swal.fire("Success", "Doctor Review Added Successfully", "success");
+//       setNote("");
+//       setRecommend("");
+//       setImages([]);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     Swal.fire("Error", "Something went wrong", "error");
+//   }
+// };
+const handleNotesdataqw = async (e) => {
+  e.preventDefault();
+  if (!note || !recommend || images.length === 0) {
+    return Swal.fire("Error", "All fields are required", "error");
+  }
+  try {
+    let response;
+    if (tabValue === 0) {
+      const enquiryPayload = new FormData();
+      enquiryPayload.append("review_notes", note);
+      enquiryPayload.append("Recommendations", recommend); // ⚠️ old API key
+      enquiryPayload.append("enquiryId", enqId);
+      enquiryPayload.append("user_type", statusRole);
       images.forEach((img) => {
-        formData.append("images", img);
+        enquiryPayload.append("images", img);
       });
-      const response = await axios.post(`${baseurl}addDoctorReview`, formData);
-      if (response.data.success) {
-        handleClose4();
-        Swal.fire("Success", "Data submitted successfully", "success");
-        setNote("");
-        setRecommend("");
-        setImages([]);
-      }
-    } catch (error) {
-      console.log(error);
-      Swal.fire("Error", "Something went wrong", "error");
+      console.log("OLD API PAYLOAD →", [...enquiryPayload.entries()]);
+      response = await axios.post(
+        `${baseurl}addDoctorReview`,
+        enquiryPayload
+      );
     }
-  };
+    else {
+      const newPayload = new FormData();
+      const typeMap = {
+        1: "ambulance",
+        2: "air_medical",
+        3: "treatment",
+      };
+      newPayload.append("review_notes", note);
+      newPayload.append("enquiry_id", tratmentenqId);
+      newPayload.append("recommendations", recommend);
+      newPayload.append("user_type", statusRole);
+      newPayload.append("reference_id", enqId);
+      newPayload.append("model_type", typeMap[tabValue]);
+      images.forEach((img) => {
+        newPayload.append("images[]", img);
+      });
+      console.log("NEW API PAYLOAD →", [...newPayload.entries()]);
+      response = await axios.post(
+        `${AdminBaseUrl}review/store`,
+        newPayload
+      );
+    }
+    if (response?.data?.success) {
+      handleClose4();
+      Swal.fire("Success", "Doctor Review Added Successfully", "success");
+      setNote("");
+      setRecommend("");
+      setImages([]);
+    }
+  } catch (error) {
+  console.log(error);
+
+  let message = "Something went wrong";
+
+  if (error.response) {
+    // Server responded with error (400, 500, etc.)
+    message = error.response.data?.message || message;
+  } else if (error.request) {
+    // Request made but no response (network issue)
+    message = "No response from server";
+  } else {
+    // Something else
+    message = error.message;
+  }
+
+  Swal.fire("Error", message, "error");
+}
+};
   const statusRole = localStorage.getItem("Role");
   const get3tabdata = async (datauserId, getcountry, rolestatus) => {
     const payload = {
@@ -184,9 +305,11 @@ export default function Inquiry() {
     setOpen2(true);
     setEnqId(enq);
   };
-  const handleClickOpen4 = (e, enq) => {
+  const handleClickOpen4 = (e, enq, info) => {
+    console.log(info)
     setOpen4(true);
     setEnqId(enq);
+    setTratmentenqId(info.id)
   };
   const handleClickOpen3 = (e) => {
     setOpen3(true);
@@ -415,9 +538,7 @@ useEffect(() => {
             await sendToPatientAPI("Treatment Estimate", data.raw);
           }
           await handleChangtype({ value }, data.raw);
-
           Swal.fire("Success!", "Converted to patient!", "success");
-
           dispatch(GetAllEnquiry());
         } catch (err) {
           Swal.fire("Error!", err?.message || "Error", "error");
@@ -495,12 +616,10 @@ useEffect(() => {
     const value = event.target.value.toLowerCase().trim();
     setFilterValue(event.target.value);
     setPage(0);
-
     if (!value) {
       setRows(searchApiData);
       return;
     }
-
     const filterResult = searchApiData.filter((item) => {
       return (
         String(item.enquiryId || "")
@@ -526,7 +645,6 @@ useEffect(() => {
           .includes(value)
       );
     });
-
     setRows(filterResult);
   };
   const handleClearFilter = () => {
@@ -541,42 +659,97 @@ useEffect(() => {
   const handleChange3 = (event) => {
     setAge(event.target.value);
   };
-  const handleNotesdata = (e) => {
-    e.preventDefault();
-    setBlogErr({
-      note: false,
-      date: false,
-    });
-    if (!note) {
-      setBlogErr((prevState) => ({ ...prevState, note: true }));
-    }
-    if (!date) {
-      setBlogErr((prevState) => ({ ...prevState, date: true }));
-    }
-    if (!note || !date) {
-      return;
-    }
-    axios
-      .post(`${baseurl}add_notes/${enqId}`, {
+  // const handleNotesdata = (e) => {
+  //   e.preventDefault();
+  //   setBlogErr({
+  //     note: false,
+  //     date: false,
+  //   });
+  //   if (!note) {
+  //     setBlogErr((prevState) => ({ ...prevState, note: true }));
+  //   }
+  //   if (!date) {
+  //     setBlogErr((prevState) => ({ ...prevState, date: true }));
+  //   }
+  //   if (!note || !date) {
+  //     return;
+  //   }
+  //   axios
+  //     .post(`${baseurl}add_notes/${enqId}`, {
+  //       note: note,
+  //       date: date,
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //       setBlogErr(false);
+  //       if (response.status === 200) {
+  //         setOpen2(false);
+  //         Swal.fire("Success", "Notes added successfully!", "success");
+  //       }
+  //       setNote("");
+  //       setDate("");
+  //     })
+  //     .catch((error) => {
+  //       setOpen2(false);
+  //       console.log(error);
+  //       Swal.fire("Error", `${error?.response?.data?.message}`, "error");
+  //     });
+  // };
+ const handleNotesdata = async (e) => {
+  e.preventDefault();
+  setBlogErr({
+    note: false,
+    date: false,
+  });
+  if (!note) {
+    setBlogErr((prev) => ({ ...prev, note: true }));
+  }
+  if (!date) {
+    setBlogErr((prev) => ({ ...prev, date: true }));
+  }
+  if (!note || !date) return;
+  try {
+    const notesRes = await axios.post(
+      `${baseurl}add_notes/${enqId}`,
+      {
         note: note,
         date: date,
-      })
-      .then((response) => {
-        console.log(response);
-        setBlogErr(false);
-        if (response.status === 200) {
-          setOpen2(false);
-          Swal.fire("Success", "Notes added successfully!", "success");
-        }
-        setNote("");
-        setDate("");
-      })
-      .catch((error) => {
-        setOpen2(false);
-        console.log(error);
-        Swal.fire("Error", `${error?.response?.data?.message}`, "error");
-      });
-  };
+      }
+    );
+    const formData = new FormData();
+    formData.append("review_id", enqId); // 👈 make sure this is correct review id
+    formData.append("user_type", "Patient"); // or dynamic
+    formData.append("comment", note);
+    images.forEach((img) => {
+      formData.append("images[]", img);
+    });
+    const reviewRes = await axios.post(
+      "https://omcacrm.com/omca/api/crm/review/comment/add",
+      formData
+    );
+    if (notesRes.status === 200 && reviewRes.data.success) {
+      setOpen2(false);
+      Swal.fire(
+        "Success",
+        "Notes & Review Comment added successfully!",
+        "success"
+      );
+      setNote("");
+      setDate("");
+      setImages([]);
+      setBlogErr(false);
+    }
+  } catch (error) {
+    console.log(error);
+    setOpen2(false);
+    Swal.fire(
+      "Error",
+      error?.response?.data?.message || "Something went wrong",
+      "error"
+    );
+  }
+};
+ 
   const handledelete = (e, patientId) => {
     console.log(e);
     const swalWithBootstrapButtons = Swal.mixin({
@@ -1030,13 +1203,7 @@ useEffect(() => {
                           </TableCell>
                           {/* <TableCell>Status</TableCell> */}
                           <TableCell>Actions</TableCell>
-                          {tabValue === 0 ? (
-                            <>
                               <TableCell>Notes</TableCell>
-                            </>
-                          ) : (
-                            ""
-                          )}
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -1139,26 +1306,6 @@ useEffect(() => {
                                   className="eye-icon"
                                   onClick={(e) => ViewDetail(e, tabValue, info)}
                                 />
-                                {/* {tabValue === 0 ? (
-                                  <>
-                                    <i
-                                      className="fa-solid fa-pen-to-square"
-                                      onClick={(e) =>
-                                        EditButton(e, info.enquiryId)
-                                      }
-                                    ></i>
-
-                                    {localStorage.getItem("Role") ===
-                                      "Admin" && (
-                                        <i
-                                          className="fa-solid fa-trash"
-                                          onClick={() => handledelete(info)}
-                                        ></i>
-                                      )}
-                                  </>
-                                ) : (
-                                  ""
-                                )} */}
                                 {tabValue === 0 ? (
                                   <>
                                     <i
@@ -1167,7 +1314,6 @@ useEffect(() => {
                                         EditButton(e, info.enquiryId)
                                       }
                                     ></i>
-
                                     {localStorage.getItem("Role") ===
                                       "Admin" && (
                                         <i
@@ -1177,33 +1323,29 @@ useEffect(() => {
                                       )}
                                   </>
                                 ) : (
-                                  // 🔥 NEW DELETE FOR OTHER TABS
                                   <i
                                     className="fa-solid fa-trash"
                                     onClick={() => handleDeleteExternal(info)}
                                   ></i>
                                 )}
                               </TableCell>
-                              {tabValue === 0 ? (
-                                <>
                                   <TableCell className="action-icon">
+                                  {tabValue === 0 ? (
+                                <>
                                     <i
                                       className="fa-solid fa-notes-medical"
                                       onClick={(e) =>
                                         handleClickOpen2(e, info.enquiryId)
                                       }
                                     ></i>
+                                    </>):("")}
                                     <i
                                       className="fa-solid fa-stethoscope"
                                       onClick={(e) =>
-                                        handleClickOpen4(e, info.enquiryId)
+                                        handleClickOpen4(e, info.enquiryId,info)
                                       }
                                     ></i>
                                   </TableCell>
-                                </>
-                              ) : (
-                                ""
-                              )}
                             </TableRow>
                           ))
                         ) : (
@@ -1237,7 +1379,6 @@ useEffect(() => {
           </div>
         </div>
       </div>
-     
       <div
         id="delete_appointment"
         className="modal fade delete-modal"
