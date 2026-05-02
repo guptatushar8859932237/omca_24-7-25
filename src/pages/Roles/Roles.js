@@ -5,11 +5,19 @@ import axios from "axios";
 import Paper from "@mui/material/Paper";
 import { baseurl } from "../../Basurl/Baseurl";
 import {
-  Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Pagination,
-  Dialog, DialogActions, DialogContent,
-  Button, Box,
-  Stack
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Pagination,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button,
+  Box,
+  Stack,
 } from "@mui/material";
 export default function Roles() {
   const navigate = useNavigate();
@@ -47,44 +55,40 @@ export default function Roles() {
       Swal.fire(
         "Error",
         error?.response?.data?.message || "Something went wrong",
-        "error"
+        "error",
       );
     }
   };
 
- const handleDeleteExternal = (item) => {
-    console.log(item)
-  Swal.fire({
-    title: "Are you sure?",
-    text: "This role will be deleted!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        const res = await axios.post(`${baseurl}deleteRole/${item._id}`);
+  const handleDeleteExternal = (item) => {
+    console.log(item);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This role will be deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axios.post(`${baseurl}deleteRole/${item._id}`);
 
-        if (res?.data?.success) {
-          Swal.fire("Deleted!", "Role deleted successfully", "success");
-          getRoles(); // refresh table
-        } else {
+          if (res?.data?.success) {
+            Swal.fire("Deleted!", "Role deleted successfully", "success");
+            getRoles(); // refresh table
+          } else {
+            Swal.fire("Error", res?.data?.message || "Delete failed", "error");
+          }
+        } catch (error) {
           Swal.fire(
             "Error",
-            res?.data?.message || "Delete failed",
-            "error"
+            error?.response?.data?.message || "Something went wrong",
+            "error",
           );
         }
-      } catch (error) {
-        Swal.fire(
-          "Error",
-          error?.response?.data?.message || "Something went wrong",
-          "error"
-        );
       }
-    }
-  });
-};
+    });
+  };
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -94,11 +98,12 @@ export default function Roles() {
             + New Role
           </button>
         </div>
-        <TableContainer  component={Paper}
-                            style={{ overflowX: "auto" }}>
-          <Table  stickyHeader
-                      aria-label="sticky table"
-                      className="table-no-card">
+        <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+          <Table
+            stickyHeader
+            aria-label="sticky table"
+            className="table-no-card"
+          >
             <TableHead>
               <TableRow>
                 <TableCell>Sr.No</TableCell>
@@ -111,27 +116,29 @@ export default function Roles() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((item, index) => (
                   <TableRow key={item.id}>
-                    <TableCell>
-                      {page * rowsPerPage + index + 1}
-                    </TableCell>
+                    <TableCell>{page * rowsPerPage + index + 1}</TableCell>
                     <TableCell>{item.role}</TableCell>
-                    <TableCell> <i
-                                    className="fa-solid fa-trash text-danger" style={{cursor:"pointer"}}
-                                    onClick={() => handleDeleteExternal(item)}
-                                  ></i></TableCell>
+                    <TableCell>
+                      {" "}
+                      <i
+                        className="fa-solid fa-trash text-danger"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleDeleteExternal(item)}
+                      ></i>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
           </Table>
-                                <Stack spacing={2}>
-                                  <Pagination
-                                    className="page-nation"
-                                    count={Math.ceil(rows.length / rowsPerPage)}
-                                    page={page + 1}
-                                    onChange={(event, value) => setPage(value - 1)}
-                                    color="primary"
-                                  />
-                                </Stack>
+          <Stack spacing={2}>
+            <Pagination
+              className="page-nation"
+              count={Math.ceil(rows.length / rowsPerPage)}
+              page={page + 1}
+              onChange={(event, value) => setPage(value - 1)}
+              color="primary"
+            />
+          </Stack>
         </TableContainer>
       </div>
       {/* <Dialog open={popupopen} onClose={() => setPopupopen(false)}>
@@ -152,59 +159,49 @@ export default function Roles() {
           </Box>
         </DialogContent>
       </Dialog> */}
-    
-    <React.Fragment>
-  <Dialog
-    fullWidth={true}
-    maxWidth="sm"
-    open={popupopen}
-    onClose={() => setPopupopen(false)}
-  >
-    {/* Header */}
-    <div className="main-card-header">
-      <div className="note-hd">
-        <h6>Add Role</h6>
-      </div>
-      <div
-        className="cross-icon"
-        onClick={() => setPopupopen(false)}
-      >
-        <i className="fa-solid fa-xmark"></i>
-      </div>
-    </div>
 
-    {/* Body */}
-    <DialogContent className="main-box">
-      <Box
-        noValidate
-        component="form"
-        className="contact-form"
-      >
-        <div className="field-set">
-          <label>
-            Role<span className="text-danger">*</span>
-          </label>
-          <textarea
-            className="form-control"
-            placeholder="Enter role"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-          />
-        </div>
+      <React.Fragment>
+        <Dialog
+          fullWidth={true}
+          maxWidth="sm"
+          open={popupopen}
+          onClose={() => setPopupopen(false)}
+        >
+          {/* Header */}
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Role</h6>
+            </div>
+            <div className="cross-icon" onClick={() => setPopupopen(false)}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
 
-        {/* Submit */}
-        <DialogActions className="submit-main">
-          <Button
-            variant="contained"
-            onClick={handleAddRole}
-          >
-            Submit
-          </Button>
-        </DialogActions>
-      </Box>
-    </DialogContent>
-  </Dialog>
-</React.Fragment>
+          {/* Body */}
+          <DialogContent className="main-box">
+            <Box noValidate component="form" className="contact-form">
+              <div className="field-set">
+                <label>
+                  Role<span className="text-danger">*</span>
+                </label>
+                <textarea
+                  className="form-control"
+                  placeholder="Enter role"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </div>
+
+              {/* Submit */}
+              <DialogActions className="submit-main">
+                <Button variant="contained" onClick={handleAddRole}>
+                  Submit
+                </Button>
+              </DialogActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
     </div>
   );
 }
