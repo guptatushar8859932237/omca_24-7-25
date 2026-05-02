@@ -56,21 +56,7 @@ export default function EditStaff() {
   if (!editStaff) return <div>Loading...</div>;
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    role: Yup.string()
-      .oneOf(
-        [
-          "Manager",
-          "Staff",
-          "Finance",
-          "Coordinator",
-          "Receptionist",
-          "Insurance Partner",
-          "Physiotherapist",
-          "Nurse",
-        ],
-        "Invalid role",
-      )
-      .required("Role is required"),
+   role: Yup.string().required("Role is required"),
     phone_no: Yup.string()
       .required("Phone number is required")
       .matches(/^[0-9]+$/, "Phone number must contain only digits")
