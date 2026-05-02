@@ -330,15 +330,24 @@ const handleSubmitComment = async () => {
         <p>{item.comment}</p>
 
         <div style={{ display: "flex", gap: "10px" }}>
-          {item?.images?.map((img, i) => (
-            <button
-              key={i}
-              className="viewbtn"
-              onClick={() => window.open(img, "_blank")}
-            >
-              View
-            </button>
-          ))}
+      {Array.isArray(item?.images) ? (
+  item.images.map((img, i) => (
+    <button
+      key={i}
+      className="viewbtn"
+      onClick={() => window.open(img, "_blank")}
+    >
+      View
+    </button>
+  ))
+) : item?.images ? (
+  <button
+    className="viewbtn"
+    onClick={() => window.open(item.images, "_blank")}
+  >
+    View
+  </button>
+) : null}
         </div>
       </div>
     ))

@@ -458,15 +458,17 @@ export default function EnquiryDetailAmbulance() {
                                   <p>{item.comment}</p>
                                 </div>
                                 <div className="">
-                                  {item?.images?.map((img, i) => (
-                                    <button
-                                      key={i}
-                                      className="viewbtn me-2"
-                                      onClick={() => window.open(img, "_blank")}
-                                    >
-                                      View
-                                    </button>
-                                  ))}
+                                 {Array.isArray(item?.images) ? (
+  item.images.map((img, i) => (
+    <button
+      key={i}
+      className="viewbtn me-2"
+      onClick={() => window.open(img, "_blank")}
+    >
+      View
+    </button>
+  ))
+) : null}
                                 </div>
                               </div>
                             </div>
