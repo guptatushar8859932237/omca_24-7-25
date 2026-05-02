@@ -569,7 +569,7 @@ const handleSubmitComment = async () => {
     <label>Images</label>
     <br />
     {row?.doctor_review?.images?.length > 0
-      ? row.doctor_review.images.map((img, i) => (
+      ? row?.doctor_review?.images?.map((img, i) => (
           <button
             key={i}
             className="viewbtn"
@@ -605,15 +605,17 @@ const handleSubmitComment = async () => {
         <p>{item.comment}</p>
 
         <div style={{ display: "flex", gap: "10px" }}>
-          {item?.images?.map((img, i) => (
-            <button
-              key={i}
-              className="viewbtn"
-              onClick={() => window.open(img, "_blank")}
-            >
-              View
-            </button>
-          ))}
+         {Array.isArray(item?.images) && item.images.length > 0 ? (
+  item.images.map((img, i) => (
+    <button
+      key={i}
+      className="viewbtn"
+      onClick={() => window.open(img, "_blank")}
+    >
+      View
+    </button>
+  ))
+) : null}
         </div>
       </div>
     ))

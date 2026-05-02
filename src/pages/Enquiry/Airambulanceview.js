@@ -628,7 +628,7 @@ const handleSubmitComment = async () => {
               </div>
              <div className="row">
   {row?.doctor_review?.comments?.length > 0 ? (
-    row.doctor_review.comments.map((item, index) => (
+    row?.doctor_review?.comments?.map((item, index) => (
       <div
         key={item.id || index}
         className="col-12 mb-3 p-3"
@@ -651,34 +651,19 @@ const handleSubmitComment = async () => {
         </p>
 
         {/* Images */}
-        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  { item.images.map((rep, index) =>
-                        <button
-                          key={index}
-                          type="button"
-                          className="viewbtn"
-                          onClick={() => window.open(rep, "_blank")}
-                        >
-                          View
-                        </button>
-                      )
-                 }
-          {/* {item?.images?.map((img, i) => (
-            <img
-              key={i}
-              src={img}
-              alt="comment"
-              style={{
-                width: "80px",
-                height: "80px",
-                borderRadius: "8px",
-                objectFit: "cover",
-                cursor: "pointer",
-              }}
-              onClick={() => window.open(img, "_blank")}
-            />
-          ))} */}
-        </div>
+       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+  {Array.isArray(item?.images) &&
+    item.images.map((rep, index) => (
+      <button
+        key={index}
+        type="button"
+        className="viewbtn"
+        onClick={() => window.open(rep, "_blank")}
+      >
+        View
+      </button>
+    ))}
+</div>
       </div>
       </div>
     ))

@@ -417,12 +417,14 @@ const handleNotesdataqw = async (e) => {
     });
   };
   const sendToPatientAPI = async (type, data) => {
+    console.log(data)
     try {
       const response = await axios.post(`${baseurl}createPatientFromExternal`, {
         enquiry_type: type,
         data: data,
       });
       if (response.data.success) {
+        await get3tabdata(datauserId, getcountries, roleStatuses);
         // Swal.fire("Success!", `${type} converted to patient`, "success");
       }
     } catch (error) {
@@ -454,7 +456,7 @@ const handleNotesdataqw = async (e) => {
         data,
       );
       dispatch(testForms());
-        // await get3tabdata(datauserId, getcountries, roleStatuses);
+        await get3tabdata(datauserId, getcountries, roleStatuses);
       if (response?.data?.success) {
         // Swal.fire("Success", "Status Updated Successfully", "success");
       }
@@ -486,6 +488,7 @@ useEffect(() => {
     if (!result.isConfirmed) return;
     if (tabValue === 0) {
       if (status === 1) {
+        console.log(data)
         try {
           const payload = {
             full_name: data.raw.name,
@@ -494,6 +497,8 @@ useEffect(() => {
             phone: data.raw.emergency_contact,
             passport_number: data.raw.passport_num,
             user_type: 2,
+            doctor_review:data.raw.doctorReview
+        
           };
           const response = await axios.post(
             `https://omcacrm.com/omca/api/user_registration`,
@@ -659,96 +664,96 @@ useEffect(() => {
   const handleChange3 = (event) => {
     setAge(event.target.value);
   };
-  // const handleNotesdata = (e) => {
-  //   e.preventDefault();
-  //   setBlogErr({
-  //     note: false,
-  //     date: false,
-  //   });
-  //   if (!note) {
-  //     setBlogErr((prevState) => ({ ...prevState, note: true }));
-  //   }
-  //   if (!date) {
-  //     setBlogErr((prevState) => ({ ...prevState, date: true }));
-  //   }
-  //   if (!note || !date) {
-  //     return;
-  //   }
-  //   axios
-  //     .post(`${baseurl}add_notes/${enqId}`, {
-  //       note: note,
-  //       date: date,
-  //     })
-  //     .then((response) => {
-  //       console.log(response);
-  //       setBlogErr(false);
-  //       if (response.status === 200) {
-  //         setOpen2(false);
-  //         Swal.fire("Success", "Notes added successfully!", "success");
-  //       }
-  //       setNote("");
-  //       setDate("");
-  //     })
-  //     .catch((error) => {
-  //       setOpen2(false);
-  //       console.log(error);
-  //       Swal.fire("Error", `${error?.response?.data?.message}`, "error");
-  //     });
-  // };
- const handleNotesdata = async (e) => {
-  e.preventDefault();
-  setBlogErr({
-    note: false,
-    date: false,
-  });
-  if (!note) {
-    setBlogErr((prev) => ({ ...prev, note: true }));
-  }
-  if (!date) {
-    setBlogErr((prev) => ({ ...prev, date: true }));
-  }
-  if (!note || !date) return;
-  try {
-    const notesRes = await axios.post(
-      `${baseurl}add_notes/${enqId}`,
-      {
+  const handleNotesdata = (e) => {
+    e.preventDefault();
+    setBlogErr({
+      note: false,
+      date: false,
+    });
+    if (!note) {
+      setBlogErr((prevState) => ({ ...prevState, note: true }));
+    }
+    if (!date) {
+      setBlogErr((prevState) => ({ ...prevState, date: true }));
+    }
+    if (!note || !date) {
+      return;
+    }
+    axios
+      .post(`${baseurl}add_notes/${enqId}`, {
         note: note,
         date: date,
-      }
-    );
-    const formData = new FormData();
-    formData.append("review_id", enqId); // 👈 make sure this is correct review id
-    formData.append("user_type", "Patient"); // or dynamic
-    formData.append("comment", note);
-    images.forEach((img) => {
-      formData.append("images[]", img);
-    });
-    const reviewRes = await axios.post(
-      "https://omcacrm.com/omca/api/crm/review/comment/add",
-      formData
-    );
-    if (notesRes.status === 200 && reviewRes.data.success) {
-      setOpen2(false);
-      Swal.fire(
-        "Success",
-        "Notes & Review Comment added successfully!",
-        "success"
-      );
-      setNote("");
-      setDate("");
-      setImages([]);
-      setBlogErr(false);
-    }
-  } catch (error) {
-    console.log(error);
-    setOpen2(false);
-    Swal.fire(
-      "Error",
-      error?.response?.data?.message || "Something went wrong",
-      "error"
-    );
-  }
-};
+      })
+      .then((response) => {
+        console.log(response);
+        setBlogErr(false);
+        if (response.status === 200) {
+          setOpen2(false);
+          Swal.fire("Success", "Notes added successfully!", "success");
+        }
+        setNote("");
+        setDate("");
+      })
+      .catch((error) => {
+        setOpen2(false);
+        console.log(error);
+        Swal.fire("Error", `${error?.response?.data?.message}`, "error");
+      });
+  };
+//  const handleNotesdata = async (e) => {
+//   e.preventDefault();
+//   setBlogErr({
+//     note: false,
+//     date: false,
+//   });
+//   if (!note) {
+//     setBlogErr((prev) => ({ ...prev, note: true }));
+//   }
+//   if (!date) {
+//     setBlogErr((prev) => ({ ...prev, date: true }));
+//   }
+//   if (!note || !date) return;
+//   try {
+//     const notesRes = await axios.post(
+//       `${baseurl}add_notes/${enqId}`,
+//       {
+//         note: note,
+//         date: date,
+//       }
+//     );
+//     const formData = new FormData();
+//     formData.append("review_id", enqId); // 👈 make sure this is correct review id
+//     formData.append("user_type", "Patient"); // or dynamic
+//     formData.append("comment", note);
+//     images.forEach((img) => {
+//       formData.append("images[]", img);
+//     });
+//     const reviewRes = await axios.post(
+//       "https://omcacrm.com/omca/api/crm/review/comment/add",
+//       formData
+//     );
+//     if (notesRes.status === 200 && reviewRes.data.success) {
+//       setOpen2(false);
+//       Swal.fire(
+//         "Success",
+//         "Notes & Review Comment added successfully!",
+//         "success"
+//       );
+//       setNote("");
+//       setDate("");
+//       setImages([]);
+//       setBlogErr(false);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     setOpen2(false);
+//     Swal.fire(
+//       "Error",
+//       error?.response?.data?.message || "Something went wrong",
+//       "error"
+//     );
+//   }
+// };
  
   const handledelete = (e, patientId) => {
     console.log(e);
@@ -973,6 +978,7 @@ useEffect(() => {
       date: item.createdAt || item.created_at || "",
       id: item.id,
       raw: item,
+
     }));
   };
   const getUserId = async () => {
