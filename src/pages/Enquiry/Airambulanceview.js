@@ -128,7 +128,6 @@ export default function Airambulanceview() {
     }
   };
 
-  // test worbnfjgnedo
   return (
     <>
       <div className="page-wrapper">
@@ -137,10 +136,8 @@ export default function Airambulanceview() {
             <div className="col-md-12">
               <div className="topmainhd">
                 <h6>
-                  <i
-                    class="fa-solid fa-arrow-left-long me-2"
-                    onClick={handleclick}
-                  ></i>
+                  <i class="fa-solid fa-arrow-left-long me-2"
+                    onClick={handleclick}></i>
                   View Air Medical Escort Enquiry
                 </h6>
               </div>
@@ -419,22 +416,22 @@ export default function Airambulanceview() {
                       <h6>Images</h6>
                       <p>
                         {Array.isArray(row?.doctor_review?.images) &&
-                        row?.doctor_review?.images.length > 0
+                          row?.doctor_review?.images.length > 0
                           ? row.doctor_review.images.map((rep, index) => (
-                              <button
-                                key={index}
-                                type="button"
-                                className="viewbtn"
-                                onClick={() => window.open(rep, "_blank")}
-                              >
-                                View
-                              </button>
-                            ))
+                            <button
+                              key={index}
+                              type="button"
+                              className="viewbtn"
+                              onClick={() => window.open(rep, "_blank")}
+                            >
+                              View
+                            </button>
+                          ))
                           : "-"}
                       </p>
                     </div>
                   </div>
-                  <div className="col-md-12">
+                  <div className="col-md-12 gy-0">
                     <div className="docre-hd">
                       <div className="comnthis">
                         <h6 className="mb-0">Comments</h6>
@@ -447,46 +444,50 @@ export default function Airambulanceview() {
                         Add Comment
                       </button>
                     </div>
-                    <div className="row">
+                    <div className="row gx-3 gy-3">
                       {row?.doctor_review?.comments?.length > 0 ? (
-                        row.doctor_review.comments.map((item, index) => (
+                        row?.doctor_review?.comments?.map((item, index) => (
                           <div key={item.id || index} className="col-md-12">
                             <div className="card customstylecard">
                               <div className="card-body">
-                                <div className="">
-                                  <p> {item?.comment}</p>
-                                </div>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    gap: "10px",
-                                    flexWrap: "wrap",
-                                  }}
-                                >
-                                  {Array.isArray(item?.images) ? (
-                                    item.images.map((rep, index) => (
-                                      <button
-                                        key={index}
-                                        type="button"
-                                        className="viewbtn"
-                                        onClick={() =>
-                                          window.open(rep, "_blank")
-                                        }
-                                      >
-                                        View
-                                      </button>
-                                    ))
-                                  ) : item?.images ? (
-                                    <button
-                                      type="button"
-                                      className="viewbtn"
-                                      onClick={() =>
-                                        window.open(item.images, "_blank")
-                                      }
-                                    >
-                                      View
-                                    </button>
-                                  ) : null}
+                                <div className="experience-box">
+                                  <ul className="experience-list">
+                                    <li className="mb-0">
+                                      <div className="experience-user">
+                                        <div className="before-circle"></div>
+                                      </div>
+                                      <div className="experience-content">
+                                        <div className="timeline-content">
+                                          <a href="#/" className="name">
+                                            {item?.comment}
+                                          </a>
+                                          {Array.isArray(item?.images) ? (
+                                            item.images.map((rep, index) => (
+                                              <button
+                                                key={index}
+                                                type="button"
+                                                className="viewbtn"
+                                                onClick={() => window.open(rep, "_blank")}
+                                              >
+                                                View
+                                              </button>
+                                            ))
+                                          ) : item?.images ? (
+                                            <button
+                                              type="button"
+                                              className="viewbtn"
+                                              onClick={() =>
+                                                window.open(item.images, "_blank")
+                                              }
+                                            >
+                                              View
+                                            </button>
+                                          ) : null
+                                          }
+                                        </div>
+                                      </div>
+                                    </li>
+                                  </ul>
                                 </div>
                               </div>
                             </div>
@@ -512,163 +513,74 @@ export default function Airambulanceview() {
                     <div className="">
                       {Array.isArray(row?.reports) && row.reports.length > 0
                         ? row.reports.map((rep, index) =>
-                            rep?.report ? (
-                              <button
-                                key={index}
-                                type="button"
-                                className="viewbtn"
-                                onClick={() =>
-                                  window.open(rep.report, "_blank")
-                                }
-                              >
-                                View
-                              </button>
-                            ) : null,
-                          )
+                          rep?.report ? (
+                            <button
+                              key={index}
+                              type="button"
+                              className="viewbtn"
+                              onClick={() => window.open(rep.report, "_blank")}
+                            >
+                              View
+                            </button>
+                          ) : null,
+                        )
                         : "-"}
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="row">
-                {row?.doctor_review?.comments?.length > 0 ? (
-                  row?.doctor_review?.comments?.map((item, index) => (
-                    <div
-                      key={item.id || index}
-                      className="col-12 mb-3 p-3"
-                      style={{
-                        border: "1px solid #ddd",
-                        borderRadius: "10px",
-                        background: "#f9f9f9",
-                      }}
-                    >
-                      {/* User Type */}
-                      {/* <h6 style={{ marginBottom: "5px", color: "#555" }}>
-          {item?.user_type}
-        </h6> */}
-
-                      {/* Comment */}
-                      <div className="row d-flex">
-                        <p style={{ marginBottom: "10px" }}>{item?.comment}</p>
-
-                        {/* Images */}
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "10px",
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: "10px",
-                              flexWrap: "wrap",
-                            }}
-                          >
-                            {Array.isArray(item?.images) ? (
-                              item.images.map((rep, index) => (
-                                <button
-                                  key={index}
-                                  type="button"
-                                  className="viewbtn"
-                                  onClick={() => window.open(rep, "_blank")}
-                                >
-                                  View
-                                </button>
-                              ))
-                            ) : item?.images ? (
-                              <button
-                                type="button"
-                                className="viewbtn"
-                                onClick={() =>
-                                  window.open(item.images, "_blank")
-                                }
-                              >
-                                View
-                              </button>
-                            ) : null}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p>No comments available</p>
-                )}
-              </div>
-              <div className="treat-hd">
-                <h6>Reports</h6>
-                <span className="line"></span>
-              </div>
-              <div>
-                {Array.isArray(row?.reports) && row.reports.length > 0
-                  ? row.reports.map((rep, index) =>
-                      rep?.report ? (
-                        <button
-                          key={index}
-                          type="button"
-                          className="viewbtn"
-                          onClick={() => window.open(rep.report, "_blank")}
-                        >
-                          View
-                        </button>
-                      ) : null,
-                    )
-                  : "-"}
-              </div>
             </div>
           </div>
-          <React.Fragment>
-            <Dialog
-              fullWidth={true}
-              maxWidth="sm"
-              open={openCommentModal} // ✅ FIXED
-              onClose={closeCommentModal}
-            >
-              <div className="main-card-header">
-                <div className="note-hd">
-                  <h6>Add Comment</h6>
-                </div>
-                <div className="cross-icon" onClick={closeCommentModal}>
-                  <i className="fa-solid fa-xmark"></i>
-                </div>
-              </div>
-              <DialogContent className="main-box">
-                <Box noValidate component="form" className="contact-form">
-                  <div className="field-set">
-                    <label>
-                      Comment<span className="text-danger">*</span>
-                    </label>
-                    <textarea
-                      className="form-control"
-                      placeholder="Enter comment"
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Image Upload */}
-                  <div className="field-set">
-                    <label>Upload Images</label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      multiple
-                      onChange={handleImageChange}
-                    />
-                  </div>
-
-                  <DialogActions className="submit-main">
-                    <Button variant="contained" onClick={handleSubmitComment}>
-                      Submit
-                    </Button>
-                  </DialogActions>
-                </Box>
-              </DialogContent>
-            </Dialog>
-          </React.Fragment>
         </div>
+        <React.Fragment>
+          <Dialog
+            fullWidth={true}
+            maxWidth="sm"
+            open={openCommentModal}
+            onClose={closeCommentModal}
+          >
+            <div className="main-card-header">
+              <div className="note-hd">
+                <h6>Add Comment</h6>
+              </div>
+              <div className="cross-icon" onClick={closeCommentModal}>
+                <i className="fa-solid fa-xmark"></i>
+              </div>
+            </div>
+            <DialogContent className="main-box">
+              <Box noValidate component="form" className="contact-form">
+                <div className="field-set">
+                  <label>
+                    Comment<span className="text-danger">*</span>
+                  </label>
+                  <textarea
+                    className="form-control"
+                    placeholder="Enter comment"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                  />
+                </div>
+
+                {/* Image Upload */}
+                <div className="field-set">
+                  <label>Upload Images</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    multiple
+                    onChange={handleImageChange}
+                  />
+                </div>
+
+                <DialogActions className="submit-main">
+                  <Button variant="contained" onClick={handleSubmitComment}>
+                    Submit
+                  </Button>
+                </DialogActions>
+              </Box>
+            </DialogContent>
+          </Dialog>
+        </React.Fragment>
       </div>
     </>
   );

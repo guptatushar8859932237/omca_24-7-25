@@ -173,7 +173,7 @@ export default function EditEnquiry() {
   });
   // Handle Add Doctor Review Submit
   const handleAddDoctorReview = async (e) => {
- e?.preventDefault();
+    e?.preventDefault();
     if (!reviewNotes.trim()) {
       Swal.fire("Error!", "Review notes are required", "error");
       return;
@@ -615,7 +615,7 @@ export default function EditEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Emergency Contact No<span className="text-danger"></span></label>
+                              <label>Emergency Contact No<span className="text-danger">*</span></label>
                               <div className="country-code">
                                 <Field
                                   className="form-control code-dial"
@@ -638,7 +638,7 @@ export default function EditEnquiry() {
                             <div className="set-field">
                               <label>
                                 Patient Id Proof
-                                <span className="text-danger"></span>{" "}
+                                <span className="text-danger">*</span>{" "}
                                 <span
                                   className="text-danger"
                                   data-bs-placement="right"
@@ -710,7 +710,7 @@ export default function EditEnquiry() {
                           <div className="col-md-4">
                             <div className="set-field">
                               <label>
-                                Patient Profile<span className="text-danger"></span>{" "}
+                                Patient Profile<span className="text-danger">*</span>{" "}
                                 <span
                                   className="text-danger"
                                   data-bs-placement="right"
@@ -771,7 +771,7 @@ export default function EditEnquiry() {
                           <div className="col-md-4">
                             <div className="set-field">
                               <label>
-                                Referral Name<span className="text-danger"></span>
+                                Referral Name<span className="text-danger">*</span>
                               </label>
                               <Field
                                 className="form-control"
@@ -788,7 +788,7 @@ export default function EditEnquiry() {
                             <div className="set-field">
                               <label>
                                 Treatment name
-                                <span className="text-danger"></span>
+                                <span className="text-danger">*</span>
                               </label>
                               <Autocomplete
                                 options={Treatment || []}
@@ -876,13 +876,12 @@ export default function EditEnquiry() {
                         </div>
                       </div>
                     </div>
-                        {values.discussion_notes?.map((note, index) => (
-
-                    <div className="col-md-12">
-                      <div className="main_content">
-                        <div className="comnthis">
-                          <h6>Notes</h6>
-                        </div>
+                    {values.discussion_notes?.map((note, index) => (
+                      <div className="col-md-12">
+                        <div className="main_content">
+                          <div className="comnthis">
+                            <h6>Notes</h6>
+                          </div>
                           <div className="set-field" key={index}>
                             <div className="noteadv">
                               <label>Note-{index + 1}</label>
@@ -894,74 +893,73 @@ export default function EditEnquiry() {
                               className="form-control"
                             />
                           </div>
-                      
+                        </div>
                       </div>
-                    </div>
-                      ))}
+                    ))}
+                    <div className="col-md-12">
+                      <div className="main_content">
                         <div className="row gx-3 gy-3">
-{(
-  (doctorReviewData &&
-    (doctorReviewData.review_notes ||
-     doctorReviewData.Recommendations ||
-     (doctorReviewData.images && doctorReviewData.images.length > 0))) ||
+                          {(
+                            (doctorReviewData &&
+                              (doctorReviewData.review_notes ||
+                                doctorReviewData.Recommendations ||
+                                (doctorReviewData.images && doctorReviewData.images.length > 0))) ||
 
-  (editenquiry?.doctorReview &&
-    (editenquiry.doctorReview.review_notes ||
-     editenquiry.doctorReview.Recommendations ||
-     (editenquiry.doctorReview.images && editenquiry.doctorReview.images.length > 0)))
-) && (
-                          <div className="col-md-12">
-                            <div className="comnthis">
-                              <h6>Doctor Review</h6>
-                            </div>
-                            <div className="row gx-3 gy-3">
-                           
-                                <>
-                                  <div className="col-md-4">
-                                    <div className="set-field">
-                                      <label>Review Notes</label>
-                                      <textarea className="form-control">
-                                        {doctorReviewData?.review_notes || editenquiry?.doctorReview?.review_notes }
-                                      </textarea>
-                                    </div>
-                                  </div>
-                                  <div className="col-md-4">
-                                    <div className="set-field">
-                                      <label>Recommendations</label>
-                                      <textarea className="form-control">
-                                        {doctorReviewData?.Recommendations || editenquiry?.doctorReview?.Recommendations }
-                                      </textarea>
-                                    </div>
-                                  </div>
-                                  <div className="col-md-4">
-                                    <div className="set-field">
-                                      <label>Images</label>
-                                      <div className="engpatimg">
-                                        {(doctorReviewData?.images || editenquiry?.doctorReview?.images || []).map((img, index) => (
-                                          <button
-                                            key={index}
-                                            type="button"
-                                            className="viewbtn"
-                                            onClick={() => window.open(`${imageUrl}${img}`, "_blank")}
-                                          >
-                                            View 
-                                          </button>
-                                        ))}
+                            (editenquiry?.doctorReview &&
+                              (editenquiry.doctorReview.review_notes ||
+                                editenquiry.doctorReview.Recommendations ||
+                                (editenquiry.doctorReview.images && editenquiry.doctorReview.images.length > 0)))
+                          ) && (
+                              <div className="col-md-12">
+                                <div className="comnthis">
+                                  <h6>Doctor Review</h6>
+                                </div>
+                                <div className="row gx-3 gy-3">
+                                  <>
+                                    <div className="col-md-5">
+                                      <div className="set-field">
+                                        <label>Review Notes<span className="text-danger">*</span></label>
+                                        <textarea className="form-control">
+                                          {doctorReviewData?.review_notes || editenquiry?.doctorReview?.review_notes}
+                                        </textarea>
                                       </div>
                                     </div>
-                                  </div>
-                                </>
-                             
-                            </div>
-                          </div>
-                           )}
+                                    <div className="col-md-5">
+                                      <div className="set-field">
+                                        <label>Recommendations<span className="text-danger">*</span></label>
+                                        <textarea className="form-control">
+                                          {doctorReviewData?.Recommendations || editenquiry?.doctorReview?.Recommendations}
+                                        </textarea>
+                                      </div>
+                                    </div>
+                                    <div className="col-md-2">
+                                      <div className="set-field">
+                                        <label>Images<span className="text-danger">*</span></label>
+                                        <div className="engpatimg">
+                                          {(doctorReviewData?.images || editenquiry?.doctorReview?.images || []).map((img, index) => (
+                                            <button
+                                              key={index}
+                                              type="button"
+                                              className="viewbtn"
+                                              onClick={() => window.open(`${imageUrl}${img}`, "_blank")}
+                                            >
+                                              View
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                </div>
+                              </div>
+                            )}
                           {((doctorComments && doctorComments.length > 0) || (editenquiry?.doctorReview?.comments && editenquiry.doctorReview.comments.length > 0)) && (
                             <div className="col-md-12">
                               <div className="docre-hd">
                                 <div className="comnthis">
                                   <h6 className="mb-0">Comments</h6>
                                 </div>
-                                <button className="add-button"  type="button"  onClick={openmodalFunction}>Add Comment</button>
+                                <button className="add-button" type="button" onClick={openmodalFunction}>Add Comment</button>
                               </div>
                               <div className="row gx-3 gy-3">
                                 {(doctorComments.length > 0 ? doctorComments : (editenquiry?.doctorReview?.comments || [])).map((comment, index) => (
@@ -996,7 +994,7 @@ export default function EditEnquiry() {
                                                             className="viewbtn me-2"
                                                             onClick={() => window.open(fullUrl, "_blank")}
                                                           >
-                                                            View 
+                                                            View
                                                           </button>
                                                         );
                                                       })}
@@ -1022,7 +1020,8 @@ export default function EditEnquiry() {
                             </div>
                           )}
                         </div>
-                     
+                      </div>
+                    </div>
                     <div className="col-md-12">
                       <div className="main_content">
                         <div className="row gx-3 gy-3">

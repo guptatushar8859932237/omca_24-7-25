@@ -46,8 +46,8 @@ export default function Medicalescortservice() {
   const location = useLocation();
   const [row, setRows] = useState("");
   const [openCommentModal, setOpenCommentModal] = useState(false);
-const [commentText, setCommentText] = useState("");
-const [commentImages, setCommentImages] = useState([]);
+  const [commentText, setCommentText] = useState("");
+  const [commentImages, setCommentImages] = useState([]);
   console.log(location.state);
   const fetchJobTitles = async () => {
     const payload = {
@@ -79,348 +79,290 @@ const [commentImages, setCommentImages] = useState([]);
   };
 
   const addcomment = () => {
-  setOpenCommentModal(true);
-};
+    setOpenCommentModal(true);
+  };
 
-const closeCommentModal = () => {
-  setOpenCommentModal(false);
-  setCommentText("");
-  setCommentImages([]);
-};
+  const closeCommentModal = () => {
+    setOpenCommentModal(false);
+    setCommentText("");
+    setCommentImages([]);
+  };
 
-const handleImageChange = (e) => {
-  setCommentImages([...e.target.files]);
-};
+  const handleImageChange = (e) => {
+    setCommentImages([...e.target.files]);
+  };
 
-const userType = localStorage.getItem("Role");
+  const userType = localStorage.getItem("Role");
 
 
 
-const handleSubmitComment = async () => {
-  if (!commentText) {
-    return Swal.fire("Error", "Comment is required", "warning");
-  }
-
-  try {
-    const formData = new FormData();
-    formData.append("review_id", row?.doctor_review?.id);
-    formData.append("comment", commentText);
-    formData.append("user_type", userType);
-
-    commentImages.forEach((file) => {
-      formData.append("images[]", file);
-    });
-
-    const res = await axios.post(
-      `${AdminBaseUrl}review/comment/add`,
-      formData
-    );
-
-    if (res?.data?.success) {
-      Swal.fire("Success", "Comment added", "success");
-      closeCommentModal();
-      fetchJobTitles(); // refresh data
+  const handleSubmitComment = async () => {
+    if (!commentText) {
+      return Swal.fire("Error", "Comment is required", "warning");
     }
-  } catch (error) {
-    Swal.fire(
-      "Error",
-      error?.response?.data?.message || "Something went wrong",
-      "error"
-    );
-  }
-};
+
+    try {
+      const formData = new FormData();
+      formData.append("review_id", row?.doctor_review?.id);
+      formData.append("comment", commentText);
+      formData.append("user_type", userType);
+
+      commentImages.forEach((file) => {
+        formData.append("images[]", file);
+      });
+
+      const res = await axios.post(
+        `${AdminBaseUrl}review/comment/add`,
+        formData
+      );
+
+      if (res?.data?.success) {
+        Swal.fire("Success", "Comment added", "success");
+        closeCommentModal();
+        fetchJobTitles(); // refresh data
+      }
+    } catch (error) {
+      Swal.fire(
+        "Error",
+        error?.response?.data?.message || "Something went wrong",
+        "error"
+      );
+    }
+  };
   return (
     <>
-      <div class="page-wrapper">
-        <div class="content">
-          <div className="row">
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="row gx-3 gy-3">
             <div className="col-md-12">
-              <h4 className="page-title">
-                <span>
-                  <i
-                    class="fi fi-sr-angle-double-small-left"
-                    onClick={handleclick}
-                    style={{ cursor: "pointer" }}
-                  ></i>
-                </span>
-                View Treatment Estimate
-              </h4>
+              <div className="topmainhd">
+                <h6>
+                  <i class="fa-solid fa-arrow-left-long me-2"
+                    onClick={handleclick}></i>
+                  View Treatment Estimate
+                </h6>
+              </div>
             </div>
-          </div>
-          <div class="main_content">
-           
-              <div className="row">
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>Enquiry Id<span className="text-danger"></span></label>
-                    <input
-                      class="form-control"
-                      type="text"
-                      value={row?.enquiryId}
-                      readonly=""
-                    />
+            <div className="col-md-12 gy-0">
+              <div className="main_content">
+                <div className="row gx-3 gy-3">
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Enquiry Id</h6>
+                      <p>{row?.enquiryId}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>Treatment<span className="text-danger"></span></label>
-                    <input
-                      class="form-control"
-                      type="text"
-                      value={row?.treatment}
-                      readonly=""
-                    />
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Treatment</h6>
+                      <p>{row?.treatment}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>Country<span className="text-danger"></span>
-                    </label>
-                    <input
-                      class="form-control"
-                      type="text"
-                      value={row.country}
-                      readonly=""
-                    />
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Country</h6>
+                      <p>{row.country}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>Name<span className="text-danger"></span></label>
-                    <input
-                      class="form-control"
-                      type="text"
-                      value={row.name}
-                      readonly=""
-                    />
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Name</h6>
+                      <p>{row.name}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>Email<span className="text-danger"></span></label>
-                    <input
-                      class="form-control"
-                      type="text"
-                      value={row.email}
-                      readonly=""
-                    />
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Email</h6>
+                      <p>{row.email}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>
-                      Phone Number
-                      <span className="text-danger"></span>
-                    </label>
-                    <div className="country-code">
-                      <input
-                        class="form-control code-dial"
-                        type="text"
-                        value={row.phoneCode}
-                        readonly=""
-                      />
-                      <input
-                        class="form-control code-in"
-                        type="text"
-                        value={row.phone}
-                        readonly=""
-                      />
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Phone Number</h6>
+                      <p>{row.phoneCode}{row.phone}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>WhatsApp Number</h6>
+                      <p>{row.phoneCode}{row?.whatsapp}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Description</h6>
+                      <p>{row.message}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Passport Number</h6>
+                      <p>{row.passport_number}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Treating In Country</h6>
+                      <p>{row.treating_in_country}</p>
                     </div>
                   </div>
                 </div>
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>WhatsApp Number
-                      <span className="text-danger"></span>
-                    </label>
-                    <div className="country-code">
-                      <input
-                        class="form-control code-dial"
-                        type="text"
-                        value={row.phoneCode}
-                        readonly=""
-                      />
-                      <input
-                        class="form-control code-in"
-                        type="text"
-                        value={row?.whatsapp}
-                        readonly=""
-                      />
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="main_content">
+                <div className="row gx-3 gy-3">
+                  <div className="col-md-12">
+                    <div className="comnthis">
+                      <h6>Doctor Review</h6>
                     </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>Description<span className="text-danger"></span></label>
-                    <input
-                      class="form-control"
-                      type="email"
-                      value={row.message}
-                      readonly=""
-                    />
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Review Notes</h6>
+                      <p>{row?.doctor_review?.review_notes || "-"}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>Passport Number<span className="text-danger"></span></label>
-                    <input
-                      class="form-control"
-                      type="text"
-                      value={row.passport_number}
-                      readonly=""
-                    />
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Recommendations</h6>
+                      <p>{row?.doctor_review?.recommendations || "-"}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="field-set">
-                    <label>Treating In Country<span className="text-danger"></span></label>
-                    <input
-                      class="form-control"
-                      type="text"
-                      value={row.treating_in_country}
-                      readonly=""
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="treat-hd">
-  <h6>Doctor Review</h6>
-  <span className="line"></span>
-</div>
-
-<div className="row">
-  <div className="col-md-3">
-    <label>Review Notes</label>
-    <input
-      className="form-control"
-      value={row?.doctor_review?.review_notes || "-"}
-      readOnly
-    />
-  </div>
-
-  <div className="col-md-3">
-    <label>Recommendations</label>
-    <input
-      className="form-control"
-      value={row?.doctor_review?.recommendations || "-"}
-      readOnly
-    />
-  </div>
-</div><div className="treat-hd d-flex justify-content-between">
-  <div>
-    <h6>Comments</h6>
-    <span className="line"></span>
-  </div>
-
-  <button className="add-button" onClick={addcomment}>
-    Add Comment
-  </button>
-</div>
-
-<div className="row">
-  {row?.doctor_review?.comments?.length > 0 ? (
-    row.doctor_review.comments.map((item, index) => (
-      <div key={index} className="col-12 mb-3 p-3"
-        style={{
-          border: "1px solid #ddd",
-          borderRadius: "10px",
-          background: "#f9f9f9",
-        }}
-      >
-        <p>{item.comment}</p>
-
-        <div style={{ display: "flex", gap: "10px" }}>
-      {Array.isArray(item?.images) ? (
-  item.images.map((img, i) => (
-    <button
-      key={i}
-      className="viewbtn"
-      onClick={() => window.open(img, "_blank")}
-    >
-      View
-    </button>
-  ))
-) : item?.images ? (
-  <button
-    className="viewbtn"
-    onClick={() => window.open(item.images, "_blank")}
-  >
-    View
-  </button>
-) : null}
-        </div>
-      </div>
-    ))
-  ) : (
-    <p>No comments available</p>
-  )}
-</div>
-              <div className="treat-hd">
-                <h6>Reports</h6>
-                <span className="line"></span>
-              </div>
-              <div className="d-flex gap-2">
-                {Array.isArray(row?.reports) && row.reports.length > 0 ? (
-                  row.reports.map((rep, index) =>
-                    rep?.report ? (
-                      <button
-                        key={index}
-                        type="button"
-                        className="viewbtn"
-                        onClick={() => window.open(rep.report, "_blank")}
-                      >
-                        View
+                  <div className="col-md-12 gy-0">
+                    <div className="docre-hd">
+                      <div className="comnthis">
+                        <h6 className="mb-0">Comments</h6>
+                      </div>
+                      <button className="add-button" type="button" onClick={addcomment}>
+                        Add Comment
                       </button>
-                    ) : null
-                  )
-                ) : (
-                  "-"
-                )}
+                    </div>
+                    <div className="row gx-3 gy-3">
+                      {row?.doctor_review?.comments?.length > 0 ? (
+                        row.doctor_review.comments.map((item, index) => (
+                          <div key={index} className="col-md-12">
+                            <div className="card customstylecard">
+                              <div className="card-body">
+                                <div className="experience-box">
+                                  <ul className="experience-list">
+                                    <li className="mb-0">
+                                      <div className="experience-user">
+                                        <div className="before-circle"></div>
+                                      </div>
+                                      <div className="experience-content">
+                                        <div className="timeline-content">
+                                          <a href="#/" className="name">
+                                            {item.comment}
+                                          </a>
+                                          {Array.isArray(item?.images) ? (
+                                            item.images.map((img, i) => (
+                                              <button
+                                                key={i}
+                                                className="viewbtn"
+                                                onClick={() => window.open(img, "_blank")}
+                                              >
+                                                View
+                                              </button>
+                                            ))
+                                          ) : item?.images ? (
+                                            <button
+                                              className="viewbtn"
+                                              onClick={() => window.open(item.images, "_blank")}
+                                            >
+                                              View
+                                            </button>
+                                          ) : null}
+                                        </div>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p>No comments available</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
+            </div>
+            <div className="col-md-12">
+              <div className="main_content">
+                <div className="row gx-3 gy-3">
+                  <div className="col-md-12">
+                    <div className="comnthis">
+                      <h6>Reports</h6>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    {Array.isArray(row?.reports) && row.reports.length > 0 ? (
+                      row.reports.map((rep, index) =>
+                        rep?.report ? (
+                          <button
+                            key={index}
+                            type="button"
+                            className="viewbtn"
+                            onClick={() => window.open(rep.report, "_blank")}
+                          >
+                            View
+                          </button>
+                        ) : null
+                      )
+                    ) : (
+                      "-"
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <Dialog
-  fullWidth
-  maxWidth="sm"
-  open={openCommentModal}
-  onClose={closeCommentModal}
->
-  <div className="main-card-header">
-    <h6>Add Comment</h6>
-    <div className="cross-icon" onClick={closeCommentModal}>
-      <i className="fa-solid fa-xmark"></i>
-    </div>
-  </div>
+          fullWidth
+          maxWidth="sm"
+          open={openCommentModal}
+          onClose={closeCommentModal}
+        >
+          <div className="main-card-header">
+            <h6>Add Comment</h6>
+            <div className="cross-icon" onClick={closeCommentModal}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
 
-  <DialogContent className="main-box">
-    <Box component="form">
-      <div className="field-set">
-        <label>Comment *</label>
-        <textarea
-          className="form-control"
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-        />
-      </div>
+          <DialogContent className="main-box">
+            <Box component="form">
+              <div className="field-set">
+                <label>Comment *</label>
+                <textarea
+                  className="form-control"
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                />
+              </div>
 
-      <div className="field-set">
-        <label>Upload Images</label>
-        <input
-          type="file"
-          className="form-control"
-          multiple
-          onChange={handleImageChange}
-        />
-      </div>
+              <div className="field-set">
+                <label>Upload Images</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  multiple
+                  onChange={handleImageChange}
+                />
+              </div>
 
-      <DialogActions>
-        <Button variant="contained" onClick={handleSubmitComment}>
-          Submit
-        </Button>
-      </DialogActions>
-    </Box>
-  </DialogContent>
-</Dialog>
+              <DialogActions>
+                <Button variant="contained" onClick={handleSubmitComment}>
+                  Submit
+                </Button>
+              </DialogActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
