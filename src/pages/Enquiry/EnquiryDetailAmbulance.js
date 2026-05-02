@@ -479,49 +479,95 @@ export default function EnquiryDetailAmbulance() {
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-12">
-              <div className="main_content">
-                <div className="row gx-3 gy-0">
-                  <div className="col-md-12">
-                    <div className="comnthis">
-                      <h6>Reports</h6>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="">
-                      {row?.reports?.length > 0 ? (
-                        row.reports.map((rep, index) =>
-                          rep?.report ? (
-                            <button
-                              key={index}
-                              type="button"
-                              className=" viewbtn"
-                              onClick={() => window.open(rep.report, "_blank")}
-                            >
-                              View
-                            </button>
-                          ) : null
-                        )
-                      ) : (
-                        "-"
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <Dialog
-            fullWidth
-            maxWidth="sm"
-            open={openCommentModal}
-            onClose={closeCommentModal}
+              <div className="treat-hd">
+  <h6>Doctor Review</h6>
+  <span className="line"></span>
+</div>
+
+<div className="row">
+  <div className="col-md-3">
+    <div className="field-set">
+      <label>Review Notes</label>
+      <input
+        className="form-control"
+        value={row?.doctor_review?.review_notes || "-"}
+        readOnly
+      />
+    </div>
+  </div>
+
+  <div className="col-md-3">
+    <div className="field-set">
+      <label>Recommendations</label>
+      <input
+        className="form-control"
+        value={row?.doctor_review?.recommendations || "-"}
+        readOnly
+      />
+    </div>
+  </div>
+
+  <div className="col-md-3">
+    <label>Images</label>
+    <br />
+    {row?.doctor_review?.images?.length > 0
+      ? row?.doctor_review?.images?.map((img, i) => (
+          <button
+            key={i}
+            className="viewbtn"
+            onClick={() => window.open(img, "_blank")}
           >
-            <div className="main-card-header">
-              <h6>Add Comment</h6>
-              <div className="cross-icon" onClick={closeCommentModal}>
-                <i className="fa-solid fa-xmark"></i>
+            View
+          </button>
+        ))
+      : "-"}
+  </div>
+</div>
+<div className="treat-hd d-flex justify-content-between">
+  <div>
+    <h6>Comments</h6>
+    <span className="line"></span>
+  </div>
+
+  <button className="add-button" onClick={addcomment}>
+    Add Comment
+  </button>
+</div>
+
+<div className="row">
+  {row?.doctor_review?.comments?.length > 0 ? (
+    row.doctor_review.comments.map((item, index) => (
+      <div key={index} className="col-12 mb-3 p-3"
+        style={{
+          border: "1px solid #ddd",
+          borderRadius: "10px",
+          background: "#f9f9f9",
+        }}
+      >
+        <p>{item.comment}</p>
+
+        <div style={{ display: "flex", gap: "10px" }}>
+         {Array.isArray(item?.images) && item.images.length > 0 ? (
+  item.images.map((img, i) => (
+    <button
+      key={i}
+      className="viewbtn"
+      onClick={() => window.open(img, "_blank")}
+    >
+      View
+    </button>
+  ))
+) : null}
+        </div>
+      </div>
+    ))
+  ) : (
+    <p>No comments available</p>
+  )}
+</div>
+              <div className="treat-hd">
+                <h6>Reports</h6>
+                <span className="line"></span>
               </div>
             </div>
 
@@ -564,8 +610,8 @@ export default function EnquiryDetailAmbulance() {
                 </DialogActions>
               </Box>
             </DialogContent>
-          </Dialog>
         </div>
+      </div>
       </div>
     </>
   );

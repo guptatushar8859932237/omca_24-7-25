@@ -482,7 +482,80 @@ export default function Airambulanceview() {
                   </div>
                 </div>
               </div>
-            </div>
+             <div className="row">
+  {row?.doctor_review?.comments?.length > 0 ? (
+    row?.doctor_review?.comments?.map((item, index) => (
+      <div
+        key={item.id || index}
+        className="col-12 mb-3 p-3"
+        style={{
+          border: "1px solid #ddd",
+          borderRadius: "10px",
+          background: "#f9f9f9",
+        }}
+      >
+        {/* User Type */}
+        {/* <h6 style={{ marginBottom: "5px", color: "#555" }}>
+          {item?.user_type}
+        </h6> */}
+
+        {/* Comment */}
+        <div className="row d-flex">
+         
+        <p style={{ marginBottom: "10px" }}>
+          {item?.comment}
+        </p>
+
+        {/* Images */}
+       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+ {Array.isArray(item?.images) ? (
+  item.images.map((rep, index) => (
+    <button
+      key={index}
+      type="button"
+      className="viewbtn"
+      onClick={() => window.open(rep, "_blank")}
+    >
+      View
+    </button>
+  ))
+) : item?.images ? (
+  <button
+    type="button"
+    className="viewbtn"
+    onClick={() => window.open(item.images, "_blank")}
+  >
+    View
+  </button>
+) : null}
+</div>
+      </div>
+      </div>
+    ))
+  ) : (
+    <p>No comments available</p>
+  )}
+</div>
+              <div className="treat-hd">
+                <h6>Reports</h6>
+                <span className="line"></span>
+              </div>
+              <div>
+                {Array.isArray(row?.reports) && row.reports.length > 0
+                  ? row.reports.map((rep, index) =>
+                      rep?.report ? (
+                        <button
+                          key={index}
+                          type="button"
+                          className="viewbtn"
+                          onClick={() => window.open(rep.report, "_blank")}
+                        >
+                          View
+                        </button>
+                      ) : null,
+                    )
+                  : "-"}
+              </div>
           </div>
         </div>
         <React.Fragment>
@@ -541,6 +614,7 @@ export default function Airambulanceview() {
             </DialogContent>
           </Dialog>
         </React.Fragment>
+      </div>
       </div>
     </>
   );
