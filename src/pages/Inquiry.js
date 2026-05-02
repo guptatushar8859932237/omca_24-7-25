@@ -211,9 +211,9 @@ const handleNotesdataqw = async (e) => {
     else {
       const newPayload = new FormData();
       const typeMap = {
-        1: "ambulance",
-        2: "air_medical",
-        3: "treatment",
+        1: "AmbulanceRequest",
+        2: "AirAmbulance",
+        3: "PatientQuery",
       };
       newPayload.append("review_notes", note);
       newPayload.append("enquiry_id", tratmentenqId);
