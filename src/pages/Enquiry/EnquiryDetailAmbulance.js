@@ -3,9 +3,21 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Box, Button, Dialog, DialogActions, DialogContent } from "@mui/material";
-import { AdminBaseUrl, baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
-import avtar from "../../img/avtarImg.jpg"
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+} from "@mui/material";
+import {
+  AdminBaseUrl,
+  baseu11,
+  baseurl,
+  image,
+  imageUrl,
+} from "../../Basurl/Baseurl";
+import avtar from "../../img/avtarImg.jpg";
 // 🔹 file type check
 const getFileType = (file) => {
   const ext = file.split(".").pop().toLowerCase();
@@ -52,8 +64,8 @@ export default function EnquiryDetailAmbulance() {
   const fetchJobTitles = async () => {
     const payload = {
       id: location.state.id,
-      type: "AmbulanceRequest"
-    }
+      type: "AmbulanceRequest",
+    };
     await axios
       .post(`https://omcacrm.com/omca/api/crm/other_enquiry_details`, payload)
       .then((response) => {
@@ -78,39 +90,31 @@ export default function EnquiryDetailAmbulance() {
   const addcomment = () => {
     setOpenCommentModal(true);
   };
-
   const closeCommentModal = () => {
     setOpenCommentModal(false);
     setCommentText("");
     setCommentImages([]);
   };
-
   const handleImageChange = (e) => {
     setCommentImages([...e.target.files]);
   };
-
   const userType = localStorage.getItem("Role");
-
   const handleSubmitComment = async () => {
     if (!commentText) {
       return Swal.fire("Error", "Comment is required", "warning");
     }
-
     try {
       const formData = new FormData();
       formData.append("review_id", row?.doctor_review?.id);
       formData.append("comment", commentText);
       formData.append("user_type", userType);
-
       commentImages.forEach((file) => {
         formData.append("images[]", file);
       });
-
       const res = await axios.post(
         `${AdminBaseUrl}review/comment/add`,
-        formData
+        formData,
       );
-
       if (res?.data?.success) {
         Swal.fire("Success", "Comment added", "success");
         closeCommentModal();
@@ -120,7 +124,7 @@ export default function EnquiryDetailAmbulance() {
       Swal.fire(
         "Error",
         error?.response?.data?.message || "Something went wrong",
-        "error"
+        "error",
       );
     }
   };
@@ -131,7 +135,13 @@ export default function EnquiryDetailAmbulance() {
           <div className="row gx-3 gy-3">
             <div className="col-md-12">
               <div className="topmainhd">
-                <h6><i class="fa-solid fa-arrow-left-long me-2" onClick={handleclick}></i>View Ambulance Service Enquiry</h6>
+                <h6>
+                  <i
+                    class="fa-solid fa-arrow-left-long me-2"
+                    onClick={handleclick}
+                  ></i>
+                  View Ambulance Service Enquiry
+                </h6>
               </div>
             </div>
             <div className="col-md-12 gy-0">
@@ -152,7 +162,10 @@ export default function EnquiryDetailAmbulance() {
                   <div className="col-md-4">
                     <div className="">
                       <h6>Phone Number</h6>
-                      <p>{row.phoneCode}{row.phone}</p>
+                      <p>
+                        {row.phoneCode}
+                        {row.phone}
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -429,14 +442,14 @@ export default function EnquiryDetailAmbulance() {
                       <p>
                         {row?.doctor_review?.images?.length > 0
                           ? row.doctor_review.images.map((img, i) => (
-                            <button
-                              key={i}
-                              className="viewbtn"
-                              onClick={() => window.open(img, "_blank")}
-                            >
-                              View
-                            </button>
-                          ))
+                              <button
+                                key={i}
+                                className="viewbtn"
+                                onClick={() => window.open(img, "_blank")}
+                              >
+                                View
+                              </button>
+                            ))
                           : "-"}
                       </p>
                     </div>
@@ -446,7 +459,13 @@ export default function EnquiryDetailAmbulance() {
                       <div className="comnthis">
                         <h6 className="mb-0">Comments</h6>
                       </div>
-                      <button className="add-button" type="button" onClick={addcomment}>Add Comment</button>
+                      <button
+                        className="add-button"
+                        type="button"
+                        onClick={addcomment}
+                      >
+                        Add Comment
+                      </button>
                     </div>
                     <div className="row">
                       {row?.doctor_review?.comments?.length > 0 ? (
@@ -458,17 +477,19 @@ export default function EnquiryDetailAmbulance() {
                                   <p>{item.comment}</p>
                                 </div>
                                 <div className="">
-                                 {Array.isArray(item?.images) ? (
-  item.images.map((img, i) => (
-    <button
-      key={i}
-      className="viewbtn me-2"
-      onClick={() => window.open(img, "_blank")}
-    >
-      View
-    </button>
-  ))
-) : null}
+                                  {Array.isArray(item?.images)
+                                    ? item.images.map((img, i) => (
+                                        <button
+                                          key={i}
+                                          className="viewbtn me-2"
+                                          onClick={() =>
+                                            window.open(img, "_blank")
+                                          }
+                                        >
+                                          View
+                                        </button>
+                                      ))
+                                    : null}
                                 </div>
                               </div>
                             </div>
@@ -482,91 +503,93 @@ export default function EnquiryDetailAmbulance() {
                 </div>
               </div>
               <div className="treat-hd">
-  <h6>Doctor Review</h6>
-  <span className="line"></span>
-</div>
+                <h6>Doctor Review</h6>
+                <span className="line"></span>
+              </div>
 
-<div className="row">
-  <div className="col-md-3">
-    <div className="field-set">
-      <label>Review Notes</label>
-      <input
-        className="form-control"
-        value={row?.doctor_review?.review_notes || "-"}
-        readOnly
-      />
-    </div>
-  </div>
+              <div className="row">
+                <div className="col-md-3">
+                  <div className="field-set">
+                    <label>Review Notes</label>
+                    <input
+                      className="form-control"
+                      value={row?.doctor_review?.review_notes || "-"}
+                      readOnly
+                    />
+                  </div>
+                </div>
 
-  <div className="col-md-3">
-    <div className="field-set">
-      <label>Recommendations</label>
-      <input
-        className="form-control"
-        value={row?.doctor_review?.recommendations || "-"}
-        readOnly
-      />
-    </div>
-  </div>
+                <div className="col-md-3">
+                  <div className="field-set">
+                    <label>Recommendations</label>
+                    <input
+                      className="form-control"
+                      value={row?.doctor_review?.recommendations || "-"}
+                      readOnly
+                    />
+                  </div>
+                </div>
 
-  <div className="col-md-3">
-    <label>Images</label>
-    <br />
-    {row?.doctor_review?.images?.length > 0
-      ? row?.doctor_review?.images?.map((img, i) => (
-          <button
-            key={i}
-            className="viewbtn"
-            onClick={() => window.open(img, "_blank")}
-          >
-            View
-          </button>
-        ))
-      : "-"}
-  </div>
-</div>
-<div className="treat-hd d-flex justify-content-between">
-  <div>
-    <h6>Comments</h6>
-    <span className="line"></span>
-  </div>
+                <div className="col-md-3">
+                  <label>Images</label>
+                  <br />
+                  {row?.doctor_review?.images?.length > 0
+                    ? row?.doctor_review?.images?.map((img, i) => (
+                        <button
+                          key={i}
+                          className="viewbtn"
+                          onClick={() => window.open(img, "_blank")}
+                        >
+                          View
+                        </button>
+                      ))
+                    : "-"}
+                </div>
+              </div>
+              <div className="treat-hd d-flex justify-content-between">
+                <div>
+                  <h6>Comments</h6>
+                  <span className="line"></span>
+                </div>
 
-  <button className="add-button" onClick={addcomment}>
-    Add Comment
-  </button>
-</div>
+                <button className="add-button" onClick={addcomment}>
+                  Add Comment
+                </button>
+              </div>
 
-<div className="row">
-  {row?.doctor_review?.comments?.length > 0 ? (
-    row.doctor_review.comments.map((item, index) => (
-      <div key={index} className="col-12 mb-3 p-3"
-        style={{
-          border: "1px solid #ddd",
-          borderRadius: "10px",
-          background: "#f9f9f9",
-        }}
-      >
-        <p>{item.comment}</p>
+              <div className="row">
+                {row?.doctor_review?.comments?.length > 0 ? (
+                  row.doctor_review.comments.map((item, index) => (
+                    <div
+                      key={index}
+                      className="col-12 mb-3 p-3"
+                      style={{
+                        border: "1px solid #ddd",
+                        borderRadius: "10px",
+                        background: "#f9f9f9",
+                      }}
+                    >
+                      <p>{item.comment}</p>
 
-        <div style={{ display: "flex", gap: "10px" }}>
-         {Array.isArray(item?.images) && item.images.length > 0 ? (
-  item.images.map((img, i) => (
-    <button
-      key={i}
-      className="viewbtn"
-      onClick={() => window.open(img, "_blank")}
-    >
-      View
-    </button>
-  ))
-) : null}
-        </div>
-      </div>
-    ))
-  ) : (
-    <p>No comments available</p>
-  )}
-</div>
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        {Array.isArray(item?.images) && item.images.length > 0
+                          ? item.images.map((img, i) => (
+                              <button
+                                key={i}
+                                className="viewbtn"
+                                onClick={() => window.open(img, "_blank")}
+                              >
+                                View
+                              </button>
+                            ))
+                          : null}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p>No comments available</p>
+                )}
+              </div>
               <div className="treat-hd">
                 <h6>Reports</h6>
                 <span className="line"></span>
@@ -574,11 +597,7 @@ export default function EnquiryDetailAmbulance() {
             </div>
 
             <DialogContent className="main-box">
-              <Box
-                noValidate
-                component="form"
-                className="contact-form"
-              >
+              <Box noValidate component="form" className="contact-form">
                 <div className="field-set">
                   <label>
                     Comment<span className="text-danger">*</span>
@@ -603,17 +622,14 @@ export default function EnquiryDetailAmbulance() {
                 </div>
 
                 <DialogActions className="submit-main">
-                  <Button
-                    variant="contained"
-                    onClick={handleSubmitComment}
-                  >
+                  <Button variant="contained" onClick={handleSubmitComment}>
                     Submit
                   </Button>
                 </DialogActions>
               </Box>
             </DialogContent>
+          </div>
         </div>
-      </div>
       </div>
     </>
   );
