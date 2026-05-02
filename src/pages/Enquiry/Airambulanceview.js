@@ -1,10 +1,22 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { AdminBaseUrl, baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
+import {
+  AdminBaseUrl,
+  baseu11,
+  baseurl,
+  image,
+  imageUrl,
+} from "../../Basurl/Baseurl";
 import avtar from "../../img/avtarImg.jpg";
 import Swal from "sweetalert2";
-import { Box, Button, Dialog, DialogActions, DialogContent } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+} from "@mui/material";
 import React from "react";
 const getFileType = (file) => {
   const ext = file.split(".").pop().toLowerCase();
@@ -85,7 +97,7 @@ export default function Airambulanceview() {
   };
   const userType = localStorage.getItem("Role");
   const handleSubmitComment = async () => {
-    console.log(row)
+    console.log(row);
     if (!commentText) {
       return Swal.fire("Error", "Comment is required", "warning");
     }
@@ -99,7 +111,7 @@ export default function Airambulanceview() {
       });
       const res = await axios.post(
         `${AdminBaseUrl}review/comment/add`,
-        formData
+        formData,
       );
 
       if (res?.data?.success) {
@@ -111,7 +123,7 @@ export default function Airambulanceview() {
       Swal.fire(
         "Error",
         error?.response?.data?.message || "Something went wrong",
-        "error"
+        "error",
       );
     }
   };
@@ -123,7 +135,11 @@ export default function Airambulanceview() {
           <div className="row gx-3 gy-3">
             <div className="col-md-12">
               <div className="topmainhd">
-                <h6><i class="fa-solid fa-arrow-left-long me-2" onClick={handleclick}></i>View Air Medical Escort Enquiry</h6>
+                <h6>
+                  <i class="fa-solid fa-arrow-left-long me-2"
+                    onClick={handleclick}></i>
+                  View Air Medical Escort Enquiry
+                </h6>
               </div>
             </div>
             <div className="col-md-12 gy-0">
@@ -144,7 +160,10 @@ export default function Airambulanceview() {
                   <div className="col-md-4">
                     <div className="">
                       <h6>Phone Number</h6>
-                      <p>{row.phoneCode}{row.phone}</p>
+                      <p>
+                        {row.phoneCode}
+                        {row.phone}
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -412,34 +431,63 @@ export default function Airambulanceview() {
                       </p>
                     </div>
                   </div>
-                  <div className="col-md-12">
+                  <div className="col-md-12 gy-0">
                     <div className="docre-hd">
                       <div className="comnthis">
                         <h6 className="mb-0">Comments</h6>
                       </div>
-                      <button className="add-button" type="button" onClick={addcomment}>Add Comment</button>
+                      <button
+                        className="add-button"
+                        type="button"
+                        onClick={addcomment}
+                      >
+                        Add Comment
+                      </button>
                     </div>
-                    <div className="row">
+                    <div className="row gx-3 gy-3">
                       {row?.doctor_review?.comments?.length > 0 ? (
-                        row.doctor_review.comments.map((item, index) => (
+                        row?.doctor_review?.comments?.map((item, index) => (
                           <div key={item.id || index} className="col-md-12">
                             <div className="card customstylecard">
                               <div className="card-body">
-                                <div className="">
-                                  <p> {item?.comment}</p>
-                                </div>
-                                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                                  {item.images.map((rep, index) =>
-                                    <button
-                                      key={index}
-                                      type="button"
-                                      className="viewbtn"
-                                      onClick={() => window.open(rep, "_blank")}
-                                    >
-                                      View
-                                    </button>
-                                  )
-                                  }
+                                <div className="experience-box">
+                                  <ul className="experience-list">
+                                    <li className="mb-0">
+                                      <div className="experience-user">
+                                        <div className="before-circle"></div>
+                                      </div>
+                                      <div className="experience-content">
+                                        <div className="timeline-content">
+                                          <a href="#/" className="name">
+                                            {item?.comment}
+                                          </a>
+                                          {Array.isArray(item?.images) ? (
+                                            item.images.map((rep, index) => (
+                                              <button
+                                                key={index}
+                                                type="button"
+                                                className="viewbtn"
+                                                onClick={() => window.open(rep, "_blank")}
+                                              >
+                                                View
+                                              </button>
+                                            ))
+                                          ) : item?.images ? (
+                                            <button
+                                              type="button"
+                                              className="viewbtn"
+                                              onClick={() =>
+                                                window.open(item.images, "_blank")
+                                              }
+                                            >
+                                              View
+                                            </button>
+                                          ) : null
+                                          }
+                                        </div>
+                                      </div>
+                                    </li>
+                                  </ul>
                                 </div>
                               </div>
                             </div>
@@ -481,87 +529,14 @@ export default function Airambulanceview() {
                   </div>
                 </div>
               </div>
-             <div className="row">
-  {row?.doctor_review?.comments?.length > 0 ? (
-    row?.doctor_review?.comments?.map((item, index) => (
-      <div
-        key={item.id || index}
-        className="col-12 mb-3 p-3"
-        style={{
-          border: "1px solid #ddd",
-          borderRadius: "10px",
-          background: "#f9f9f9",
-        }}
-      >
-        {/* User Type */}
-        {/* <h6 style={{ marginBottom: "5px", color: "#555" }}>
-          {item?.user_type}
-        </h6> */}
-
-        {/* Comment */}
-        <div className="row d-flex">
-         
-        <p style={{ marginBottom: "10px" }}>
-          {item?.comment}
-        </p>
-
-        {/* Images */}
-       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
- {Array.isArray(item?.images) ? (
-  item.images.map((rep, index) => (
-    <button
-      key={index}
-      type="button"
-      className="viewbtn"
-      onClick={() => window.open(rep, "_blank")}
-    >
-      View
-    </button>
-  ))
-) : item?.images ? (
-  <button
-    type="button"
-    className="viewbtn"
-    onClick={() => window.open(item.images, "_blank")}
-  >
-    View
-  </button>
-) : null}
-</div>
-      </div>
-      </div>
-    ))
-  ) : (
-    <p>No comments available</p>
-  )}
-</div>
-              <div className="treat-hd">
-                <h6>Reports</h6>
-                <span className="line"></span>
-              </div>
-              <div>
-                {Array.isArray(row?.reports) && row.reports.length > 0
-                  ? row.reports.map((rep, index) =>
-                      rep?.report ? (
-                        <button
-                          key={index}
-                          type="button"
-                          className="viewbtn"
-                          onClick={() => window.open(rep.report, "_blank")}
-                        >
-                          View
-                        </button>
-                      ) : null,
-                    )
-                  : "-"}
-              </div>
+            </div>
           </div>
         </div>
         <React.Fragment>
           <Dialog
             fullWidth={true}
             maxWidth="sm"
-            open={openCommentModal}   // ✅ FIXED
+            open={openCommentModal}
             onClose={closeCommentModal}
           >
             <div className="main-card-header">
@@ -573,11 +548,7 @@ export default function Airambulanceview() {
               </div>
             </div>
             <DialogContent className="main-box">
-              <Box
-                noValidate
-                component="form"
-                className="contact-form"
-              >
+              <Box noValidate component="form" className="contact-form">
                 <div className="field-set">
                   <label>
                     Comment<span className="text-danger">*</span>
@@ -602,10 +573,7 @@ export default function Airambulanceview() {
                 </div>
 
                 <DialogActions className="submit-main">
-                  <Button
-                    variant="contained"
-                    onClick={handleSubmitComment}
-                  >
+                  <Button variant="contained" onClick={handleSubmitComment}>
                     Submit
                   </Button>
                 </DialogActions>
@@ -613,7 +581,6 @@ export default function Airambulanceview() {
             </DialogContent>
           </Dialog>
         </React.Fragment>
-      </div>
       </div>
     </>
   );
