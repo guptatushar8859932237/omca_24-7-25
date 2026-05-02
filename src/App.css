@@ -7694,10 +7694,13 @@ input:checked + .slider:before {
   flex: 0 0 100% !important;
 }
 .pdf-mode {
-  padding: 20px !important;   /* 🔥 left-right space */
+  padding: 20px !important; /* 🔥 left-right space */
 }
 
 .pdf-mode .card {
   box-shadow: none !important;
   border: none !important;
+}
+.checkbox-align {
+  position: unset;
 }
