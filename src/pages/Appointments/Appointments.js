@@ -1198,9 +1198,9 @@ const handleEnqStatusChange = async (e, appointmentId) => {
 
   <DialogActions>
     <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
-    <Button variant="contained" onClick={handleUpdate}>
+    <button className="add-button" onClick={handleUpdate}>
       Update
-    </Button>
+    </button>
   </DialogActions>
 </Dialog>
         <Dialog
