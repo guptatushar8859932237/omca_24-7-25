@@ -1046,6 +1046,7 @@ const handleEnqStatusChange = async (e, appointmentId) => {
       }
       onChange={(e) => handleEnqStatusChange(e, item._id)}
     >
+      <MenuItem value='Pending'>Pending</MenuItem>
       <MenuItem value='Schedule'>Schedule</MenuItem>
       <MenuItem value='Follow-Up'>Follow-Up</MenuItem>
       <MenuItem value='Completed'>Completed</MenuItem>
