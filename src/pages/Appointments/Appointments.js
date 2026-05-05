@@ -342,30 +342,52 @@ const handleEdit = (item) => {
       return 0;
     });
   };
-  const handleUpdate = async () => {
+ const handleUpdate = async () => {
   try {
+    // ✅ Validation
+    if (!editData.appointment_Date) {
+      return Swal.fire("Error", "Appointment Date is required", "error");
+    }
+
+    if (!editData.appointment_Time) {
+      return Swal.fire("Error", "Appointment Time is required", "error");
+    }
+
+    if (!editData.discussionNotes || editData.discussionNotes.trim() === "") {
+      return Swal.fire("Error", "Notes are required", "error");
+    }
+
+    if (!editImages || editImages.length === 0) {
+      return Swal.fire("Error", "At least one report is required", "error");
+    }
+
+    // ✅ API Call
     const formData = new FormData();
     formData.append("appointmentId", editData._id);
     formData.append("health_issue", editData.health_issue);
     formData.append("discussionNotes", editData.discussionNotes);
     formData.append("appointment_Date", editData.appointment_Date);
     formData.append("appointment_Time", editData.appointment_Time);
-formData.append("hospital_id", editData.hospital_id);
-formData.append("hospitalName", editData.hospitalName);
-formData.append("treatment_id", editData.treatment_id);
-formData.append("treatment_name", editData.treatment_name);
+    formData.append("hospital_id", editData.hospital_id);
+    formData.append("hospitalName", editData.hospitalName);
+    formData.append("treatment_id", editData.treatment_id);
+    formData.append("treatment_name", editData.treatment_name);
+
     editImages.forEach((file) => {
       formData.append("reports", file);
     });
-    console.log(formData)
+
     const res = await axios.post(
-      `${baseurl}update_enquiry_appointment`,formData);
+      `${baseurl}update_enquiry_appointment`,
+      formData
+    );
 
     if (res.data.success) {
       Swal.fire("Success", "Updated Successfully", "success");
       setOpenEdit(false);
-      getEnquiryAppointments(); // refresh
+      getEnquiryAppointments();
     }
+
   } catch (err) {
     console.log(err);
     Swal.fire("Error", "Update Failed", "error");
@@ -1162,7 +1184,7 @@ const handleEnqStatusChange = async (e, appointmentId) => {
 <div className="set-field">
                               <label>
                                 Treatment name
-                                <span className="text-danger">*</span>
+                               
                               </label>
                             <Autocomplete
   options={Treatment || []}
@@ -1194,7 +1216,7 @@ const handleEnqStatusChange = async (e, appointmentId) => {
                             </div>
 
       <div className="field-set">
-        <label>Date</label>
+        <label>Date</label> <span className="text-danger">*</span>
         <input
   type="date"
   className="form-control"
@@ -1206,7 +1228,7 @@ const handleEnqStatusChange = async (e, appointmentId) => {
       </div>
 
       <div className="field-set">
-        <label>Time</label>
+        <label>Time</label> <span className="text-danger">*</span>
         <input
   type="time"
   className="form-control"
@@ -1218,7 +1240,7 @@ const handleEnqStatusChange = async (e, appointmentId) => {
       </div>
 
       <div className="field-set">
-        <label>Notes</label>
+        <label>Notes</label> <span className="text-danger">*</span>
         <textarea
           className="form-control"
           value={editData.discussionNotes || ""}
@@ -1230,7 +1252,7 @@ const handleEnqStatusChange = async (e, appointmentId) => {
 
       {/* Upload */}
       <div className="field-set">
-        <label>Upload Reports</label>
+        <label>Upload Reports</label> <span className="text-danger">*</span>
         <input
           type="file"
           multiple
