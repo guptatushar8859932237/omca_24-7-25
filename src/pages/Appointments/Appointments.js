@@ -18,6 +18,7 @@ import Select from "@mui/material/Select";
 import IconButton from "@mui/material/IconButton";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import ClearIcon from "@mui/icons-material/Clear";
+import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import InputAdornment from "@mui/material/InputAdornment";
 import {
@@ -31,12 +32,15 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Autocomplete,
 } from "@mui/material";
+import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 function TabPanel({ children, value, index }) {
   return value === index && <Box sx={{ p: 2 }}>{children}</Box>;
 }
 
 export default function Appointments() {
+   const dispatch = useDispatch();
   const role = localStorage.getItem("Role");
   const [tabValue, setTabValue] = useState(0);
   const [openEdit, setOpenEdit] = useState(false);
@@ -62,6 +66,7 @@ const [hospitalList, setHospitalList] = useState([]);
   const [statuddropdown, setStatuddropdown] = useState("offline");
   const [filterValue, setFilterValue] = useState("");
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
+  const { Treatment, error } = useSelector((state) => state.Treatment);
   const [enquiryAppointments, setEnquiryAppointments] = useState([]);
 const [pageENQ, setPageENQ] = useState(0);
 const [orderByENQ, setOrderByENQ] = useState("");
@@ -148,6 +153,7 @@ const [rowsPerPageENQ] = useState(10);
   getAppointments();
   getEnquiryAppointments();
   getAppFromApp();
+  dispatch(GetAllTreatment());
   getHospitalList(); // 👈 ye missing tha
 }, []);
   const handleFilter = (event) => {
@@ -1146,6 +1152,39 @@ const handleEnqStatusChange = async (e, appointmentId) => {
           }
         />
       </div>
+<div className="set-field">
+                              <label>
+                                Treatment name
+                                <span className="text-danger">*</span>
+                              </label>
+                            <Autocomplete
+  options={Treatment || []}
+  getOptionLabel={(option) => option.name || ""}
+  value={
+    Treatment?.find(
+      (item) => item.id == editData.treatment_id
+    ) || null
+  }
+  onChange={(e, value) => {
+    setEditData((prev) => ({
+      ...prev,
+      treatment_id: value?.id || "",
+      treatment_name: value?.name || "",
+    }));
+  }}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      placeholder="Select Treatment"
+    />
+  )}
+  sx={{
+    "& .MuiOutlinedInput-root": {
+      padding: "0px",
+    },
+  }}
+/>
+                            </div>
 
       <div className="field-set">
         <label>Date</label>
@@ -1195,13 +1234,30 @@ const handleEnqStatusChange = async (e, appointmentId) => {
 
     </Box>
   </DialogContent>
-
-  <DialogActions>
+  <DialogActions className="submit-main mb-3 me-4">
+                        <Button
+                        onClick={handleUpdate}
+                       className="add-button"
+                          // onClick={handleClickEditReport}
+                          variant="contained"
+                        >
+                          Edit Appointment
+                        </Button>
+                        {/* <Button
+                          // type="submit"
+                          // onClick={handleClickSubmit}
+                          variant="contained"
+                        >
+                          Submit
+                        </Button> */}
+                    </DialogActions>
+  {/* <DialogActions>
     <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
     <button className="add-button" onClick={handleUpdate}>
       Update
     </button>
-  </DialogActions>
+  </DialogActions> */}
+ 
 </Dialog>
         <Dialog
           fullWidth={fullWidth}
