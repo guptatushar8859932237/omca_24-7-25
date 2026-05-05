@@ -40,18 +40,18 @@ function TabPanel({ children, value, index }) {
 }
 
 export default function Appointments() {
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const role = localStorage.getItem("Role");
   const [tabValue, setTabValue] = useState(0);
   const [openEdit, setOpenEdit] = useState(false);
-const [editData, setEditData] = useState({});
-const [editImages, setEditImages] = useState([]);
+  const [editData, setEditData] = useState({});
+  const [editImages, setEditImages] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
   const [page, setPage] = useState(0);
   const [orderByCRM, setOrderByCRM] = useState("");
   const [orderDirectionCRM, setOrderDirectionCRM] = useState("asc");
-const [hospitalList, setHospitalList] = useState([]);
+  const [hospitalList, setHospitalList] = useState([]);
   const [orderByAPP, setOrderByAPP] = useState("");
   const [orderDirectionAPP, setOrderDirectionAPP] = useState("asc");
   const [pageAPP, setPageAPP] = useState(0);
@@ -68,10 +68,10 @@ const [hospitalList, setHospitalList] = useState([]);
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
   const { Treatment, error } = useSelector((state) => state.Treatment);
   const [enquiryAppointments, setEnquiryAppointments] = useState([]);
-const [pageENQ, setPageENQ] = useState(0);
-const [orderByENQ, setOrderByENQ] = useState("");
-const [orderDirectionENQ, setOrderDirectionENQ] = useState("asc");
-const [rowsPerPageENQ] = useState(10);
+  const [pageENQ, setPageENQ] = useState(0);
+  const [orderByENQ, setOrderByENQ] = useState("");
+  const [orderDirectionENQ, setOrderDirectionENQ] = useState("asc");
+  const [rowsPerPageENQ] = useState(10);
   const handleChange = async (e, i) => {
     try {
       const token = localStorage.getItem("token");
@@ -114,20 +114,20 @@ const [rowsPerPageENQ] = useState(10);
   };
 
   const getEnquiryAppointments = async () => {
-  try {
-    const response = await axios.get(`${baseurl}get_enquiry_appointments`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    try {
+      const response = await axios.get(`${baseurl}get_enquiry_appointments`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-    if (response.status === 200) {
-      setEnquiryAppointments(response.data.data);
+      if (response.status === 200) {
+        setEnquiryAppointments(response.data.data);
+      }
+    } catch (error) {
+      console.log("Error fetching enquiry appointments:", error);
     }
-  } catch (error) {
-    console.log("Error fetching enquiry appointments:", error);
-  }
-};
+  };
   const getAppointments = () => {
     axios
       .get(`${baseurl}all_appointment`, {
@@ -149,13 +149,13 @@ const [rowsPerPageENQ] = useState(10);
         console.error("Error fetching job titles:", error);
       });
   };
- useEffect(() => {
-  getAppointments();
-  getEnquiryAppointments();
-  getAppFromApp();
-  dispatch(GetAllTreatment());
-  getHospitalList(); // 👈 ye missing tha
-}, []);
+  useEffect(() => {
+    getAppointments();
+    getEnquiryAppointments();
+    getAppFromApp();
+    dispatch(GetAllTreatment());
+    getHospitalList(); // 👈 ye missing tha
+  }, []);
   const handleFilter = (event) => {
     const value = event.target.value.toLowerCase();
     setFilterValue(event.target.value);
@@ -185,64 +185,64 @@ const [rowsPerPageENQ] = useState(10);
     });
     setAppointments(filterResult);
   };
-const getHospitalList = async () => {
-  try {
-    const res = await axios.post(`${AdminBaseUrl}hospital_list`)
-    if (res.status === 200) {
-      setHospitalList(res.data.data);
+  const getHospitalList = async () => {
+    try {
+      const res = await axios.post(`${AdminBaseUrl}hospital_list`);
+      if (res.status === 200) {
+        setHospitalList(res.data.data);
+      }
+    } catch (err) {
+      console.log("Hospital list error:", err);
     }
-  } catch (err) {
-    console.log("Hospital list error:", err);
-  }
-};
+  };
   const handleClearFilter = () => {
     setFilterValue("");
     setAppointments(searchApiData);
     setPage(0); // ⭐ IMPORTANT
   };
- const handleTabChange = (_, newVal) => {
-  setTabValue(newVal);
+  const handleTabChange = (_, newVal) => {
+    setTabValue(newVal);
 
-  if (newVal === 0) setPage(0);
-  else if (newVal === 1) setPageAPP(0);
-  else if (newVal === 2) setPageENQ(0); // ✅ NEW
-};
-const handleDelete = async (item) => {
-  try {
-    const confirm = await Swal.fire({
-      title: "Are you sure?",
-      text: "You want to delete this appointment!",
-      icon: "warning",
-      showCancelButton: true,
-       confirmButtonColor: "#d33",
-      cancelButtonColor: "#6e7881",
-      confirmButtonText: "Yes, delete it!",
-    });
-    if (!confirm.isConfirmed) return;
-    const response = await axios.post(
-      `${baseurl}delete_enqAppointment/${item._id}`
-    );
-    if (response.status === 200 || response.status === 201) {
-      Swal.fire("Deleted!", "Appointment deleted successfully.", "success");
+    if (newVal === 0) setPage(0);
+    else if (newVal === 1) setPageAPP(0);
+    else if (newVal === 2) setPageENQ(0); // ✅ NEW
+  };
+  const handleDelete = async (item) => {
+    try {
+      const confirm = await Swal.fire({
+        title: "Are you sure?",
+        text: "You want to delete this appointment!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6e7881",
+        confirmButtonText: "Yes, delete it!",
+      });
+      if (!confirm.isConfirmed) return;
+      const response = await axios.post(
+        `${baseurl}delete_enqAppointment/${item._id}`,
+      );
+      if (response.status === 200 || response.status === 201) {
+        Swal.fire("Deleted!", "Appointment deleted successfully.", "success");
 
-      // 🔁 refresh list after delete
-      getEnquiryAppointments();
-    } else {
-      Swal.fire("Error!", "Failed to delete appointment.", "error");
+        // 🔁 refresh list after delete
+        getEnquiryAppointments();
+      } else {
+        Swal.fire("Error!", "Failed to delete appointment.", "error");
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Error!", "Something went wrong.", "error");
     }
-  } catch (error) {
-    console.log(error);
-    Swal.fire("Error!", "Something went wrong.", "error");
-  }
-};
-const handleEdit = (item) => {
-  console.log(item)
-  setEditData({
-    ...item,
-    hospital_id: Number(item.hospital_id), // ✅ ensure number
-  });
-  setOpenEdit(true);
-};
+  };
+  const handleEdit = (item) => {
+    console.log(item);
+    setEditData({
+      ...item,
+      hospital_id: Number(item.hospital_id), // ✅ ensure number
+    });
+    setOpenEdit(true);
+  };
 
   const handleSampleFile = () => {
     fetch(`${baseurl}export_appointments`, {
@@ -342,57 +342,52 @@ const handleEdit = (item) => {
       return 0;
     });
   };
- const handleUpdate = async () => {
-  try {
-    // ✅ Validation
-    if (!editData.appointment_Date) {
-      return Swal.fire("Error", "Appointment Date is required", "error");
+  const handleUpdate = async () => {
+    try {
+      // ✅ Validation
+      if (!editData.appointment_Date) {
+        return Swal.fire("Error", "Appointment Date is required", "error");
+      }
+
+      if (!editData.appointment_Time) {
+        return Swal.fire("Error", "Appointment Time is required", "error");
+      }
+
+      if (!editData.discussionNotes || editData.discussionNotes.trim() === "") {
+        return Swal.fire("Error", "Notes are required", "error");
+      }
+
+      // ✅ API Call
+      const formData = new FormData();
+      formData.append("appointmentId", editData._id);
+      formData.append("health_issue", editData.health_issue);
+      formData.append("discussionNotes", editData.discussionNotes);
+      formData.append("appointment_Date", editData.appointment_Date);
+      formData.append("appointment_Time", editData.appointment_Time);
+      formData.append("hospital_id", editData.hospital_id);
+      formData.append("hospitalName", editData.hospitalName);
+      formData.append("treatment_id", editData.treatment_id);
+      formData.append("treatment_name", editData.treatment_name);
+
+      editImages.forEach((file) => {
+        formData.append("reports", file);
+      });
+
+      const res = await axios.post(
+        `${baseurl}update_enquiry_appointment`,
+        formData,
+      );
+
+      if (res.data.success) {
+        Swal.fire("Success", "Updated Successfully", "success");
+        setOpenEdit(false);
+        getEnquiryAppointments();
+      }
+    } catch (err) {
+      console.log(err);
+      Swal.fire("Error", "Update Failed", "error");
     }
-
-    if (!editData.appointment_Time) {
-      return Swal.fire("Error", "Appointment Time is required", "error");
-    }
-
-    if (!editData.discussionNotes || editData.discussionNotes.trim() === "") {
-      return Swal.fire("Error", "Notes are required", "error");
-    }
-
-    if (!editImages || editImages.length === 0) {
-      return Swal.fire("Error", "At least one report is required", "error");
-    }
-
-    // ✅ API Call
-    const formData = new FormData();
-    formData.append("appointmentId", editData._id);
-    formData.append("health_issue", editData.health_issue);
-    formData.append("discussionNotes", editData.discussionNotes);
-    formData.append("appointment_Date", editData.appointment_Date);
-    formData.append("appointment_Time", editData.appointment_Time);
-    formData.append("hospital_id", editData.hospital_id);
-    formData.append("hospitalName", editData.hospitalName);
-    formData.append("treatment_id", editData.treatment_id);
-    formData.append("treatment_name", editData.treatment_name);
-
-    editImages.forEach((file) => {
-      formData.append("reports", file);
-    });
-
-    const res = await axios.post(
-      `${baseurl}update_enquiry_appointment`,
-      formData
-    );
-
-    if (res.data.success) {
-      Swal.fire("Success", "Updated Successfully", "success");
-      setOpenEdit(false);
-      getEnquiryAppointments();
-    }
-
-  } catch (err) {
-    console.log(err);
-    Swal.fire("Error", "Update Failed", "error");
-  }
-};
+  };
   const handleSortCRM = (field) => {
     const isAsc = orderByCRM === field && orderDirectionCRM === "asc";
     const direction = isAsc ? "desc" : "asc";
@@ -412,39 +407,39 @@ const handleEdit = (item) => {
     setDataApp(sorted);
   };
   const handleSortENQ = (field) => {
-  const isAsc = orderByENQ === field && orderDirectionENQ === "asc";
-  const direction = isAsc ? "desc" : "asc";
+    const isAsc = orderByENQ === field && orderDirectionENQ === "asc";
+    const direction = isAsc ? "desc" : "asc";
 
-  setOrderByENQ(field);
-  setOrderDirectionENQ(direction);
+    setOrderByENQ(field);
+    setOrderDirectionENQ(direction);
 
-  const sorted = sortData(enquiryAppointments, field, direction);
-  setEnquiryAppointments(sorted);
-};
+    const sorted = sortData(enquiryAppointments, field, direction);
+    setEnquiryAppointments(sorted);
+  };
 
-const handleEnqStatusChange = async (e, appointmentId) => {
-  try {
-    console.log(e.target.value)
-    const token = localStorage.getItem("token");
-    const res = await axios.post(
-      `${baseurl}update_enqAppointment_status/${appointmentId}`,
-      { status: e.target.value }
-    );
+  const handleEnqStatusChange = async (e, appointmentId) => {
+    try {
+      console.log(e.target.value);
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        `${baseurl}update_enqAppointment_status/${appointmentId}`,
+        { status: e.target.value },
+      );
 
-    if (res.status === 200 || res.status === 201) {
-      Swal.fire("Success!", "Status updated successfully!", "success");
+      if (res.status === 200 || res.status === 201) {
+        Swal.fire("Success!", "Status updated successfully!", "success");
 
-      // refresh data
-      getEnquiryAppointments();
+        // refresh data
+        getEnquiryAppointments();
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to update status");
     }
-  } catch (err) {
-    console.log(err);
-    toast.error("Failed to update status");
-  }
-};
+  };
   return (
     <>
-      <div className="page-wrapper" style={{marginTop:"70px"}}>
+      <div className="page-wrapper" style={{ marginTop: "70px" }}>
         <Box
           sx={{
             borderBottom: 1,
@@ -473,12 +468,15 @@ const handleEnqStatusChange = async (e, appointmentId) => {
                 color: "#666",
               }}
             />
-            <Tab label="Enquiry Appointments" sx={{
+            <Tab
+              label="Enquiry Appointments"
+              sx={{
                 fontSize: "12px",
                 fontWeight: "bold",
                 fontFamily: "Rubik",
                 color: "#666",
-              }} />
+              }}
+            />
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
@@ -944,350 +942,404 @@ const handleEnqStatusChange = async (e, appointmentId) => {
             </div>
           </div>
         </TabPanel>
-       <TabPanel value={tabValue} index={2}>
-  <div className="main_content">
-    <div className="row">
-      <div className="col-md-12">
-        <div className="table-responsive">
-          <TableContainer component={Paper} style={{ overflowX: "auto" }}>
-            <Table stickyHeader className="table-no-card">
+        <TabPanel value={tabValue} index={2}>
+          <div className="main_content">
+            <div className="row">
+              <div className="col-md-12">
+                <div className="table-responsive">
+                  <TableContainer
+                    component={Paper}
+                    style={{ overflowX: "auto" }}
+                  >
+                    <Table stickyHeader className="table-no-card">
+                      {/* ✅ TABLE HEADER */}
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Sr.No.</TableCell>
 
-              {/* ✅ TABLE HEADER */}
-              <TableHead>
-                <TableRow>
-                  <TableCell>Sr.No.</TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderByENQ === "patientName"}
+                              direction={orderDirectionENQ}
+                              onClick={() => handleSortENQ("patientName")}
+                            >
+                              Patient Name
+                            </TableSortLabel>
+                          </TableCell>
 
-                  <TableCell>
-                    <TableSortLabel
-                      active={orderByENQ === "patientName"}
-                      direction={orderDirectionENQ}
-                      onClick={() => handleSortENQ("patientName")}
-                    >
-                      Patient Name
-                    </TableSortLabel>
-                  </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderByENQ === "hospitalName"}
+                              direction={orderDirectionENQ}
+                              onClick={() => handleSortENQ("hospitalName")}
+                            >
+                              Hospital Name
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderByENQ === "hospitalName"}
+                              direction={orderDirectionENQ}
+                              onClick={() => handleSortENQ("hospitalName")}
+                            >
+                              Treatment Name
+                            </TableSortLabel>
+                          </TableCell>
 
-                  <TableCell>
-                    <TableSortLabel
-                      active={orderByENQ === "hospitalName"}
-                      direction={orderDirectionENQ}
-                      onClick={() => handleSortENQ("hospitalName")}
-                    >
-                      Hospital Name
-                    </TableSortLabel>
-                  </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderByENQ === "health_issue"}
+                              direction={orderDirectionENQ}
+                              onClick={() => handleSortENQ("health_issue")}
+                            >
+                              Health Issue
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderByENQ === "treatment_name"}
+                              direction={orderDirectionENQ}
+                              onClick={() => handleSortENQ("treatment_name")}
+                            >
+                              Treatment Name
+                            </TableSortLabel>
+                          </TableCell>
 
-                  <TableCell>
-                    <TableSortLabel
-                      active={orderByENQ === "health_issue"}
-                      direction={orderDirectionENQ}
-                      onClick={() => handleSortENQ("health_issue")}
-                    >
-                      Health Issue
-                    </TableSortLabel>
-                  </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderByENQ === "appointment_Date"}
+                              direction={orderDirectionENQ}
+                              onClick={() => handleSortENQ("appointment_Date")}
+                            >
+                              Appointment Date
+                            </TableSortLabel>
+                          </TableCell>
 
-                  <TableCell>
-                    <TableSortLabel
-                      active={orderByENQ === "appointment_Date"}
-                      direction={orderDirectionENQ}
-                      onClick={() => handleSortENQ("appointment_Date")}
-                    >
-                      Appointment Date
-                    </TableSortLabel>
-                  </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={orderByENQ === "appointment_Time"}
+                              direction={orderDirectionENQ}
+                              onClick={() => handleSortENQ("appointment_Time")}
+                            >
+                              Time
+                            </TableSortLabel>
+                          </TableCell>
 
-                  <TableCell>
-                    <TableSortLabel
-                      active={orderByENQ === "appointment_Time"}
-                      direction={orderDirectionENQ}
-                      onClick={() => handleSortENQ("appointment_Time")}
-                    >
-                      Time
-                    </TableSortLabel>
-                  </TableCell>
+                          <TableCell>Notes</TableCell>
+                          <TableCell>Reports</TableCell>
+                          <TableCell>Status</TableCell>
+                          <TableCell>Action</TableCell>
+                        </TableRow>
+                      </TableHead>
 
-                  <TableCell>Notes</TableCell>
-                  <TableCell>Reports</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
-                </TableRow>
-              </TableHead>
+                      {/* ✅ TABLE BODY */}
+                      <TableBody>
+                        {enquiryAppointments.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={8} align="center">
+                              No data found
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          enquiryAppointments
+                            .slice(
+                              pageENQ * rowsPerPageENQ,
+                              pageENQ * rowsPerPageENQ + rowsPerPageENQ,
+                            )
+                            .map((item, i) => (
+                              <TableRow key={i}>
+                                <TableCell>
+                                  {pageENQ * rowsPerPageENQ + i + 1}
+                                </TableCell>
 
-              {/* ✅ TABLE BODY */}
-              <TableBody>
-                {enquiryAppointments.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} align="center">
-                      No data found
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  enquiryAppointments
-                    .slice(
-                      pageENQ * rowsPerPageENQ,
-                      pageENQ * rowsPerPageENQ + rowsPerPageENQ
-                    )
-                    .map((item, i) => (
-                      <TableRow key={i}>
-                        <TableCell>
-                          {pageENQ * rowsPerPageENQ + i + 1}
-                        </TableCell>
+                                <TableCell>{item?.patientName}</TableCell>
+                                <TableCell>
+                                  {item?.hospitalName.slice(0, 20) + "..."}
+                                </TableCell>
+                                <TableCell>{item?.health_issue}</TableCell>
+                                <TableCell>{item?.treatment_name}</TableCell>
 
-                        <TableCell>{item?.patientName}</TableCell>
-                        <TableCell>{item?.hospitalName.slice(0,20)+"..."}</TableCell>
-                        <TableCell>{item?.health_issue}</TableCell>
+                                <TableCell>
+                                  {new Date(
+                                    item?.appointment_Date,
+                                  ).toLocaleDateString("en-GB")}
+                                </TableCell>
 
-                        <TableCell>
-                          {new Date(item?.appointment_Date).toLocaleDateString("en-GB")}
-                        </TableCell>
+                                <TableCell>{item?.appointment_Time}</TableCell>
 
-                        <TableCell>{item?.appointment_Time}</TableCell>
+                                <TableCell>
+                                  {item?.discussionNotes
+                                    ? item.discussionNotes.slice(0, 20) + "..."
+                                    : "-"}
+                                </TableCell>
 
-                      <TableCell>
-  {item?.discussionNotes
-    ? item.discussionNotes.slice(0, 20) + "..."
-    : "-"}
-</TableCell>
-
-                        {/* ✅ Reports */}
-                        <TableCell>
-                          {item.reports?.length > 0 ? (
-                            item.reports.map((file, idx) => (
-                              <div key={idx}>
-                                <a
-  href={`${baseu11}/${file}`}
-  target="_blank"
-  rel="noreferrer"
->
-  View
-</a>
-                                {/* <a href={`${}${file}`} target="_blank" rel="noreferrer">
+                                {/* ✅ Reports */}
+                                <TableCell>
+                                  {item.reports?.length > 0
+                                    ? item.reports.map((file, idx) => (
+                                        <div key={idx}>
+                                          <a
+                                            href={`${baseu11}/${file}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            View
+                                          </a>
+                                          {/* <a href={`${}${file}`} target="_blank" rel="noreferrer">
                                   View
                                 </a> */}
-                              </div>
+                                        </div>
+                                      ))
+                                    : "-"}
+                                </TableCell>
+                                <TableCell>
+                                  <FormControl
+                                    size="small"
+                                    sx={{ minWidth: 120 }}
+                                    size="small"
+                                    className="cont-main"
+                                  >
+                                    <Select
+                                      className="status-direct"
+                                      value={item.status}
+                                      onChange={(e) =>
+                                        handleEnqStatusChange(e, item._id)
+                                      }
+                                    >
+                                      <MenuItem value="Pending">
+                                        Pending
+                                      </MenuItem>
+                                      <MenuItem value="Schedule">
+                                        Schedule
+                                      </MenuItem>
+                                      <MenuItem value="Follow-Up">
+                                        Follow-Up
+                                      </MenuItem>
+                                      <MenuItem value="Complete">
+                                        Complete
+                                      </MenuItem>
+                                      <MenuItem value="Cancelled">
+                                        Cancelled
+                                      </MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                </TableCell>
+                                <TableCell>
+                                  <i
+                                    className="fa fa-edit"
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#0ba6df",
+                                    }}
+                                    onClick={() => handleEdit(item)}
+                                  ></i>
+                                  <i
+                                    className="fa fa-trash ms-1"
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#ff0000",
+                                    }}
+                                    onClick={() => handleDelete(item)}
+                                  ></i>
+                                </TableCell>
+                              </TableRow>
                             ))
-                          ) : (
-                            "-"
-                          )}
-                        </TableCell>
-                        <TableCell>
-  <FormControl size="small" sx={{ minWidth: 120 }} size="small"
-                                    className="cont-main">
-    <Select
-    className="status-direct"
-      value={
-        item.status 
-      }
-      onChange={(e) => handleEnqStatusChange(e, item._id)}
-    >
-      <MenuItem value='Pending'>Pending</MenuItem>
-      <MenuItem value='Schedule'>Schedule</MenuItem>
-      <MenuItem value='Follow-Up'>Follow-Up</MenuItem>
-      <MenuItem value='Complete'>Complete</MenuItem>
-      <MenuItem value='Cancelled'>Cancelled</MenuItem>
-    </Select>
-  </FormControl>
-</TableCell>
-                        <TableCell>
-  <i
-    className="fa fa-edit"
-    style={{ cursor: "pointer", color: "#0ba6df" }}
-    onClick={() => handleEdit(item)}
-  ></i>
-  <i
-    className="fa fa-trash ms-1"
-    style={{ cursor: "pointer", color: "#ff0000" }}
-    onClick={() => handleDelete(item)}
-  ></i>
-</TableCell>
-                      </TableRow>
-                    ))
-                )}
-              </TableBody>
-            </Table>
+                        )}
+                      </TableBody>
+                    </Table>
 
-            {/* ✅ PAGINATION SAME STYLE */}
-            <Stack spacing={2} alignItems="end" marginTop={2}>
-              <Pagination
-                count={Math.ceil(enquiryAppointments.length / rowsPerPageENQ)}
-                page={pageENQ + 1}
-                onChange={(e, val) => setPageENQ(val - 1)}
-                shape="rounded"
-                className="page-item"
-              />
-            </Stack>
-          </TableContainer>
-        </div>
-      </div>
-    </div>
-  </div>
-</TabPanel>
-<Dialog   open={openEdit} onClose={() => setOpenEdit(false)} fullWidth maxWidth="sm">
-  <div className="main-card-header "  style={{
-    position: "sticky",
-    top: 0,
-    background: "#fff",
-    zIndex: 10,
-  }}>
-    <h6>Edit Appointment</h6>
-    <div className="cross-icon" onClick={() => setOpenEdit(false)}>
-      <i className="fa-solid fa-xmark"></i>
-    </div>
-  </div>
+                    {/* ✅ PAGINATION SAME STYLE */}
+                    <Stack spacing={2} alignItems="end" marginTop={2}>
+                      <Pagination
+                        count={Math.ceil(
+                          enquiryAppointments.length / rowsPerPageENQ,
+                        )}
+                        page={pageENQ + 1}
+                        onChange={(e, val) => setPageENQ(val - 1)}
+                        shape="rounded"
+                        className="page-item"
+                      />
+                    </Stack>
+                  </TableContainer>
+                </div>
+              </div>
+            </div>
+          </div>
+        </TabPanel>
+        <Dialog
+          open={openEdit}
+          onClose={() => setOpenEdit(false)}
+          fullWidth
+          maxWidth="sm"
+        >
+          <div
+            className="main-card-header "
+            style={{
+              position: "sticky",
+              top: 0,
+              background: "#fff",
+              zIndex: 10,
+            }}
+          >
+            <h6>Edit Appointment</h6>
+            <div className="cross-icon" onClick={() => setOpenEdit(false)}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
 
-  <DialogContent  sx={{
-    maxHeight: "70vh",   // 👈 थोड़ा बढ़ा दो
-    overflowY: "auto",
-  }}>
-    <Box className="contact-form">
-<FormControl fullWidth size="small">
-  <label>Select Hospital</label>
+          <DialogContent
+            sx={{
+              maxHeight: "70vh", // 👈 थोड़ा बढ़ा दो
+              overflowY: "auto",
+            }}
+          >
+            <Box className="contact-form">
+              <FormControl fullWidth size="small">
+                <label>Select Hospital</label>
 
-<Select
-  value={editData.hospital_id || ""}
-  onChange={(e) => {
-    const selectedId = e.target.value;
+                <Select
+                  value={editData.hospital_id || ""}
+                  onChange={(e) => {
+                    const selectedId = e.target.value;
 
-    const selectedHospital = hospitalList.find(
-      (item) => item.id === selectedId
-    );
+                    const selectedHospital = hospitalList.find(
+                      (item) => item.id === selectedId,
+                    );
 
-    setEditData((prev) => ({
-      ...prev,
-      hospital_id: selectedId,
-      hospitalName: selectedHospital?.name || "",
-    }));
-  }}
->
-  {hospitalList?.map((item) => (
-    <MenuItem
-      key={ item.id}
-      value={ item.id}   
-    >
-      { item.name}
-    </MenuItem>
-  ))}
-</Select>
-</FormControl>
-      <div className="field-set">
-        <label>Health Issue</label>
-        <input
-          type="text"
-          className="form-control"
-          value={editData.health_issue || ""}
-          onChange={(e) =>
-            setEditData({ ...editData, health_issue: e.target.value })
-          }
-        />
-      </div>
-<div className="set-field">
-                              <label>
-                                Treatment name
-                               
-                              </label>
-                            <Autocomplete
-  options={Treatment || []}
-  getOptionLabel={(option) => option.name || ""}
-  value={
-    Treatment?.find(
-      (item) => item.id == editData.treatment_id
-    ) || null
-  }
-  onChange={(e, value) => {
-    setEditData((prev) => ({
-      ...prev,
-      treatment_id: value?.id || "",
-      treatment_name: value?.name || "",
-    }));
-  }}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      placeholder="Select Treatment"
-    />
-  )}
-  sx={{
-    "& .MuiOutlinedInput-root": {
-      padding: "0px",
-    },
-  }}
-/>
-                            </div>
+                    setEditData((prev) => ({
+                      ...prev,
+                      hospital_id: selectedId,
+                      hospitalName: selectedHospital?.name || "",
+                    }));
+                  }}
+                >
+                  {hospitalList?.map((item) => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <div className="field-set">
+                <label>Health Issue</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={editData.health_issue || ""}
+                  onChange={(e) =>
+                    setEditData({ ...editData, health_issue: e.target.value })
+                  }
+                />
+              </div>
+              <div className="set-field">
+                <label>Treatment name</label>
+                <Autocomplete
+                  options={Treatment || []}
+                  getOptionLabel={(option) => option.name || ""}
+                  value={
+                    Treatment?.find(
+                      (item) => item.id == editData.treatment_id,
+                    ) || null
+                  }
+                  onChange={(e, value) => {
+                    setEditData((prev) => ({
+                      ...prev,
+                      treatment_id: value?.id || "",
+                      treatment_name: value?.name || "",
+                    }));
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} placeholder="Select Treatment" />
+                  )}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      padding: "0px",
+                    },
+                  }}
+                />
+              </div>
 
-      <div className="field-set">
-        <label>Date</label> <span className="text-danger">*</span>
-        <input
-  type="date"
-  className="form-control"
-  value={editData.appointment_Date?.split("T")[0] || ""}
-  onChange={(e) =>
-    setEditData({ ...editData, appointment_Date: e.target.value })
-  }
-/>
-      </div>
+              <div className="field-set">
+                <label>Date</label> <span className="text-danger">*</span>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={editData.appointment_Date?.split("T")[0] || ""}
+                  onChange={(e) =>
+                    setEditData({
+                      ...editData,
+                      appointment_Date: e.target.value,
+                    })
+                  }
+                />
+              </div>
 
-      <div className="field-set">
-        <label>Time</label> <span className="text-danger">*</span>
-        <input
-  type="time"
-  className="form-control"
-  value={editData.appointment_Time?.slice(0, 5) || ""}
-  onChange={(e) =>
-    setEditData({ ...editData, appointment_Time: e.target.value })
-  }
-/>
-      </div>
+              <div className="field-set">
+                <label>Time</label> <span className="text-danger">*</span>
+                <input
+                  type="time"
+                  className="form-control"
+                  value={editData.appointment_Time?.slice(0, 5) || ""}
+                  onChange={(e) =>
+                    setEditData({
+                      ...editData,
+                      appointment_Time: e.target.value,
+                    })
+                  }
+                />
+              </div>
 
-      <div className="field-set">
-        <label>Notes</label> <span className="text-danger">*</span>
-        <textarea
-          className="form-control"
-          value={editData.discussionNotes || ""}
-          onChange={(e) =>
-            setEditData({ ...editData, discussionNotes: e.target.value })
-          }
-        />
-      </div>
+              <div className="field-set">
+                <label>Notes</label> <span className="text-danger">*</span>
+                <textarea
+                  className="form-control"
+                  value={editData.discussionNotes || ""}
+                  onChange={(e) =>
+                    setEditData({
+                      ...editData,
+                      discussionNotes: e.target.value,
+                    })
+                  }
+                />
+              </div>
 
-      {/* Upload */}
-      <div className="field-set">
-        <label>Upload Reports</label> <span className="text-danger">*</span>
-        <input
-          type="file"
-          multiple
-          className="form-control"
-          onChange={(e) => setEditImages(Array.from(e.target.files))}
-        />
-      </div>
-
-    </Box>
-  </DialogContent>
-  <DialogActions className="submit-main mb-3 me-4">
-                        <Button
-                        onClick={handleUpdate}
-                       className="add-button"
-                          // onClick={handleClickEditReport}
-                          variant="contained"
-                        >
-                          Edit Appointment
-                        </Button>
-                        {/* <Button
+              {/* Upload */}
+              <div className="field-set">
+                <label>Upload Reports</label>{" "}
+                <span className="text-danger"></span>
+                <input
+                  type="file"
+                  multiple
+                  className="form-control"
+                  onChange={(e) => setEditImages(Array.from(e.target.files))}
+                />
+              </div>
+            </Box>
+          </DialogContent>
+          <DialogActions className="submit-main mb-3 me-4">
+            <Button
+              onClick={handleUpdate}
+              className="add-button"
+              // onClick={handleClickEditReport}
+              variant="contained"
+            >
+              Edit Appointment
+            </Button>
+            {/* <Button
                           // type="submit"
                           // onClick={handleClickSubmit}
                           variant="contained"
                         >
                           Submit
                         </Button> */}
-                    </DialogActions>
-  {/* <DialogActions>
+          </DialogActions>
+          {/* <DialogActions>
     <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
     <button className="add-button" onClick={handleUpdate}>
       Update
     </button>
   </DialogActions> */}
- 
-</Dialog>
+        </Dialog>
         <Dialog
           fullWidth={fullWidth}
           maxWidth={maxWidth}
