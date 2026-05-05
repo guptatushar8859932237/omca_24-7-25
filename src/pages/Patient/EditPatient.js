@@ -148,8 +148,8 @@ const { Treatment } = useSelector((state) => state.Treatment);
                     passport_num: ispatient?.passport_num || "",
                     // patient_Profile: ispatient?.patient_Profile || "",
                     town: ispatient?.town || "",
-                    // dial_code: ispatient?.dial_code || "",
-                    dial_code: ispatient?.phoneCode || "",
+                    dial_code: ispatient?.dial_code || "",
+                    // dial_code: ispatient?.phoneCode || "",
                     address: ispatient?.address || "",
                     patientDisease:
                       ispatient?.patient_disease?.[0]?.disease_name || "",

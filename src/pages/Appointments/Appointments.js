@@ -1033,9 +1033,16 @@ const handleEnqStatusChange = async (e, appointmentId) => {
                           {item.reports?.length > 0 ? (
                             item.reports.map((file, idx) => (
                               <div key={idx}>
-                                <a href={file} target="_blank" rel="noreferrer">
+                                <a
+  href={`${baseu11}/${file}`}
+  target="_blank"
+  rel="noreferrer"
+>
+  View
+</a>
+                                {/* <a href={`${}${file}`} target="_blank" rel="noreferrer">
                                   View
-                                </a>
+                                </a> */}
                               </div>
                             ))
                           ) : (
