@@ -667,6 +667,47 @@ export default function MedicalVisa() {
                     </div>
                   </div>
                 </div>
+                <div className="col-md-12 mb-3">
+                  <div className="all-hd mb-3">
+                    <h6>Confirmations Details</h6>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Have you ever visited India before?"
+                            value={selectedRecord?.visited_india_before_last}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Have you ever been arrested/prosecuted/convicted by a court of law?"
+                            value={selectedRecord?.ever_arrested}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Have you ever been refused entry or deported by any country?"
+                            value={selectedRecord?.ever_deported}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Have you ever been involved in human trafficking or drug trafficking?"
+                            value={selectedRecord?.involved_in_trafficking}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Have you ever been associated with any terrorist organization?"
+                            value={selectedRecord?.associated_with_terrorist_org}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 {/* <div className="col-md-12 mb-3">
                   <div className="all-hd mb-3">
                     <h6>Document Details</h6>
