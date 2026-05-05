@@ -1062,7 +1062,7 @@ const handleEnqStatusChange = async (e, appointmentId) => {
       <MenuItem value='Pending'>Pending</MenuItem>
       <MenuItem value='Schedule'>Schedule</MenuItem>
       <MenuItem value='Follow-Up'>Follow-Up</MenuItem>
-      <MenuItem value='Completed'>Completed</MenuItem>
+      <MenuItem value='Complete'>Complete</MenuItem>
       <MenuItem value='Cancelled'>Cancelled</MenuItem>
     </Select>
   </FormControl>
