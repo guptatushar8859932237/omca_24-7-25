@@ -29,6 +29,8 @@ import {
   Tab,
   Dialog,
   DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
 function TabPanel({ children, value, index }) {
   return value === index && <Box sx={{ p: 2 }}>{children}</Box>;
@@ -37,12 +39,15 @@ function TabPanel({ children, value, index }) {
 export default function Appointments() {
   const role = localStorage.getItem("Role");
   const [tabValue, setTabValue] = useState(0);
+  const [openEdit, setOpenEdit] = useState(false);
+const [editData, setEditData] = useState({});
+const [editImages, setEditImages] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [searchApiData, setSearchApiData] = useState([]);
   const [page, setPage] = useState(0);
   const [orderByCRM, setOrderByCRM] = useState("");
   const [orderDirectionCRM, setOrderDirectionCRM] = useState("asc");
-
+const [hospitalList, setHospitalList] = useState([]);
   const [orderByAPP, setOrderByAPP] = useState("");
   const [orderDirectionAPP, setOrderDirectionAPP] = useState("asc");
   const [pageAPP, setPageAPP] = useState(0);
@@ -57,6 +62,11 @@ export default function Appointments() {
   const [statuddropdown, setStatuddropdown] = useState("offline");
   const [filterValue, setFilterValue] = useState("");
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
+  const [enquiryAppointments, setEnquiryAppointments] = useState([]);
+const [pageENQ, setPageENQ] = useState(0);
+const [orderByENQ, setOrderByENQ] = useState("");
+const [orderDirectionENQ, setOrderDirectionENQ] = useState("asc");
+const [rowsPerPageENQ] = useState(10);
   const handleChange = async (e, i) => {
     try {
       const token = localStorage.getItem("token");
@@ -97,6 +107,22 @@ export default function Appointments() {
       }
     }
   };
+
+  const getEnquiryAppointments = async () => {
+  try {
+    const response = await axios.get(`${baseurl}get_enquiry_appointments`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (response.status === 200) {
+      setEnquiryAppointments(response.data.data);
+    }
+  } catch (error) {
+    console.log("Error fetching enquiry appointments:", error);
+  }
+};
   const getAppointments = () => {
     axios
       .get(`${baseurl}all_appointment`, {
@@ -118,10 +144,12 @@ export default function Appointments() {
         console.error("Error fetching job titles:", error);
       });
   };
-  useEffect(() => {
-    getAppointments();
-    getAppFromApp();
-  }, []);
+ useEffect(() => {
+  getAppointments();
+  getEnquiryAppointments();
+  getAppFromApp();
+  getHospitalList(); // 👈 ye missing tha
+}, []);
   const handleFilter = (event) => {
     const value = event.target.value.toLowerCase();
     setFilterValue(event.target.value);
@@ -149,54 +177,66 @@ export default function Appointments() {
         country.includes(value)
       );
     });
-
     setAppointments(filterResult);
   };
-
-  // const handleFilter = (event) => {
-  //   if (event.target.value === "") {
-  //     setAppointments(searchApiData);
-  //   } else {
-  //     const filterResult = searchApiData.filter((item) => {
-  //       const enquiryId = item.patientId?.toLowerCase() || "";
-  //       const country = item.patientName?.toLowerCase() || "";
-  //       const Hospital_name = item.Hospital_name?.toLowerCase() || "";
-  //       const appointement_status =
-  //         item.appointement_status?.toLowerCase() || "";
-  //       const appointmentId = item.appointmentId?.toLowerCase() || "";
-  //       const disease_name = item.disease_name?.toLowerCase() || "";
-  //       const searchValue = event.target.value.toLowerCase();
-  //       return (
-  //         enquiryId.includes(searchValue) ||
-  //         Hospital_name.includes(searchValue) ||
-  //         appointement_status.includes(searchValue) ||
-  //         disease_name.includes(searchValue) ||
-  //         appointmentId.includes(searchValue) ||
-  //         country.includes(searchValue)
-  //       );
-  //     });
-  //     setAppointments(filterResult);
-  //   }
-  //   setFilterValue(event.target.value);
-  // };
-  // const handleClearFilter = () => {
-  //   setFilterValue("");
-  //   setAppointments(searchApiData);
-  // };
+const getHospitalList = async () => {
+  try {
+    const res = await axios.post(`${AdminBaseUrl}hospital_list`)
+    if (res.status === 200) {
+      setHospitalList(res.data.data);
+    }
+  } catch (err) {
+    console.log("Hospital list error:", err);
+  }
+};
   const handleClearFilter = () => {
     setFilterValue("");
     setAppointments(searchApiData);
     setPage(0); // ⭐ IMPORTANT
   };
-  const handleTabChange = (_, newVal) => {
-    setTabValue(newVal);
+ const handleTabChange = (_, newVal) => {
+  setTabValue(newVal);
 
-    if (newVal === 0) {
-      setPage(0); // CRM tab
+  if (newVal === 0) setPage(0);
+  else if (newVal === 1) setPageAPP(0);
+  else if (newVal === 2) setPageENQ(0); // ✅ NEW
+};
+const handleDelete = async (item) => {
+  try {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this appointment!",
+      icon: "warning",
+      showCancelButton: true,
+       confirmButtonColor: "#d33",
+      cancelButtonColor: "#6e7881",
+      confirmButtonText: "Yes, delete it!",
+    });
+    if (!confirm.isConfirmed) return;
+    const response = await axios.post(
+      `${baseurl}delete_enqAppointment/${item._id}`
+    );
+    if (response.status === 200 || response.status === 201) {
+      Swal.fire("Deleted!", "Appointment deleted successfully.", "success");
+
+      // 🔁 refresh list after delete
+      getEnquiryAppointments();
     } else {
-      setPageAPP(0); // APP tab
+      Swal.fire("Error!", "Failed to delete appointment.", "error");
     }
-  };
+  } catch (error) {
+    console.log(error);
+    Swal.fire("Error!", "Something went wrong.", "error");
+  }
+};
+const handleEdit = (item) => {
+  console.log(item)
+  setEditData({
+    ...item,
+    hospital_id: Number(item.hospital_id), // ✅ ensure number
+  });
+  setOpenEdit(true);
+};
 
   const handleSampleFile = () => {
     fetch(`${baseurl}export_appointments`, {
@@ -247,11 +287,6 @@ export default function Appointments() {
       }
     });
   };
-
-  //  const handleTabChange = (_, newVal) => {
-  //   setTabValue(newVal);
-  // };
-
   const getAppFromApp = async () => {
     try {
       const response = await axios.post(`${AdminBaseUrl}app_appointments`);
@@ -268,52 +303,68 @@ export default function Appointments() {
   useEffect(() => {
     setPageAPP(0);
   }, [dataApp]);
-  // const handleTabChange = (_, newVal) => {
-  //   setTabValue(newVal);
-  //   setPageAPP(0); // only TAB-2 reset
-  // };
   const handleView = (record) => {
     setSelectedRecord(record);
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
-
   const InfoItem = ({ label, value }) => (
     <div className="">
       <h6>{label}</h6>
       <p>{value || "-"}</p>
     </div>
   );
-
   const sortData = (data, field, direction) => {
     return [...data].sort((a, b) => {
       let valA = a[field];
       let valB = b[field];
-
-      // ✅ Date fields
       if (field === "appointment_Date" || field === "apt_on") {
         return direction === "asc"
           ? new Date(valA) - new Date(valB)
           : new Date(valB) - new Date(valA);
       }
-
-      // ✅ Number fields
       if (field === "paid_amount") {
         return direction === "asc"
           ? Number(valA) - Number(valB)
           : Number(valB) - Number(valA);
       }
-
-      // ✅ String fields
       if (typeof valA === "string") {
         return direction === "asc"
           ? valA.localeCompare(valB)
           : valB.localeCompare(valA);
       }
-
       return 0;
     });
   };
+  const handleUpdate = async () => {
+  try {
+    const formData = new FormData();
+    formData.append("appointmentId", editData._id);
+    formData.append("health_issue", editData.health_issue);
+    formData.append("discussionNotes", editData.discussionNotes);
+    formData.append("appointment_Date", editData.appointment_Date);
+    formData.append("appointment_Time", editData.appointment_Time);
+formData.append("hospital_id", editData.hospital_id);
+formData.append("hospitalName", editData.hospitalName);
+formData.append("treatment_id", editData.treatment_id);
+formData.append("treatment_name", editData.treatment_name);
+    editImages.forEach((file) => {
+      formData.append("reports", file);
+    });
+    console.log(formData)
+    const res = await axios.post(
+      `${baseurl}update_enquiry_appointment`,formData);
+
+    if (res.data.success) {
+      Swal.fire("Success", "Updated Successfully", "success");
+      setOpenEdit(false);
+      getEnquiryAppointments(); // refresh
+    }
+  } catch (err) {
+    console.log(err);
+    Swal.fire("Error", "Update Failed", "error");
+  }
+};
   const handleSortCRM = (field) => {
     const isAsc = orderByCRM === field && orderDirectionCRM === "asc";
     const direction = isAsc ? "desc" : "asc";
@@ -332,6 +383,37 @@ export default function Appointments() {
     const sorted = sortData(dataApp, field, direction);
     setDataApp(sorted);
   };
+  const handleSortENQ = (field) => {
+  const isAsc = orderByENQ === field && orderDirectionENQ === "asc";
+  const direction = isAsc ? "desc" : "asc";
+
+  setOrderByENQ(field);
+  setOrderDirectionENQ(direction);
+
+  const sorted = sortData(enquiryAppointments, field, direction);
+  setEnquiryAppointments(sorted);
+};
+
+const handleEnqStatusChange = async (e, appointmentId) => {
+  try {
+    console.log(e.target.value)
+    const token = localStorage.getItem("token");
+    const res = await axios.post(
+      `${baseurl}update_enqAppointment_status/${appointmentId}`,
+      { status: e.target.value }
+    );
+
+    if (res.status === 200 || res.status === 201) {
+      Swal.fire("Success!", "Status updated successfully!", "success");
+
+      // refresh data
+      getEnquiryAppointments();
+    }
+  } catch (err) {
+    console.log(err);
+    toast.error("Failed to update status");
+  }
+};
   return (
     <>
       <div className="page-wrapper" style={{marginTop:"70px"}}>
@@ -363,6 +445,12 @@ export default function Appointments() {
                 color: "#666",
               }}
             />
+            <Tab label="Enquiry Appointments" sx={{
+                fontSize: "12px",
+                fontWeight: "bold",
+                fontFamily: "Rubik",
+                color: "#666",
+              }} />
           </Tabs>
         </Box>
         <TabPanel value={tabValue} index={0}>
@@ -828,6 +916,292 @@ export default function Appointments() {
             </div>
           </div>
         </TabPanel>
+       <TabPanel value={tabValue} index={2}>
+  <div className="main_content">
+    <div className="row">
+      <div className="col-md-12">
+        <div className="table-responsive">
+          <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+            <Table stickyHeader className="table-no-card">
+
+              {/* ✅ TABLE HEADER */}
+              <TableHead>
+                <TableRow>
+                  <TableCell>Sr.No.</TableCell>
+
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderByENQ === "patientName"}
+                      direction={orderDirectionENQ}
+                      onClick={() => handleSortENQ("patientName")}
+                    >
+                      Patient Name
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderByENQ === "hospitalName"}
+                      direction={orderDirectionENQ}
+                      onClick={() => handleSortENQ("hospitalName")}
+                    >
+                      Hospital Name
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderByENQ === "health_issue"}
+                      direction={orderDirectionENQ}
+                      onClick={() => handleSortENQ("health_issue")}
+                    >
+                      Health Issue
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderByENQ === "appointment_Date"}
+                      direction={orderDirectionENQ}
+                      onClick={() => handleSortENQ("appointment_Date")}
+                    >
+                      Appointment Date
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderByENQ === "appointment_Time"}
+                      direction={orderDirectionENQ}
+                      onClick={() => handleSortENQ("appointment_Time")}
+                    >
+                      Time
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell>Notes</TableCell>
+                  <TableCell>Reports</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Action</TableCell>
+                </TableRow>
+              </TableHead>
+
+              {/* ✅ TABLE BODY */}
+              <TableBody>
+                {enquiryAppointments.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} align="center">
+                      No data found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  enquiryAppointments
+                    .slice(
+                      pageENQ * rowsPerPageENQ,
+                      pageENQ * rowsPerPageENQ + rowsPerPageENQ
+                    )
+                    .map((item, i) => (
+                      <TableRow key={i}>
+                        <TableCell>
+                          {pageENQ * rowsPerPageENQ + i + 1}
+                        </TableCell>
+
+                        <TableCell>{item?.patientName}</TableCell>
+                        <TableCell>{item?.hospitalName.slice(0,20)+"..."}</TableCell>
+                        <TableCell>{item?.health_issue}</TableCell>
+
+                        <TableCell>
+                          {new Date(item?.appointment_Date).toLocaleDateString("en-GB")}
+                        </TableCell>
+
+                        <TableCell>{item?.appointment_Time}</TableCell>
+
+                      <TableCell>
+  {item?.discussionNotes
+    ? item.discussionNotes.slice(0, 20) + "..."
+    : "-"}
+</TableCell>
+
+                        {/* ✅ Reports */}
+                        <TableCell>
+                          {item.reports?.length > 0 ? (
+                            item.reports.map((file, idx) => (
+                              <div key={idx}>
+                                <a href={file} target="_blank" rel="noreferrer">
+                                  View
+                                </a>
+                              </div>
+                            ))
+                          ) : (
+                            "-"
+                          )}
+                        </TableCell>
+                        <TableCell>
+  <FormControl size="small" sx={{ minWidth: 120 }} size="small"
+                                    className="cont-main">
+    <Select
+    className="status-direct"
+      value={
+        item.status 
+      }
+      onChange={(e) => handleEnqStatusChange(e, item._id)}
+    >
+      <MenuItem value='Schedule'>Schedule</MenuItem>
+      <MenuItem value='Follow-Up'>Follow-Up</MenuItem>
+      <MenuItem value='Completed'>Completed</MenuItem>
+      <MenuItem value='Cancelled'>Cancelled</MenuItem>
+    </Select>
+  </FormControl>
+</TableCell>
+                        <TableCell>
+  <i
+    className="fa fa-edit"
+    style={{ cursor: "pointer", color: "#0ba6df" }}
+    onClick={() => handleEdit(item)}
+  ></i>
+  <i
+    className="fa fa-trash ms-1"
+    style={{ cursor: "pointer", color: "#ff0000" }}
+    onClick={() => handleDelete(item)}
+  ></i>
+</TableCell>
+                      </TableRow>
+                    ))
+                )}
+              </TableBody>
+            </Table>
+
+            {/* ✅ PAGINATION SAME STYLE */}
+            <Stack spacing={2} alignItems="end" marginTop={2}>
+              <Pagination
+                count={Math.ceil(enquiryAppointments.length / rowsPerPageENQ)}
+                page={pageENQ + 1}
+                onChange={(e, val) => setPageENQ(val - 1)}
+                shape="rounded"
+                className="page-item"
+              />
+            </Stack>
+          </TableContainer>
+        </div>
+      </div>
+    </div>
+  </div>
+</TabPanel>
+<Dialog   open={openEdit} onClose={() => setOpenEdit(false)} fullWidth maxWidth="sm">
+  <div className="main-card-header "  style={{
+    position: "sticky",
+    top: 0,
+    background: "#fff",
+    zIndex: 10,
+  }}>
+    <h6>Edit Appointment</h6>
+    <div className="cross-icon" onClick={() => setOpenEdit(false)}>
+      <i className="fa-solid fa-xmark"></i>
+    </div>
+  </div>
+
+  <DialogContent  sx={{
+    maxHeight: "70vh",   // 👈 थोड़ा बढ़ा दो
+    overflowY: "auto",
+  }}>
+    <Box className="contact-form">
+<FormControl fullWidth size="small">
+  <label>Select Hospital</label>
+
+<Select
+  value={editData.hospital_id || ""}
+  onChange={(e) => {
+    const selectedId = e.target.value;
+
+    const selectedHospital = hospitalList.find(
+      (item) => item.id === selectedId
+    );
+
+    setEditData((prev) => ({
+      ...prev,
+      hospital_id: selectedId,
+      hospitalName: selectedHospital?.name || "",
+    }));
+  }}
+>
+  {hospitalList?.map((item) => (
+    <MenuItem
+      key={ item.id}
+      value={ item.id}   
+    >
+      { item.name}
+    </MenuItem>
+  ))}
+</Select>
+</FormControl>
+      <div className="field-set">
+        <label>Health Issue</label>
+        <input
+          type="text"
+          className="form-control"
+          value={editData.health_issue || ""}
+          onChange={(e) =>
+            setEditData({ ...editData, health_issue: e.target.value })
+          }
+        />
+      </div>
+
+      <div className="field-set">
+        <label>Date</label>
+        <input
+  type="date"
+  className="form-control"
+  value={editData.appointment_Date?.split("T")[0] || ""}
+  onChange={(e) =>
+    setEditData({ ...editData, appointment_Date: e.target.value })
+  }
+/>
+      </div>
+
+      <div className="field-set">
+        <label>Time</label>
+        <input
+  type="time"
+  className="form-control"
+  value={editData.appointment_Time?.slice(0, 5) || ""}
+  onChange={(e) =>
+    setEditData({ ...editData, appointment_Time: e.target.value })
+  }
+/>
+      </div>
+
+      <div className="field-set">
+        <label>Notes</label>
+        <textarea
+          className="form-control"
+          value={editData.discussionNotes || ""}
+          onChange={(e) =>
+            setEditData({ ...editData, discussionNotes: e.target.value })
+          }
+        />
+      </div>
+
+      {/* Upload */}
+      <div className="field-set">
+        <label>Upload Reports</label>
+        <input
+          type="file"
+          multiple
+          className="form-control"
+          onChange={(e) => setEditImages(Array.from(e.target.files))}
+        />
+      </div>
+
+    </Box>
+  </DialogContent>
+
+  <DialogActions>
+    <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
+    <Button variant="contained" onClick={handleUpdate}>
+      Update
+    </Button>
+  </DialogActions>
+</Dialog>
         <Dialog
           fullWidth={fullWidth}
           maxWidth={maxWidth}

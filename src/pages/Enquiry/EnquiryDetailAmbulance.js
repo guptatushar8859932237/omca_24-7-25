@@ -519,7 +519,6 @@ export default function EnquiryDetailAmbulance() {
                       ) : (
                         <p>No comments available</p>
                       )}
-
                     </div>
                   </div>
                 </div>
@@ -587,8 +586,6 @@ export default function EnquiryDetailAmbulance() {
                   onChange={(e) => setCommentText(e.target.value)}
                 />
               </div>
-
-              {/* Image Upload */}
               <div className="field-set">
                 <label>Upload Images</label>
                 <input
@@ -597,8 +594,7 @@ export default function EnquiryDetailAmbulance() {
                   multiple
                   onChange={handleImageChange}
                 />
-              </div>
-
+              </div> 
               <DialogActions className="submit-main">
                 <Button
                   variant="contained"
