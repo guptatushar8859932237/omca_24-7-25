@@ -864,6 +864,7 @@ const handleCloseAppointment = () => {
       name: item.name || item.first_name || "",
       email: item.email || "",
       country: item.country || "",
+      createdBy: item.createdBy || "",
       treatingIn: item.treatingIn || item.treating_in_country || "",
       emergency_contact: item.emergency_contact || item.phone || "",
       disease_name:
@@ -1049,6 +1050,7 @@ const handleCloseAppointment = () => {
                               Name
                             </TableSortLabel>
                           </TableCell>
+                          
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "country"}
@@ -1060,6 +1062,7 @@ const handleCloseAppointment = () => {
                               Country
                             </TableSortLabel>
                           </TableCell>
+                       
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "treatingIn"}
@@ -1071,6 +1074,17 @@ const handleCloseAppointment = () => {
                               onClick={() => handleRequestSort("treatingIn")}
                             >
                               Treating In
+                            </TableSortLabel>
+                          </TableCell>
+                             <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "createdBy"}
+                              direction={
+                                orderBy === "createdBy" ? orderDirection : "asc"
+                              }
+                              onClick={() => handleRequestSort("createdBy")}
+                            >
+                              Created By
                             </TableSortLabel>
                           </TableCell>
                           <TableCell>
@@ -1132,6 +1146,7 @@ const handleCloseAppointment = () => {
                               </TableCell>
                               <TableCell>{info.country}</TableCell>
                               <TableCell>{info.treatingIn}</TableCell>
+                              <TableCell>{info.createdBy}</TableCell>
                               <TableCell>
                                 {new Date(info.date).toLocaleDateString(
                                   "en-GB",

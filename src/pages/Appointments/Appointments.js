@@ -59,6 +59,8 @@ export default function Appointments() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [dataApp, setDataApp] = useState([]);
   const fullWidth = true;
+  const [openViewEnq, setOpenViewEnq] = useState(false);
+  const [selectedEnq, setSelectedEnq] = useState(null);
   const maxWidth = "md"; // xs | sm | md | lg | xl
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -259,6 +261,15 @@ export default function Appointments() {
         a.click();
         window.URL.revokeObjectURL(url);
       });
+  };
+
+  const handleViewEnq = (item) => {
+    setSelectedEnq(item);
+    setOpenViewEnq(true);
+  };
+
+  const handleCloseViewEnq = () => {
+    setOpenViewEnq(false);
   };
   const downloadPdf = async () => {
     const maxRows = appointments.length || 1;
@@ -967,7 +978,7 @@ export default function Appointments() {
                             </TableSortLabel>
                           </TableCell>
 
-                          <TableCell>
+                          {/* <TableCell>
                             <TableSortLabel
                               active={orderByENQ === "hospitalName"}
                               direction={orderDirectionENQ}
@@ -975,17 +986,7 @@ export default function Appointments() {
                             >
                               Hospital Name
                             </TableSortLabel>
-                          </TableCell>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByENQ === "hospitalName"}
-                              direction={orderDirectionENQ}
-                              onClick={() => handleSortENQ("hospitalName")}
-                            >
-                              Treatment Name
-                            </TableSortLabel>
-                          </TableCell>
-
+                          </TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderByENQ === "health_issue"}
@@ -1005,7 +1006,7 @@ export default function Appointments() {
                             </TableSortLabel>
                           </TableCell>
 
-                          <TableCell>
+                          {/* <TableCell>
                             <TableSortLabel
                               active={orderByENQ === "appointment_Date"}
                               direction={orderDirectionENQ}
@@ -1013,8 +1014,8 @@ export default function Appointments() {
                             >
                               Appointment Date
                             </TableSortLabel>
-                          </TableCell>
-
+                          </TableCell> */}
+{/* 
                           <TableCell>
                             <TableSortLabel
                               active={orderByENQ === "appointment_Time"}
@@ -1023,10 +1024,10 @@ export default function Appointments() {
                             >
                               Time
                             </TableSortLabel>
-                          </TableCell>
+                          </TableCell> */}
 
-                          <TableCell>Notes</TableCell>
-                          <TableCell>Reports</TableCell>
+                          {/* <TableCell>Notes</TableCell> */}
+                          {/* <TableCell>Reports</TableCell> */}
                           <TableCell>Status</TableCell>
                           <TableCell>Action</TableCell>
                         </TableRow>
@@ -1053,13 +1054,13 @@ export default function Appointments() {
                                 </TableCell>
 
                                 <TableCell>{item?.patientName}</TableCell>
-                                <TableCell>
+                                {/* <TableCell>
                                   {item?.hospitalName.slice(0, 20) + "..."}
-                                </TableCell>
+                                </TableCell> */}
                                 <TableCell>{item?.health_issue}</TableCell>
                                 <TableCell>{item?.treatment_name}</TableCell>
 
-                                <TableCell>
+                                {/* <TableCell>
                                   {new Date(
                                     item?.appointment_Date,
                                   ).toLocaleDateString("en-GB")}
@@ -1071,10 +1072,10 @@ export default function Appointments() {
                                   {item?.discussionNotes
                                     ? item.discussionNotes.slice(0, 20) + "..."
                                     : "-"}
-                                </TableCell>
+                                </TableCell> */}
 
                                 {/* ✅ Reports */}
-                                <TableCell>
+                                {/* <TableCell>
                                   {item.reports?.length > 0
                                     ? item.reports.map((file, idx) => (
                                         <div key={idx}>
@@ -1088,10 +1089,10 @@ export default function Appointments() {
                                           {/* <a href={`${}${file}`} target="_blank" rel="noreferrer">
                                   View
                                 </a> */}
-                                        </div>
+                                        {/* </div>
                                       ))
                                     : "-"}
-                                </TableCell>
+                                </TableCell> */} 
                                 <TableCell>
                                   <FormControl
                                     size="small"
@@ -1125,6 +1126,14 @@ export default function Appointments() {
                                   </FormControl>
                                 </TableCell>
                                 <TableCell>
+                                  <i
+                                    className="fa fa-eye me-1"
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#0ba6df",
+                                    }}
+                                    onClick={() => handleViewEnq(item)}
+                                  ></i>
                                   <i
                                     className="fa fa-edit"
                                     style={{
@@ -1339,6 +1348,117 @@ export default function Appointments() {
       Update
     </button>
   </DialogActions> */}
+        </Dialog>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={openViewEnq}
+          onClose={handleCloseViewEnq}
+        >
+          <div className="main-card-header">
+            <div className="top-fixed-hd">
+              <div className="note-hd">
+                <h6>Enquiry Appointment Details</h6>
+              </div>
+              <div className="cross-icon" onClick={handleCloseViewEnq}>
+                <i className="fa-solid fa-xmark"></i>
+              </div>
+            </div>
+          </div>
+
+          <DialogContent className="main-box view-table-detail">
+            {selectedEnq && (
+              <Box>
+                <div className="row">
+                  <div className="col-md-12 mb-3">
+                    <div className="card">
+                      <div className="card-body">
+                        <div className="row">
+                          <div className="col-md-4">
+                            <InfoItem
+                              label="Patient Name"
+                              value={selectedEnq.patientName}
+                            />
+                          </div>
+
+                          <div className="col-md-4">
+                            <InfoItem
+                              label="Hospital Name"
+                              value={selectedEnq.hospitalName}
+                            />
+                          </div>
+
+                          <div className="col-md-4">
+                            <InfoItem
+                              label="Health Issue"
+                              value={selectedEnq.health_issue}
+                            />
+                          </div>
+
+                          <div className="col-md-4">
+                            <InfoItem
+                              label="Treatment Name"
+                              value={selectedEnq.treatment_name}
+                            />
+                          </div>
+
+                          <div className="col-md-4">
+                            <InfoItem
+                              label="Appointment Date"
+                              value={new Date(
+                                selectedEnq.appointment_Date,
+                              ).toLocaleDateString("en-GB")}
+                            />
+                          </div>
+
+                          <div className="col-md-4">
+                            <InfoItem
+                              label="Appointment Time"
+                              value={selectedEnq.appointment_Time}
+                            />
+                          </div>
+
+                          <div className="col-md-4">
+                            <InfoItem
+                              label="Status"
+                              value={selectedEnq.status}
+                            />
+                          </div>
+
+                          {/* Notes full width */}
+                          <div className="col-md-12">
+                            <h6>Notes</h6>
+                            <p>{selectedEnq.discussionNotes || "-"}</p>
+                          </div>
+
+                          {/* Reports full width */}
+                          <div className="col-md-12 mt-2">
+                            <h6>Reports</h6>
+
+                            {selectedEnq.reports?.length > 0 ? (
+                              selectedEnq.reports.map((file, i) => (
+                                <div key={i}>
+                                  <a
+                                    href={`${baseu11}/${file}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    View Report {i + 1}
+                                  </a>
+                                </div>
+                              ))
+                            ) : (
+                              <p>-</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Box>
+            )}
+          </DialogContent>
         </Dialog>
         <Dialog
           fullWidth={fullWidth}

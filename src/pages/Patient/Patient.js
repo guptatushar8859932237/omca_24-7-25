@@ -682,6 +682,15 @@ useEffect(() => {
                           </TableCell>
                           <TableCell>
                             <TableSortLabel
+                              active={orderBy === "createdBy"}
+                              direction={orderBy === "createdBy" ? order : "asc"}
+                              onClick={() => handleRequestSort("createdBy")}
+                            >
+                              Created By
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
                               active={orderBy === "country"}
                               direction={orderBy === "country" ? order : "asc"}
                               onClick={() => handleRequestSort("country")}
@@ -803,6 +812,7 @@ useEffect(() => {
                                       hour12: true,
                                     })}
                                   </TableCell>
+                                  <TableCell>{info.createdBy}</TableCell>
                                   <TableCell>{info.country}</TableCell>
                                   {/* <TableCell>{info.country}</TableCell> */}
                                   {showActions === true ? (
