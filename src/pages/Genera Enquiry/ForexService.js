@@ -394,6 +394,12 @@ export default function ForexService() {
                         </div>
                         <div className="col-md-4">
                           <InfoItem
+                            label="Passport Number"
+                            value={selectedRecord.passport_number}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
                             label="Services"
                             value={selectedRecord.services?.replaceAll(
                               "_",

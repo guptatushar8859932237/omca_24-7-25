@@ -967,7 +967,6 @@ export default function Appointments() {
                       <TableHead>
                         <TableRow>
                           <TableCell>Sr.No.</TableCell>
-
                           <TableCell>
                             <TableSortLabel
                               active={orderByENQ === "patientName"}
@@ -977,7 +976,6 @@ export default function Appointments() {
                               Patient Name
                             </TableSortLabel>
                           </TableCell>
-
                           {/* <TableCell>
                             <TableSortLabel
                               active={orderByENQ === "hospitalName"}
@@ -1005,7 +1003,6 @@ export default function Appointments() {
                               Treatment Name
                             </TableSortLabel>
                           </TableCell>
-
                           {/* <TableCell>
                             <TableSortLabel
                               active={orderByENQ === "appointment_Date"}
@@ -1025,15 +1022,12 @@ export default function Appointments() {
                               Time
                             </TableSortLabel>
                           </TableCell> */}
-
                           {/* <TableCell>Notes</TableCell> */}
                           {/* <TableCell>Reports</TableCell> */}
                           <TableCell>Status</TableCell>
                           <TableCell>Action</TableCell>
                         </TableRow>
                       </TableHead>
-
-                      {/* ✅ TABLE BODY */}
                       <TableBody>
                         {enquiryAppointments.length === 0 ? (
                           <TableRow>
@@ -1052,47 +1046,12 @@ export default function Appointments() {
                                 <TableCell>
                                   {pageENQ * rowsPerPageENQ + i + 1}
                                 </TableCell>
-
                                 <TableCell>{item?.patientName}</TableCell>
                                 {/* <TableCell>
                                   {item?.hospitalName.slice(0, 20) + "..."}
                                 </TableCell> */}
                                 <TableCell>{item?.health_issue}</TableCell>
                                 <TableCell>{item?.treatment_name}</TableCell>
-
-                                {/* <TableCell>
-                                  {new Date(
-                                    item?.appointment_Date,
-                                  ).toLocaleDateString("en-GB")}
-                                </TableCell>
-
-                                <TableCell>{item?.appointment_Time}</TableCell>
-
-                                <TableCell>
-                                  {item?.discussionNotes
-                                    ? item.discussionNotes.slice(0, 20) + "..."
-                                    : "-"}
-                                </TableCell> */}
-
-                                {/* ✅ Reports */}
-                                {/* <TableCell>
-                                  {item.reports?.length > 0
-                                    ? item.reports.map((file, idx) => (
-                                        <div key={idx}>
-                                          <a
-                                            href={`${baseu11}/${file}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            View
-                                          </a>
-                                          {/* <a href={`${}${file}`} target="_blank" rel="noreferrer">
-                                  View
-                                </a> */}
-                                        {/* </div>
-                                      ))
-                                    : "-"}
-                                </TableCell> */} 
                                 <TableCell>
                                   <FormControl
                                     size="small"
@@ -1156,8 +1115,6 @@ export default function Appointments() {
                         )}
                       </TableBody>
                     </Table>
-
-                    {/* ✅ PAGINATION SAME STYLE */}
                     <Stack spacing={2} alignItems="end" marginTop={2}>
                       <Pagination
                         count={Math.ceil(
@@ -1195,7 +1152,6 @@ export default function Appointments() {
               <i className="fa-solid fa-xmark"></i>
             </div>
           </div>
-
           <DialogContent
             sx={{
               maxHeight: "70vh", // 👈 थोड़ा बढ़ा दो
@@ -1205,7 +1161,6 @@ export default function Appointments() {
             <Box className="contact-form">
               <FormControl fullWidth size="small">
                 <label>Select Hospital</label>
-
                 <Select
                   value={editData.hospital_id || ""}
                   onChange={(e) => {
@@ -1214,7 +1169,6 @@ export default function Appointments() {
                     const selectedHospital = hospitalList.find(
                       (item) => item.id === selectedId,
                     );
-
                     setEditData((prev) => ({
                       ...prev,
                       hospital_id: selectedId,
@@ -1267,7 +1221,6 @@ export default function Appointments() {
                   }}
                 />
               </div>
-
               <div className="field-set">
                 <label>Date</label> <span className="text-danger">*</span>
                 <input
@@ -1365,7 +1318,6 @@ export default function Appointments() {
               </div>
             </div>
           </div>
-
           <DialogContent className="main-box view-table-detail">
             {selectedEnq && (
               <Box>
@@ -1380,28 +1332,24 @@ export default function Appointments() {
                               value={selectedEnq.patientName}
                             />
                           </div>
-
                           <div className="col-md-4">
                             <InfoItem
                               label="Hospital Name"
                               value={selectedEnq.hospitalName}
                             />
                           </div>
-
                           <div className="col-md-4">
                             <InfoItem
                               label="Health Issue"
                               value={selectedEnq.health_issue}
                             />
                           </div>
-
                           <div className="col-md-4">
                             <InfoItem
                               label="Treatment Name"
                               value={selectedEnq.treatment_name}
                             />
                           </div>
-
                           <div className="col-md-4">
                             <InfoItem
                               label="Appointment Date"
@@ -1410,14 +1358,12 @@ export default function Appointments() {
                               ).toLocaleDateString("en-GB")}
                             />
                           </div>
-
                           <div className="col-md-4">
                             <InfoItem
                               label="Appointment Time"
                               value={selectedEnq.appointment_Time}
                             />
                           </div>
-
                           <div className="col-md-4">
                             <InfoItem
                               label="Status"

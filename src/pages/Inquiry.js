@@ -789,11 +789,14 @@ const handleSubmitAppointment = async () => {
     formData.append("Notes", appointmentData.Notes);
     formData.append("appointment_Date", appointmentData.appointment_Date);
     formData.append("appointment_Time", appointmentData.appointment_Time);
+    formData.append("enq_userName", appointmentData.name);
+    formData.append("enq_phoneNumber", appointmentData?.raw?.phone);
+    // formData.append("enq_country_code", appointmentData.enq_country_code);
+    formData.append("enq_email", appointmentData.email);
 
     images.forEach((file) => {
       formData.append("reports", file);
     });
-
     const res = await axios.post(
       `${baseurl}/create_enquiry_appointment/${usrFount}`,
       formData
@@ -1076,7 +1079,7 @@ const handleCloseAppointment = () => {
                               Treating In
                             </TableSortLabel>
                           </TableCell>
-                             <TableCell>
+                             {/* <TableCell>
                             <TableSortLabel
                               active={orderBy === "createdBy"}
                               direction={
@@ -1086,7 +1089,7 @@ const handleCloseAppointment = () => {
                             >
                               Created By
                             </TableSortLabel>
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "date"}
@@ -1146,7 +1149,7 @@ const handleCloseAppointment = () => {
                               </TableCell>
                               <TableCell>{info.country}</TableCell>
                               <TableCell>{info.treatingIn}</TableCell>
-                              <TableCell>{info.createdBy}</TableCell>
+                              {/* <TableCell>{info.createdBy}</TableCell> */}
                               <TableCell>
                                 {new Date(info.date).toLocaleDateString(
                                   "en-GB",

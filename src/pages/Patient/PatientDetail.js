@@ -4128,7 +4128,8 @@ function PatientDetail() {
                                                     className="viewbtn"
                                                     onClick={() =>
                                                       window.open(
-                                                        `${imageUrl}/${info.doctorReview.images[0]}`,
+                                                        `
+                                                        ${imageUrl}/${info.doctorReview.images[0]}`,
                                                         "_blank",
                                                       )
                                                     }

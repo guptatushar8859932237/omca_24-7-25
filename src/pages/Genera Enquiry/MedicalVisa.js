@@ -434,10 +434,16 @@ export default function MedicalVisa() {
                         </div>
                         <div className="col-md-4">
                           <InfoItem
-                            label="Dob"
+                            label="DOB"
                             value={new Date(
                               selectedRecord.dob,
                             ).toLocaleDateString("en-GB")}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Gender"
+                            value={selectedRecord.gender}
                           />
                         </div>
                         <div className="col-md-4">

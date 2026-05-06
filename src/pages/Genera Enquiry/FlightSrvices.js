@@ -353,6 +353,12 @@ export default function FlightSrvices() {
                             value={selectedRecord.phone}
                           />
                         </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Passport Number"
+                            value={selectedRecord.passport_number}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -680,7 +680,7 @@ useEffect(() => {
                               Date/Time
                             </TableSortLabel>
                           </TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             <TableSortLabel
                               active={orderBy === "createdBy"}
                               direction={orderBy === "createdBy" ? order : "asc"}
@@ -688,7 +688,7 @@ useEffect(() => {
                             >
                               Created By
                             </TableSortLabel>
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "country"}
@@ -812,7 +812,7 @@ useEffect(() => {
                                       hour12: true,
                                     })}
                                   </TableCell>
-                                  <TableCell>{info.createdBy}</TableCell>
+                                  {/* <TableCell>{info.createdBy}</TableCell> */}
                                   <TableCell>{info.country}</TableCell>
                                   {/* <TableCell>{info.country}</TableCell> */}
                                   {showActions === true ? (
