@@ -74,21 +74,21 @@ export default function Inquiry() {
   const [images, setImages] = useState([]);
   const [airAmbulanceData, setAirAmbulanceData] = useState([]);
   const [ambulanceData, setAmbulanceData] = useState([]);
-  const [hospitlID, setHospitlID]=useState([])
+  const [hospitlID, setHospitlID] = useState([]);
   const [openAppointment, setOpenAppointment] = useState(false);
-const [appointmentData, setAppointmentData] = useState({
-  hospital_id: "",
-  hospitalName: "",
-  health_issue: "",
-  Notes: "",
-  appointment_Date: "",
-  appointment_Time: "",
+  const [appointmentData, setAppointmentData] = useState({
+    hospital_id: "",
+    hospitalName: "",
+    health_issue: "",
+    Notes: "",
+    appointment_Date: "",
+    appointment_Time: "",
     enq_userName: "",
     user_id: "",
     enq_phoneNumber: "",
     enq_email: "",
-  enquiryId: "",
-});
+    enquiryId: "",
+  });
   const [treatmentData, setTreatmentData] = useState([]);
   useEffect(() => {
     dispatch(testForms());
@@ -97,8 +97,8 @@ const [appointmentData, setAppointmentData] = useState({
     getUserId();
   }, []);
   useEffect(() => {
-  setHospitalFunction();
-}, []);
+    setHospitalFunction();
+  }, []);
   const handleNoteChange = (e) => {
     setNote(e.target.value);
   };
@@ -128,72 +128,68 @@ const [appointmentData, setAppointmentData] = useState({
   const filteredTabs = tabsConfig.filter((tab) =>
     permissions.includes(tab.permission),
   );
-const handleNotesdataqw = async (e) => {
-  e.preventDefault();
-  if (!note || !recommend || images.length === 0) {
-    return Swal.fire("Error", "All fields are required", "error");
-  }
-  try {
-    let response;
-    if (tabValue === 0) {
-      const enquiryPayload = new FormData();
-      enquiryPayload.append("review_notes", note);
-      enquiryPayload.append("Recommendations", recommend); // ⚠️ old API key
-      enquiryPayload.append("enquiryId", enqId);
-      enquiryPayload.append("user_type", statusRole);
-      images.forEach((img) => {
-        enquiryPayload.append("images", img);
-      });
-      console.log("OLD API PAYLOAD →", [...enquiryPayload.entries()]);
-      response = await axios.post(
-        `${baseurl}addDoctorReview`,
-        enquiryPayload
-      );
+  const handleNotesdataqw = async (e) => {
+    e.preventDefault();
+    if (!note || !recommend || images.length === 0) {
+      return Swal.fire("Error", "All fields are required", "error");
     }
-    else {
-      const newPayload = new FormData();
-      const typeMap = {
-        1: "AmbulanceRequest",
-        2: "AirAmbulance",
-        3: "PatientQuery",
-      };
-      newPayload.append("review_notes", note);
-      newPayload.append("enquiry_id", tratmentenqId);
-      newPayload.append("recommendations", recommend);
-      newPayload.append("user_type", statusRole);
-      newPayload.append("reference_id", enqId);
-      newPayload.append("model_type", typeMap[tabValue]);
-      images.forEach((img) => {
-        newPayload.append("images[]", img);
-      });
-      console.log("NEW API PAYLOAD →", [...newPayload.entries()]);
-      response = await axios.post(
-        `${AdminBaseUrl}review/store`,
-        newPayload
-      );
-    }
-    if (response?.data?.success) {
-      handleClose4();
-      Swal.fire("Success", "Doctor Review Added Successfully", "success");
-      setNote("");
-      setRecommend("");
-      setImages([]);
-    }
-  } catch (error) {
-  console.log(error);
+    try {
+      let response;
+      if (tabValue === 0) {
+        const enquiryPayload = new FormData();
+        enquiryPayload.append("review_notes", note);
+        enquiryPayload.append("Recommendations", recommend); // ⚠️ old API key
+        enquiryPayload.append("enquiryId", enqId);
+        enquiryPayload.append("user_type", statusRole);
+        images.forEach((img) => {
+          enquiryPayload.append("images", img);
+        });
+        console.log("OLD API PAYLOAD →", [...enquiryPayload.entries()]);
+        response = await axios.post(
+          `${baseurl}addDoctorReview`,
+          enquiryPayload,
+        );
+      } else {
+        const newPayload = new FormData();
+        const typeMap = {
+          1: "AmbulanceRequest",
+          2: "AirAmbulance",
+          3: "PatientQuery",
+        };
+        newPayload.append("review_notes", note);
+        newPayload.append("enquiry_id", tratmentenqId);
+        newPayload.append("recommendations", recommend);
+        newPayload.append("user_type", statusRole);
+        newPayload.append("reference_id", enqId);
+        newPayload.append("model_type", typeMap[tabValue]);
+        images.forEach((img) => {
+          newPayload.append("images[]", img);
+        });
+        console.log("NEW API PAYLOAD →", [...newPayload.entries()]);
+        response = await axios.post(`${AdminBaseUrl}review/store`, newPayload);
+      }
+      if (response?.data?.success) {
+        handleClose4();
+        Swal.fire("Success", "Doctor Review Added Successfully", "success");
+        setNote("");
+        setRecommend("");
+        setImages([]);
+      }
+    } catch (error) {
+      console.log(error);
 
-  let message = "Something went wrong";
+      let message = "Something went wrong";
 
-  if (error.response) {
-    message = error.response.data?.message || message;
-  } else if (error.request) {
-    message = "No response from server";
-  } else {
-    message = error.message;
-  }
-  Swal.fire("Error", message, "error");
-}
-};
+      if (error.response) {
+        message = error.response.data?.message || message;
+      } else if (error.request) {
+        message = "No response from server";
+      } else {
+        message = error.message;
+      }
+      Swal.fire("Error", message, "error");
+    }
+  };
   const statusRole = localStorage.getItem("Role");
   const get3tabdata = async (datauserId, getcountry, rolestatus) => {
     const payload = {
@@ -244,10 +240,10 @@ const handleNotesdataqw = async (e) => {
     setEnqId(enq);
   };
   const handleClickOpen4 = (e, enq, info) => {
-    console.log(info)
+    console.log(info);
     setOpen4(true);
     setEnqId(enq);
-    setTratmentenqId(info.id)
+    setTratmentenqId(info.id);
   };
   const handleClickOpen3 = (e) => {
     setOpen3(true);
@@ -286,42 +282,42 @@ const handleNotesdataqw = async (e) => {
       },
     });
   };
- const handleDeleteExternal = async (row) => {
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "Do you want to delete this request?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, Delete",
-  });
-  if (!result.isConfirmed) return;
-  try {
-    const payload = {
-      id: row.raw?.id || row.enquiryId, // ✅ safe id
-      model:
-        tabValue === 1
-          ? "AmbulanceRequest"
-          : tabValue === 2
-          ? "AirAmbulance"
-          : tabValue === 3
-          ? "PatientQuery"
-          : "",
-      status: "Deleted",
-    };
-    const res = await axios.post(
-      `${AdminBaseUrl}update_user_request_status`,
-      payload
-    );
-    if (res?.data?.success) {
-      Swal.fire("Deleted!", "Record deleted successfully", "success");
-      await dispatch(testForms());   // external data
-      await getUserId();            // tab data reload
+  const handleDeleteExternal = async (row) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this request?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+    });
+    if (!result.isConfirmed) return;
+    try {
+      const payload = {
+        id: row.raw?.id || row.enquiryId, // ✅ safe id
+        model:
+          tabValue === 1
+            ? "AmbulanceRequest"
+            : tabValue === 2
+              ? "AirAmbulance"
+              : tabValue === 3
+                ? "PatientQuery"
+                : "",
+        status: "Deleted",
+      };
+      const res = await axios.post(
+        `${AdminBaseUrl}update_user_request_status`,
+        payload,
+      );
+      if (res?.data?.success) {
+        Swal.fire("Deleted!", "Record deleted successfully", "success");
+        await dispatch(testForms()); // external data
+        await getUserId(); // tab data reload
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Error!", "Something went wrong", "error");
     }
-  } catch (error) {
-    console.log(error);
-    Swal.fire("Error!", "Something went wrong", "error");
-  }
-};
+  };
   const ViewDetail = (e, type, info) => {
     console.log(e, type, info);
     const routeMap = {
@@ -343,7 +339,7 @@ const handleNotesdataqw = async (e) => {
     });
   };
   const sendToPatientAPI = async (type, data) => {
-    console.log(data)
+    console.log(data);
     try {
       const response = await axios.post(`${baseurl}createPatientFromExternal`, {
         enquiry_type: type,
@@ -382,7 +378,7 @@ const handleNotesdataqw = async (e) => {
         data,
       );
       dispatch(testForms());
-        await get3tabdata(datauserId, getcountries, roleStatuses);
+      await get3tabdata(datauserId, getcountries, roleStatuses);
       if (response?.data?.success) {
         // Swal.fire("Success", "Status Updated Successfully", "success");
       }
@@ -391,12 +387,12 @@ const handleNotesdataqw = async (e) => {
       Swal.fire("Error", "Something went wrong", "error");
     }
   };
-const handleTabChange = (event, newValue) => {
-  setTabValue(newValue);
-  localStorage.setItem("tabenquiry", newValue);
-  setRows([]);
-  setSearchApiData([]);
-};
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+    localStorage.setItem("tabenquiry", newValue);
+    setRows([]);
+    setSearchApiData([]);
+  };
   const handleChange = async (event, id, tabValue, data) => {
     console.log(event, id, tabValue, data);
     const { value } = event.target;
@@ -411,7 +407,7 @@ const handleTabChange = (event, newValue) => {
     if (!result.isConfirmed) return;
     if (tabValue === 0) {
       if (status === 1) {
-        console.log(data)
+        console.log(data);
         try {
           const payload = {
             full_name: data.raw.name,
@@ -420,8 +416,12 @@ const handleTabChange = (event, newValue) => {
             phone: data.raw.emergency_contact,
             passport_number: data.raw.passport_num,
             user_type: 2,
-            doctor_review:data.raw.doctorReview
-        
+            doctor_review: data.raw.doctorReview,
+            age: data.raw.age,
+            address: data.raw.address,
+            town: data.raw.town,
+            country: data.raw.country,
+            passport_number: data.raw.passport_num,
           };
           const response = await axios.post(
             `https://omcacrm.com/omca/api/user_registration`,
@@ -705,18 +705,14 @@ const handleTabChange = (event, newValue) => {
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && orderDirection === "asc";
     const direction = isAsc ? "desc" : "asc";
-
     setOrderDirection(direction);
     setOrderBy(property);
-
     const sortedData = [...rows].sort((a, b) => {
       let valA = a[property];
       let valB = b[property];
-
       // ✅ Handle null/undefined
       if (!valA) valA = "";
       if (!valB) valB = "";
-
       // ✅ Special handling for DATE
       if (property === "date") {
         return direction === "asc"
@@ -737,143 +733,126 @@ const handleTabChange = (event, newValue) => {
     setRows(sortedData);
   };
   useEffect(() => {
-  let filtered = [];
-
-  if (tabValue === 0 && Enquiry?.length) {
-    filtered = normalizeData(Enquiry, "enquiry");
-  }
-
-  if (tabValue === 1 && ambulanceData?.length) {
-    filtered = normalizeData(ambulanceData, "ambulance");
-  }
-
-  if (tabValue === 2 && airAmbulanceData?.length) {
-    filtered = normalizeData(airAmbulanceData, "air");
-  }
-
-  if (tabValue === 3 && treatmentData?.length) {
-    filtered = normalizeData(treatmentData, "treatment");
-  }
-
-  setRows(filtered);
-  setSearchApiData(filtered);
-}, [tabValue, Enquiry, ambulanceData, airAmbulanceData, treatmentData]);
-
-const handleSubmitAppointment = async () => {
-  const {
-    appointment_Date,
-    appointment_Time,
-    Notes,
-  } = appointmentData;
-
-  // ✅ Field-wise validation (better UX)
-  if (!appointment_Date) {
-    return Swal.fire("Error", "Please select appointment date", "error");
-  }
-
-  if (!appointment_Time) {
-    return Swal.fire("Error", "Please select appointment time", "error");
-  }
-
-  if (!Notes) {
-    return Swal.fire("Error", "Please enter notes", "error");
-  }
-
-  if (images.length === 0) {
-    return Swal.fire("Error", "Please upload at least one report", "error");
-  }
-console.log(appointmentData)
-  try {
-    const formData = new FormData();
-
-    formData.append("enquiryId", appointmentData.enquiry_id);
-    formData.append("hospital_id", appointmentData.hospital_id);
-    formData.append("hospitalName", appointmentData.hospitalName);
-    formData.append("health_issue", appointmentData.health_issue);
-    formData.append("Notes", appointmentData.Notes);
-    formData.append("appointment_Date", appointmentData.appointment_Date);
-    formData.append("appointment_Time", appointmentData.appointment_Time);
-    formData.append("enq_userName", appointmentData.enq_userName);
-    formData.append("enq_phoneNumber", appointmentData?.enq_phoneNumber);
-    formData.append("user_id", appointmentData?.user_id);
-    // formData.append("enq_country_code", appointmentData.enq_country_code);
-    formData.append("enq_email", appointmentData.enq_email);
-    images.forEach((file) => {
-      formData.append("reports", file);
-    });
-    const res = await axios.post(
-      `${baseurl}/create_enquiry_appointment/${usrFount}`,
-      formData
-    );
-    if (res.data.success) {
-      Swal.fire("Success", "Appointment Created", "success");
-      handleCloseAppointment();
+    let filtered = [];
+    if (tabValue === 0 && Enquiry?.length) {
+      filtered = normalizeData(Enquiry, "enquiry");
     }
-  } catch (err) {
-    console.log(err);
-    Swal.fire("Error", "Something went wrong", "error");
-  }
-};
+    if (tabValue === 1 && ambulanceData?.length) {
+      filtered = normalizeData(ambulanceData, "ambulance");
+    }
+    if (tabValue === 2 && airAmbulanceData?.length) {
+      filtered = normalizeData(airAmbulanceData, "air");
+    }
+    if (tabValue === 3 && treatmentData?.length) {
+      filtered = normalizeData(treatmentData, "treatment");
+    }
+    setRows(filtered);
+    setSearchApiData(filtered);
+  }, [tabValue, Enquiry, ambulanceData, airAmbulanceData, treatmentData]);
+  const handleSubmitAppointment = async () => {
+    const { appointment_Date, appointment_Time, Notes } = appointmentData;
+    if (!appointment_Date) {
+      return Swal.fire("Error", "Please select appointment date", "error");
+    }
+    if (!appointment_Time) {
+      return Swal.fire("Error", "Please select appointment time", "error");
+    }
+    if (!Notes) {
+      return Swal.fire("Error", "Please enter notes", "error");
+    }
+    if (images.length === 0) {
+      return Swal.fire("Error", "Please upload at least one report", "error");
+    }
+    console.log(appointmentData);
+    try {
+      const formData = new FormData();
+      formData.append("enquiryId", appointmentData.enquiry_id);
+      formData.append("hospital_id", appointmentData.hospital_id);
+      formData.append("hospitalName", appointmentData.hospitalName);
+      formData.append("health_issue", appointmentData.health_issue);
+      formData.append("Notes", appointmentData.Notes);
+      formData.append("appointment_Date", appointmentData.appointment_Date);
+      formData.append("appointment_Time", appointmentData.appointment_Time);
+      formData.append("enq_userName", appointmentData.enq_userName);
+      formData.append("enq_phoneNumber", appointmentData?.enq_phoneNumber);
+      formData.append("user_id", appointmentData?.user_id);
+      // formData.append("enq_country_code", appointmentData.enq_country_code);
+      formData.append("enq_email", appointmentData.enq_email);
+      images.forEach((file) => {
+        formData.append("reports", file);
+      });
+      const res = await axios.post(
+        `${baseurl}/create_enquiry_appointment/${usrFount}`,
+        formData,
+      );
+      if (res.data.success) {
+        Swal.fire("Success", "Appointment Created", "success");
+        handleCloseAppointment();
+      }
+    } catch (err) {
+      console.log(err);
+      Swal.fire("Error", "Something went wrong", "error");
+    }
+  };
   const usrFount = localStorage.getItem("_id");
-// const handleSubmitAppointment = async () => {
-//   const { patient_name, doctor_name, date, time } = appointmentData;
+  // const handleSubmitAppointment = async () => {
+  //   const { patient_name, doctor_name, date, time } = appointmentData;
 
-//   if (!patient_name || !doctor_name || !date || !time) {
-//     return Swal.fire("Error", "All fields are required", "error");
-//   }
+  //   if (!patient_name || !doctor_name || !date || !time) {
+  //     return Swal.fire("Error", "All fields are required", "error");
+  //   }
 
-//   try {
-//     const res = await axios.post(`${AdminBaseUrl}appointment/store`, appointmentData);
+  //   try {
+  //     const res = await axios.post(`${AdminBaseUrl}appointment/store`, appointmentData);
 
-//     if (res?.data?.success) {
-//       Swal.fire("Success", "Appointment added successfully", "success");
-//       handleCloseAppointment();
-//     }
-//   } catch (error) {
-//     Swal.fire("Error", "Something went wrong", "error");
-//   }
-// };
-const handleAppointmentChange = (e) => {
-  const { name, value } = e.target;
-  setAppointmentData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-};
-const handleOpenAppointment = (info) => {
-  console.log(info)
-  setAppointmentData({
-    hospital_id: "",
-    hospitalName: "",
-    health_issue: "",
-    Notes: "",
-    appointment_Date: "",
-    appointment_Time: "",
-    enq_userName: info.name,
-    enq_phoneNumber: info.raw.phone,
-    user_id: info.raw.user_id,
-    enq_email: info.email,
-    // appointment_Time: "",
-    enquiry_id: info.enquiryId, // ✅ IMPORTANT
-  });
-  setOpenAppointment(true);
-};
-const handleCloseAppointment = () => {
-  setOpenAppointment(false);
-  setImages([]); // 👈 add this
-  setAppointmentData({
-    patient_name: "",
-    doctor_name: "",
-    date: "",
-    time: "",
-    notes: "",
+  //     if (res?.data?.success) {
+  //       Swal.fire("Success", "Appointment added successfully", "success");
+  //       handleCloseAppointment();
+  //     }
+  //   } catch (error) {
+  //     Swal.fire("Error", "Something went wrong", "error");
+  //   }
+  // };
+  const handleAppointmentChange = (e) => {
+    const { name, value } = e.target;
+    setAppointmentData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const handleOpenAppointment = (info) => {
+    console.log(info);
+    setAppointmentData({
+      hospital_id: "",
+      hospitalName: "",
+      health_issue: "",
+      Notes: "",
+      appointment_Date: "",
+      appointment_Time: "",
+      enq_userName: info.name,
+      enq_phoneNumber: info.raw.phone,
+      user_id: info.raw.user_id,
+      enq_email: info.email,
+      enquiry_id: info.enquiryId,
+    });
+    setOpenAppointment(true);
+  };
+  const handleCloseAppointment = () => {
+    setOpenAppointment(false);
+    setImages([]);
+    setAppointmentData({
+      patient_name: "",
+      doctor_name: "",
+      date: "",
+      time: "",
+      notes: "",
       user_id: "",
       enq_userName: "",
-    enq_phoneNumber: "",
-    enq_email: "",
-  });
-};
- const normalizeData = (data, type) => {
+      enq_phoneNumber: "",
+      enq_email: "",
+    });
+  };
+  const normalizeData = (data, type) => {
     return data.map((item) => ({
       enquiryId: item.enquiryId || item.id || 0,
       name: item.name || item.first_name || "",
@@ -889,22 +868,18 @@ const handleCloseAppointment = () => {
       id: item.id,
       raw: item,
       enq_userName: item.name,
-      // enq_phoneNumber: item.raw.phone,
       enq_email: item.email,
-
     }));
   };
-   const setHospitalFunction = async () => {
-     
-      try {
-        const response = await axios.post(
-          `${AdminBaseUrl}hospital_list`);
-        if (response.data.success) {
-          console.log(response.data.data)
-          setHospitalList(response.data.data);
-        }
-      } catch (error) {}
-    };
+  const setHospitalFunction = async () => {
+    try {
+      const response = await axios.post(`${AdminBaseUrl}hospital_list`);
+      if (response.data.success) {
+        console.log(response.data.data);
+        setHospitalList(response.data.data);
+      }
+    } catch (error) {}
+  };
   const getUserId = async () => {
     try {
       const response = await axios.get(`${baseurl}get_patient_user_ids`, {
@@ -933,11 +908,11 @@ const handleCloseAppointment = () => {
       <div className="page-wrapper">
         <div className="content">
           <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
-           <Tabs value={tabValue} onChange={handleTabChange}>
-  {filteredTabs.map((tab) => (
-    <Tab key={tab.value} label={tab.label} value={tab.value} />
-  ))}
-</Tabs>
+            <Tabs value={tabValue} onChange={handleTabChange}>
+              {filteredTabs.map((tab) => (
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
+              ))}
+            </Tabs>
           </Box>
           <div className="row">
             <div className="col-md-12">
@@ -1068,7 +1043,7 @@ const handleCloseAppointment = () => {
                               Name
                             </TableSortLabel>
                           </TableCell>
-                          
+
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "country"}
@@ -1080,7 +1055,7 @@ const handleCloseAppointment = () => {
                               Country
                             </TableSortLabel>
                           </TableCell>
-                       
+
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "treatingIn"}
@@ -1094,7 +1069,7 @@ const handleCloseAppointment = () => {
                               Treating In
                             </TableSortLabel>
                           </TableCell>
-                             {/* <TableCell>
+                          {/* <TableCell>
                             <TableSortLabel
                               active={orderBy === "createdBy"}
                               direction={
@@ -1119,31 +1094,37 @@ const handleCloseAppointment = () => {
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "Enquiry_status"}
-                              direction={orderBy === "Enquiry_status" ? orderDirection : "asc"}
-                              onClick={() => handleRequestSort("Enquiry_status")}
+                              direction={
+                                orderBy === "Enquiry_status"
+                                  ? orderDirection
+                                  : "asc"
+                              }
+                              onClick={() =>
+                                handleRequestSort("Enquiry_status")
+                              }
                             >
                               Status
                             </TableSortLabel>
                           </TableCell>
                           {/* <TableCell>Status</TableCell> */}
                           <TableCell>Actions</TableCell>
-                              <TableCell>Notes</TableCell>
+                          <TableCell>Notes</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage,
-                          )
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
                         ).length > 0 ? (
                           (pdfRowLimit
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage,
+                              )
                           ).map((info, i) => (
                             <TableRow
                               role="checkbox"
@@ -1160,10 +1141,16 @@ const handleCloseAppointment = () => {
                                 style={{ cursor: "pointer" }}
                                 onClick={(e) => ViewDetail(e, tabValue, info)}
                               >
-                                {info.name}
+                               {info?.name?.length > 10
+    ? info.name.slice(0, 10) + "..."
+    : info.name}
                               </TableCell>
-                              <TableCell>{info.country}</TableCell>
-                              <TableCell>{info.treatingIn}</TableCell>
+                              <TableCell> {info?.country?.length > 10
+    ? info.country.slice(0, 10) + "..."
+    : info.country}</TableCell>
+                              <TableCell> {info?.treatingIn?.length > 10
+    ? info.treatingIn.slice(0, 10) + "..."
+    : info.treatingIn}</TableCell>
                               {/* <TableCell>{info.createdBy}</TableCell> */}
                               <TableCell>
                                 {new Date(info.date).toLocaleDateString(
@@ -1200,7 +1187,7 @@ const handleCloseAppointment = () => {
                                           : info.Enquiry_status === "Hold"
                                             ? "2"
                                             : info.Enquiry_status ===
-                                              "Follow-Up"
+                                                "Follow-Up"
                                               ? "3"
                                               : info.Enquiry_status === "Dead"
                                                 ? "4"
@@ -1241,11 +1228,11 @@ const handleCloseAppointment = () => {
                                     ></i>
                                     {localStorage.getItem("Role") ===
                                       "Admin" && (
-                                        <i
-                                          className="fa-solid fa-trash"
-                                          onClick={() => handledelete(info)}
-                                        ></i>
-                                      )}
+                                      <i
+                                        className="fa-solid fa-trash"
+                                        onClick={() => handledelete(info)}
+                                      ></i>
+                                    )}
                                   </>
                                 ) : (
                                   <i
@@ -1254,29 +1241,32 @@ const handleCloseAppointment = () => {
                                   ></i>
                                 )}
                               </TableCell>
-                                  <TableCell className="action-icon">
-                                  {tabValue === 0 ? (
-                                <>
+                              <TableCell className="action-icon">
+                                {tabValue === 0 ? (
+                                  <>
                                     <i
                                       className="fa-solid fa-notes-medical"
                                       onClick={(e) =>
                                         handleClickOpen2(e, info.enquiryId)
                                       }
                                     ></i>
-                                    </>):("")}
-                                    <i
-                                      className="fa-solid fa-stethoscope"
-                                      onClick={(e) =>
-                                        handleClickOpen4(e, info.enquiryId,info)
-                                      }
-                                    ></i>
-                                    <i
-  className="fa-solid fa-calendar-plus"
-  title="Add Appointment"
-  style={{cursor:"pointer"}}
-  onClick={() => handleOpenAppointment(info)}
-></i>
-                                  </TableCell>
+                                  </>
+                                ) : (
+                                  ""
+                                )}
+                                <i
+                                  className="fa-solid fa-stethoscope"
+                                  onClick={(e) =>
+                                    handleClickOpen4(e, info.enquiryId, info)
+                                  }
+                                ></i>
+                                <i
+                                  className="fa-solid fa-calendar-plus"
+                                  title="Add Appointment"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => handleOpenAppointment(info)}
+                                ></i>
+                              </TableCell>
                             </TableRow>
                           ))
                         ) : (
@@ -1333,7 +1323,7 @@ const handleCloseAppointment = () => {
           </div>
         </div>
       </div>
-       <React.Fragment>
+      <React.Fragment>
         <Dialog
           fullWidth={fullWidth}
           maxWidth={maxWidth}
@@ -1392,128 +1382,137 @@ const handleCloseAppointment = () => {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-       <React.Fragment>
-       <Dialog open={openAppointment} onClose={handleCloseAppointment} fullWidth maxWidth="sm">
-  <div className="main-card-header">
-    <h6>Add Appointment</h6>
-    <div className="cross-icon" onClick={handleCloseAppointment}>
-      <i className="fa-solid fa-xmark"></i>
-    </div>
-  </div>
+      <React.Fragment>
+        <Dialog
+          open={openAppointment}
+          onClose={handleCloseAppointment}
+          fullWidth
+          maxWidth="sm"
+        >
+          <div className="main-card-header">
+            <h6>Add Appointment</h6>
+            <div className="cross-icon" onClick={handleCloseAppointment}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
 
-  <DialogContent  sx={{
-    maxHeight: "70vh",   // 👈 height limit
-    overflowY: "auto",   // 👈 scroll enable
-  }}>
-    <Box className="contact-form">
-              
-      <div className="field-set mb-2">
-    
-<FormControl fullWidth size="small">
-  <label>Select Hospital</label>
-  <Select
-    value={appointmentData.hospital_id || ""}
-    onChange={(e) => {
-      const selectedId = e.target.value;
+          <DialogContent
+            sx={{
+              maxHeight: "70vh", // 👈 height limit
+              overflowY: "auto", // 👈 scroll enable
+            }}
+          >
+            <Box className="contact-form">
+              <div className="field-set mb-2">
+                <FormControl fullWidth size="small">
+                  <label>Select Hospital</label>
+                  <Select
+                    value={appointmentData.hospital_id || ""}
+                    onChange={(e) => {
+                      const selectedId = e.target.value;
 
-      const selectedHospital = hospitalList.find(
-        (item) => item.id === selectedId
-      );
+                      const selectedHospital = hospitalList.find(
+                        (item) => item.id === selectedId,
+                      );
 
-      setAppointmentData((prev) => ({
-        ...prev,
-        hospital_id: selectedId,
-        hospitalName: selectedHospital?.name || "",
-      }));
-    }}
-  >
-    {hospitalList.map((item) => (
-      <MenuItem key={item.id} value={item.id}>
-        {item.name}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
-      </div>
+                      setAppointmentData((prev) => ({
+                        ...prev,
+                        hospital_id: selectedId,
+                        hospitalName: selectedHospital?.name || "",
+                      }));
+                    }}
+                  >
+                    {hospitalList.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
 
-      <div className="field-set">
-        <label>Health Issue</label>
-        <input
-          type="text"
-          name="health_issue"
-          className="form-control"
-          value={appointmentData.health_issue}
-          onChange={handleAppointmentChange}
-        />
-      </div>
+              <div className="field-set">
+                <label>Health Issue</label>
+                <input
+                  type="text"
+                  name="health_issue"
+                  className="form-control"
+                  value={appointmentData.health_issue}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
 
-      <div className="field-set">
-        <label>Date</label><span className="text-danger">*</span>
-        <input
-          type="date"
-          name="appointment_Date"
-          className="form-control"
-          value={appointmentData.appointment_Date}
-          onChange={handleAppointmentChange}
-        />
-      </div>
+              <div className="field-set">
+                <label>Date</label>
+                <span className="text-danger">*</span>
+                <input
+                  type="date"
+                  name="appointment_Date"
+                  className="form-control"
+                  value={appointmentData.appointment_Date}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
 
-      <div className="field-set">
-        <label>Time</label><span className="text-danger">*</span>
-        <input
-          type="time"
-          name="appointment_Time"
-          className="form-control"
-          value={appointmentData.appointment_Time}
-          onChange={handleAppointmentChange}
-        />
-      </div>
+              <div className="field-set">
+                <label>Time</label>
+                <span className="text-danger">*</span>
+                <input
+                  type="time"
+                  name="appointment_Time"
+                  className="form-control"
+                  value={appointmentData.appointment_Time}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
 
-      <div className="field-set">
-        <label>Notes</label><span className="text-danger">*</span>
-        <textarea
-          name="Notes"
-          className="form-control"
-          value={appointmentData.Notes}
-          onChange={handleAppointmentChange}
-        />
-      </div>
-<div className="field-set">
-  <label>
-    Upload Reports / Documents <span className="text-danger">*</span>
-  </label>
+              <div className="field-set">
+                <label>Notes</label>
+                <span className="text-danger">*</span>
+                <textarea
+                  name="Notes"
+                  className="form-control"
+                  value={appointmentData.Notes}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
+              <div className="field-set">
+                <label>
+                  Upload Reports / Documents{" "}
+                  <span className="text-danger">*</span>
+                </label>
 
-  <input
-    type="file"
-    className="form-control"
-    multiple
-    onChange={(e) => {
-      const files = Array.from(e.target.files);
-      setImages(files);
-    }}
-  />
+                <input
+                  type="file"
+                  className="form-control"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files);
+                    setImages(files);
+                  }}
+                />
 
-  {/* Preview */}
-  {images.length > 0 && (
-    <div style={{ marginTop: "10px" }}>
-      {images.map((file, index) => (
-        <div key={index} style={{ fontSize: "12px" }}>
-          📄 {file.name}
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-    </Box>
-  </DialogContent>
+                {/* Preview */}
+                {images.length > 0 && (
+                  <div style={{ marginTop: "10px" }}>
+                    {images.map((file, index) => (
+                      <div key={index} style={{ fontSize: "12px" }}>
+                        📄 {file.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Box>
+          </DialogContent>
 
-  <DialogActions>
-    <Button onClick={handleCloseAppointment}>Cancel</Button>
-    <Button variant="contained" onClick={handleSubmitAppointment}>
-      Submit
-    </Button>
-  </DialogActions>
-</Dialog>
+          <DialogActions>
+            <Button onClick={handleCloseAppointment}>Cancel</Button>
+            <Button variant="contained" onClick={handleSubmitAppointment}>
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
       </React.Fragment>
       <React.Fragment>
         <Dialog
@@ -1757,3 +1756,5 @@ const handleCloseAppointment = () => {
     </>
   );
 }
+
+// rest and spread operator
