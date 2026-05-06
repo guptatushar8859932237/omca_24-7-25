@@ -83,6 +83,10 @@ const [appointmentData, setAppointmentData] = useState({
   Notes: "",
   appointment_Date: "",
   appointment_Time: "",
+    enq_userName: "",
+    user_id: "",
+    enq_phoneNumber: "",
+    enq_email: "",
   enquiryId: "",
 });
   const [treatmentData, setTreatmentData] = useState([]);
@@ -778,7 +782,7 @@ const handleSubmitAppointment = async () => {
   if (images.length === 0) {
     return Swal.fire("Error", "Please upload at least one report", "error");
   }
-
+console.log(appointmentData)
   try {
     const formData = new FormData();
 
@@ -789,11 +793,11 @@ const handleSubmitAppointment = async () => {
     formData.append("Notes", appointmentData.Notes);
     formData.append("appointment_Date", appointmentData.appointment_Date);
     formData.append("appointment_Time", appointmentData.appointment_Time);
-    formData.append("enq_userName", appointmentData.name);
-    formData.append("enq_phoneNumber", appointmentData?.raw?.phone);
+    formData.append("enq_userName", appointmentData.enq_userName);
+    formData.append("enq_phoneNumber", appointmentData?.enq_phoneNumber);
+    formData.append("user_id", appointmentData?.user_id);
     // formData.append("enq_country_code", appointmentData.enq_country_code);
-    formData.append("enq_email", appointmentData.email);
-
+    formData.append("enq_email", appointmentData.enq_email);
     images.forEach((file) => {
       formData.append("reports", file);
     });
@@ -801,7 +805,6 @@ const handleSubmitAppointment = async () => {
       `${baseurl}/create_enquiry_appointment/${usrFount}`,
       formData
     );
-
     if (res.data.success) {
       Swal.fire("Success", "Appointment Created", "success");
       handleCloseAppointment();
@@ -846,6 +849,11 @@ const handleOpenAppointment = (info) => {
     Notes: "",
     appointment_Date: "",
     appointment_Time: "",
+    enq_userName: info.name,
+    enq_phoneNumber: info.raw.phone,
+    user_id: info.raw.user_id,
+    enq_email: info.email,
+    // appointment_Time: "",
     enquiry_id: info.enquiryId, // ✅ IMPORTANT
   });
   setOpenAppointment(true);
@@ -859,6 +867,10 @@ const handleCloseAppointment = () => {
     date: "",
     time: "",
     notes: "",
+      user_id: "",
+      enq_userName: "",
+    enq_phoneNumber: "",
+    enq_email: "",
   });
 };
  const normalizeData = (data, type) => {
@@ -876,6 +888,9 @@ const handleCloseAppointment = () => {
       date: item.createdAt || item.created_at || "",
       id: item.id,
       raw: item,
+      enq_userName: item.name,
+      // enq_phoneNumber: item.raw.phone,
+      enq_email: item.email,
 
     }));
   };
