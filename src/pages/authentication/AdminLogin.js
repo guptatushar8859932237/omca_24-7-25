@@ -25,53 +25,27 @@ export function AdminLogin(props) {
     password: Yup.string().required("Required").oneOf([Yup.ref('password'), null]).max(20, 'Passwords should not exceed 20 characters.'),
   });
   useEffect(() => {
-  if (user) {
-    const permissions = user?.permissions || [];
-
-    Swal.fire({
-      title: "Login successful",
-      text: `Welcome, ${user.details.role || "Admin"}!`,
-      icon: "success",
-    });
-
-    localStorage.setItem("email", user.details.email);
-    localStorage.setItem("_id", user.details._id);
-    localStorage.setItem("token", user.token);
-    localStorage.setItem("loginTime", user.loginTime);
-    localStorage.setItem("token_expire_time", user.token_expire_time);
-
-    localStorage.setItem("permissionArray1", JSON.stringify(permissions));
-    localStorage.setItem("permissionArray", user.permissions);
-
-    localStorage.setItem("Role", user.details.role);
-    localStorage.setItem("name", user.details.name);
-
-    // ✅ SIMPLE FIX
-    navigate(permissions?.[0] || "/Admin/no-permission");
-  }
-}, [user, navigate]);
-//   useEffect(() => {
-//     if (user) {
-//       Swal.fire({
-//         title: "Login successful",
-//         text: `Welcome, ${user.details.role || "Admin"}!`,
-//         icon: "success",
-//       });
-//       localStorage.setItem("email", user.details.email);
-//       localStorage.setItem("_id", user.details._id);
-//       localStorage.setItem("token", user.token);
-//       localStorage.setItem("loginTime", user.loginTime);
-//       localStorage.setItem("token_expire_time", user.token_expire_time);
-//       localStorage.setItem("permissionArray", user.permissions);
-//       localStorage.setItem("Role", user.details.role);
-//       localStorage.setItem("name", user.details.name);
-//       if (user?.permissions?.includes("/Dashboard")) {
-//   navigate("/Dashboard");
-// } else {
-//   navigate("/Admin/Inquiry");
-// }
-//     }
-//   }, [user, navigate]);
+    if (user) {
+      Swal.fire({
+        title: "Login successful",
+        text: `Welcome, ${user.details.role || "Admin"}!`,
+        icon: "success",
+      });
+      localStorage.setItem("email", user.details.email);
+      localStorage.setItem("_id", user.details._id);
+      localStorage.setItem("token", user.token);
+      localStorage.setItem("loginTime", user.loginTime);
+      localStorage.setItem("token_expire_time", user.token_expire_time);
+      localStorage.setItem("permissionArray", user.permissions);
+      localStorage.setItem("Role", user.details.role);
+      localStorage.setItem("name", user.details.name);
+      if (user?.permissions?.includes("/Dashboard")) {
+  navigate("/Dashboard");
+} else {
+  navigate("/Admin/Inquiry");
+}
+    }
+  }, [user, navigate]);
 console.log(localStorage.getItem("permissionArray"))
   return (
     <div className="main-wrapper account-wrapper" style={{ minHeight: "100vh" }}>
