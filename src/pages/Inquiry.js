@@ -1141,16 +1141,22 @@ export default function Inquiry() {
                                 style={{ cursor: "pointer" }}
                                 onClick={(e) => ViewDetail(e, tabValue, info)}
                               >
-                               {info?.name?.length > 10
-    ? info.name.slice(0, 10) + "..."
-    : info.name}
+                                {info?.name?.length > 10
+                                  ? info.name.slice(0, 10) + "..."
+                                  : info.name}
                               </TableCell>
-                              <TableCell> {info?.country?.length > 10
-    ? info.country.slice(0, 10) + "..."
-    : info.country}</TableCell>
-                              <TableCell> {info?.treatingIn?.length > 10
-    ? info.treatingIn.slice(0, 10) + "..."
-    : info.treatingIn}</TableCell>
+                              <TableCell>
+                                {" "}
+                                {info?.country?.length > 10
+                                  ? info.country.slice(0, 10) + "..."
+                                  : info.country}
+                              </TableCell>
+                              <TableCell>
+                                {" "}
+                                {info?.treatingIn?.length > 10
+                                  ? info.treatingIn.slice(0, 10) + "..."
+                                  : info.treatingIn}
+                              </TableCell>
                               {/* <TableCell>{info.createdBy}</TableCell> */}
                               <TableCell>
                                 {new Date(info.date).toLocaleDateString(

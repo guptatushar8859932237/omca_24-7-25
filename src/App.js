@@ -64,6 +64,7 @@ import Airambulanceview from "./pages/Enquiry/Airambulanceview";
 import Medicalescortservice from "./pages/Enquiry/Medicalescortservice";
 import GerGeneraalEnquiry from "./pages/Genera Enquiry/GerGeneralEnquiry"
 import Roles from "./pages/Roles/Roles";
+import Nopermission from "./pages/Nopermission";
 function App() {
   console.log("22/04/25");
   return (
@@ -82,6 +83,7 @@ function App() {
             />
             <Route path="/Admin" element={<Protected Component={Main} />}>
               <Route index path="/Admin/Permission" element={<Permission />} />
+              <Route index path="/Admin/no-permission" element={<Nopermission />} />
               <Route
                 index
                 path="/Admin/New-Permission"
