@@ -10,7 +10,6 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import styles
-
 export function AdminLogin(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -101,7 +100,6 @@ console.log(localStorage.getItem("permissionArray"))
                                   {...props}
                                   className="input input-alt"
                                   placeholder="Enter your password"
-
                                   name="password"
                                 />
                                 <span className="input-border input-border-alt"></span>

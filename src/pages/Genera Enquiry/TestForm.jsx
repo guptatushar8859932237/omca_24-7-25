@@ -431,6 +431,12 @@ export default function TestForm() {
                         </div>
                         <div className="col-md-4">
                           <InfoItem
+                            label="GPS / Location Pin"
+                            value={selectedRecord.location_pin}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
                             label="Home Sample Collection"
                             value={selectedRecord.home_sample_collection}
                           />

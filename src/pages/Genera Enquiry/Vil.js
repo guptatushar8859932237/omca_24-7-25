@@ -765,6 +765,12 @@ export default function Vil() {
                             value={selectedRecord.pin_code}
                           />
                         </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="GPS / Location Pin"
+                            value={selectedRecord.location_pin}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

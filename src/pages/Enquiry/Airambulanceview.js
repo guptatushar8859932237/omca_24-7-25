@@ -231,6 +231,12 @@ export default function Airambulanceview() {
                       <p>{row.services}</p>
                     </div>
                   </div>
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>GPS / Location Pin</h6>
+                      <p>{row.location_pin}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

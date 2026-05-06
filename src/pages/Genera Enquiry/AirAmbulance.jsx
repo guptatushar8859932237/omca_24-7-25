@@ -1,31 +1,3 @@
-// import React from 'react'
-
-// export default function AirAmbulance() {
-//   return (
-//     <div>
-
-//     </div>
-//   )
-// }
-// import React from 'react'
-
-// export default function Hotel() {
-//   return (
-//     <div>
-//       Hotel
-//     </div>
-//   )
-// }
-// import React from 'react'
-
-// export default function Vil() {
-//   return (
-//     <div>
-//       vil
-//     </div>
-//   )
-// }
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { testForms } from "../../reducer/FormsEnquiry";
@@ -51,45 +23,35 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-
 import ClearIcon from "@mui/icons-material/Clear";
 import Swal from "sweetalert2";
 import { AdminBaseUrl } from "../../Basurl/Baseurl";
 import axios from "axios";
-
 export default function AirAmbulance() {
   const dispatch = useDispatch();
-
   const {
     testForms: formData,
     loading,
     error,
   } = useSelector((state) => state.testForms);
-
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
-
   // Popup states
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
   useEffect(() => {
     dispatch(testForms());
   }, [dispatch]);
-
   const medicalVisaData = formData?.data?.air_ambulance || [];
-
   const handleFilter = (e) => {
     setFilterValue(e.target.value);
     setPage(0);
   };
-
   const handleClearFilter = () => {
     setFilterValue("");
     setPage(0);
   };
-
   const filteredData = medicalVisaData.filter((item) => {
     const search = filterValue.toLowerCase();
     return (
@@ -105,12 +67,10 @@ export default function AirAmbulance() {
       String(item.number_of_people)?.includes(search)
     );
   });
-
   const paginatedData = filteredData.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage,
   );
-
   // Open popup
   const handleView = (record) => {
     setSelectedRecord(record);
@@ -142,10 +102,8 @@ const handleChangtype = async (e, b) => {
     if (response?.data?.success) {
       Swal.fire("Success", "Status Updated Successfully", "success");
     }
-
   } catch (error) {
     console.log(error);
-
     Swal.fire("Error", "Something went wrong", "error");
   }
 };
