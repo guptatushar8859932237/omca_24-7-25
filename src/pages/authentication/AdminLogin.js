@@ -38,10 +38,56 @@ export function AdminLogin(props) {
       localStorage.setItem("permissionArray", user.permissions);
       localStorage.setItem("Role", user.details.role);
       localStorage.setItem("name", user.details.name);
-      if (user?.permissions?.includes("/Dashboard")) {
-  navigate("/Dashboard");
+      console.log(typeof(user.permissions[0]))
+     if (user?.permissions?.length > 0) {
+
+  const firstPermission = user.permissions[0];
+      console.log(firstPermission)
+  if (firstPermission === "/General_Enquiries") {
+    navigate("/Admin/General_Enquiries");
+
+  } else if (firstPermission === "/Dashboard") {
+    navigate("/Dashboard");
+
+  } else if (firstPermission === "/Enquiries") {
+    navigate("/Admin/inquiry");
+
+  }
+   else if (firstPermission === "/Manage_Patients") {
+    navigate("/Admin/patients");
+
+  }
+   else if (firstPermission === "/Manage_Appointments") {
+    navigate("/Admin/appointments");
+  }
+  
+   else if (firstPermission === "/Manage_Services") {
+    navigate("/Admin/Services");
+  }
+   else if (firstPermission === "/Manage_Staffs") {
+    navigate("/Admin/Staff");
+  }
+   else if (firstPermission === "/Manage_Permissions") {
+    navigate("/Admin/New-Permission");
+  }
+   else if (firstPermission === "/Reports") {
+    navigate("/Admin/Reports");
+  }
+   else if (firstPermission === "/Manage_Countries") {
+    navigate("/Admin/Countries");
+  }
+   else if (firstPermission === "/Payments") {
+    navigate("/Admin/Earnings");
+  }
+   else if (firstPermission === "/Manage_Roles") {
+    navigate("/Admin/roles");
+  }
+   else {
+    navigate("/Admin/no-permission");
+  }
+
 } else {
-  navigate("/Admin/Inquiry");
+  navigate("/Admin/no-permission");
 }
     }
   }, [user, navigate]);

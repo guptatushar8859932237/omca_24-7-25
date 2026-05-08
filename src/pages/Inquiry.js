@@ -861,8 +861,7 @@ export default function Inquiry() {
       createdBy: item.createdBy || "",
       treatingIn: item.treatingIn || item.treating_in_country || "",
       emergency_contact: item.emergency_contact || item.phone || "",
-      disease_name:
-        item.disease_name || item.services?.replaceAll("_", " ") || "",
+      disease_name:item.disease_name || item.services?.replaceAll("_", " ") || "",
       Enquiry_status: item.Enquiry_status || item.status || "",
       date: item.createdAt || item.created_at || "",
       id: item.id,
@@ -1425,6 +1424,7 @@ export default function Inquiry() {
                         ...prev,
                         hospital_id: selectedId,
                         hospitalName: selectedHospital?.name || "",
+                        hospitalName: selectedHospital?.name || "",
                       }));
                     }}
                   >
@@ -1487,7 +1487,6 @@ export default function Inquiry() {
                   Upload Reports / Documents{" "}
                   <span className="text-danger">*</span>
                 </label>
-
                 <input
                   type="file"
                   className="form-control"
@@ -1497,8 +1496,6 @@ export default function Inquiry() {
                     setImages(files);
                   }}
                 />
-
-                {/* Preview */}
                 {images.length > 0 && (
                   <div style={{ marginTop: "10px" }}>
                     {images.map((file, index) => (
@@ -1762,5 +1759,8 @@ export default function Inquiry() {
     </>
   );
 }
+// localStorage is restricted by the browser’s Same-Origin Policy, 
+// so one domain cannot directly access another domain’s localStorage.
+//  To share data between domains, we usually use backend APIs, shared cookies for subdomains,
+//  postMessage for iframe/window communication, or centralized authentication systems like OAuth/SSO.
 
-// rest and spread operator

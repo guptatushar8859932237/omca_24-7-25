@@ -566,8 +566,6 @@ export default function Airambulanceview() {
                     onChange={(e) => setCommentText(e.target.value)}
                   />
                 </div>
-
-                {/* Image Upload */}
                 <div className="field-set">
                   <label>Upload Images</label>
                   <input

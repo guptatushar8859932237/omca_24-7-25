@@ -28,7 +28,6 @@ export default function EditStaff() {
   useEffect(() => {
     getRolesuser();
   }, []);
-
   const getRolesuser = async () => {
     try {
       const response = await axios.get(`${baseurl}getAllRoles`);
@@ -260,7 +259,6 @@ export default function EditStaff() {
                       <label>
                         Phone No <span className="text-danger">*</span>
                       </label>
-
                       <div className="d-flex">
                         {/* Dial Code – 30% */}
                         <input
@@ -270,7 +268,6 @@ export default function EditStaff() {
                           value={values.dial_code}
                           disabled
                         />
-
                         {/* Phone Number – 70% */}
                         <input
                           type="text"
@@ -285,7 +282,6 @@ export default function EditStaff() {
                           placeholder="Enter phone number"
                         />
                       </div>
-
                       <ErrorMessage
                         name="phone_no"
                         component="div"
@@ -297,7 +293,6 @@ export default function EditStaff() {
                     <label>
                       Access Countries <span className="text-danger"></span>
                     </label>
-
                     <FormControl fullWidth>
                       <Select
                         multiple
@@ -401,7 +396,6 @@ ssName="col-sm-3">
                         <Field type="radio" name="isDelete" value="0" />{" "}
                         No
                       </div>
-                    
                       <ErrorMessage
                         name="isDelete"
                         component="div"
@@ -433,7 +427,7 @@ ssName="col-sm-3">
                   </div>
                   <div className="col-sm-6">
                     <div className="field-set">
-                      <label>Profile Image *</label>
+                      <label>Profile Image </label>
                       <div className="profile-upload">
                         <div className="upload-img">
                           {selectedImage ? (
@@ -479,10 +473,7 @@ ssName="col-sm-3">
                         name="roleStatuses"
                         onChange={(event) => {
                           let value = event.target.value;
-
-                          // ❌ Remove empty values
                           value = value.filter((v) => v !== "");
-
                           if (value.includes("All")) {
                             if (
                               values.roleStatuses.length ===
