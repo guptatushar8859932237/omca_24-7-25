@@ -38,7 +38,6 @@ import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 function TabPanel({ children, value, index }) {
   return value === index && <Box sx={{ p: 2 }}>{children}</Box>;
 }
-
 export default function Appointments() {
   const dispatch = useDispatch();
   const role = localStorage.getItem("Role");
@@ -699,7 +698,12 @@ export default function Appointments() {
                                 <TableCell>
                                   {new Date(
                                     info.appointment_Date,
-                                  ).toLocaleDateString("en-GB")}
+                                  ).toLocaleDateString("en-GB")}-
+  {new Date(info.appointment_Date).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}
+
                                 </TableCell>
                                 <TableCell>{info.Hospital_name}</TableCell>
                                 <TableCell>
@@ -922,6 +926,10 @@ export default function Appointments() {
                                   {new Date(info.apt_on).toLocaleDateString(
                                     "en-GB",
                                   )}
+                                   {new Date(info.apt_on).toLocaleTimeString([], {
+   hour: "2-digit",
+    minute: "2-digit",
+  })}
                                 </TableCell>
                                 <TableCell>{info.paid_amount}</TableCell>
                                 <TableCell>
@@ -1003,7 +1011,7 @@ export default function Appointments() {
                               Treatment Name
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>
+                          <TableCell>
                             <TableSortLabel
                               active={orderByENQ === "appointment_Date"}
                               direction={orderDirectionENQ}
@@ -1011,7 +1019,7 @@ export default function Appointments() {
                             >
                               Appointment Date
                             </TableSortLabel>
-                          </TableCell> */}
+                          </TableCell>
 {/* 
                           <TableCell>
                             <TableSortLabel
@@ -1052,6 +1060,10 @@ export default function Appointments() {
                                 </TableCell> */}
                                 <TableCell>{item?.health_issue}</TableCell>
                                 <TableCell>{item?.treatment_name}</TableCell>
+                                <TableCell>{new Date(item?.appointment_Date).toLocaleDateString("en-GB")}-{new Date(item?.appointment_Date).toLocaleTimeString([],{
+                                 hour: "2-digit",
+    minute: "2-digit",
+                                })}</TableCell>
                                 <TableCell>
                                   <FormControl
                                     size="small"

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { loginUser } from '../../reducer/LoginSlice';
+import { loginUser } from "../../reducer/LoginSlice";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
-import logoDark from '../../img/logo-dark.png'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import styles
+import logoDark from "../../img/logo-dark.png";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import styles
 export function AdminLogin(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -18,10 +18,16 @@ export function AdminLogin(props) {
   const toggle = () => {
     setHide((prev) => !prev);
   };
-  const passwordRules = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/  
+  const passwordRules =
+    /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
   const basicSchema = Yup.object().shape({
-    email: Yup.string().matches(passwordRules, "Please enter a valid email").required("Required"),
-    password: Yup.string().required("Required").oneOf([Yup.ref('password'), null]).max(20, 'Passwords should not exceed 20 characters.'),
+    email: Yup.string()
+      .matches(passwordRules, "Please enter a valid email")
+      .required("Required"),
+    password: Yup.string()
+      .required("Required")
+      .oneOf([Yup.ref("password"), null])
+      .max(20, "Passwords should not exceed 20 characters."),
   });
   useEffect(() => {
     if (user) {
@@ -38,62 +44,47 @@ export function AdminLogin(props) {
       localStorage.setItem("permissionArray", user.permissions);
       localStorage.setItem("Role", user.details.role);
       localStorage.setItem("name", user.details.name);
-      console.log(typeof(user.permissions[0]))
-     if (user?.permissions?.length > 0) {
-
-  const firstPermission = user.permissions[0];
-      console.log(firstPermission)
-  if (firstPermission === "/General_Enquiries") {
-    navigate("/Admin/General_Enquiries");
-
-  } else if (firstPermission === "/Dashboard") {
-    navigate("/Dashboard");
-
-  } else if (firstPermission === "/Enquiries") {
-    navigate("/Admin/inquiry");
-
-  }
-   else if (firstPermission === "/Manage_Patients") {
-    navigate("/Admin/patients");
-
-  }
-   else if (firstPermission === "/Manage_Appointments") {
-    navigate("/Admin/appointments");
-  }
-  
-   else if (firstPermission === "/Manage_Services") {
-    navigate("/Admin/Services");
-  }
-   else if (firstPermission === "/Manage_Staffs") {
-    navigate("/Admin/Staff");
-  }
-   else if (firstPermission === "/Manage_Permissions") {
-    navigate("/Admin/New-Permission");
-  }
-   else if (firstPermission === "/Reports") {
-    navigate("/Admin/Reports");
-  }
-   else if (firstPermission === "/Manage_Countries") {
-    navigate("/Admin/Countries");
-  }
-   else if (firstPermission === "/Payments") {
-    navigate("/Admin/Earnings");
-  }
-   else if (firstPermission === "/Manage_Roles") {
-    navigate("/Admin/roles");
-  }
-   else {
-    navigate("/Admin/no-permission");
-  }
-
-} else {
-  navigate("/Admin/no-permission");
-}
+      console.log(typeof user.permissions[0]);
+      if (user?.permissions?.length > 0) {
+        const firstPermission = user.permissions[0];
+        console.log(firstPermission);
+        if (firstPermission === "/General_Enquiries") {
+          navigate("/Admin/General_Enquiries");
+        } else if (firstPermission === "/Dashboard") {
+          navigate("/Dashboard");
+        } else if (firstPermission === "/Enquiries") {
+          navigate("/Admin/inquiry");
+        } else if (firstPermission === "/Manage_Patients") {
+          navigate("/Admin/patients");
+        } else if (firstPermission === "/Manage_Appointments") {
+          navigate("/Admin/appointments");
+        } else if (firstPermission === "/Manage_Services") {
+          navigate("/Admin/Services");
+        } else if (firstPermission === "/Manage_Staffs") {
+          navigate("/Admin/Staff");
+        } else if (firstPermission === "/Manage_Permissions") {
+          navigate("/Admin/New-Permission");
+        } else if (firstPermission === "/Reports") {
+          navigate("/Admin/Reports");
+        } else if (firstPermission === "/Manage_Countries") {
+          navigate("/Admin/Countries");
+        } else if (firstPermission === "/Payments") {
+          navigate("/Admin/Earnings");
+        } else if (firstPermission === "/Manage_Roles") {
+          navigate("/Admin/roles");
+        } else {
+          navigate("/Admin/no-permission");
+        }
+      } else {
+        navigate("/Admin/no-permission");
+      }
     }
   }, [user, navigate]);
-console.log(localStorage.getItem("permissionArray"))
+  console.log(localStorage.getItem("permissionArray"));
   return (
-    <div className="main-wrapper account-wrapper" style={{ minHeight: "100vh" }}>
+    <div
+      className="main-wrapper account-wrapper"
+      style={{ minHeight: "100vh" }}>
       <div className="account-page">
         <div className="account-center">
           <div className="container">
@@ -103,7 +94,7 @@ console.log(localStorage.getItem("permissionArray"))
                   <div className="row">
                     <div className="col-md-6">
                       <div className="account-logo">
-                        <a >
+                        <a>
                           <img src={logoDark} alt="" />
                         </a>
                       </div>
@@ -114,9 +105,11 @@ console.log(localStorage.getItem("permissionArray"))
                         validationSchema={basicSchema}
                         onSubmit={async (values, { setSubmitting }) => {
                           try {
-                            const result = await dispatch(loginUser(values)).unwrap();
+                            const result = await dispatch(
+                              loginUser(values),
+                            ).unwrap();
                           } catch (err) {
-                            console.log(err)
+                            console.log(err);
                             toast.error(err?.message);
                           }
                           setSubmitting(false);
@@ -135,10 +128,17 @@ console.log(localStorage.getItem("permissionArray"))
                                   name="email"
                                 />
                                 <span className="input-border input-border-alt"></span>
-                                <ErrorMessage name="email" component="div" style={{ color: "red" }} />
+                                <ErrorMessage
+                                  name="email"
+                                  component="div"
+                                  style={{ color: "red" }}
+                                />
                               </div>
                             </div>
-                            <div className="form-group" style={{ position: "relative" }}>
+                            <div
+                              className="form-group"
+                              style={{ position: "relative" }}
+                            >
                               <label>Password</label>
                               <div className="custom-form-control">
                                 <Field
@@ -149,25 +149,35 @@ console.log(localStorage.getItem("permissionArray"))
                                   name="password"
                                 />
                                 <span className="input-border input-border-alt"></span>
-                                <ErrorMessage name="password" component="div" style={{ color: "red" }} />
+                                <ErrorMessage
+                                  name="password"
+                                  component="div"
+                                  style={{ color: "red" }}
+                                />
                               </div>
                               <span
-                              className="icon"
-                              onClick={toggle}
-                              style={{
-                                position: "absolute",
-                                top: "70%",
-                                right: "12px",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                                color: "#rgb(23 14 14)",
-                              }}
-                            >
-                              {hide ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                            </span>
+                                className="icon"
+                                onClick={toggle}
+                                style={{
+                                  position: "absolute",
+                                  top: "70%",
+                                  right: "12px",
+                                  transform: "translateY(-50%)",
+                                  cursor: "pointer",
+                                  color: "#rgb(23 14 14)",
+                                }}
+                              >
+                                {hide ? (
+                                  <VisibilityIcon />
+                                ) : (
+                                  <VisibilityOffIcon />
+                                )}
+                              </span>
                             </div>
                             <div className="form-group text-right">
-                              <NavLink to="Forgot">Forgot your password?</NavLink>
+                              <NavLink to="Forgot">
+                                Forgot your password?
+                              </NavLink>
                             </div>
                             <div className="form-group text-center">
                               <button
