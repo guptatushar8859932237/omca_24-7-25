@@ -52,9 +52,20 @@ export function AdminLogin(props) {
           navigate("/Admin/General_Enquiries");
         } else if (firstPermission === "/Dashboard") {
           navigate("/Dashboard");
-        } else if (firstPermission === "/Enquiries") {
+        }
+         else if (firstPermission === "/Enquiries") {
           navigate("/Admin/inquiry");
-        } else if (firstPermission === "/Manage_Patients") {
+        } 
+         else if (firstPermission === "/Air_Medical_Escort") {
+          navigate("/Admin/inquiry");
+        } 
+         else if (firstPermission === "/Ambulance_Service") {
+          navigate("/Admin/inquiry");
+        } 
+         else if (firstPermission === "/Treatment_Estimate") {
+          navigate("/Admin/inquiry");
+        } 
+        else if (firstPermission === "/Manage_Patients") {
           navigate("/Admin/patients");
         } else if (firstPermission === "/Manage_Appointments") {
           navigate("/Admin/appointments");

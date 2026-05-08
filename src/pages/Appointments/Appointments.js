@@ -698,12 +698,14 @@ export default function Appointments() {
                                 <TableCell>
                                   {new Date(
                                     info.appointment_Date,
-                                  ).toLocaleDateString("en-GB")}-
-  {new Date(info.appointment_Date).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  })}
-
+                                  ).toLocaleDateString("en-GB")}
+                                  -
+                                  {new Date(
+                                    info.appointment_Date,
+                                  ).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
                                 </TableCell>
                                 <TableCell>{info.Hospital_name}</TableCell>
                                 <TableCell>
@@ -926,10 +928,14 @@ export default function Appointments() {
                                   {new Date(info.apt_on).toLocaleDateString(
                                     "en-GB",
                                   )}
-                                   {new Date(info.apt_on).toLocaleTimeString([], {
-   hour: "2-digit",
-    minute: "2-digit",
-  })}
+                                  -
+                                  {new Date(info.apt_on).toLocaleTimeString(
+                                    [],
+                                    {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    },
+                                  )}
                                 </TableCell>
                                 <TableCell>{info.paid_amount}</TableCell>
                                 <TableCell>
@@ -1020,7 +1026,7 @@ export default function Appointments() {
                               Appointment Date
                             </TableSortLabel>
                           </TableCell>
-{/* 
+                          {/* 
                           <TableCell>
                             <TableSortLabel
                               active={orderByENQ === "appointment_Time"}
@@ -1060,10 +1066,18 @@ export default function Appointments() {
                                 </TableCell> */}
                                 <TableCell>{item?.health_issue}</TableCell>
                                 <TableCell>{item?.treatment_name}</TableCell>
-                                <TableCell>{new Date(item?.appointment_Date).toLocaleDateString("en-GB")}-{new Date(item?.appointment_Date).toLocaleTimeString([],{
-                                 hour: "2-digit",
-    minute: "2-digit",
-                                })}</TableCell>
+                                <TableCell>
+                                  {new Date(
+                                    item?.appointment_Date,
+                                  ).toLocaleDateString("en-GB")}
+                                  -
+                                  {new Date(
+                                    item?.appointment_Date,
+                                  ).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </TableCell>
                                 <TableCell>
                                   <FormControl
                                     size="small"
