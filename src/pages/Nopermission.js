@@ -16,7 +16,7 @@ export default function Nopermission() {
                   <div className="main-heading">
                     <h3>Welcome </h3>
                     <p className="mb-0">
-                      You dont't have any permission so kindely talk to
+                      You don't have any permission so kindly talk to
                       admin{" "}
                     </p>{" "}
                     <p className="mb-0">Have a nice day at work</p>
