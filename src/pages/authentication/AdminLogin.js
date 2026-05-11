@@ -29,6 +29,17 @@ export function AdminLogin(props) {
       .oneOf([Yup.ref("password"), null])
       .max(20, "Passwords should not exceed 20 characters."),
   });
+  const enquiryPermissions = [
+  "/General_Enquiries",
+  "/Medical_Visa",
+  "/Guest_House_Stay",
+  "/Forex_Service",
+  "/Flight_Service",
+  "/Pickup_and_Drop",
+  "/Home_Care",
+  "/Test_Form",
+  "/Contact_Us",
+];
   useEffect(() => {
     if (user) {
       Swal.fire({
@@ -48,9 +59,9 @@ export function AdminLogin(props) {
       if (user?.permissions?.length > 0) {
         const firstPermission = user.permissions[0];
         console.log(firstPermission);
-        if (firstPermission === "/General_Enquiries") {
-          navigate("/Admin/General_Enquiries");
-        } else if (firstPermission === "/Dashboard") {
+        if (enquiryPermissions.includes(firstPermission)) {
+  navigate("/Admin/General_Enquiries");
+} else if (firstPermission === "/Dashboard") {
           navigate("/Dashboard");
         }
          else if (firstPermission === "/Enquiries") {
