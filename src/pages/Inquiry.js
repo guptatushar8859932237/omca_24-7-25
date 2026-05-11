@@ -1400,7 +1400,6 @@ export default function Inquiry() {
               <i className="fa-solid fa-xmark"></i>
             </div>
           </div>
-
           <DialogContent
             sx={{
               maxHeight: "70vh", // 👈 height limit
@@ -1436,7 +1435,6 @@ export default function Inquiry() {
                   </Select>
                 </FormControl>
               </div>
-
               <div className="field-set">
                 <label>Health Issue</label>
                 <input
@@ -1447,7 +1445,6 @@ export default function Inquiry() {
                   onChange={handleAppointmentChange}
                 />
               </div>
-
               <div className="field-set">
                 <label>Date</label>
                 <span className="text-danger">*</span>
@@ -1459,7 +1456,6 @@ export default function Inquiry() {
                   onChange={handleAppointmentChange}
                 />
               </div>
-
               <div className="field-set">
                 <label>Time</label>
                 <span className="text-danger">*</span>
@@ -1471,7 +1467,6 @@ export default function Inquiry() {
                   onChange={handleAppointmentChange}
                 />
               </div>
-
               <div className="field-set">
                 <label>Notes</label>
                 <span className="text-danger">*</span>

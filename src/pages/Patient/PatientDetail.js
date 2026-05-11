@@ -1705,6 +1705,7 @@ function PatientDetail() {
       setVehicalnumber("");
     }
   };
+  
   const handleClose1editapp = () => {
     setOeditappp(false);
   };
@@ -4228,8 +4229,8 @@ function PatientDetail() {
                                                                                 >
                                                                                   View
                                                                                   Document{" "}
-                                                                                  {imgIndex +
-                                                                                    1}
+                                                                                  {imgIndex 
+                                                                                    }
                                                                                 </button>
                                                                               );
                                                                             },
@@ -6382,7 +6383,7 @@ function PatientDetail() {
                                               ?.length > 0 ? (
                                               <div className="row">
                                                 <div className="mt-3">
-                                                  <h4>Documents</h4>
+                                                  <h4>Treatment plan documents</h4>
                                                 </div>
 
                                                 {doctorReviewNotes.documents.map(
@@ -6931,13 +6932,13 @@ function PatientDetail() {
                                       {item?.attendant_relation || "N/A"}
                                     </TableCell>
                                     <TableCell>
-                                      {item?.attendant_contact || "N/A"}
+                                       {item.phoneCode}{" "} {item?.attendant_contact || "N/A"}
                                     </TableCell>
                                     <TableCell>
                                       {item?.country || "N/A"}
                                     </TableCell>
                                     <TableCell>
-                                      {item?.attendant_address}
+                                    {item?.attendant_address}
                                     </TableCell>
                                     <TableCell className="d-flex gap-2">
                                       {item?.attendant_passport?.length > 0

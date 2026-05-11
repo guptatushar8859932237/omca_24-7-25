@@ -1,12 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { EditEnquiryType, GetAllEnquiry, AddDoctorReview, clearReviewState } from "../../reducer/EnquirySlice";
+import {
+  EditEnquiryType,
+  GetAllEnquiry,
+  AddDoctorReview,
+  clearReviewState,
+} from "../../reducer/EnquirySlice";
 import { GetAllCountries, GetAllCountries2 } from "../../reducer/Countries";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
-import { FormControl, MenuItem, OutlinedInput, Select, Modal, Box, Typography, Button, Dialog, DialogActions, DialogContent } from "@mui/material";
+import {
+  FormControl,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Modal,
+  Box,
+  Typography,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+} from "@mui/material";
 import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
@@ -22,12 +39,12 @@ const getFileType = (file) => {
 };
 // Modal style
 const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 500,
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
   p: 4,
@@ -37,14 +54,21 @@ export default function EditEnquiry() {
   const MAX_FILE_SIZE = 2 * 1024 * 1024;
   const location = useLocation();
   const navigate = useNavigate();
-  const { Enquiry, loading, doctorReviewData, doctorComments, reviewLoading, reviewError, reviewSuccessMessage } = useSelector((state) => state.Enquiry);
+  const {
+    Enquiry,
+    loading,
+    doctorReviewData,
+    doctorComments,
+    reviewLoading,
+    reviewError,
+    reviewSuccessMessage,
+  } = useSelector((state) => state.Enquiry);
   const [previewImage, setPreviewImage] = useState(null);
   const { Treatment, error } = useSelector((state) => state.Treatment);
   const { Countries } = useSelector((state) => state.Countries);
   const [editenquiry, setEnquiry] = useState("");
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState("sm");
-  // Modal states
   const [openModal, setOpenModal] = useState(false);
   const [reviewNotes, setReviewNotes] = useState("");
   const [reviewImages, setReviewImages] = useState([]);
@@ -182,7 +206,6 @@ export default function EditEnquiry() {
     formData.append("enquiryId", editenquiry.enquiryId);
     formData.append("review_notes", reviewNotes);
     formData.append("user_type", "doctor");
-
     if (reviewImages && reviewImages.length > 0) {
       reviewImages.forEach((file) => {
         // formData.append("images[]", file);
@@ -202,15 +225,17 @@ export default function EditEnquiry() {
       dispatch(GetAllEnquiry());
     }
     if (reviewError) {
-      Swal.fire("Error!", reviewError.message || "Failed to add review", "error");
+      Swal.fire(
+        "Error!",
+        reviewError.message || "Failed to add review",
+        "error",
+      );
       dispatch(clearReviewState());
     }
   }, [reviewSuccessMessage, reviewError, dispatch]);
-
   const openmodalFunction = () => {
     setOpenModal(true);
-  }
-
+  };
   const handleCloseModal = () => {
     setOpenModal(false);
     setReviewNotes("");
@@ -280,7 +305,13 @@ export default function EditEnquiry() {
         <div className="row gx-3">
           <div className="col-md-12">
             <div className="topmainhd">
-              <h6><i class="fa-solid fa-arrow-left-long me-2" onClick={() => window.history.back()}></i>Edit Enquiry</h6>
+              <h6>
+                <i
+                  class="fa-solid fa-arrow-left-long me-2"
+                  onClick={() => window.history.back()}
+                ></i>
+                Edit Enquiry
+              </h6>
             </div>
           </div>
           <div className="col-md-12">
@@ -300,8 +331,7 @@ export default function EditEnquiry() {
                   editenquiry?.patient_relation_no
                 ),
                 emergency_contact_no: editenquiry?.emergency_contact || "",
-                patient_relation_name:
-                  editenquiry?.patient_relation_name || "",
+                patient_relation_name: editenquiry?.patient_relation_name || "",
                 country: editenquiry?.country || "",
                 treatingIn: editenquiry?.treatingIn || "",
                 disease_name: editenquiry?.disease_name || "",
@@ -435,7 +465,10 @@ export default function EditEnquiry() {
                                         const selected = Countries.find(
                                           (c) => c.name === e.target.value,
                                         );
-                                        setFieldValue("country", e.target.value);
+                                        setFieldValue(
+                                          "country",
+                                          e.target.value,
+                                        );
                                         setFieldValue(
                                           "dial_code",
                                           selected?.dial_code || "",
@@ -495,7 +528,10 @@ export default function EditEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Patient's Name<span className="text-danger">*</span></label>
+                              <label>
+                                Patient's Name
+                                <span className="text-danger">*</span>
+                              </label>
                               <Field
                                 className="form-control"
                                 name="name"
@@ -615,7 +651,10 @@ export default function EditEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Emergency Contact No<span className="text-danger"></span></label>
+                              <label>
+                                Emergency Contact No
+                                <span className="text-danger"></span>
+                              </label>
                               <div className="country-code">
                                 <Field
                                   className="form-control code-dial"
@@ -655,7 +694,9 @@ export default function EditEnquiry() {
                                 accept="image/*,application/pdf"
                                 multiple
                                 onChange={(e) => {
-                                  const files = Array.from(e.currentTarget.files);
+                                  const files = Array.from(
+                                    e.currentTarget.files,
+                                  );
                                   setFieldValue("patient_id_proof", files);
                                 }}
                               />
@@ -668,7 +709,10 @@ export default function EditEnquiry() {
                                       const fileUrl = `${imageUrl}${file}`;
 
                                       return (
-                                        <div className="file-preview" key={index}>
+                                        <div
+                                          className="file-preview"
+                                          key={index}
+                                        >
                                           <span
                                             className="delete-icon"
                                             onClick={() =>
@@ -710,7 +754,8 @@ export default function EditEnquiry() {
                           <div className="col-md-4">
                             <div className="set-field">
                               <label>
-                                Patient Profile<span className="text-danger"></span>{" "}
+                                Patient Profile
+                                <span className="text-danger"></span>{" "}
                                 <span
                                   className="text-danger"
                                   data-bs-placement="right"
@@ -771,7 +816,8 @@ export default function EditEnquiry() {
                           <div className="col-md-4">
                             <div className="set-field">
                               <label>
-                                Referral Name<span className="text-danger"></span>
+                                Referral Name
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -799,18 +845,24 @@ export default function EditEnquiry() {
                                   ) || null
                                 }
                                 onChange={(e, value) => {
-                                  setFieldValue("disease_name", value?.name || "");
+                                  setFieldValue(
+                                    "disease_name",
+                                    value?.name || "",
+                                  );
                                   setFieldValue(
                                     "treatment_course_id",
                                     value?.course_id || null,
                                   );
-                                  setFieldValue("disease_id", value?.id || null);
+                                  setFieldValue(
+                                    "disease_id",
+                                    value?.id || null,
+                                  );
                                 }}
                                 ListboxProps={{
                                   style: {
                                     maxHeight: 250,
-                                    overflow: "auto"
-                                  }
+                                    overflow: "auto",
+                                  },
                                 }}
                                 renderInput={(params) => (
                                   <TextField
@@ -835,7 +887,10 @@ export default function EditEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Treating In Country<span className="text-danger">*</span></label>
+                              <label>
+                                Treating In Country
+                                <span className="text-danger">*</span>
+                              </label>
                               <Field name="treatingIn">
                                 {({ field, form: { setFieldValue }, meta }) => (
                                   <FormControl
@@ -849,7 +904,10 @@ export default function EditEnquiry() {
                                         const selected = Countries.find(
                                           (c) => c.name === e.target.value,
                                         );
-                                        setFieldValue("treatingIn", e.target.value);
+                                        setFieldValue(
+                                          "treatingIn",
+                                          e.target.value,
+                                        );
                                       }}
                                       MenuProps={{
                                         PaperProps: {
@@ -885,7 +943,12 @@ export default function EditEnquiry() {
                           <div className="set-field" key={index}>
                             <div className="noteadv">
                               <label>Note-{index + 1}</label>
-                              <h6>Date - {new Date(note.date).toLocaleDateString("en-GB")}</h6>
+                              <h6>
+                                Date -{" "}
+                                {new Date(note.date).toLocaleDateString(
+                                  "en-GB",
+                                )}
+                              </h6>
                             </div>
                             <Field
                               as="textarea"
@@ -899,75 +962,114 @@ export default function EditEnquiry() {
                     <div className="col-md-12">
                       <div className="main_content">
                         <div className="row gx-3 gy-3">
-                          {(
-                            (doctorReviewData &&
-                              (doctorReviewData.review_notes ||
-                                doctorReviewData.Recommendations ||
-                                (doctorReviewData.images && doctorReviewData.images.length > 0))) ||
-
+                          {((doctorReviewData &&
+                            (doctorReviewData.review_notes ||
+                              doctorReviewData.Recommendations ||
+                              (doctorReviewData.images &&
+                                doctorReviewData.images.length > 0))) ||
                             (editenquiry?.doctorReview &&
                               (editenquiry.doctorReview.review_notes ||
                                 editenquiry.doctorReview.Recommendations ||
-                                (editenquiry.doctorReview.images && editenquiry.doctorReview.images.length > 0)))
-                          ) && (
-                              <div className="col-md-12">
-                                <div className="comnthis">
-                                  <h6>Doctor Review</h6>
-                                </div>
-                                <div className="row gx-3 gy-3">
-                                  <>
-                                    <div className="col-md-5">
-                                      <div className="set-field">
-                                        <label>Review Notes<span className="text-danger">*</span></label>
-                                        <textarea className="form-control">
-                                          {doctorReviewData?.review_notes || editenquiry?.doctorReview?.review_notes}
-                                        </textarea>
-                                      </div>
-                                    </div>
-                                    <div className="col-md-5">
-                                      <div className="set-field">
-                                        <label>Recommendations<span className="text-danger">*</span></label>
-                                        <textarea className="form-control">
-                                          {doctorReviewData?.Recommendations || editenquiry?.doctorReview?.Recommendations}
-                                        </textarea>
-                                      </div>
-                                    </div>
-                                    <div className="col-md-2">
-                                      <div className="set-field">
-                                        <label>Images<span className="text-danger">*</span></label>
-                                        <div className="engpatimg">
-                                          {(doctorReviewData?.images || editenquiry?.doctorReview?.images || []).map((img, index) => (
-                                            <button
-                                              key={index}
-                                              type="button"
-                                              className="viewbtn"
-                                              onClick={() => window.open(`${imageUrl}${img}`, "_blank")}
-                                            >
-                                              View
-                                            </button>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </>
-                                </div>
+                                (editenquiry.doctorReview.images &&
+                                  editenquiry.doctorReview.images.length >
+                                    0)))) && (
+                            <div className="col-md-12">
+                              <div className="comnthis">
+                                <h6>Doctor Review</h6>
                               </div>
-                            )}
-                          {((doctorComments && doctorComments.length > 0) || (editenquiry?.doctorReview?.comments && editenquiry.doctorReview.comments.length > 0)) && (
+                              <div className="row gx-3 gy-3">
+                                <>
+                                  <div className="col-md-5">
+                                    <div className="set-field">
+                                      <label>
+                                        Review Notes
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <textarea className="form-control">
+                                        {doctorReviewData?.review_notes ||
+                                          editenquiry?.doctorReview
+                                            ?.review_notes}
+                                      </textarea>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-5">
+                                    <div className="set-field">
+                                      <label>
+                                        Recommendations
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <textarea className="form-control">
+                                        {doctorReviewData?.Recommendations ||
+                                          editenquiry?.doctorReview
+                                            ?.Recommendations}
+                                      </textarea>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-2">
+                                    <div className="set-field">
+                                      <label>
+                                        Images
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <div className="engpatimg">
+                                        {(
+                                          doctorReviewData?.images ||
+                                          editenquiry?.doctorReview?.images ||
+                                          []
+                                        ).map((img, index) => (
+                                          <button
+                                            key={index}
+                                            type="button"
+                                            className="viewbtn"
+                                            onClick={() =>
+                                              window.open(
+                                                `${imageUrl}${img}`,
+                                                "_blank",
+                                              )
+                                            }
+                                          >
+                                            View
+                                          </button>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              </div>
+                            </div>
+                          )}
+                          {((doctorComments && doctorComments.length > 0) ||
+                            (editenquiry?.doctorReview?.comments &&
+                              editenquiry.doctorReview.comments.length >
+                                0)) && (
                             <div className="col-md-12">
                               <div className="docre-hd">
                                 <div className="comnthis">
                                   <h6 className="mb-0">Comments</h6>
                                 </div>
-                                <button className="add-button" type="button" onClick={openmodalFunction}>Add Comment</button>
+                                <button
+                                  className="add-button"
+                                  type="button"
+                                  onClick={openmodalFunction}
+                                >
+                                  Add Comment
+                                </button>
                               </div>
                               <div className="row gx-3 gy-3">
-                                {(doctorComments.length > 0 ? doctorComments : (editenquiry?.doctorReview?.comments || [])).map((comment, index) => (
-                                  <div className="col-md-12" key={comment._id || index}>
+                                {(doctorComments.length > 0
+                                  ? doctorComments
+                                  : editenquiry?.doctorReview?.comments || []
+                                ).map((comment, index) => (
+                                  <div
+                                    className="col-md-12"
+                                    key={comment._id || index}
+                                  >
                                     <div className="card customstylecard">
                                       <div className="card-body">
                                         <div className="note-view">
-                                          <h3 className="card-title">{comment.user_type} Note</h3>
+                                          <h3 className="card-title">
+                                            {comment.user_type} Note
+                                          </h3>
                                         </div>
                                         <div className="experience-box">
                                           <ul className="experience-list">
@@ -981,31 +1083,52 @@ export default function EditEnquiry() {
                                                     {comment.Notes}
                                                   </a>
                                                   {/* Show images if present */}
-                                                  {comment.images && comment.images.length > 0 && (
-                                                    <div className="">
-                                                      {comment.images.map((img, imgIndex) => {
-                                                        const fullUrl = img.startsWith("http")
-                                                          ? img
-                                                          : imageUrl + img;
-                                                        return (
-                                                          <button
-                                                            key={imgIndex}
-                                                            type="button"
-                                                            className="viewbtn me-2"
-                                                            onClick={() => window.open(fullUrl, "_blank")}
-                                                          >
-                                                            View
-                                                          </button>
-                                                        );
-                                                      })}
-                                                    </div>
-                                                  )}
+                                                  {comment.images &&
+                                                    comment.images.length >
+                                                      0 && (
+                                                      <div className="">
+                                                        {comment.images.map(
+                                                          (img, imgIndex) => {
+                                                            const fullUrl =
+                                                              img.startsWith(
+                                                                "http",
+                                                              )
+                                                                ? img
+                                                                : imageUrl +
+                                                                  img;
+                                                            return (
+                                                              <button
+                                                                key={imgIndex}
+                                                                type="button"
+                                                                className="viewbtn me-2"
+                                                                onClick={() =>
+                                                                  window.open(
+                                                                    fullUrl,
+                                                                    "_blank",
+                                                                  )
+                                                                }
+                                                              >
+                                                                View
+                                                              </button>
+                                                            );
+                                                          },
+                                                        )}
+                                                      </div>
+                                                    )}
 
                                                   <div>
                                                     {" "}
                                                     {comment.Date
-                                                      ? new Date(comment.Date).toLocaleDateString("en-GB")
-                                                      : new Date(comment.createdAt).toLocaleDateString("en-GB")}
+                                                      ? new Date(
+                                                          comment.Date,
+                                                        ).toLocaleDateString(
+                                                          "en-GB",
+                                                        )
+                                                      : new Date(
+                                                          comment.createdAt,
+                                                        ).toLocaleDateString(
+                                                          "en-GB",
+                                                        )}
                                                   </div>
                                                 </div>
                                               </div>
@@ -1116,7 +1239,10 @@ export default function EditEnquiry() {
                                           title="Accept only (.jpeg, .jpg, .png, .jfif, .pdf)
                                             Max size: 2 MB per file"
                                           data-bs-placement="right"
-                                        > (i)</span>
+                                        >
+                                          {" "}
+                                          (i)
+                                        </span>
                                       </label>
                                       <input
                                         className="form-control"
@@ -1128,16 +1254,19 @@ export default function EditEnquiry() {
                                           const files = Array.from(
                                             e.currentTarget.files,
                                           );
-                                          setFieldValue("patient_relation_id", files);
+                                          setFieldValue(
+                                            "patient_relation_id",
+                                            files,
+                                          );
                                         }}
                                       />
                                       <div className="engpatimg">
-                                        {
-                                          Array.isArray(
-                                            editenquiry.patient_relation_id,
-                                          ) &&
-                                            editenquiry.patient_relation_id.length > 0
-                                            ? editenquiry.patient_relation_id.map(
+                                        {Array.isArray(
+                                          editenquiry.patient_relation_id,
+                                        ) &&
+                                        editenquiry.patient_relation_id.length >
+                                          0
+                                          ? editenquiry.patient_relation_id.map(
                                               (file, index) => {
                                                 const fileUrl = `${imageUrl}${file}`;
                                                 return (
@@ -1173,8 +1302,7 @@ export default function EditEnquiry() {
                                                 );
                                               },
                                             )
-                                            : ""
-                                        }
+                                          : ""}
                                       </div>
                                       <ErrorMessage
                                         name="patient_relation_id"
@@ -1228,7 +1356,7 @@ export default function EditEnquiry() {
         >
           <div className="main-card-header">
             <div className="note-hd">
-              <h6>Add Doctor Review</h6>
+              <h6>Add Comment</h6>
             </div>
             <div className="cross-icon" onClick={handleCloseModal}>
               <i class="fa-solid fa-xmark"></i>
@@ -1248,16 +1376,23 @@ export default function EditEnquiry() {
               <div className="row gx-3 gy-3">
                 <div className="col-md-12">
                   <div className="set-field">
-                    <label>Review Notes <span className="text-danger">*</span></label>
-                    <textarea className="form-control" rows="2"
+                    <label>
+                      Add Comment <span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      className="form-control"
+                      rows="2"
                       value={reviewNotes}
                       onChange={(e) => setReviewNotes(e.target.value)}
-                      placeholder="Enter review notes..." />
+                      placeholder="Enter review notes..."
+                    />
                   </div>
                 </div>
                 <div className="col-md-12">
                   <div className="set-field">
-                    <label>Upload Images <span className="text-danger"></span> </label>
+                    <label>
+                      Upload Images <span className="text-danger"></span>{" "}
+                    </label>
                     <input
                       type="file"
                       className="form-control"

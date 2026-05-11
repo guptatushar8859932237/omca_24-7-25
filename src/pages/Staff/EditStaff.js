@@ -64,18 +64,8 @@ export default function EditStaff() {
     gender: Yup.string()
       .oneOf(["Male", "Female", "Other"])
       .required("Gender is required"),
-    // isEdit: Yup.string()
-    //   .oneOf(["1", "0"])
-    //   .required("Edit Permission is required"),
-    // isDelete: Yup.string()
-    //   .oneOf(["1", "0"])
-    //   .required("Edit Delete is required"),
     profileImage: Yup.mixed().required("Profile image is required"),
     country: Yup.string().required("Country is required"),
-    // accessCountries: Yup.array().min(
-    //   1,
-    //   "At least one country must be selected",
-    // ),
     dial_code: Yup.string().required("Dial code is required"),
   });
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -88,10 +78,7 @@ export default function EditStaff() {
       formData.append("gender", values.gender);
       formData.append("country", values.country);
       formData.append("dial_code", values.dial_code);
-      formData.append(
-        "roleStatuses",
-        JSON.stringify(values.roleStatuses.filter(Boolean)),
-      );
+      formData.append("roleStatuses",JSON.stringify(values.roleStatuses.filter(Boolean)),)
       formData.append(
         "accessCountries",
         JSON.stringify(values.accessCountries),
@@ -141,8 +128,6 @@ export default function EditStaff() {
               dial_code: editStaff.dial_code || "",
               profileImage: editStaff.profileImage || null,
               roleStatuses: editStaff.roleStatuses || [],
-              //              isEdit: editStaff.isEdit || "0",   // FIXED
-              // isDelete: editStaff.isDelete || "0", // FIXED
               accessCountries: editStaff.accessCountries || [],
             }}
             validationSchema={validationSchema}
@@ -153,7 +138,7 @@ export default function EditStaff() {
                 <div className="row">
                   <div className="col-sm-6">
                     <div className="field-set">
-                      <label>Name *</label>
+                      <label>Name <span className="text-danger">*</span></label>
                       <Field className="form-control" name="name" />
                       <ErrorMessage
                         name="name"
@@ -164,7 +149,7 @@ export default function EditStaff() {
                   </div>
                   <div className="col-sm-6">
                     <div className="field-set">
-                      <label>Email *</label>
+                      <label>Email <span className="text-danger">*</span></label>
                       <Field
                         className="form-control"
                         type="email"
@@ -179,7 +164,7 @@ export default function EditStaff() {
                   </div>
                   <div className="col-sm-6">
                     <div className="field-set">
-                      <label>Country *</label>
+                      <label>Country<span className="text-danger">*</span></label>
                       <Field name="country">
                         {({ field, form }) => (
                           <>
@@ -228,32 +213,6 @@ export default function EditStaff() {
                       </Field>
                     </div>
                   </div>
-                  {/* <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>Dial Code *</label>
-                      <Field
-                        className="form-control"
-                        name="dial_code"
-                        disabled
-                      />
-                      <ErrorMessage
-                        name="dial_code"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>Phone No *</label>
-                      <Field className="form-control" name="phone_no" />
-                      <ErrorMessage
-                        name="phone_no"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div> */}
                   <div className="col-sm-6">
                     <div className="field-set">
                       <label>
@@ -268,7 +227,6 @@ export default function EditStaff() {
                           value={values.dial_code}
                           disabled
                         />
-                        {/* Phone Number – 70% */}
                         <input
                           type="text"
                           className="form-control"
@@ -291,7 +249,7 @@ export default function EditStaff() {
                   </div>
                   <div className="col-sm-6">
                     <label>
-                      Access Countries <span className="text-danger"></span>
+                      Access Countries <span className="text-danger">*</span>
                     </label>
                     <FormControl fullWidth>
                       <Select
@@ -353,7 +311,7 @@ export default function EditStaff() {
                   </div>
                   <div className="col-sm-6">
                     <div className="field-set">
-                      <label>Role *</label>
+                      <label>Role <span className="text-danger">*</span></label>
                       <Field as="select" name="role" className="form-control">
                         <option value="">Select Role</option>
                         {roles123?.map((item, index) => {
@@ -367,45 +325,9 @@ export default function EditStaff() {
                       />
                     </div>
                   </div>
-                  {/* <div className="col-sm-3">
-                    <div className="field-set gender-select">
-                      <label>Is Edit *</label>
-                      <br />
-                      <div className="form-check-inline">
-                        <Field type="radio" name="isEdit" value="1" /> Yes
-                      </div>
-                      <div className="form-check-inline">
-                        <Field type="radio" name="isEdit" value="0" />{" "}
-                        No
-                      </div>
-                      <ErrorMessage
-                        name="isEdit"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-ssName="col-sm-3">
-                    <div className="field-set gender-select">
-                      <label>Is Delete *</label>
-                      <br />
-                      <div className="form-check-inline">
-                        <Field type="radio" name="isDelete" value="1" /> Yes
-                      </div>
-                      <div className="form-check-inline">
-                        <Field type="radio" name="isDelete" value="0" />{" "}
-                        No
-                      </div>
-                      <ErrorMessage
-                        name="isDelete"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div> */}
                   <div className="col-sm-6">
                     <div className="field-set gender-select">
-                      <label>Gender *</label>
+                      <label>Gender <span className="text-danger">*</span></label>
                       <br />
                       <div className="form-check-inline">
                         <Field type="radio" name="gender" value="Male" /> Male

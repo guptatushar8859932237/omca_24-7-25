@@ -18,7 +18,23 @@ export default function Sidebar() {
   // ENQUIRY CHECK: Show "Enquiries" if any of these permissions are present
   const enquiryEndpoints = ["/Enquiries", "/Air_Medical_Escort", "/Ambulance_Service", "/Treatment_Estimate"];
   const hasEnquiryAccess = enquiryEndpoints.some(ep => permissions.includes(ep));
+// GENERAL ENQUIRY CHECK
+const generalEnquiryEndpoints = [
+  "/General_Enquiries",
+  "/Medical_Visa",
+  "/Guest_House_Stay",
+  "/Forex_Service",
+  "/Flight_Service",
+  "/Pickup_and_Drop",
+  "/Home_Care",
+  "/Test_Form",
+  "/Contact_Us",
+];
 
+const hasGeneralEnquiryAccess =
+  generalEnquiryEndpoints.some((ep) =>
+    permissions.includes(ep)
+  );
   const menuItems = [
     { path: "/Dashboard", icon: "fa-dashboard", label: "Dashboard" },
     {
@@ -28,12 +44,13 @@ export default function Sidebar() {
       label: "Enquiries",
       condition: hasEnquiryAccess,
     },
-    {
-      path: "/General_Enquiries",
-      actualPath: "/Admin/General_Enquiries",
-      icon: "fa-comments-o",
-      label: "General Enquiries",
-    },
+  {
+  path: "/General_Enquiries",
+  actualPath: "/Admin/General_Enquiries",
+  icon: "fa-comments-o",
+  label: "General Enquiries",
+  condition: hasGeneralEnquiryAccess,
+},
     {
       path: "/Manage_Patients",
       actualPath: "/Admin/patients",
