@@ -30,16 +30,16 @@ export function AdminLogin(props) {
       .max(20, "Passwords should not exceed 20 characters."),
   });
   const enquiryPermissions = [
-  "/General_Enquiries",
-  "/Medical_Visa",
-  "/Guest_House_Stay",
-  "/Forex_Service",
-  "/Flight_Service",
-  "/Pickup_and_Drop",
-  "/Home_Care",
-  "/Test_Form",
-  "/Contact_Us",
-];
+    "/General_Enquiries",
+    "/Medical_Visa",
+    "/Guest_House_Stay",
+    "/Forex_Service",
+    "/Flight_Service",
+    "/Pickup_and_Drop",
+    "/Home_Care",
+    "/Test_Form",
+    "/Contact_Us",
+  ];
   useEffect(() => {
     if (user) {
       Swal.fire({
@@ -60,23 +60,18 @@ export function AdminLogin(props) {
         const firstPermission = user.permissions[0];
         console.log(firstPermission);
         if (enquiryPermissions.includes(firstPermission)) {
-  navigate("/Admin/General_Enquiries");
-} else if (firstPermission === "/Dashboard") {
+          navigate("/Admin/General_Enquiries");
+        } else if (firstPermission === "/Dashboard") {
           navigate("/Dashboard");
-        }
-         else if (firstPermission === "/Enquiries") {
+        } else if (firstPermission === "/Enquiries") {
           navigate("/Admin/inquiry");
-        } 
-         else if (firstPermission === "/Air_Medical_Escort") {
+        } else if (firstPermission === "/Air_Medical_Escort") {
           navigate("/Admin/inquiry");
-        } 
-         else if (firstPermission === "/Ambulance_Service") {
+        } else if (firstPermission === "/Ambulance_Service") {
           navigate("/Admin/inquiry");
-        } 
-         else if (firstPermission === "/Treatment_Estimate") {
+        } else if (firstPermission === "/Treatment_Estimate") {
           navigate("/Admin/inquiry");
-        } 
-        else if (firstPermission === "/Manage_Patients") {
+        } else if (firstPermission === "/Manage_Patients") {
           navigate("/Admin/patients");
         } else if (firstPermission === "/Manage_Appointments") {
           navigate("/Admin/appointments");
@@ -106,7 +101,8 @@ export function AdminLogin(props) {
   return (
     <div
       className="main-wrapper account-wrapper"
-      style={{ minHeight: "100vh" }}>
+      style={{ minHeight: "100vh" }}
+    >
       <div className="account-page">
         <div className="account-center">
           <div className="container">

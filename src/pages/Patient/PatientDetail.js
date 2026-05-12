@@ -3815,7 +3815,7 @@ function PatientDetail() {
                                               rel="noopener noreferrer"
                                               className="report-link"
                                             >
-                                              View Document
+                                              View
                                             </a>
                                           </div>
                                         ))
@@ -4045,7 +4045,7 @@ function PatientDetail() {
                                               rel="noopener noreferrer"
                                               className="report-link"
                                             >
-                                              View Document
+                                              View
                                             </a>
                                           </div>
                                         ))
@@ -4081,7 +4081,7 @@ function PatientDetail() {
                                             )
                                           }
                                         >
-                                          View Doc
+                                          View 
                                         </button>
                                       </div>
                                     ))}
@@ -4135,7 +4135,7 @@ function PatientDetail() {
                                                       )
                                                     }
                                                   >
-                                                    View Doc
+                                                    View 
                                                   </button>
                                                 ) : (
                                                   <span></span>
@@ -5055,7 +5055,7 @@ function PatientDetail() {
                                                                       </td>
                                                                       <td className="pdf-hide">
                                                                         <div className="action-icon">
-                                                                          <i
+                                                                          {/* <i
                                                                             className="fa-solid fa-pen-to-square"
                                                                             onClick={() => {
                                                                               hadnlcecEditModal(
@@ -5063,7 +5063,7 @@ function PatientDetail() {
                                                                                 info,
                                                                               );
                                                                             }}
-                                                                          ></i>
+                                                                          ></i> */}
                                                                           <i
                                                                             className="fa-solid fa-trash"
                                                                             onClick={() => {
@@ -5148,7 +5148,7 @@ function PatientDetail() {
                                                                       </td>
                                                                       <td className="pdf-hide">
                                                                         <div className="action-icon">
-                                                                          {/* <i
+                                                                          <i
                                                                             className="fa-solid fa-pen-to-square"
                                                                             onClick={() => {
                                                                               hadnlcecEditModal(
@@ -5156,7 +5156,7 @@ function PatientDetail() {
                                                                                 info,
                                                                               );
                                                                             }}
-                                                                          ></i> */}
+                                                                          ></i>
                                                                           <i
                                                                             className="fa-solid fa-trash"
                                                                             onClick={() => {
@@ -6401,7 +6401,7 @@ function PatientDetail() {
                                                           )
                                                         }
                                                       >
-                                                        View Doc
+                                                        View
                                                       </button>
                                                     </div>
                                                   ),
@@ -6455,7 +6455,7 @@ function PatientDetail() {
                                                             )
                                                           }
                                                         >
-                                                          View Doc
+                                                          View 
                                                         </button>
                                                       ) : (
                                                         <span></span>

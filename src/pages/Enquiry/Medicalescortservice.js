@@ -209,6 +209,9 @@ export default function Medicalescortservice() {
                 </div>
               </div>
             </div>
+            {
+              row?.doctor_review?.review_notes ?
+
             <div className="col-md-12">
               <div className="main_content">
                 <div className="row gx-3 gy-3">
@@ -289,7 +292,8 @@ export default function Medicalescortservice() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div>:""
+            }
             <div className="col-md-12">
               <div className="main_content">
                 <div className="row gx-3 gy-3">

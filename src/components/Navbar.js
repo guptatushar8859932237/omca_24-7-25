@@ -53,12 +53,12 @@ export default function Navbar() {
               <img className="rounded-circle" src={`${image}${getuser.profileImage}`} width="24" alt="Loading" />
               <span className="status online"></span>
             </span>
-            <span>{localStorage.getItem("Role")}</span>
+            <span>{localStorage.getItem("name")}</span>
           </a>
           <div className="dropdown-menu">
             <Link className="dropdown-item" to="/Admin/profile">My Profile</Link>
             <Link className="dropdown-item" to="/Admin/chnage-password">Change Password</Link>
-            <Link className="dropdown-item" to="/Admin/Activity-tracker">Activity Tracker</Link>
+           {localStorage.getItem("Role")==="Admin"? <Link className="dropdown-item" to="/Admin/Activity-tracker">Activity Tracker</Link>:""}
             {/* <Link className="dropdown-item" to="/Admin/settings">Settings</Link> */}
             <button className="dropdown-item" onClick={handleLogout}>Logout</button>
           </div>

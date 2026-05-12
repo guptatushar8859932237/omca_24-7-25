@@ -278,12 +278,13 @@ export default function EnquiryDetail() {
                 </div>
               </div>
             </div>
-            <div className="col-md-12">
-              <div className="main_content">
+           
                 {row.discussionNotes?.length === 0 ? (
                   ""
                 ) : (
                   <>
+                   <div className="col-md-12">
+              <div className="main_content">
                     <div className="row gx-3">
                       <div className="col-md-12">
                         <div className="comnthis">
@@ -327,13 +328,14 @@ export default function EnquiryDetail() {
                         )}
                       </div>
                     </div>
+                     </div>
+            </div>
                   </>
                 )}
-              </div>
-            </div>
+             
+                {row?.doctorReview?.review_notes ?
             <div className="col-md-12">
               <div className="main_content">
-                {row?.doctorReview?.review_notes ?
                   <div className="row gx-3">
                     <div className="col-md-12">
                       <div className="comnthis">
@@ -389,15 +391,15 @@ export default function EnquiryDetail() {
                       <div className="row gy-3">{renderComments()}</div>
                     </div>
                   </div>
-                  : ""}
               </div>
             </div>
+                  : ""}
+                {row.patient_relation ? (
             <div className="col-md-12">
               <div className="main_content">
                 <div className="comnthis">
                   {row.patient_relation ? <h6>Attendant Details</h6> : ""}
                 </div>
-                {row.patient_relation ? (
                   <div className="row gx-3 gy-3">
                     <div className="col-md-4">
                       <div className="">
@@ -441,11 +443,12 @@ export default function EnquiryDetail() {
                       </div>
                     </div>
                   </div>
+                    </div>
+            </div>
                 ) : (
                   ""
                 )}
-              </div>
-            </div>
+            
           </div>
         </div>
       </div>
