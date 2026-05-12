@@ -702,6 +702,7 @@ function PatientDetail() {
           patientId: location.state.patientId,
           hospitalId: hospitalData.hospital_id,
           hospital_Name: hospitalData.hospital_Name,
+          hospital_email: hospitalData.hospital_email,
           treatment_id: treatmentId,
           note: note,
           mode: statuddropdown,
@@ -755,6 +756,7 @@ function PatientDetail() {
           patientId: location.state.patientId,
           hospitalId: hospitalData.hospital_id,
           hospital_Name: hospitalData.hospital_Name,
+          hospital_email: hospitalData.hospital_email,
           treatment_id: treatmentId,
           note: note,
           mode: statuddropdown,
@@ -7597,6 +7599,7 @@ function PatientDetail() {
 
                         setHospitalData({
                           hospital_Name: value,
+                          hospital_email: matchedHospital.email,
                           hospital_id: matchedHospital
                             ? matchedHospital.hospital_id
                             : "",

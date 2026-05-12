@@ -174,6 +174,7 @@ const { Treatment } = useSelector((state) => state.Treatment);
                     patient_relation: ispatient?.patient_relation || "",
                     patient_relation_no: ispatient?.patient_relation_no || "",
                     user_id: ispatient?.user_id || "",
+                      notificationEnabled: ispatient?.notificationEnabled ,
                   }}
                   validationSchema={basicSchema}
                   //             onSubmit={async (values, { setSubmitting }) => {
@@ -848,6 +849,25 @@ const { Treatment } = useSelector((state) => state.Treatment);
                             />
                           </div>
                         </div>
+                        <div className="col-md-4">
+  <div className="field-set">
+    <label>
+      Enable Notification
+    </label>
+
+    <div className="form-check mt-2">
+      <Field
+        type="checkbox"
+        name="notificationEnabled"
+        className="form-check-input"
+      />
+
+      <label className="form-check-label ms-2">
+        Notification Enabled
+      </label>
+    </div>
+  </div>
+</div>
                         <div className="col-md-12">
                           <div className="">
                             <button

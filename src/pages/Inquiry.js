@@ -769,6 +769,7 @@ export default function Inquiry() {
       formData.append("enquiryId", appointmentData.enquiry_id);
       formData.append("hospital_id", appointmentData.hospital_id);
       formData.append("hospitalName", appointmentData.hospitalName);
+      formData.append("hospital_email", appointmentData.hospital_email);
       formData.append("health_issue", appointmentData.health_issue);
       formData.append("Notes", appointmentData.Notes);
       formData.append("appointment_Date", appointmentData.appointment_Date);
@@ -1424,7 +1425,7 @@ export default function Inquiry() {
                         ...prev,
                         hospital_id: selectedId,
                         hospitalName: selectedHospital?.name || "",
-                        hospitalName: selectedHospital?.name || "",
+                        hospital_email: selectedHospital?.email || "",
                       }));
                     }}
                   >
