@@ -107,6 +107,7 @@ export const AddHospitalForPatient = createAsyncThunk(
 export const AppointmentForPatient = createAsyncThunk(
   "PatientTreatments/AppointmentForPatient",
   async (object, { rejectWithValue }) => {
+    console.log(object)
     try {
       const response = await axios.post(
         `${baseurl}create_appointment/${localStorage.getItem("_id")}`,

@@ -145,6 +145,7 @@ function PatientDetail() {
   const [hospitalData, setHospitalData] = useState({
     hospital_id: "",
     hospital_Name: "",
+    hospital_email: "",
   });
   const [treatmentId, setTreatmentId] = useState("");
   const [hospitalcharge, sethospitalharge] = useState("");
@@ -698,6 +699,7 @@ function PatientDetail() {
     }
     try {
       const result = await dispatch(
+        
         AppointmentForPatient({
           patientId: location.state.patientId,
           hospitalId: hospitalData.hospital_id,
@@ -2471,6 +2473,7 @@ function PatientDetail() {
     setHospitalData({
       hospital_id: info.hospital.details.hospital_id,
       hospital_Name: info.hospital.details.hospital_Name,
+      hospital_email: info.hospital.details.hospital_email,
     });
     const status = info.treatment_status;
     const treatmentName = info.treatment_name;
@@ -7574,7 +7577,7 @@ function PatientDetail() {
 
                         setHospitalData({
                           hospital_Name: value,
-                          hospital_email: matchedHospital.email,
+                          hospital_email: matchedHospital.hospital_email,
                           hospital_id: matchedHospital
                             ? matchedHospital.hospital_id
                             : "",
@@ -9079,3 +9082,63 @@ function PatientDetail() {
   );
 }
 export default PatientDetail;
+// Explain your current project architecture.
+// What is the event loop in Node.js?
+// Difference between synchronous and asynchronous programming?
+// What is callback hell?
+// Difference between Promise and async/await?
+// What is middleware in Express.js?
+// Difference between app.use() and app.get()?
+// What is JWT authentication?
+// Difference between authentication and authorization?
+// How do you secure APIs?
+// What is bcrypt and why do we use it?
+// How does role-based authentication work?
+// Explain complete login flow in MERN stack.
+// What is CORS?
+// Difference between PUT and PATCH?
+// Difference between req.params, req.query, and req.body?
+// How do you handle file uploads in Node.js?
+// What is Multer?
+// How do you implement pagination?
+// How do you implement search functionality?
+// What is MongoDB aggregation?
+// What is indexing in MongoDB?
+// Difference between find() and aggregate()?
+// Difference between SQL and MongoDB?
+// What is populate in MongoDB?
+// Difference between embedded and referenced documents?
+// What is lean() in Mongoose?
+// What are Mongoose hooks?
+// How do you optimize slow APIs?
+// How do you optimize MongoDB queries?
+// What challenges have you faced in your current project?
+// Explain Redux flow.
+// Difference between local state and Redux state?
+// What is Redux Toolkit?
+// What is useEffect?
+// Difference between useMemo and useCallback?
+// What is prop drilling?
+// What is lifting state up?
+// Controlled vs uncontrolled components?
+// What is virtual DOM?
+// Difference between == and ===?
+// Difference between var, let, and const?
+// What is closure in JavaScript?
+// What is hoisting?
+// What is debounce and throttle?
+// Reverse a string without reverse().
+// Find duplicate values in array.
+// Flatten nested array.
+// What is PM2?
+// How do you deploy backend applications?
+// What environment variables do you use in production?
+// How do you handle global error handling?
+// Explain REST API principles.
+// What HTTP status codes do you commonly use?
+// Difference between monolithic and microservices architecture?
+// How do you handle large datasets in frontend tables?
+// Explain one bug you solved recently.
+// How do you coordinate with frontend/backend team members?
+// Why are you switching your current company?
+// Why should we hire you?
