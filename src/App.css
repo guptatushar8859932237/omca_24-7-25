@@ -7704,3 +7704,10 @@ input:checked + .slider:before {
 .checkbox-align {
   position: unset;
 }
+.action-icon .fa-calendar-plus {
+  font-size: 12px;
+  color: var(--bs-primary-color);
+  margin-right: 5px;
+  cursor: pointer;
+  vertical-align: middle;
+}

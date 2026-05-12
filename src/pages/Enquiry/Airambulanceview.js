@@ -422,7 +422,7 @@ export default function Airambulanceview() {
                   <div className="col-md-4">
                     <div className="">
                       <h6>Images</h6>
-                      <p>
+                 
                         {Array.isArray(row?.doctor_review?.images) &&
                           row?.doctor_review?.images.length > 0
                           ? row.doctor_review.images.map((rep, index) => (
@@ -436,7 +436,7 @@ export default function Airambulanceview() {
                             </button>
                           ))
                           : "-"}
-                      </p>
+                    
                     </div>
                   </div>
                   <div className="col-md-12 gy-0">
