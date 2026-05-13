@@ -7394,7 +7394,6 @@ function PatientDetail() {
                   </div>
                 </Box>
               </Box>
-
               <DialogActions className="submit-main">
                 <Button
                   type="button"
@@ -7481,7 +7480,6 @@ function PatientDetail() {
                       value={treatmentId}
                     />
                   </div>
-
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"
