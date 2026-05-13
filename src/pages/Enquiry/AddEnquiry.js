@@ -588,7 +588,6 @@ export default function AddEnquiry() {
                                 onChange={(e) => {
                                   const files = Array.from(e.target.files);
                                   const validFiles = [];
-
                                   for (const file of files) {
                                     if (!allowedTypes.includes(file.type)) {
                                       Swal.fire(
@@ -599,7 +598,6 @@ export default function AddEnquiry() {
                                       e.target.value = "";
                                       return;
                                     }
-
                                     if (file.size > 2 * 1024 * 1024) {
                                       Swal.fire(
                                         "File too large!",
@@ -609,14 +607,11 @@ export default function AddEnquiry() {
                                       e.target.value = "";
                                       return;
                                     }
-
                                     validFiles.push(file);
                                   }
-
                                   setFieldValue("patient_id_proof", validFiles);
                                 }}
                               />
-
                               <ErrorMessage
                                 name="patient_id_proof"
                                 component="div"

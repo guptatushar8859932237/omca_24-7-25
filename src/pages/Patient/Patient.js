@@ -872,6 +872,9 @@ useEffect(() => {
                                             <MenuItem value="Travelled">
                                               Travelled
                                             </MenuItem>
+                                            <MenuItem value="In_Process">
+                                              In Process
+                                            </MenuItem>
                                             <MenuItem value="Confirmed">
                                               Confirmed
                                             </MenuItem>

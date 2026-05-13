@@ -422,43 +422,176 @@ function PatientDetail() {
   useEffect(() => {
     GetActiveService();
   }, []);
-  const handlesubmitdata = async () => {
-    const servipostdata = {
-      services: {
-        serviceId: valuedata,
-        price: data.price,
-        startTime: datedata.start_date,
-        endTime: datedata.end_date,
-      },
-    };
-    try {
-      const response = await axios.post(
-        `${baseurl}patient_extra_service/${gettreatmentserID}`,
-        servipostdata,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        },
-      );
-      if (response.data.success === true) {
-        setOpenModal(false);
-        dispatch(GetPatientTreatments({ id: location.state.patientId }));
-        Swal.fire("Service Added successfully!", "", "success");
-      }
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        "Something went wrong!";
-      Swal.fire({
-        title: "Error",
-        text: errorMessage,
-        icon: "error",
-      });
-    }
+  // const handlesubmitdata = async () => {
+  //   const servipostdata = {
+  //     services: {
+  //       serviceId: valuedata,
+  //       price: data.price,
+  //       startTime: datedata.start_date,
+  //       endTime: datedata.end_date,
+  //     },
+  //   };
+  //   try {
+  //     const response = await axios.post(
+  //       `${baseurl}patient_extra_service/${gettreatmentserID}`,
+  //       servipostdata,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       },
+  //     );
+  //     if (response.data.success === true) {
+  //       setOpenModal(false);
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //       Swal.fire("Service Added successfully!", "", "success");
+  //     }
+  //   } catch (error) {
+  //     const errorMessage =
+  //       error?.response?.data?.message ||
+  //       error?.response?.data?.error ||
+  //       "Something went wrong!";
+  //     Swal.fire({
+  //       title: "Error",
+  //       text: errorMessage,
+  //       icon: "error",
+  //     });
+  //   }
+  // };
+//   const handlesubmitdata = async () => {
+//   const priceValue = Number(data.price);
+//   if (!data.price || isNaN(priceValue) || priceValue <= 0) {
+//     Swal.fire({
+//       title: "Error",
+//       text: "Price must be greater than 0",
+//       icon: "error",
+//     });
+//     return;
+//   }
+//   const servipostdata = {
+//     services: {
+//       serviceId: valuedata,
+//       price: priceValue,
+//       startTime: datedata.start_date,
+//       endTime: datedata.end_date,
+//     },
+//   };
+//   try {
+//     const response = await axios.post(
+//       `${baseurl}patient_extra_service/${gettreatmentserID}`,
+//       servipostdata,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${localStorage.getItem("token")}`,
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+
+//     if (response.data.success === true) {
+//       setOpenModal(false);
+
+//       dispatch(
+//         GetPatientTreatments({
+//           id: location.state.patientId,
+//         })
+//       );
+
+//       Swal.fire("Service Added successfully!", "", "success");
+//     }
+//   } catch (error) {
+//     const errorMessage =
+//       error?.response?.data?.message ||
+//       error?.response?.data?.error ||
+//       "Something went wrong!";
+
+//     Swal.fire({
+//       title: "Error",
+//       text: errorMessage,
+//       icon: "error",
+//     });
+//   }
+// };
+const handlesubmitdata = async () => {
+  const priceValue = Number(data.price);
+
+  // Price Validation
+  if (!data.price || isNaN(priceValue) || priceValue <= 0) {
+    Swal.fire({
+      title: "Error",
+      text: "Price must be greater than 0",
+      icon: "error",
+    });
+    return;
+  }
+  // Date Validation
+  const startDate = new Date(datedata.start_date);
+  const endDate = new Date(datedata.end_date);
+
+  if (!datedata.start_date || !datedata.end_date) {
+    Swal.fire({
+      title: "Error",
+      text: "Please select both start date and end date",
+      icon: "error",
+    });
+    return;
+  }
+
+  if (startDate >= endDate) {
+    Swal.fire({
+      title: "Error",
+      text: "Start date must be smaller than end date",
+      icon: "error",
+    });
+    return;
+  }
+
+  const servipostdata = {
+    services: {
+      serviceId: valuedata,
+      price: priceValue,
+      startTime: datedata.start_date,
+      endTime: datedata.end_date,
+    },
   };
+
+  try {
+    const response = await axios.post(
+      `${baseurl}patient_extra_service/${gettreatmentserID}`,
+      servipostdata,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.data.success === true) {
+      setOpenModal(false);
+
+      dispatch(
+        GetPatientTreatments({
+          id: location.state.patientId,
+        })
+      );
+
+      Swal.fire("Service Added successfully!", "", "success");
+    }
+  } catch (error) {
+    const errorMessage =
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      "Something went wrong!";
+
+    Swal.fire({
+      title: "Error",
+      text: errorMessage,
+      icon: "error",
+    });
+  }
+};
   useEffect(() => {
     gettreatment11();
   }, []);
@@ -1590,62 +1723,178 @@ function PatientDetail() {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
   };
-  const handlesubmitdataserviceEdit = async () => {
-    const payload = {
-      _id: data._id,
-      duration: data.duration,
-      endTime: data.endTime,
-      price: Number(data.price),
-      service_type: data.service_type,
-      serviceId: data.serviceId,
-      serviceName: data.serviceName,
-      startTime: data.startTime,
-    };
-    try {
-      const response = await axios.put(
-        `${baseurl}edit_patient_extra_service/${treatmentIDservice}/${data.serviceId}`,
-        payload, // (agar body bhejni hai)
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
+  // const handlesubmitdataserviceEdit = async () => {
+  //   const payload = {
+  //     _id: data._id,
+  //     duration: data.duration,
+  //     endTime: data.endTime,
+  //     price: Number(data.price),
+  //     service_type: data.service_type,
+  //     serviceId: data.serviceId,
+  //     serviceName: data.serviceName,
+  //     startTime: data.startTime,
+  //   };
+  //   try {
+  //     const response = await axios.put(
+  //       `${baseurl}edit_patient_extra_service/${treatmentIDservice}/${data.serviceId}`,
+  //       payload, // (agar body bhejni hai)
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       },
+  //     );
+  //     if (response.data?.success) {
+  //       hadnlcecEcloseeModal();
+  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: "Updated!",
+  //         text: response.data.message || "Service updated successfully",
+  //       });
+  //     } else {
+  //       Swal.fire({
+  //         icon: "warning",
+  //         title: "Warning",
+  //         text: response.data?.message || "Update failed",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     const errorMessage =
+  //       error?.response?.data?.message ||
+  //       error?.message ||
+  //       "Something went wrong!";
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: errorMessage,
+  //       didOpen: () => {
+  //         const swalContainer = document.querySelector(".swal2-container");
+  //         if (swalContainer) {
+  //           swalContainer.style.zIndex = "1500"; // MUI Dialog se zyada
+  //         }
+  //       },
+  //     });
+  //   }
+  // };
+ const handlesubmitdataserviceEdit = async () => {
+  // Convert price to number
+  const priceValue = Number(data.price);
+  // Price Validation
+  if (!data.price || isNaN(priceValue) || priceValue <= 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Price must be greater than 0",
+      didOpen: () => {
+        const swalContainer = document.querySelector(".swal2-container");
+        if (swalContainer) {
+          swalContainer.style.zIndex = "1500";
+        }
+      },
+    });
+    return;
+  }
+  // Date Mandatory Validation
+  if (!data.startTime || !data.endTime) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Both start date and end date are mandatory",
+      didOpen: () => {
+        const swalContainer = document.querySelector(".swal2-container");
+        if (swalContainer) {
+          swalContainer.style.zIndex = "1500";
+        }
+      },
+    });
+    return;
+  }
+  // Date Comparison Validation
+  const startDate = new Date(data.startTime);
+  const endDate = new Date(data.endTime);
+  if (startDate >= endDate) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Start date must be smaller than end date",
+      didOpen: () => {
+        const swalContainer = document.querySelector(".swal2-container");
+        if (swalContainer) {
+          swalContainer.style.zIndex = "1500";
+        }
+      },
+    });
+    return;
+  }
+  const payload = {
+    _id: data._id,
+    duration: data.duration,
+    endTime: data.endTime,
+    price: priceValue,
+    service_type: data.service_type,
+    serviceId: data.serviceId,
+    serviceName: data.serviceName,
+    startTime: data.startTime,
+  };
+  try {
+    const response = await axios.put(
+      `${baseurl}edit_patient_extra_service/${treatmentIDservice}/${data.serviceId}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
         },
-      );
-      if (response.data?.success) {
-        hadnlcecEcloseeModal();
-        dispatch(GetPatientTreatments({ id: location.state.patientId }));
-        Swal.fire({
-          icon: "success",
-          title: "Updated!",
-          text: response.data.message || "Service updated successfully",
-        });
-      } else {
-        Swal.fire({
-          icon: "warning",
-          title: "Warning",
-          text: response.data?.message || "Update failed",
-        });
       }
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong!";
+    );
+    if (response.data?.success) {
+      hadnlcecEcloseeModal();
+      dispatch(
+        GetPatientTreatments({
+          id: location.state.patientId,
+        })
+      );
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: errorMessage,
-        didOpen: () => {
-          const swalContainer = document.querySelector(".swal2-container");
-          if (swalContainer) {
-            swalContainer.style.zIndex = "1500"; // MUI Dialog se zyada
-          }
-        },
+        icon: "success",
+        title: "Updated!",
+        text:
+          response.data.message ||
+          "Service updated successfully",
+      });
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Warning",
+        text:
+          response.data?.message ||
+          "Update failed",
       });
     }
-  };
+  } catch (error) {
+    const errorMessage =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Something went wrong!";
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: errorMessage,
+      didOpen: () => {
+        const swalContainer =
+          document.querySelector(".swal2-container");
+
+        if (swalContainer) {
+          swalContainer.style.zIndex = "1500";
+        }
+      },
+    });
+  }
+};
   const handledeltePatientserveice = async (a, b, index) => {
+    console.log(a,b)
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -1666,7 +1915,7 @@ function PatientDetail() {
     if (!result.isConfirmed) return;
     try {
       const response = await axios.delete(
-        `${baseurl}delete_patient_extra_service/${b.treatment_id}/${index}`,
+        `${baseurl}delete_patient_extra_service/${b.treatment_id}/${a.serviceId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -2060,9 +2309,7 @@ function PatientDetail() {
     if (!fieldValue) {
       newErrors.treatment = "Treatment is required";
     }
-    if (!drreviewnotes) {
-      newErrors.drreviewnotes = "Doctor Notes is required";
-    }
+   
     if (!hospitalId || hospitalId.length === 0) {
       newErrors.hospitals = "Please select at least one hospital";
     }
@@ -2845,48 +3092,115 @@ function PatientDetail() {
       });
     }
   };
-  const addchargeapiHospital = async () => {
-    const payload = {
-      service_name: hospitalCharge.service_name,
-      price: hospitalCharge.price,
-      date: hospitalCharge.date,
-    };
+  // const addchargeapiHospital = async () => {
+  //   const payload = {
+  //     service_name: hospitalCharge.service_name,
+  //     price: hospitalCharge.price,
+  //     date: hospitalCharge.date,
+  //   };
 
-    try {
-      const response = await axios.post(
-        `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
-        payload, // ✅ data goes here
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
-      );
+  //   try {
+  //     const response = await axios.post(
+  //       `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
+  //       payload, // ✅ data goes here
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       },
+  //     );
 
-      console.log(response.data);
-      handleclickclosecharge();
-      setHospitalCharge("");
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      // ✅ Success Swal
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Hospital charge added successfully!",
-        confirmButtonColor: "#3085d6",
-      });
-    } catch (error) {
-      console.log(error);
+  //     console.log(response.data);
+  //     handleclickclosecharge();
+  //     setHospitalCharge("");
+  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //     // ✅ Success Swal
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Success",
+  //       text: "Hospital charge added successfully!",
+  //       confirmButtonColor: "#3085d6",
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
 
-      // ❌ Error Swal
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error?.response?.data?.message || "Something went wrong!",
-        confirmButtonColor: "#d33",
-      });
-    }
+  //     // ❌ Error Swal
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: error?.response?.data?.message || "Something went wrong!",
+  //       confirmButtonColor: "#d33",
+  //     });
+  //   }
+  // };
+const addchargeapiHospital = async () => {
+  // Convert price to number
+  const priceValue = Number(hospitalCharge.price);
+
+  // Validation
+  if (!hospitalCharge.price || isNaN(priceValue) || priceValue <= 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Price must be greater than 0",
+      confirmButtonColor: "#d33",
+    });
+
+    return; // रोक देगा API call
+  }
+
+  const payload = {
+    service_name: hospitalCharge.service_name,
+    price: priceValue,
+    date: hospitalCharge.date,
   };
 
+  try {
+    const response = await axios.post(
+      `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    console.log(response.data);
+
+    handleclickclosecharge();
+
+    setHospitalCharge({
+      service_name: "",
+      price: "",
+      date: "",
+    });
+
+    dispatch(
+      GetPatientTreatments({
+        id: location.state.patientId,
+      })
+    );
+
+    // Success Swal
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Hospital charge added successfully!",
+      confirmButtonColor: "#3085d6",
+    });
+  } catch (error) {
+    console.log(error);
+
+    // Error Swal
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error?.response?.data?.message || "Something went wrong!",
+      confirmButtonColor: "#d33",
+    });
+  }
+};
   const handledeedit123222 = async (info, index) => {
     console.log(info, index);
 
@@ -2945,44 +3259,111 @@ function PatientDetail() {
   };
 
   const addchargeapipharmacy = async () => {
-    const payload = {
-      service_name: pharmacyvalue.service_name,
-      price: pharmacyvalue.price,
-      date: pharmacyvalue.date,
-    };
-    try {
-      const response = await axios.post(
-        `${baseurl}addPharmacyCharge/${treatmntidPharmacy}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ token added
-          },
-        },
-      );
-      getDataapi3(treatmntidPharmacy);
-      setPharmacyvalue("");
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      handleclickpcloseacycharge();
-      // ✅ Success
-      Swal.fire({
-        title: "Success!",
-        text: response?.data?.message || "Charge added successfully",
-        icon: "success",
-      });
-    } catch (error) {
-      console.log(error);
+  // Convert price to number
+  const priceValue = Number(pharmacyvalue.price);
 
-      // ❌ Error
-      Swal.fire({
-        title: "Error!",
-        text:
-          error?.response?.data?.message ||
-          "Something went wrong, please try again",
-        icon: "error",
-      });
-    }
+  // Validation
+  if (!pharmacyvalue.price || isNaN(priceValue) || priceValue <= 0) {
+    Swal.fire({
+      title: "Validation Error!",
+      text: "Price must be greater than 0",
+      icon: "error",
+    });
+
+    return; // Stop API call
+  }
+
+  const payload = {
+    service_name: pharmacyvalue.service_name,
+    price: priceValue,
+    date: pharmacyvalue.date,
   };
+
+  try {
+    const response = await axios.post(
+      `${baseurl}addPharmacyCharge/${treatmntidPharmacy}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    getDataapi3(treatmntidPharmacy);
+
+    setPharmacyvalue({
+      service_name: "",
+      price: "",
+      date: "",
+    });
+
+    dispatch(
+      GetPatientTreatments({
+        id: location.state.patientId,
+      })
+    );
+
+    handleclickpcloseacycharge();
+
+    // Success
+    Swal.fire({
+      title: "Success!",
+      text: response?.data?.message || "Charge added successfully",
+      icon: "success",
+    });
+  } catch (error) {
+    console.log(error);
+
+    // Error
+    Swal.fire({
+      title: "Error!",
+      text:
+        error?.response?.data?.message ||
+        "Something went wrong, please try again",
+      icon: "error",
+    });
+  }
+};
+  // const addchargeapipharmacy = async () => {
+  //   const payload = {
+  //     service_name: pharmacyvalue.service_name,
+  //     price: pharmacyvalue.price,
+  //     date: pharmacyvalue.date,
+  //   };
+  //   try {
+  //     const response = await axios.post(
+  //       `${baseurl}addPharmacyCharge/${treatmntidPharmacy}`,
+  //       payload,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ token added
+  //         },
+  //       },
+  //     );
+  //     getDataapi3(treatmntidPharmacy);
+  //     setPharmacyvalue("");
+  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //     handleclickpcloseacycharge();
+  //     // ✅ Success
+  //     Swal.fire({
+  //       title: "Success!",
+  //       text: response?.data?.message || "Charge added successfully",
+  //       icon: "success",
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+
+  //     // ❌ Error
+  //     Swal.fire({
+  //       title: "Error!",
+  //       text:
+  //         error?.response?.data?.message ||
+  //         "Something went wrong, please try again",
+  //       icon: "error",
+  //     });
+  //   }
+  // };
   const handleeditpharmacycharge = (item, info) => {
     console.log(item, info);
     setTreatmntidPharmacy(info.treatment_id);
@@ -5066,7 +5447,7 @@ function PatientDetail() {
                                                                       </td>
                                                                       <td className="pdf-hide">
                                                                         <div className="action-icon">
-                                                                          {/* <i
+                                                                          <i
                                                                             className="fa-solid fa-pen-to-square"
                                                                             onClick={() => {
                                                                               hadnlcecEditModal(
@@ -5074,7 +5455,7 @@ function PatientDetail() {
                                                                                 info,
                                                                               );
                                                                             }}
-                                                                          ></i> */}
+                                                                          ></i>
                                                                           <i
                                                                             className="fa-solid fa-trash"
                                                                             onClick={() => {
@@ -5159,7 +5540,7 @@ function PatientDetail() {
                                                                       </td>
                                                                       <td className="pdf-hide">
                                                                         <div className="action-icon">
-                                                                          <i
+                                                                          {/* <i
                                                                             className="fa-solid fa-pen-to-square"
                                                                             onClick={() => {
                                                                               hadnlcecEditModal(
@@ -5167,7 +5548,7 @@ function PatientDetail() {
                                                                                 info,
                                                                               );
                                                                             }}
-                                                                          ></i>
+                                                                          ></i> */}
                                                                           <i
                                                                             className="fa-solid fa-trash"
                                                                             onClick={() => {
@@ -6997,7 +7378,7 @@ function PatientDetail() {
                 </div>
                 <div className="col-md-12">
                   <div className="field-set">
-                    <label>Doctor Notes<span className="text-danger">*</span></label>
+                    <label>Doctor Notes<span className="text-danger"></span></label>
                     <select
                       name="doctorReviewId"
                       className="form-control"
@@ -8224,6 +8605,8 @@ function PatientDetail() {
                       <option>Select</option>
                       <option value="Cash">Cash</option>
                       <option value="UPI">Online via UPI</option>
+                      <option value="foundation">Foundation</option>
+                      <option value="Internet banking">Internet banking</option>
                       <option value="Via Net Banking">Via Net Banking</option>
                       <option value="Credit/Debit Card">
                         Debit Card / Credit Card

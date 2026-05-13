@@ -351,6 +351,8 @@ export default function AddPatientTreatment() {
                           <option value="">Select a payment method</option>
                           <option value="Cash">Cash</option>
                           <option value="UPI">Online via UPI</option>
+                          <option value="foundation">foundation</option>
+                          <option value="Internet banking">Internet Banking</option>
                           <option value="Credit/Debit Card">
                             Debit / Credit Card
                           </option>
