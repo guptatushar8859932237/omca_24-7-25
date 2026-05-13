@@ -19,7 +19,7 @@ import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 export default function EditPatient() {
   const navigate = useNavigate();
   const location = useLocation();
-const { Treatment } = useSelector((state) => state.Treatment);
+  const { Treatment } = useSelector((state) => state.Treatment);
   const dispatch = useDispatch();
   const [previewImage, setPreviewImage] = useState(null);
   const { patient, loading, error } = useSelector((state) => state.patient);
@@ -32,8 +32,8 @@ const { Treatment } = useSelector((state) => state.Treatment);
     // console.log(error, Countries);
   }, [dispatch]);
   useEffect(() => {
-  dispatch(GetAllTreatment());
-}, [dispatch]);
+    dispatch(GetAllTreatment());
+  }, [dispatch]);
   useEffect(() => {
     dispatch(GetAllPatients());
     console.log(error, patient);
@@ -51,11 +51,11 @@ const { Treatment } = useSelector((state) => state.Treatment);
   const basicSchema = Yup.object().shape({
     patient_name: Yup.string().required("Patient name is required"),
     age: Yup.number()
-  .typeError("Age must be a number")
-  .required("Age is required")
-  .integer("Age must be a whole number") // ❌ no decimal
-  .moreThan(0, "Age must be greater than 0") // 🔥 blocks 0 & negative
-  .max(120, "Age cannot exceed 120"),
+      .typeError("Age must be a number")
+      .required("Age is required")
+      .integer("Age must be a whole number") // ❌ no decimal
+      .moreThan(0, "Age must be greater than 0") // 🔥 blocks 0 & negative
+      .max(120, "Age cannot exceed 120"),
     gender: Yup.string().required("Gender is required"),
     patientNumber: Yup.string().required("Patient ID is required"),
     created_at: Yup.string().required("Date is required"),
@@ -69,7 +69,7 @@ const { Treatment } = useSelector((state) => state.Treatment);
         /^[0-9]{8,15}$/,
         "Emergency Contact Number be Digit and between 8-15 digits",
       )
-      ,
+    ,
     patient_relation_no: Yup.string().matches(
       /^[0-9]{8,15}$/,
       "Patient Relation Number be Digit and between 8-15 digits",
@@ -174,7 +174,7 @@ const { Treatment } = useSelector((state) => state.Treatment);
                     patient_relation: ispatient?.patient_relation || "",
                     patient_relation_no: ispatient?.patient_relation_no || "",
                     user_id: ispatient?.user_id || "",
-                      notificationEnabled: ispatient?.notificationEnabled ,
+                    notificationEnabled: ispatient?.notificationEnabled,
                   }}
                   validationSchema={basicSchema}
                   //             onSubmit={async (values, { setSubmitting }) => {
@@ -260,8 +260,8 @@ const { Treatment } = useSelector((state) => state.Treatment);
                         }),
                       ).unwrap();
                       formData.append("from", "crm");
-                      const response = await axios.post(`${AdminBaseUrl1}user_update_profile`,formData)
-                        console.log(response)
+                      const response = await axios.post(`${AdminBaseUrl1}user_update_profile`, formData)
+                      console.log(response)
                       Swal.fire(
                         "Success!",
                         "Patient updated successfully",
@@ -280,7 +280,7 @@ const { Treatment } = useSelector((state) => state.Treatment);
                     }
                   }}
                 >
-                  {({ isSubmitting, values, setFieldValue,errors, touched  }) => (
+                  {({ isSubmitting, values, setFieldValue, errors, touched }) => (
                     <Form>
                       <div className="row">
                         <div className="col-md-4">
@@ -748,39 +748,39 @@ const { Treatment } = useSelector((state) => state.Treatment);
     />
   </div>
 </div> */}
- <div className="col-md-4">
-   <div className="field-set">
-   <label>
+                        <div className="col-md-4">
+                          <div className="field-set">
+                            <label>
                               Treatment Name<span className="text-danger"></span>
                             </label>
-<Autocomplete
-  options={Treatment || []}
-  getOptionLabel={(option) => option.name || ""}
-  value={
-    Treatment?.find(
-      (item) => item.name === values.patientDisease
-    ) || null
-  }
-  onChange={(e, value) => {
-    setFieldValue("patientDisease", value?.name || "");
-    setFieldValue("disease_id", value?.id || "");
-  }}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      placeholder="Select Treatment"
-      error={Boolean(touched.patientDisease && errors.patientDisease)}
-      helperText={touched.patientDisease && errors.patientDisease}
-    />
-  )}
-  sx={{
-    "& .MuiOutlinedInput-root": {
-      padding: "0px",
-    },
-  }}
-/>
-</div>
-</div>
+                            <Autocomplete
+                              options={Treatment || []}
+                              getOptionLabel={(option) => option.name || ""}
+                              value={
+                                Treatment?.find(
+                                  (item) => item.name === values.patientDisease
+                                ) || null
+                              }
+                              onChange={(e, value) => {
+                                setFieldValue("patientDisease", value?.name || "");
+                                setFieldValue("disease_id", value?.id || "");
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  placeholder="Select Treatment"
+                                  error={Boolean(touched.patientDisease && errors.patientDisease)}
+                                  helperText={touched.patientDisease && errors.patientDisease}
+                                />
+                              )}
+                              sx={{
+                                "& .MuiOutlinedInput-root": {
+                                  padding: "0px",
+                                },
+                              }}
+                            />
+                          </div>
+                        </div>
                         <div className="col-md-4">
                           <div className="field-set">
                             <label>
@@ -850,24 +850,21 @@ const { Treatment } = useSelector((state) => state.Treatment);
                           </div>
                         </div>
                         <div className="col-md-4">
-  <div className="field-set">
-    <label>
-      Enable Notification
-    </label>
+                          <div className="field-set">
+                            <label>Notification</label>
+                            <div className="form-check mt-2">
+                              <Field
+                                type="checkbox"
+                                name="notificationEnabled"
+                                className="form-check-input"
+                              />
 
-    <div className="form-check mt-2">
-      <Field
-        type="checkbox"
-        name="notificationEnabled"
-        className="form-check-input"
-      />
-
-      <label className="form-check-label ms-2">
-        Notification Enabled
-      </label>
-    </div>
-  </div>
-</div>
+                              <label className="form-check-label ms-2">
+                                Notification Enabled
+                              </label>
+                            </div>
+                          </div>
+                        </div>
                         <div className="col-md-12">
                           <div className="">
                             <button

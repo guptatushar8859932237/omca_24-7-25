@@ -879,7 +879,7 @@ export default function Inquiry() {
         console.log(response.data.data);
         setHospitalList(response.data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const getUserId = async () => {
     try {
@@ -1109,23 +1109,22 @@ export default function Inquiry() {
                           </TableCell>
                           {/* <TableCell>Status</TableCell> */}
                           <TableCell>Actions</TableCell>
-                          <TableCell>Notes</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
                         ).length > 0 ? (
                           (pdfRowLimit
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage,
-                              )
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
                           ).map((info, i) => (
                             <TableRow
                               role="checkbox"
@@ -1194,7 +1193,7 @@ export default function Inquiry() {
                                           : info.Enquiry_status === "Hold"
                                             ? "2"
                                             : info.Enquiry_status ===
-                                                "Follow-Up"
+                                              "Follow-Up"
                                               ? "3"
                                               : info.Enquiry_status === "Dead"
                                                 ? "4"
@@ -1221,6 +1220,28 @@ export default function Inquiry() {
                                 )}
                               </TableCell>
                               <TableCell className="action-icon">
+                                {tabValue === 0 ? (
+                                  <>
+                                    <i
+                                      className="fa-solid fa-notes-medical"
+                                      onClick={(e) =>
+                                        handleClickOpen2(e, info.enquiryId)
+                                      }
+                                    ></i>
+                                  </>
+                                ) : (
+                                  ""
+                                )}
+                                <i className="fa-solid fa-stethoscope"
+                                  onClick={(e) =>
+                                    handleClickOpen4(e, info.enquiryId, info)
+                                  }
+                                ></i>
+                                <i className="fa-solid fa-calendar-plus"
+                                  title="Add Appointment"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => handleOpenAppointment(info)}
+                                ></i>
                                 <VisibilityIcon
                                   className="eye-icon"
                                   onClick={(e) => ViewDetail(e, tabValue, info)}
@@ -1235,11 +1256,11 @@ export default function Inquiry() {
                                     ></i>
                                     {localStorage.getItem("Role") ===
                                       "Admin" && (
-                                      <i
-                                        className="fa-solid fa-trash"
-                                        onClick={() => handledelete(info)}
-                                      ></i>
-                                    )}
+                                        <i
+                                          className="fa-solid fa-trash"
+                                          onClick={() => handledelete(info)}
+                                        ></i>
+                                      )}
                                   </>
                                 ) : (
                                   <i
@@ -1247,32 +1268,6 @@ export default function Inquiry() {
                                     onClick={() => handleDeleteExternal(info)}
                                   ></i>
                                 )}
-                              </TableCell>
-                              <TableCell className="action-icon">
-                                {tabValue === 0 ? (
-                                  <>
-                                    <i
-                                      className="fa-solid fa-notes-medical"
-                                      onClick={(e) =>
-                                        handleClickOpen2(e, info.enquiryId)
-                                      }
-                                    ></i>
-                                  </>
-                                ) : (
-                                  ""
-                                )}
-                                <i
-                                  className="fa-solid fa-stethoscope"
-                                  onClick={(e) =>
-                                    handleClickOpen4(e, info.enquiryId, info)
-                                  }
-                                ></i>
-                                <i
-                                  className="fa-solid fa-calendar-plus"
-                                  title="Add Appointment"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => handleOpenAppointment(info)}
-                                ></i>
                               </TableCell>
                             </TableRow>
                           ))
@@ -1397,17 +1392,14 @@ export default function Inquiry() {
           maxWidth="sm"
         >
           <div className="main-card-header">
-            <h6>Add Appointment</h6>
+            <div className="note-hd">
+              <h6>Add Appointment</h6>
+            </div>
             <div className="cross-icon" onClick={handleCloseAppointment}>
               <i className="fa-solid fa-xmark"></i>
             </div>
           </div>
-          <DialogContent
-            sx={{
-              maxHeight: "70vh", // 👈 height limit
-              overflowY: "auto", // 👈 scroll enable
-            }}
-          >
+          <DialogContent className="view-table-detail">
             <Box className="contact-form">
               <div className="field-set mb-2">
                 <FormControl fullWidth size="small">
@@ -1427,6 +1419,13 @@ export default function Inquiry() {
                         hospitalName: selectedHospital?.name || "",
                         hospital_email: selectedHospital?.email || "",
                       }));
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          maxHeight: 250,
+                        },
+                      },
                     }}
                   >
                     {hospitalList.map((item) => (
@@ -1503,15 +1502,12 @@ export default function Inquiry() {
                   </div>
                 )}
               </div>
+              <DialogActions className="submit-main">
+                <Button onClick={handleCloseAppointment}>Cancel</Button>
+                <Button variant="contained" onClick={handleSubmitAppointment}>Submit</Button>
+              </DialogActions>
             </Box>
           </DialogContent>
-
-          <DialogActions>
-            <Button onClick={handleCloseAppointment}>Cancel</Button>
-            <Button variant="contained" onClick={handleSubmitAppointment}>
-              Submit
-            </Button>
-          </DialogActions>
         </Dialog>
       </React.Fragment>
       <React.Fragment>
