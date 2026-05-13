@@ -7711,3 +7711,10 @@ input:checked + .slider:before {
   cursor: pointer;
   vertical-align: middle;
 }
+
+.patientnotes {
+  margin: 0px;
+  border: 0px;
+  box-shadow: unset;
+  height: 100%;
+}
