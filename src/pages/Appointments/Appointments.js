@@ -692,8 +692,15 @@ export default function Appointments() {
                                     : pageAPP * rowsPerPageAPP + i + 1}
                                 </TableCell>
                                 <TableCell>{info.patientId}</TableCell>
-                                <TableCell>{info.patientName}</TableCell>
-                                <TableCell>{info.disease_name}</TableCell>
+                                 <TableCell title={info?.patientName}>
+  {info?.patientName?.slice(0, 12)}
+  {info?.patientName?.length > 12 ? "..." : ""}
+</TableCell>
+                                {/* <TableCell>{info.patientName}</TableCell> */}
+                              <TableCell title={info?.disease_name}>
+  {info?.disease_name?.slice(0, 12)}
+  {info?.disease_name?.length > 12 ? "..." : ""}
+</TableCell>
                                 <TableCell>{info.appointmentId}</TableCell>
                                 <TableCell>
                                   {new Date(
@@ -707,7 +714,11 @@ export default function Appointments() {
                                     minute: "2-digit",
                                   })}
                                 </TableCell>
-                                <TableCell>{info.Hospital_name}</TableCell>
+                                <TableCell title={info?.Hospital_name}>
+  {info?.Hospital_name?.slice(0, 12)}
+  {info?.Hospital_name?.length > 12 ? "..." : ""}
+</TableCell>
+                                {/* <TableCell>{info.Hospital_name}</TableCell> */}
                                 <TableCell>
                                   <FormControl
                                     sx={{ m: 1, minWidth: 120 }}
@@ -920,7 +931,11 @@ export default function Appointments() {
                                     ? i + 1
                                     : pageAPP * rowsPerPageAPP + i + 1}
                                 </TableCell>
-                                <TableCell>{info.name}</TableCell>
+                                 <TableCell title={info?.name}>
+  {info?.name?.slice(0, 12)}
+  {info?.name?.length > 12 ? "..." : ""}
+</TableCell>
+                                {/* <TableCell>{info.name}</TableCell> */}
                                 <TableCell>{info.email}</TableCell>
                                 <TableCell>{info.city}</TableCell>
                                 <TableCell>{info.health_issue}</TableCell>
@@ -1060,12 +1075,20 @@ export default function Appointments() {
                                 <TableCell>
                                   {pageENQ * rowsPerPageENQ + i + 1}
                                 </TableCell>
-                                <TableCell>{item?.patientName}</TableCell>
+                                {/* <TableCell>{item?.patientName}</TableCell> */}
+                                 <TableCell title={item?.patientName}>
+  {item?.patientName?.slice(0, 20)}
+  {item?.patientName?.length > 20 ? "..." : ""}
+</TableCell>
                                 {/* <TableCell>
                                   {item?.hospitalName.slice(0, 20) + "..."}
                                 </TableCell> */}
                                 <TableCell>{item?.health_issue}</TableCell>
-                                <TableCell>{item?.treatment_name}</TableCell>
+                                <TableCell title={item?.treatment_name}>
+  {item?.treatment_name?.slice(0, 20)}
+  {item?.treatment_name?.length > 20 ? "..." : ""}
+</TableCell>
+                                {/* <TableCell>{item?.treatment_name}</TableCell> */}
                                 <TableCell>
                                   {new Date(
                                     item?.appointment_Date,

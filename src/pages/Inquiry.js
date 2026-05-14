@@ -869,6 +869,8 @@ export default function Inquiry() {
       id: item.id,
       raw: item,
       enq_userName: item.name,
+      hasAppointment: item.hasAppointment,
+      hasDoctorReview: item.hasDoctorReview,
       enq_email: item.email,
     }));
   };
@@ -1125,8 +1127,11 @@ export default function Inquiry() {
                               page * rowsPerPage,
                               page * rowsPerPage + rowsPerPage,
                             )
-                          ).map((info, i) => (
-                            <TableRow
+                          ).map((info, i) => {
+                            console.log(info)
+                            return(
+                              <>
+                               <TableRow
                               role="checkbox"
                               tabIndex={-1}
                               key={info.code}
@@ -1232,16 +1237,19 @@ export default function Inquiry() {
                                 ) : (
                                   ""
                                 )}
-                                <i className="fa-solid fa-stethoscope"
+                                { info?.hasAppointment ===false ?"":
+                                  <i className="fa-solid fa-stethoscope"
                                   onClick={(e) =>
                                     handleClickOpen4(e, info.enquiryId, info)
                                   }
                                 ></i>
+                                 } 
+                                 { info?.hasDoctorReview ===false ?"":
                                 <i className="fa-solid fa-calendar-plus"
                                   title="Add Appointment"
                                   style={{ cursor: "pointer" }}
                                   onClick={() => handleOpenAppointment(info)}
-                                ></i>
+                                ></i>}
                                 <VisibilityIcon
                                   className="eye-icon"
                                   onClick={(e) => ViewDetail(e, tabValue, info)}
@@ -1270,7 +1278,11 @@ export default function Inquiry() {
                                 )}
                               </TableCell>
                             </TableRow>
-                          ))
+                              </>
+                            )
+                          }
+                           
+                          )
                         ) : (
                           <TableRow>
                             <TableCell colSpan={11}>
