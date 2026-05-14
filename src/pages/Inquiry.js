@@ -1237,14 +1237,14 @@ export default function Inquiry() {
                                 ) : (
                                   ""
                                 )}
-                                { info?.hasAppointment ===false ?"":
+                                { info?.hasDoctorReview ===true ?"":
                                   <i className="fa-solid fa-stethoscope"
                                   onClick={(e) =>
                                     handleClickOpen4(e, info.enquiryId, info)
                                   }
                                 ></i>
                                  } 
-                                 { info?.hasDoctorReview ===false ?"":
+                                 { info?.hasAppointment ===true ?"":
                                 <i className="fa-solid fa-calendar-plus"
                                   title="Add Appointment"
                                   style={{ cursor: "pointer" }}
