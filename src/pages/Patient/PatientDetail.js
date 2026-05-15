@@ -61,9 +61,12 @@ function PatientDetail() {
   const [images, setImages] = useState([]);
   const [files, setFiles] = useState(null);
   const [openIndex, setOpenIndex] = useState(0);
+  const [airAmbulanceData, setAirAmbulanceData] = useState([]);
+  const [ambulanceData, setAmbulanceData] = useState([]);
+  const [treatmentData1, setTreatmentData1] = useState([]);
   const [selectedAttendants, setSelectedAttendants] = useState([]);
   const [treatemntData1, setTreatemntData1] = useState([]);
-   const [open4, setOpen4] = React.useState(false);
+  const [open4, setOpen4] = React.useState(false);
   const [doctorReviewData1, setDoctorReviewData1] = useState([]);
   const [datagetapiPaidto, setDatagetapiPaidto] = useState([]);
   const [getAttendeDetails, setGetAttendeDetails] = useState([]);
@@ -73,20 +76,20 @@ function PatientDetail() {
   const [datainfo, setDatainfo] = useState("");
   const [dataHospitalID, setDataHospitalID] = useState("");
   const [dataStatus, setDataStatus] = useState("");
-   const [openAppointment, setOpenAppointment] = useState(false);
-   const [appointmentData, setAppointmentData] = useState({
-       hospital_id: "",
-       hospitalName: "",
-       health_issue: "",
-       Notes: "",
-       appointment_Date: "",
-       appointment_Time: "",
-       enq_userName: "",
-       user_id: "",
-       enq_phoneNumber: "",
-       enq_email: "",
-       enquiryId: "",
-     });
+  const [openAppointment, setOpenAppointment] = useState(false);
+  const [appointmentData, setAppointmentData] = useState({
+    hospital_id: "",
+    hospitalName: "",
+    health_issue: "",
+    Notes: "",
+    appointment_Date: "",
+    appointment_Time: "",
+    enq_userName: "",
+    user_id: "",
+    enq_phoneNumber: "",
+    enq_email: "",
+    enquiryId: "",
+  });
   const hospitalRef = useRef();
   const omcaRef = useRef();
   const [guestHouseBookingobj, setGuestHouseBookingobj] = useState({});
@@ -141,7 +144,7 @@ function PatientDetail() {
   const [open2, setOpen2] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);
   const [hospitalList, setHospitalList] = useState([]);
-   const [tratmentenqId, setTratmentenqId] = useState("");
+  const [tratmentenqId, setTratmentenqId] = useState("");
   const [notesModal, setNotesModal] = useState(false);
   const [openmodalCharge, setOpenmodalCharge] = useState(false);
   const [hospitalCharge, setHospitalCharge] = useState("");
@@ -255,7 +258,6 @@ function PatientDetail() {
       throw error;
     }
   };
-  // pdf-download
   const handleDownloadPDF = (ref, fileName = "download.pdf") => {
     const element = ref?.current;
     if (!element) return; // ✅ safety
@@ -304,7 +306,7 @@ function PatientDetail() {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
   };
-    const handleAppointmentChange = (e) => {
+  const handleAppointmentChange = (e) => {
     const { name, value } = e.target;
     setAppointmentData((prev) => ({
       ...prev,
@@ -417,124 +419,141 @@ function PatientDetail() {
     setFilesData("");
     setAttendedeaisledit(false);
   };
-
-   const setHospitalFunction1 = async () => {
-      try {
-        const response = await axios.post(`${AdminBaseUrl}hospital_list`);
-        if (response.data.success) {
-          console.log(response.data.data);
-          setHospitalList(response.data.data);
-        }
-      } catch (error) { }
+  const setHospitalFunction1 = async () => {
+    try {
+      const response = await axios.post(`${AdminBaseUrl}hospital_list`);
+      if (response.data.success) {
+        console.log(response.data.data);
+        setHospitalList(response.data.data);
+      }
+    } catch (error) {}
+  };
+  const ViewDetail = (e, type, info) => {
+    console.log(e, type, info);
+    const routeMap = {
+      0: "/Admin/Enquiry-Detail",
+      1: "/Admin/Enquiry-DetailAmbulance",
+      2: "/Admin/airambulanceview",
+      3: "/Admin/medicalescortservice",
     };
+    const path = routeMap[type];
+    if (!path) return;
+    console.log(type);
+    localStorage.setItem("tabenquiry", type);
+    navigate(path, {
+      state: {
+        id: type === 0 ? info.enquiryId : info.id, // ✅ FIX
+        enquiryId: info.enquiryId, // optional
+        type: type,
+      },
+    });
+  };
   const handleNotesdataqw = async (e) => {
-      e.preventDefault();
-      if (!note || !recommend || images.length === 0) {
-        return Swal.fire("Error", "All fields are required", "error");
+    e.preventDefault();
+    if (!note || !recommend || images.length === 0) {
+      return Swal.fire("Error", "All fields are required", "error");
+    }
+    try {
+      let response;
+      if (tabValue === 0) {
+        const enquiryPayload = new FormData();
+        enquiryPayload.append("review_notes", note);
+        enquiryPayload.append("Recommendations", recommend); // ⚠️ old API key
+        enquiryPayload.append("enquiryId", enqId);
+        enquiryPayload.append("user_type", statusRole);
+        images.forEach((img) => {
+          enquiryPayload.append("images", img);
+        });
+        console.log("OLD API PAYLOAD →", [...enquiryPayload.entries()]);
+        response = await axios.post(
+          `${baseurl}addDoctorReview`,
+          enquiryPayload,
+        );
+      } else {
+        const newPayload = new FormData();
+        const typeMap = {
+          1: "AmbulanceRequest",
+          2: "AirAmbulance",
+          3: "PatientQuery",
+        };
+        newPayload.append("review_notes", note);
+        newPayload.append("enquiry_id", tratmentenqId);
+        newPayload.append("recommendations", recommend);
+        newPayload.append("user_type", statusRole);
+        newPayload.append("reference_id", enqId);
+        newPayload.append("model_type", typeMap[tabValue]);
+        images.forEach((img) => {
+          newPayload.append("images[]", img);
+        });
+        console.log("NEW API PAYLOAD →", [...newPayload.entries()]);
+        response = await axios.post(`${AdminBaseUrl}review/store`, newPayload);
       }
-      try {
-        let response;
-        if (tabValue === 0) {
-          const enquiryPayload = new FormData();
-          enquiryPayload.append("review_notes", note);
-          enquiryPayload.append("Recommendations", recommend); // ⚠️ old API key
-          enquiryPayload.append("enquiryId", enqId);
-          enquiryPayload.append("user_type", statusRole);
-          images.forEach((img) => {
-            enquiryPayload.append("images", img);
-          });
-          console.log("OLD API PAYLOAD →", [...enquiryPayload.entries()]);
-          response = await axios.post(
-            `${baseurl}addDoctorReview`,
-            enquiryPayload,
-          );
-        } else {
-          const newPayload = new FormData();
-          const typeMap = {
-            1: "AmbulanceRequest",
-            2: "AirAmbulance",
-            3: "PatientQuery",
-          };
-          newPayload.append("review_notes", note);
-          newPayload.append("enquiry_id", tratmentenqId);
-          newPayload.append("recommendations", recommend);
-          newPayload.append("user_type", statusRole);
-          newPayload.append("reference_id", enqId);
-          newPayload.append("model_type", typeMap[tabValue]);
-          images.forEach((img) => {
-            newPayload.append("images[]", img);
-          });
-          console.log("NEW API PAYLOAD →", [...newPayload.entries()]);
-          response = await axios.post(`${AdminBaseUrl}review/store`, newPayload);
-        }
-        if (response?.data?.success) {
-          handleClose4();
-          Swal.fire("Success", "Doctor Review Added Successfully", "success");
-          setNote("");
-          setRecommend("");
-          setImages([]);
-        }
-      } catch (error) {
-        console.log(error);
-  
-        let message = "Something went wrong";
-  
-        if (error.response) {
-          message = error.response.data?.message || message;
-        } else if (error.request) {
-          message = "No response from server";
-        } else {
-          message = error.message;
-        }
-        Swal.fire("Error", message, "error");
+      if (response?.data?.success) {
+        handleClose4();
+        Swal.fire("Success", "Doctor Review Added Successfully", "success");
+        setNote("");
+        setRecommend("");
+        setImages([]);
       }
-    };
-     const handleSubmitAppointment = async () => {
-        const { appointment_Date, appointment_Time, Notes } = appointmentData;
-        if (!appointment_Date) {
-          return Swal.fire("Error", "Please select appointment date", "error");
-        }
-        if (!appointment_Time) {
-          return Swal.fire("Error", "Please select appointment time", "error");
-        }
-        if (!Notes) {
-          return Swal.fire("Error", "Please enter notes", "error");
-        }
-        if (images.length === 0) {
-          return Swal.fire("Error", "Please upload at least one report", "error");
-        }
-        console.log(appointmentData);
-        try {
-          const formData = new FormData();
-          formData.append("enquiryId", appointmentData.enquiry_id);
-          formData.append("hospital_id", appointmentData.hospital_id);
-          formData.append("hospitalName", appointmentData.hospitalName);
-          formData.append("hospital_email", appointmentData.hospital_email);
-          formData.append("health_issue", appointmentData.health_issue);
-          formData.append("Notes", appointmentData.Notes);
-          formData.append("appointment_Date", appointmentData.appointment_Date);
-          formData.append("appointment_Time", appointmentData.appointment_Time);
-          formData.append("enq_userName", appointmentData.enq_userName);
-          formData.append("enq_phoneNumber", appointmentData?.enq_phoneNumber);
-          formData.append("user_id", appointmentData?.user_id);
-          // formData.append("enq_country_code", appointmentData.enq_country_code);
-          formData.append("enq_email", appointmentData.enq_email);
-          images.forEach((file) => {
-            formData.append("reports", file);
-          });
-          const res = await axios.post(
-            `${baseurl}create_enquiry_appointment/${usrFount}`,
-            formData,
-          );
-          if (res.data.success) {
-            Swal.fire("Success", "Appointment Created", "success");
-            handleCloseAppointment();
-          }
-        } catch (err) {
-          console.log(err);
-          Swal.fire("Error", "Something went wrong", "error");
-        }
-      };
+    } catch (error) {
+      console.log(error);
+      let message = "Something went wrong";
+      if (error.response) {
+        message = error.response.data?.message || message;
+      } else if (error.request) {
+        message = "No response from server";
+      } else {
+        message = error.message;
+      }
+      Swal.fire("Error", message, "error");
+    }
+  };
+  const handleSubmitAppointment = async () => {
+    const { appointment_Date, appointment_Time, Notes } = appointmentData;
+    if (!appointment_Date) {
+      return Swal.fire("Error", "Please select appointment date", "error");
+    }
+    if (!appointment_Time) {
+      return Swal.fire("Error", "Please select appointment time", "error");
+    }
+    if (!Notes) {
+      return Swal.fire("Error", "Please enter notes", "error");
+    }
+    if (images.length === 0) {
+      return Swal.fire("Error", "Please upload at least one report", "error");
+    }
+    console.log(appointmentData);
+    try {
+      const formData = new FormData();
+      formData.append("enquiryId", appointmentData.enquiry_id);
+      formData.append("hospital_id", appointmentData.hospital_id);
+      formData.append("hospitalName", appointmentData.hospitalName);
+      formData.append("hospital_email", appointmentData.hospital_email);
+      formData.append("health_issue", appointmentData.health_issue);
+      formData.append("Notes", appointmentData.Notes);
+      formData.append("appointment_Date", appointmentData.appointment_Date);
+      formData.append("appointment_Time", appointmentData.appointment_Time);
+      formData.append("enq_userName", appointmentData.enq_userName);
+      formData.append("enq_phoneNumber", appointmentData?.enq_phoneNumber);
+      formData.append("user_id", appointmentData?.user_id);
+      // formData.append("enq_country_code", appointmentData.enq_country_code);
+      formData.append("enq_email", appointmentData.enq_email);
+      images.forEach((file) => {
+        formData.append("reports", file);
+      });
+      const res = await axios.post(
+        `${baseurl}create_enquiry_appointment/${usrFount}`,
+        formData,
+      );
+      if (res.data.success) {
+        Swal.fire("Success", "Appointment Created", "success");
+        handleCloseAppointment();
+      }
+    } catch (err) {
+      console.log(err);
+      Swal.fire("Error", "Something went wrong", "error");
+    }
+  };
   const handleClose3 = () => {
     setOpen3(false);
   };
@@ -550,7 +569,6 @@ function PatientDetail() {
       },
     });
   };
-  
   const GetActiveService = () => {
     axios
       .get(`${baseurl}get_activeServices`, {
@@ -572,192 +590,116 @@ function PatientDetail() {
   };
   useEffect(() => {
     GetActiveService();
-    setHospitalFunction1()
-    getDataforconfirmedenq()
+    setHospitalFunction1();
+    getDataforconfirmedenq();
   }, []);
-  const getDataforconfirmedenq=async()=>{ 
+  const getDataforconfirmedenq = async () => {
     try {
-    const response = await axios.get(`${baseurl}enquiries/by-patient/${location.state.patientId}`)
-    if(response.data.data){
-      setDataForConfirmedEnq(response.data.data)
-    }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const handleClose4 =()=>{
-    setOpen4(false)
-  }
-  // const handlesubmitdata = async () => {
-  //   const servipostdata = {
-  //     services: {
-  //       serviceId: valuedata,
-  //       price: data.price,
-  //       startTime: datedata.start_date,
-  //       endTime: datedata.end_date,
-  //     },
-  //   };
-  //   try {
-  //     const response = await axios.post(
-  //       `${baseurl}patient_extra_service/${gettreatmentserID}`,
-  //       servipostdata,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       },
-  //     );
-  //     if (response.data.success === true) {
-  //       setOpenModal(false);
-  //       dispatch(GetPatientTreatments({ id: location.state.patientId }));
-  //       Swal.fire("Service Added successfully!", "", "success");
-  //     }
-  //   } catch (error) {
-  //     const errorMessage =
-  //       error?.response?.data?.message ||
-  //       error?.response?.data?.error ||
-  //       "Something went wrong!";
-  //     Swal.fire({
-  //       title: "Error",
-  //       text: errorMessage,
-  //       icon: "error",
-  //     });
-  //   }
-  // };
-//   const handlesubmitdata = async () => {
-//   const priceValue = Number(data.price);
-//   if (!data.price || isNaN(priceValue) || priceValue <= 0) {
-//     Swal.fire({
-//       title: "Error",
-//       text: "Price must be greater than 0",
-//       icon: "error",
-//     });
-//     return;
-//   }
-//   const servipostdata = {
-//     services: {
-//       serviceId: valuedata,
-//       price: priceValue,
-//       startTime: datedata.start_date,
-//       endTime: datedata.end_date,
-//     },
-//   };
-//   try {
-//     const response = await axios.post(
-//       `${baseurl}patient_extra_service/${gettreatmentserID}`,
-//       servipostdata,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem("token")}`,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-
-//     if (response.data.success === true) {
-//       setOpenModal(false);
-
-//       dispatch(
-//         GetPatientTreatments({
-//           id: location.state.patientId,
-//         })
-//       );
-
-//       Swal.fire("Service Added successfully!", "", "success");
-//     }
-//   } catch (error) {
-//     const errorMessage =
-//       error?.response?.data?.message ||
-//       error?.response?.data?.error ||
-//       "Something went wrong!";
-
-//     Swal.fire({
-//       title: "Error",
-//       text: errorMessage,
-//       icon: "error",
-//     });
-//   }
-// };
-const handlesubmitdata = async () => {
-  const priceValue = Number(data.price);
-
-  // Price Validation
-  if (!data.price || isNaN(priceValue) || priceValue <= 0) {
-    Swal.fire({
-      title: "Error",
-      text: "Price must be greater than 0",
-      icon: "error",
-    });
-    return;
-  }
-  // Date Validation
-  const startDate = new Date(datedata.start_date);
-  const endDate = new Date(datedata.end_date);
-
-  if (!datedata.start_date || !datedata.end_date) {
-    Swal.fire({
-      title: "Error",
-      text: "Please select both start date and end date",
-      icon: "error",
-    });
-    return;
-  }
-
-  if (startDate >= endDate) {
-    Swal.fire({
-      title: "Error",
-      text: "Start date must be smaller than end date",
-      icon: "error",
-    });
-    return;
-  }
-
-  const servipostdata = {
-    services: {
-      serviceId: valuedata,
-      price: priceValue,
-      startTime: datedata.start_date,
-      endTime: datedata.end_date,
-    },
-  };
-
-  try {
-    const response = await axios.post(
-      `${baseurl}patient_extra_service/${gettreatmentserID}`,
-      servipostdata,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (response.data.success === true) {
-      setOpenModal(false);
-
-      dispatch(
-        GetPatientTreatments({
-          id: location.state.patientId,
-        })
+      const response = await axios.get(
+        `${baseurl}enquiries/by-patient/${location.state.patientId}`,
       );
-
-      Swal.fire("Service Added successfully!", "", "success");
+      if (response.data.data) {
+        setDataForConfirmedEnq(response.data.data);
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    const errorMessage =
-      error?.response?.data?.message ||
-      error?.response?.data?.error ||
-      "Something went wrong!";
-
-    Swal.fire({
-      title: "Error",
-      text: errorMessage,
-      icon: "error",
-    });
-  }
-};
+  };
+  const handleClose4 = () => {
+    setOpen4(false);
+  };
+  useEffect(() => {
+    get3tabdata();
+  }, []);
+  console.log(location.state.user_id);
+  const get3tabdata = async (datauserId, getcountry, rolestatus) => {
+    const payload = {
+      user_id: location.state.user_id,
+      accessCountries: getcountry,
+      roleStatuses: rolestatus,
+      is_admin: statusRole === "Admin" ? 1 : 0,
+    };
+    try {
+      const response = await axios.post(
+        `${AdminBaseUrl}other_enquiry_requests`,
+        payload,
+      );
+      console.log(response.data.data);
+      setAirAmbulanceData(response.data?.data?.air_ambulance || []);
+      setAmbulanceData(response?.data?.data?.ambulance_requests || []);
+      setTreatmentData1(response?.data?.data?.get_treatment_estimate || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handlesubmitdata = async () => {
+    const priceValue = Number(data.price);
+    if (!data.price || isNaN(priceValue) || priceValue <= 0) {
+      Swal.fire({
+        title: "Error",
+        text: "Price must be greater than 0",
+        icon: "error",
+      });
+      return;
+    }
+    const startDate = new Date(datedata.start_date);
+    const endDate = new Date(datedata.end_date);
+    if (!datedata.start_date || !datedata.end_date) {
+      Swal.fire({
+        title: "Error",
+        text: "Please select both start date and end date",
+        icon: "error",
+      });
+      return;
+    }
+    if (startDate >= endDate) {
+      Swal.fire({
+        title: "Error",
+        text: "Start date must be smaller than end date",
+        icon: "error",
+      });
+      return;
+    }
+    const servipostdata = {
+      services: {
+        serviceId: valuedata,
+        price: priceValue,
+        startTime: datedata.start_date,
+        endTime: datedata.end_date,
+      },
+    };
+    try {
+      const response = await axios.post(
+        `${baseurl}patient_extra_service/${gettreatmentserID}`,
+        servipostdata,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      if (response.data.success === true) {
+        setOpenModal(false);
+        dispatch(
+          GetPatientTreatments({
+            id: location.state.patientId,
+          }),
+        );
+        Swal.fire("Service Added successfully!", "", "success");
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        "Something went wrong!";
+      Swal.fire({
+        title: "Error",
+        text: errorMessage,
+        icon: "error",
+      });
+    }
+  };
   useEffect(() => {
     gettreatment11();
   }, []);
@@ -772,7 +714,7 @@ const handlesubmitdata = async () => {
   const gettreatment11 = async () => {
     try {
       const response = await axios.post(`${baseurl}treatment_list`);
-    } catch (error) { }
+    } catch (error) {}
   };
   useEffect(() => {
     getDrreview();
@@ -998,7 +940,6 @@ const handlesubmitdata = async () => {
     }
     try {
       const result = await dispatch(
-
         AppointmentForPatient({
           patientId: location.state.patientId,
           hospitalId: hospitalData.hospital_id,
@@ -1088,7 +1029,7 @@ const handlesubmitdata = async () => {
       if (rresponse.data.success === "true") {
         setDataHospital(rresponse.data.data);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   useEffect(() => {
     getdataApi();
@@ -1370,7 +1311,7 @@ const handlesubmitdata = async () => {
         }
         setNote2("");
         setDate2("");
-        setImages([]); // ✅ clear images
+        setImages([]); 
         setNoteErr({
           note2: false,
           date2: false,
@@ -1494,7 +1435,7 @@ const handlesubmitdata = async () => {
       Swal.fire("Success!", "Status updated successfully!", "success");
       dispatch(GetPatientTreatments({ id: location.state.patientId }));
       return response.data;
-    } catch (err) { }
+    } catch (err) {}
   };
   const handleChangeDetails = async (event, id) => {
     try {
@@ -1592,13 +1533,13 @@ const handlesubmitdata = async () => {
     const { name, value } = e.target;
     setDatedata({ ...datedata, [name]: value });
   };
-   const handleClickOpen4 = (e, enq, info) => {
+  const handleClickOpen4 = (e, enq, info) => {
     console.log(info);
     setOpen4(true);
     setEnqId(enq);
     setTratmentenqId(info.id);
   };
-   const handleCloseAppointment = () => {
+  const handleCloseAppointment = () => {
     setOpenAppointment(false);
     setImages([]);
     setAppointmentData({
@@ -1613,7 +1554,7 @@ const handlesubmitdata = async () => {
       enq_email: "",
     });
   };
-    const handleOpenAppointment = (info) => {
+  const handleOpenAppointment = (info) => {
     console.log(info);
     setAppointmentData({
       hospital_id: "",
@@ -1629,26 +1570,6 @@ const handlesubmitdata = async () => {
       enquiry_id: info.enquiryId,
     });
     setOpenAppointment(true);
-  };
-   const ViewDetail = (e, type, info) => {
-    console.log(e, type, info);
-    const routeMap = {
-      0: "/Admin/Enquiry-Detail",
-      1: "/Admin/Enquiry-DetailAmbulance",
-      2: "/Admin/airambulanceview",
-      3: "/Admin/medicalescortservice",
-    };
-    const path = routeMap[type];
-    if (!path) return;
-    console.log(type);
-    localStorage.setItem("tabenquiry", type);
-    navigate(path, {
-      state: {
-        id: type === 0 ? info.enquiryId : info.id, // ✅ FIX
-        enquiryId: info.enquiryId, // optional
-        type: type,
-      },
-    });
   };
   const getapicall = (getapicall) => {
     axios
@@ -1684,7 +1605,6 @@ const handlesubmitdata = async () => {
       console.log(error);
     }
   };
-
   const handleFileChange12 = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -1883,7 +1803,7 @@ const handlesubmitdata = async () => {
       } else {
         toast.error("somethign went wornh");
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const gtdatareportsdata = async () => {
     try {
@@ -1901,7 +1821,7 @@ const handlesubmitdata = async () => {
         setReportdataget(response.data.data);
       } else {
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const handledelete = async (info) => {
     console.log(info);
@@ -2002,123 +1922,118 @@ const handlesubmitdata = async () => {
   //     });
   //   }
   // };
- const handlesubmitdataserviceEdit = async () => {
-  // Convert price to number
-  const priceValue = Number(data.price);
-  // Price Validation
-  if (!data.price || isNaN(priceValue) || priceValue <= 0) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Price must be greater than 0",
-      didOpen: () => {
-        const swalContainer = document.querySelector(".swal2-container");
-        if (swalContainer) {
-          swalContainer.style.zIndex = "1500";
-        }
-      },
-    });
-    return;
-  }
-  // Date Mandatory Validation
-  if (!data.startTime || !data.endTime) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Both start date and end date are mandatory",
-      didOpen: () => {
-        const swalContainer = document.querySelector(".swal2-container");
-        if (swalContainer) {
-          swalContainer.style.zIndex = "1500";
-        }
-      },
-    });
-    return;
-  }
-  // Date Comparison Validation
-  const startDate = new Date(data.startTime);
-  const endDate = new Date(data.endTime);
-  if (startDate >= endDate) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Start date must be smaller than end date",
-      didOpen: () => {
-        const swalContainer = document.querySelector(".swal2-container");
-        if (swalContainer) {
-          swalContainer.style.zIndex = "1500";
-        }
-      },
-    });
-    return;
-  }
-  const payload = {
-    _id: data._id,
-    duration: data.duration,
-    endTime: data.endTime,
-    price: priceValue,
-    service_type: data.service_type,
-    serviceId: data.serviceId,
-    serviceName: data.serviceName,
-    startTime: data.startTime,
-  };
-  try {
-    const response = await axios.put(
-      `${baseurl}edit_patient_extra_service/${treatmentIDservice}/${data.serviceId}`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
+  const handlesubmitdataserviceEdit = async () => {
+    // Convert price to number
+    const priceValue = Number(data.price);
+    // Price Validation
+    if (!data.price || isNaN(priceValue) || priceValue <= 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Price must be greater than 0",
+        didOpen: () => {
+          const swalContainer = document.querySelector(".swal2-container");
+          if (swalContainer) {
+            swalContainer.style.zIndex = "1500";
+          }
         },
-      }
-    );
-    if (response.data?.success) {
-      hadnlcecEcloseeModal();
-      dispatch(
-        GetPatientTreatments({
-          id: location.state.patientId,
-        })
-      );
-      Swal.fire({
-        icon: "success",
-        title: "Updated!",
-        text:
-          response.data.message ||
-          "Service updated successfully",
       });
-    } else {
+      return;
+    }
+    // Date Mandatory Validation
+    if (!data.startTime || !data.endTime) {
       Swal.fire({
-        icon: "warning",
-        title: "Warning",
-        text:
-          response.data?.message ||
-          "Update failed",
+        icon: "error",
+        title: "Validation Error",
+        text: "Both start date and end date are mandatory",
+        didOpen: () => {
+          const swalContainer = document.querySelector(".swal2-container");
+          if (swalContainer) {
+            swalContainer.style.zIndex = "1500";
+          }
+        },
+      });
+      return;
+    }
+    // Date Comparison Validation
+    const startDate = new Date(data.startTime);
+    const endDate = new Date(data.endTime);
+    if (startDate >= endDate) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Start date must be smaller than end date",
+        didOpen: () => {
+          const swalContainer = document.querySelector(".swal2-container");
+          if (swalContainer) {
+            swalContainer.style.zIndex = "1500";
+          }
+        },
+      });
+      return;
+    }
+    const payload = {
+      _id: data._id,
+      duration: data.duration,
+      endTime: data.endTime,
+      price: priceValue,
+      service_type: data.service_type,
+      serviceId: data.serviceId,
+      serviceName: data.serviceName,
+      startTime: data.startTime,
+    };
+    try {
+      const response = await axios.put(
+        `${baseurl}edit_patient_extra_service/${treatmentIDservice}/${data.serviceId}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      if (response.data?.success) {
+        hadnlcecEcloseeModal();
+        dispatch(
+          GetPatientTreatments({
+            id: location.state.patientId,
+          }),
+        );
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: response.data.message || "Service updated successfully",
+        });
+      } else {
+        Swal.fire({
+          icon: "warning",
+          title: "Warning",
+          text: response.data?.message || "Update failed",
+        });
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong!";
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+        didOpen: () => {
+          const swalContainer = document.querySelector(".swal2-container");
+
+          if (swalContainer) {
+            swalContainer.style.zIndex = "1500";
+          }
+        },
       });
     }
-  } catch (error) {
-    const errorMessage =
-      error?.response?.data?.message ||
-      error?.message ||
-      "Something went wrong!";
-
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: errorMessage,
-      didOpen: () => {
-        const swalContainer =
-          document.querySelector(".swal2-container");
-
-        if (swalContainer) {
-          swalContainer.style.zIndex = "1500";
-        }
-      },
-    });
-  }
-};
+  };
   const handledeltePatientserveice = async (a, b, index) => {
-    console.log(a,b)
+    console.log(a, b);
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -2186,10 +2101,10 @@ const handlesubmitdata = async () => {
     const files = Array.from(e.target.files);
     setImages(files);
   };
-   const handleRecommendChange = (e) => {
+  const handleRecommendChange = (e) => {
     setRecommend(e.target.value);
   };
-    const handleNoteChange = (e) => {
+  const handleNoteChange = (e) => {
     setNote(e.target.value);
   };
 
@@ -2536,14 +2451,14 @@ const handlesubmitdata = async () => {
         ];
         setHospitlID(updatedList);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const validateForm = () => {
     const newErrors = {};
     if (!fieldValue) {
       newErrors.treatment = "Treatment is required";
     }
-   
+
     if (!hospitalId || hospitalId.length === 0) {
       newErrors.hospitals = "Please select at least one hospital";
     }
@@ -2731,7 +2646,7 @@ const handlesubmitdata = async () => {
         console.log(response.data);
         setDoctorReviewData1(response.data.data);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const getTreatmentPlan = async () => {
     const payload = {
@@ -2744,9 +2659,9 @@ const handlesubmitdata = async () => {
       if (response.data.success) {
         setTreatemntData1(response.data.data);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
-  const handleclickApprove = (hospitalids, b) => { };
+  const handleclickApprove = (hospitalids, b) => {};
   const approveReject = async (info, hospitalId, status) => {
     setDatainfo(info);
     setDataHospitalID(hospitalId);
@@ -3367,74 +3282,74 @@ const handlesubmitdata = async () => {
   //     });
   //   }
   // };
-const addchargeapiHospital = async () => {
-  // Convert price to number
-  const priceValue = Number(hospitalCharge.price);
+  const addchargeapiHospital = async () => {
+    // Convert price to number
+    const priceValue = Number(hospitalCharge.price);
 
-  // Validation
-  if (!hospitalCharge.price || isNaN(priceValue) || priceValue <= 0) {
-    Swal.fire({
-      icon: "error",
-      title: "Validation Error",
-      text: "Price must be greater than 0",
-      confirmButtonColor: "#d33",
-    });
+    // Validation
+    if (!hospitalCharge.price || isNaN(priceValue) || priceValue <= 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Price must be greater than 0",
+        confirmButtonColor: "#d33",
+      });
 
-    return; // रोक देगा API call
-  }
+      return; // रोक देगा API call
+    }
 
-  const payload = {
-    service_name: hospitalCharge.service_name,
-    price: priceValue,
-    date: hospitalCharge.date,
-  };
+    const payload = {
+      service_name: hospitalCharge.service_name,
+      price: priceValue,
+      date: hospitalCharge.date,
+    };
 
-  try {
-    const response = await axios.post(
-      `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+    try {
+      const response = await axios.post(
+        `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      }
-    );
+      );
 
-    console.log(response.data);
+      console.log(response.data);
 
-    handleclickclosecharge();
+      handleclickclosecharge();
 
-    setHospitalCharge({
-      service_name: "",
-      price: "",
-      date: "",
-    });
+      setHospitalCharge({
+        service_name: "",
+        price: "",
+        date: "",
+      });
 
-    dispatch(
-      GetPatientTreatments({
-        id: location.state.patientId,
-      })
-    );
+      dispatch(
+        GetPatientTreatments({
+          id: location.state.patientId,
+        }),
+      );
 
-    // Success Swal
-    Swal.fire({
-      icon: "success",
-      title: "Success",
-      text: "Hospital charge added successfully!",
-      confirmButtonColor: "#3085d6",
-    });
-  } catch (error) {
-    console.log(error);
+      // Success Swal
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Hospital charge added successfully!",
+        confirmButtonColor: "#3085d6",
+      });
+    } catch (error) {
+      console.log(error);
 
-    // Error Swal
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error?.response?.data?.message || "Something went wrong!",
-      confirmButtonColor: "#d33",
-    });
-  }
-};
+      // Error Swal
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error?.response?.data?.message || "Something went wrong!",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
   const handledeedit123222 = async (info, index) => {
     console.log(info, index);
 
@@ -3493,72 +3408,72 @@ const addchargeapiHospital = async () => {
   };
 
   const addchargeapipharmacy = async () => {
-  // Convert price to number
-  const priceValue = Number(pharmacyvalue.price);
+    // Convert price to number
+    const priceValue = Number(pharmacyvalue.price);
 
-  // Validation
-  if (!pharmacyvalue.price || isNaN(priceValue) || priceValue <= 0) {
-    Swal.fire({
-      title: "Validation Error!",
-      text: "Price must be greater than 0",
-      icon: "error",
-    });
+    // Validation
+    if (!pharmacyvalue.price || isNaN(priceValue) || priceValue <= 0) {
+      Swal.fire({
+        title: "Validation Error!",
+        text: "Price must be greater than 0",
+        icon: "error",
+      });
 
-    return; // Stop API call
-  }
+      return; // Stop API call
+    }
 
-  const payload = {
-    service_name: pharmacyvalue.service_name,
-    price: priceValue,
-    date: pharmacyvalue.date,
-  };
+    const payload = {
+      service_name: pharmacyvalue.service_name,
+      price: priceValue,
+      date: pharmacyvalue.date,
+    };
 
-  try {
-    const response = await axios.post(
-      `${baseurl}addPharmacyCharge/${treatmntidPharmacy}`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+    try {
+      const response = await axios.post(
+        `${baseurl}addPharmacyCharge/${treatmntidPharmacy}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      }
-    );
+      );
 
-    getDataapi3(treatmntidPharmacy);
+      getDataapi3(treatmntidPharmacy);
 
-    setPharmacyvalue({
-      service_name: "",
-      price: "",
-      date: "",
-    });
+      setPharmacyvalue({
+        service_name: "",
+        price: "",
+        date: "",
+      });
 
-    dispatch(
-      GetPatientTreatments({
-        id: location.state.patientId,
-      })
-    );
+      dispatch(
+        GetPatientTreatments({
+          id: location.state.patientId,
+        }),
+      );
 
-    handleclickpcloseacycharge();
+      handleclickpcloseacycharge();
 
-    // Success
-    Swal.fire({
-      title: "Success!",
-      text: response?.data?.message || "Charge added successfully",
-      icon: "success",
-    });
-  } catch (error) {
-    console.log(error);
+      // Success
+      Swal.fire({
+        title: "Success!",
+        text: response?.data?.message || "Charge added successfully",
+        icon: "success",
+      });
+    } catch (error) {
+      console.log(error);
 
-    // Error
-    Swal.fire({
-      title: "Error!",
-      text:
-        error?.response?.data?.message ||
-        "Something went wrong, please try again",
-      icon: "error",
-    });
-  }
-};
+      // Error
+      Swal.fire({
+        title: "Error!",
+        text:
+          error?.response?.data?.message ||
+          "Something went wrong, please try again",
+        icon: "error",
+      });
+    }
+  };
   // const addchargeapipharmacy = async () => {
   //   const payload = {
   //     service_name: pharmacyvalue.service_name,
@@ -4286,12 +4201,16 @@ const addchargeapiHospital = async () => {
                   {ispatient?.contact_no && (
                     <p>
                       <i className="fa-solid fa-phone"></i>
-                      <span>{ispatient.phoneCode}{" "}{ispatient.contact_no}</span>
+                      <span>
+                        {ispatient.phoneCode} {ispatient.contact_no}
+                      </span>
                     </p>
                   )}
                   <p>
                     <i class="fa-solid fa-phone"></i>
-                    <span>{ispatient.phoneCode}{" "}{ispatient?.emergency_contact_no}</span>
+                    <span>
+                      {ispatient.phoneCode} {ispatient?.emergency_contact_no}
+                    </span>
                   </p>
                   <p>
                     <i class="fa-solid fa-envelope"></i>
@@ -4379,7 +4298,10 @@ const addchargeapiHospital = async () => {
               </li>
             </ul>
             <div className="tab-content">
-              <div className={`tab-pane ${mainTab === "Doctor-Review" ? "show active" : ""} mt-5`} id="about-cont126">
+              <div
+                className={`tab-pane ${mainTab === "Doctor-Review" ? "show active" : ""} mt-5`}
+                id="about-cont126"
+              >
                 <div className="row gx-3 gy-3">
                   <div className="col-md-12">
                     {doctorReviewData1?.length === 0 ? (
@@ -4442,127 +4364,154 @@ const addchargeapiHospital = async () => {
                                     </div>
                                   </div>
                                   <div className="row">
-                                    {info.comments && info.comments.length > 0 && (
-                                      <div className="col-md-12">
-                                        <div className="accordion" id={`commentsAccordion${index}`}>
-                                          <div className="accordion-item border-0">
-                                            <h2 className="accordion-header" id={`commentsHeading${index}`}>
-                                              <button className="accordion-button customstylecard collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#commentsCollapse${index}`}
-                                                aria-expanded="false" aria-controls={`commentsCollapse${index}`}>
-                                                <span>Comments</span>
-                                              </button>
-                                            </h2>
-                                            <div id={`commentsCollapse${index}`} className="accordion-collapse collapse " aria-labelledby={`commentsHeading${index}`}
-                                              data-bs-parent={`#commentsAccordion${index}`}>
-                                              <div className="accordion-body p-0 pt-3">
-                                                <div className="row gy-3">
-                                                  {info.comments.map(
-                                                    (comment, commentIndex) => (
-                                                      <div className="col-md-12" key={comment._id || commentIndex}>
-                                                        <div className="card customstylecard">
-                                                          <div className="card-body">
+                                    {info.comments &&
+                                      info.comments.length > 0 && (
+                                        <div className="col-md-12">
+                                          <div
+                                            className="accordion"
+                                            id={`commentsAccordion${index}`}
+                                          >
+                                            <div className="accordion-item border-0">
+                                              <h2
+                                                className="accordion-header"
+                                                id={`commentsHeading${index}`}
+                                              >
+                                                <button
+                                                  className="accordion-button customstylecard collapsed"
+                                                  type="button"
+                                                  data-bs-toggle="collapse"
+                                                  data-bs-target={`#commentsCollapse${index}`}
+                                                  aria-expanded="false"
+                                                  aria-controls={`commentsCollapse${index}`}
+                                                >
+                                                  <span>Comments</span>
+                                                </button>
+                                              </h2>
+                                              <div
+                                                id={`commentsCollapse${index}`}
+                                                className="accordion-collapse collapse "
+                                                aria-labelledby={`commentsHeading${index}`}
+                                                data-bs-parent={`#commentsAccordion${index}`}
+                                              >
+                                                <div className="accordion-body p-0 pt-3">
+                                                  <div className="row gy-3">
+                                                    {info.comments.map(
+                                                      (
+                                                        comment,
+                                                        commentIndex,
+                                                      ) => (
+                                                        <div
+                                                          className="col-md-12"
+                                                          key={
+                                                            comment._id ||
+                                                            commentIndex
+                                                          }
+                                                        >
+                                                          <div className="card customstylecard">
+                                                            <div className="card-body">
+                                                              <div className="note-view">
+                                                                <h3 className="card-title">
+                                                                  {
+                                                                    comment.user_type
+                                                                  }{" "}
+                                                                  Note
+                                                                </h3>
+                                                              </div>
 
-                                                            <div className="note-view">
-                                                              <h3 className="card-title">
-                                                                {comment.user_type} Note
-                                                              </h3>
-                                                            </div>
-
-                                                            <div className="experience-box">
-                                                              <ul className="experience-list">
-                                                                <li className="mb-0">
-
-                                                                  <div className="experience-user">
-                                                                    <div className="before-circle"></div>
-                                                                  </div>
-
-                                                                  <div className="experience-content">
-                                                                    <div className="timeline-content">
-
-                                                                      <a
-                                                                        href="#/"
-                                                                        className="name"
-                                                                      >
-                                                                        {comment.Notes}
-                                                                      </a>
-
-                                                                      {/* Images */}
-                                                                      {comment.images &&
-                                                                        comment.images.length >
-                                                                        0 && (
-                                                                          <div className="mt-2 mb-2">
-                                                                            {comment.images.map(
-                                                                              (
-                                                                                img,
-                                                                                imgIndex
-                                                                              ) => {
-                                                                                const fullUrl =
-                                                                                  img.startsWith(
-                                                                                    "http"
-                                                                                  )
-                                                                                    ? img
-                                                                                    : image +
-                                                                                    img;
-
-                                                                                return (
-                                                                                  <button
-                                                                                    key={
-                                                                                      imgIndex
-                                                                                    }
-                                                                                    type="button"
-                                                                                    className="viewbtn btn-sm me-2"
-                                                                                    onClick={() =>
-                                                                                      window.open(
-                                                                                        fullUrl,
-                                                                                        "_blank"
-                                                                                      )
-                                                                                    }
-                                                                                  >
-                                                                                    View
-                                                                                    Document{" "}
-                                                                                    {imgIndex +
-                                                                                      1}
-                                                                                  </button>
-                                                                                );
-                                                                              }
-                                                                            )}
-                                                                          </div>
-                                                                        )}
-
-                                                                      <div>
-                                                                        Date -{" "}
-                                                                        {comment.Date
-                                                                          ? new Date(
-                                                                            comment.Date
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB"
-                                                                          )
-                                                                          : new Date(
-                                                                            comment.createdAt
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB"
-                                                                          )}
-                                                                      </div>
-
+                                                              <div className="experience-box">
+                                                                <ul className="experience-list">
+                                                                  <li className="mb-0">
+                                                                    <div className="experience-user">
+                                                                      <div className="before-circle"></div>
                                                                     </div>
-                                                                  </div>
 
-                                                                </li>
-                                                              </ul>
+                                                                    <div className="experience-content">
+                                                                      <div className="timeline-content">
+                                                                        <a
+                                                                          href="#/"
+                                                                          className="name"
+                                                                        >
+                                                                          {
+                                                                            comment.Notes
+                                                                          }
+                                                                        </a>
+
+                                                                        {/* Images */}
+                                                                        {comment.images &&
+                                                                          comment
+                                                                            .images
+                                                                            .length >
+                                                                            0 && (
+                                                                            <div className="mt-2 mb-2">
+                                                                              {comment.images.map(
+                                                                                (
+                                                                                  img,
+                                                                                  imgIndex,
+                                                                                ) => {
+                                                                                  const fullUrl =
+                                                                                    img.startsWith(
+                                                                                      "http",
+                                                                                    )
+                                                                                      ? img
+                                                                                      : image +
+                                                                                        img;
+
+                                                                                  return (
+                                                                                    <button
+                                                                                      key={
+                                                                                        imgIndex
+                                                                                      }
+                                                                                      type="button"
+                                                                                      className="viewbtn btn-sm me-2"
+                                                                                      onClick={() =>
+                                                                                        window.open(
+                                                                                          fullUrl,
+                                                                                          "_blank",
+                                                                                        )
+                                                                                      }
+                                                                                    >
+                                                                                      View
+                                                                                      Document{" "}
+                                                                                      {imgIndex +
+                                                                                        1}
+                                                                                    </button>
+                                                                                  );
+                                                                                },
+                                                                              )}
+                                                                            </div>
+                                                                          )}
+
+                                                                        <div>
+                                                                          Date -{" "}
+                                                                          {comment.Date
+                                                                            ? new Date(
+                                                                                comment.Date,
+                                                                              ).toLocaleDateString(
+                                                                                "en-GB",
+                                                                              )
+                                                                            : new Date(
+                                                                                comment.createdAt,
+                                                                              ).toLocaleDateString(
+                                                                                "en-GB",
+                                                                              )}
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                  </li>
+                                                                </ul>
+                                                              </div>
                                                             </div>
-
                                                           </div>
                                                         </div>
-                                                      </div>
-                                                    )
-                                                  )}
+                                                      ),
+                                                    )}
+                                                  </div>
                                                 </div>
                                               </div>
                                             </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    )}
+                                      )}
                                   </div>
                                 </div>
                               </div>
@@ -4574,7 +4523,10 @@ const addchargeapiHospital = async () => {
                   </div>
                 </div>
               </div>
-              <div className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`} id="about-cont123">
+              <div
+                className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`}
+                id="about-cont123"
+              >
                 <div className="main-tab-hd justify-content-end">
                   <div className="">
                     <button onClick={PlanTreatmentPopUp} className="add-button">
@@ -4625,28 +4577,28 @@ const addchargeapiHospital = async () => {
                                             </span>
                                             {info.isAnyHospitalApproved !==
                                               false && (
-                                                <span
-                                                  className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
-                                                >
-                                                  {item.status}
-                                                </span>
-                                              )}
+                                              <span
+                                                className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                              >
+                                                {item.status}
+                                              </span>
+                                            )}
                                           </div>
                                           {info.isAnyHospitalApproved !==
                                             true && (
-                                              <button
-                                                className="add-button"
-                                                onClick={() =>
-                                                  approveReject(
-                                                    info,
-                                                    item.id,
-                                                    "Approved",
-                                                  )
-                                                }
-                                              >
-                                                Approve
-                                              </button>
-                                            )}
+                                            <button
+                                              className="add-button"
+                                              onClick={() =>
+                                                approveReject(
+                                                  info,
+                                                  item.id,
+                                                  "Approved",
+                                                )
+                                              }
+                                            >
+                                              Approve
+                                            </button>
+                                          )}
                                         </div>
                                       ))}
                                     </div>
@@ -4693,7 +4645,15 @@ const addchargeapiHospital = async () => {
                                       <div className="">
                                         {info.documents.map((doc, index) => (
                                           <span key={index}>
-                                            <button className="viewbtn me-2" onClick={() => window.open(`${imageUrl}/${doc.file}`, "_blank",)}>
+                                            <button
+                                              className="viewbtn me-2"
+                                              onClick={() =>
+                                                window.open(
+                                                  `${imageUrl}/${doc.file}`,
+                                                  "_blank",
+                                                )
+                                              }
+                                            >
                                               View
                                             </button>
                                           </span>
@@ -4716,20 +4676,27 @@ const addchargeapiHospital = async () => {
                                       <div className="col-md-6">
                                         <div className="">
                                           <h5>Recommendation</h5>
-                                          <p>{info?.doctorReview?.review_notes}</p>
+                                          <p>
+                                            {info?.doctorReview?.review_notes}
+                                          </p>
                                         </div>
                                       </div>
                                       <div className="col-md-3">
                                         <div className="">
                                           <h5>Notes</h5>
-                                          <p>{info?.doctorReview?.Recommendations}</p>
+                                          <p>
+                                            {
+                                              info?.doctorReview
+                                                ?.Recommendations
+                                            }
+                                          </p>
                                         </div>
                                       </div>
                                       <div className="col-md-3">
                                         <div className="">
                                           <h5>Documentation</h5>
-                                          {info?.doctorReview?.images
-                                            ?.length > 0 ? (
+                                          {info?.doctorReview?.images?.length >
+                                          0 ? (
                                             <button
                                               className="viewbtn"
                                               onClick={() =>
@@ -4750,16 +4717,15 @@ const addchargeapiHospital = async () => {
                                     </div>
                                     <div className="row">
                                       {info?.doctorReview?.comments &&
-                                        info?.doctorReview?.comments.length > 0 && (
+                                        info?.doctorReview?.comments.length >
+                                          0 && (
                                           <div className="col-md-12">
-
                                             {/* Accordion */}
                                             <div
                                               className="accordion"
                                               id={`doctorCommentsAccordion${index}`}
                                             >
                                               <div className="accordion-item border-0">
-
                                                 {/* Header */}
                                                 <h2
                                                   className="accordion-header"
@@ -4787,10 +4753,12 @@ const addchargeapiHospital = async () => {
                                                   data-bs-parent={`#doctorCommentsAccordion${index}`}
                                                 >
                                                   <div className="accordion-body p-0 pt-3">
-
                                                     <div className="row gy-3">
                                                       {info?.doctorReview?.comments.map(
-                                                        (comment, commentIndex) => (
+                                                        (
+                                                          comment,
+                                                          commentIndex,
+                                                        ) => (
                                                           <div
                                                             className="col-md-12"
                                                             key={
@@ -4800,48 +4768,52 @@ const addchargeapiHospital = async () => {
                                                           >
                                                             <div className="card customstylecard">
                                                               <div className="card-body">
-
                                                                 <div className="note-view">
                                                                   <h3 className="card-title">
-                                                                    {comment.user_type} Note
+                                                                    {
+                                                                      comment.user_type
+                                                                    }{" "}
+                                                                    Note
                                                                   </h3>
                                                                 </div>
 
                                                                 <div className="experience-box">
                                                                   <ul className="experience-list">
                                                                     <li className="mb-0">
-
                                                                       <div className="experience-user">
                                                                         <div className="before-circle"></div>
                                                                       </div>
 
                                                                       <div className="experience-content">
                                                                         <div className="timeline-content">
-
                                                                           <a
                                                                             href="#/"
                                                                             className="name"
                                                                           >
-                                                                            {comment.Notes}
+                                                                            {
+                                                                              comment.Notes
+                                                                            }
                                                                           </a>
 
                                                                           {/* Images */}
                                                                           {comment.images &&
-                                                                            comment.images
-                                                                              .length > 0 && (
+                                                                            comment
+                                                                              .images
+                                                                              .length >
+                                                                              0 && (
                                                                               <div className="mt-2 mb-2">
                                                                                 {comment.images.map(
                                                                                   (
                                                                                     img,
-                                                                                    imgIndex
+                                                                                    imgIndex,
                                                                                   ) => {
                                                                                     const fullUrl =
                                                                                       img.startsWith(
-                                                                                        "http"
+                                                                                        "http",
                                                                                       )
                                                                                         ? img
                                                                                         : image +
-                                                                                        img;
+                                                                                          img;
 
                                                                                     return (
                                                                                       <button
@@ -4853,7 +4825,7 @@ const addchargeapiHospital = async () => {
                                                                                         onClick={() =>
                                                                                           window.open(
                                                                                             fullUrl,
-                                                                                            "_blank"
+                                                                                            "_blank",
                                                                                           )
                                                                                         }
                                                                                       >
@@ -4863,46 +4835,41 @@ const addchargeapiHospital = async () => {
                                                                                           1}
                                                                                       </button>
                                                                                     );
-                                                                                  }
+                                                                                  },
                                                                                 )}
                                                                               </div>
                                                                             )}
 
                                                                           <div>
-                                                                            Date -{" "}
+                                                                            Date
+                                                                            -{" "}
                                                                             {comment.Date
                                                                               ? new Date(
-                                                                                comment.Date
-                                                                              ).toLocaleDateString(
-                                                                                "en-GB"
-                                                                              )
+                                                                                  comment.Date,
+                                                                                ).toLocaleDateString(
+                                                                                  "en-GB",
+                                                                                )
                                                                               : new Date(
-                                                                                comment.createdAt
-                                                                              ).toLocaleDateString(
-                                                                                "en-GB"
-                                                                              )}
+                                                                                  comment.createdAt,
+                                                                                ).toLocaleDateString(
+                                                                                  "en-GB",
+                                                                                )}
                                                                           </div>
-
                                                                         </div>
                                                                       </div>
-
                                                                     </li>
                                                                   </ul>
                                                                 </div>
-
                                                               </div>
                                                             </div>
                                                           </div>
-                                                        )
+                                                        ),
                                                       )}
                                                     </div>
-
                                                   </div>
                                                 </div>
-
                                               </div>
                                             </div>
-
                                           </div>
                                         )}
                                     </div>
@@ -4919,7 +4886,10 @@ const addchargeapiHospital = async () => {
                   </div>
                 </div>
               </div>
-              <div className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`} id="about-cont">
+              <div
+                className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`}
+                id="about-cont"
+              >
                 <div className="main-tab-hd d-flex justify-content-end w-100">
                   <button onClick={PatientDetailButton} className="add-button">
                     <span>
@@ -4944,9 +4914,9 @@ const addchargeapiHospital = async () => {
                           "notes",
                         ].includes(activeSubTab)
                           ? tretment?.filter(
-                            (item) =>
-                              item.treatment_id === selectedTreatmentId,
-                          )
+                              (item) =>
+                                item.treatment_id === selectedTreatmentId,
+                            )
                           : tretment
                         )?.map((info, index) => {
                           return (
@@ -5092,22 +5062,22 @@ const addchargeapiHospital = async () => {
                                         </li>
                                         {!info?.hospital?.details
                                           ?.hospital_Name && (
-                                            <li className="nav-item">
-                                              <button
-                                                className="nav-link"
-                                                onClick={(e) =>
-                                                  handleAction(
-                                                    e,
-                                                    "hospital",
-                                                    info,
-                                                    info.treatment_name,
-                                                  )
-                                                }
-                                              >
-                                                + Add Hospital
-                                              </button>
-                                            </li>
-                                          )}
+                                          <li className="nav-item">
+                                            <button
+                                              className="nav-link"
+                                              onClick={(e) =>
+                                                handleAction(
+                                                  e,
+                                                  "hospital",
+                                                  info,
+                                                  info.treatment_name,
+                                                )
+                                              }
+                                            >
+                                              + Add Hospital
+                                            </button>
+                                          </li>
+                                        )}
                                       </ul>
                                     </div>
                                     <div
@@ -5134,8 +5104,19 @@ const addchargeapiHospital = async () => {
                                     <div className="row gx-3 gy-3">
                                       {/* for hospital separate data */}
                                       <div className="col-md-12">
-                                        <div className="card customstylecard" style={{ border: "1px solid #0ba6df" }}>
-                                          <div className="card-header d-flex justify-content-between align-items-center" style={{ backgroundColor: "#E8F8FD", borderBottom: "1px solid #0ba6df" }}>
+                                        <div
+                                          className="card customstylecard"
+                                          style={{
+                                            border: "1px solid #0ba6df",
+                                          }}
+                                        >
+                                          <div
+                                            className="card-header d-flex justify-content-between align-items-center"
+                                            style={{
+                                              backgroundColor: "#E8F8FD",
+                                              borderBottom: "1px solid #0ba6df",
+                                            }}
+                                          >
                                             <div className="d-flex gap-2 align-items-center">
                                               <h6>
                                                 Hospital Name:{" "}
@@ -5161,10 +5142,10 @@ const addchargeapiHospital = async () => {
                                             {hospitalStatuses.includes(
                                               info?.treatment_status,
                                             ) && (
-                                                <h6>
-                                                  Status: {info?.treatment_status}
-                                                </h6>
-                                              )}
+                                              <h6>
+                                                Status: {info?.treatment_status}
+                                              </h6>
+                                            )}
                                             <div className="">
                                               <a
                                                 href="!#"
@@ -5223,15 +5204,15 @@ const addchargeapiHospital = async () => {
                                                               <td>
                                                                 {info.treatment_created_at
                                                                   ? new Date(
-                                                                    info.treatment_created_at,
-                                                                  ).toLocaleTimeString(
-                                                                    "en-US",
-                                                                    {
-                                                                      hour: "2-digit",
-                                                                      minute:
-                                                                        "2-digit",
-                                                                    },
-                                                                  )
+                                                                      info.treatment_created_at,
+                                                                    ).toLocaleTimeString(
+                                                                      "en-US",
+                                                                      {
+                                                                        hour: "2-digit",
+                                                                        minute:
+                                                                          "2-digit",
+                                                                      },
+                                                                    )
                                                                   : "-"}
                                                               </td>
                                                               <td className="pdf-hide">
@@ -5323,10 +5304,10 @@ const addchargeapiHospital = async () => {
                                                                       <td>
                                                                         {createdAt
                                                                           ? new Date(
-                                                                            createdAt,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
+                                                                              createdAt,
+                                                                            ).toLocaleDateString(
+                                                                              "en-GB",
+                                                                            )
                                                                           : "-"}
                                                                       </td>
                                                                       <td className="pdf-hide">
@@ -5427,9 +5408,9 @@ const addchargeapiHospital = async () => {
                                                           <tbody>
                                                             {info?.hospital
                                                               ?.payments &&
-                                                              info?.hospital
-                                                                ?.payments
-                                                                .length > 0 ? (
+                                                            info?.hospital
+                                                              ?.payments
+                                                              .length > 0 ? (
                                                               info?.hospital?.payments.map(
                                                                 (
                                                                   item,
@@ -5494,9 +5475,7 @@ const addchargeapiHospital = async () => {
                                                                           "No File"
                                                                         )}
                                                                       </td>
-                                                                      <td>
-                                                                        -
-                                                                      </td>
+                                                                      <td>-</td>
                                                                       {/* <td>
                                                                       <div className="action-icon">
                                                                         <div className="action-icon">
@@ -5548,7 +5527,12 @@ const addchargeapiHospital = async () => {
                                               </div>
                                             </div>
                                           </div>
-                                          <div className="card-footer" style={{ borderTop: "1px solid #0ba6df" }}>
+                                          <div
+                                            className="card-footer"
+                                            style={{
+                                              borderTop: "1px solid #0ba6df",
+                                            }}
+                                          >
                                             <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
@@ -5561,7 +5545,12 @@ const addchargeapiHospital = async () => {
                                               </div>
                                             </div>
                                           </div>
-                                          <div className="card-footer" style={{ borderTop: "1px solid #0ba6df" }}>
+                                          <div
+                                            className="card-footer"
+                                            style={{
+                                              borderTop: "1px solid #0ba6df",
+                                            }}
+                                          >
                                             <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
@@ -5579,8 +5568,19 @@ const addchargeapiHospital = async () => {
                                       </div>
                                       {/* for omca services */}
                                       <div className="col-md-12">
-                                        <div className="card customstylecard" style={{ border: "1px solid #22c7b8" }}>
-                                          <div className="card-header d-flex align-items-center justify-content-between" style={{ backgroundColor: "#EAFBF9", borderBottom: "1px solid #22c7b8" }}>
+                                        <div
+                                          className="card customstylecard"
+                                          style={{
+                                            border: "1px solid #22c7b8",
+                                          }}
+                                        >
+                                          <div
+                                            className="card-header d-flex align-items-center justify-content-between"
+                                            style={{
+                                              backgroundColor: "#EAFBF9",
+                                              borderBottom: "1px solid #22c7b8",
+                                            }}
+                                          >
                                             <div className="d-flex gap-2 align-items-center">
                                               <h6>OMCA</h6>
                                               <a
@@ -5641,10 +5641,10 @@ const addchargeapiHospital = async () => {
                                                           <tbody>
                                                             {info?.omca
                                                               ?.extraServices &&
-                                                              info.omca.extraServices.filter(
-                                                                (item) =>
-                                                                  item.price,
-                                                              ).length > 0 ? (
+                                                            info.omca.extraServices.filter(
+                                                              (item) =>
+                                                                item.price,
+                                                            ).length > 0 ? (
                                                               info.omca.extraServices.map(
                                                                 (
                                                                   item,
@@ -5674,19 +5674,19 @@ const addchargeapiHospital = async () => {
                                                                       <td>
                                                                         {item.startTime
                                                                           ? new Date(
-                                                                            item.startTime,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
+                                                                              item.startTime,
+                                                                            ).toLocaleDateString(
+                                                                              "en-GB",
+                                                                            )
                                                                           : "-"}
                                                                       </td>
                                                                       <td>
                                                                         {item.endTime
                                                                           ? new Date(
-                                                                            item.endTime,
-                                                                          ).toLocaleDateString(
-                                                                            "en-GB",
-                                                                          )
+                                                                              item.endTime,
+                                                                            ).toLocaleDateString(
+                                                                              "en-GB",
+                                                                            )
                                                                           : "-"}
                                                                       </td>
                                                                       <td className="pdf-hide">
@@ -5759,9 +5759,9 @@ const addchargeapiHospital = async () => {
                                                           <tbody>
                                                             {info?.omca
                                                               ?.freeServices &&
-                                                              info.omca
-                                                                .freeServices
-                                                                .length > 0 ? (
+                                                            info.omca
+                                                              .freeServices
+                                                              .length > 0 ? (
                                                               info.omca.freeServices.map(
                                                                 (
                                                                   item,
@@ -5875,7 +5875,7 @@ const addchargeapiHospital = async () => {
                                                           </thead>
                                                           <tbody>
                                                             {guestHouseBooking &&
-                                                              guestHouseBooking.length >
+                                                            guestHouseBooking.length >
                                                               0 ? (
                                                               guestHouseBooking.map(
                                                                 (
@@ -6031,8 +6031,8 @@ const addchargeapiHospital = async () => {
                                                           <tbody>
                                                             {info?.omca
                                                               ?.payments &&
-                                                              info?.omca?.payments
-                                                                .length > 0 ? (
+                                                            info?.omca?.payments
+                                                              .length > 0 ? (
                                                               info?.omca?.payments.map(
                                                                 (
                                                                   item,
@@ -6058,10 +6058,21 @@ const addchargeapiHospital = async () => {
                                                                           "en-GB",
                                                                         )}
                                                                       </td>
-                                                                      <td title={item.notes}>
+                                                                      <td
+                                                                        title={
+                                                                          item.notes
+                                                                        }
+                                                                      >
                                                                         {item.notes
-                                                                          ? item.notes.length > 30
-                                                                            ? item.notes.slice(0, 30) + "..."
+                                                                          ? item
+                                                                              .notes
+                                                                              .length >
+                                                                            30
+                                                                            ? item.notes.slice(
+                                                                                0,
+                                                                                30,
+                                                                              ) +
+                                                                              "..."
                                                                             : item.notes
                                                                           : "-"}
                                                                       </td>
@@ -6121,7 +6132,12 @@ const addchargeapiHospital = async () => {
                                               </div>
                                             </div>
                                           </div>
-                                          <div className="card-footer" style={{ borderTop: "1px solid #22c7b8" }}>
+                                          <div
+                                            className="card-footer"
+                                            style={{
+                                              borderTop: "1px solid #22c7b8",
+                                            }}
+                                          >
                                             <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
@@ -6133,7 +6149,12 @@ const addchargeapiHospital = async () => {
                                               </div>
                                             </div>
                                           </div>
-                                          <div className="card-footer" style={{ borderTop: "1px solid #22c7b8" }}>
+                                          <div
+                                            className="card-footer"
+                                            style={{
+                                              borderTop: "1px solid #22c7b8",
+                                            }}
+                                          >
                                             <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
@@ -6151,8 +6172,19 @@ const addchargeapiHospital = async () => {
                                       </div>
                                       {/* for pharmacy data */}
                                       <div className="col-md-12">
-                                        <div className="card customstylecard" style={{ border: "1px solid #58C8EC" }}>
-                                          <div className="card-header d-flex justify-content-between" style={{ backgroundColor: "#F2FCFF", borderBottom: "1px solid #58C8EC" }}>
+                                        <div
+                                          className="card customstylecard"
+                                          style={{
+                                            border: "1px solid #58C8EC",
+                                          }}
+                                        >
+                                          <div
+                                            className="card-header d-flex justify-content-between"
+                                            style={{
+                                              backgroundColor: "#F2FCFF",
+                                              borderBottom: "1px solid #58C8EC",
+                                            }}
+                                          >
                                             <div className="d-flex align-items-center gap-3">
                                               <h6>Pharmacy</h6>
                                               <div className="">
@@ -6254,7 +6286,7 @@ const addchargeapiHospital = async () => {
                                                               <td
                                                                 colSpan={
                                                                   usrFount ===
-                                                                    "Admin"
+                                                                  "Admin"
                                                                     ? 9
                                                                     : 7
                                                                 }
@@ -6310,7 +6342,7 @@ const addchargeapiHospital = async () => {
                                                         <tbody>
                                                           {info?.pharmacy
                                                             ?.payments?.length >
-                                                            0 ? (
+                                                          0 ? (
                                                             info?.pharmacy?.payments?.map(
                                                               (item, index) => (
                                                                 <tr
@@ -6354,7 +6386,6 @@ const addchargeapiHospital = async () => {
                                                                       item.paymentMethod
                                                                     }
                                                                   </td>
-
                                                                 </tr>
                                                               ),
                                                             )
@@ -6363,7 +6394,7 @@ const addchargeapiHospital = async () => {
                                                               <td
                                                                 colSpan={
                                                                   usrFount ===
-                                                                    "Admin"
+                                                                  "Admin"
                                                                     ? 9
                                                                     : 7
                                                                 }
@@ -6384,7 +6415,12 @@ const addchargeapiHospital = async () => {
                                               </div>
                                             </div>
                                           </div>
-                                          <div className="card-footer" style={{ borderTop: "1px solid #58C8EC" }}>
+                                          <div
+                                            className="card-footer"
+                                            style={{
+                                              borderTop: "1px solid #58C8EC",
+                                            }}
+                                          >
                                             <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
@@ -6397,7 +6433,12 @@ const addchargeapiHospital = async () => {
                                               </div>
                                             </div>
                                           </div>
-                                          <div className="card-footer" style={{ borderTop: "1px solid #58C8EC" }}>
+                                          <div
+                                            className="card-footer"
+                                            style={{
+                                              borderTop: "1px solid #58C8EC",
+                                            }}
+                                          >
                                             <div className="row justify-content-end">
                                               <div className="col-md-12">
                                                 <div className="total-amount">
@@ -6469,7 +6510,7 @@ const addchargeapiHospital = async () => {
 
                                                 <TableBody>
                                                   {attandantFilered.length ===
-                                                    0 ? (
+                                                  0 ? (
                                                     <TableRow>
                                                       <TableCell
                                                         colSpan={7}
@@ -6486,7 +6527,6 @@ const addchargeapiHospital = async () => {
                                                             item._id || index
                                                           }
                                                         >
-
                                                           <TableCell>
                                                             {item?.AttendeeId
                                                               ?.attendant_fullname ||
@@ -6513,16 +6553,15 @@ const addchargeapiHospital = async () => {
                                                               "N/A"}
                                                           </TableCell>
 
-
                                                           <TableCell>
                                                             <div className="d-flex flex-wrap gap-2">
                                                               {Array.isArray(
                                                                 item?.AttendeeId
                                                                   ?.attendant_passport,
                                                               ) &&
-                                                                item.AttendeeId
-                                                                  .attendant_passport
-                                                                  .length > 0 ? (
+                                                              item.AttendeeId
+                                                                .attendant_passport
+                                                                .length > 0 ? (
                                                                 item.AttendeeId.attendant_passport.map(
                                                                   (
                                                                     file,
@@ -6530,7 +6569,7 @@ const addchargeapiHospital = async () => {
                                                                   ) => {
                                                                     const filePath =
                                                                       typeof file ===
-                                                                        "object"
+                                                                      "object"
                                                                         ? file?.path
                                                                         : file;
 
@@ -6579,7 +6618,6 @@ const addchargeapiHospital = async () => {
                                             </TableContainer>
                                           </div>
                                         </div>
-
                                       </div>
                                     </>
                                   )}
@@ -6661,7 +6699,7 @@ const addchargeapiHospital = async () => {
                                                   </TableHead>
                                                   <TableBody>
                                                     {paymentsFilered &&
-                                                      paymentsFilered.length >
+                                                    paymentsFilered.length >
                                                       0 ? (
                                                       paymentsFilered.map(
                                                         (item) => (
@@ -6680,7 +6718,6 @@ const addchargeapiHospital = async () => {
                                                                 item?.paymentMethod
                                                               }
                                                             </TableCell>
-
                                                             <TableCell>
                                                               $
                                                               {
@@ -6724,7 +6761,7 @@ const addchargeapiHospital = async () => {
                                                               )}
                                                             </TableCell>
                                                             {usrFount ===
-                                                              "Admin" ? (
+                                                            "Admin" ? (
                                                               <>
                                                                 <TableCell>
                                                                   <button
@@ -6734,9 +6771,9 @@ const addchargeapiHospital = async () => {
                                                                         "/Admin/Patient-Pdfdetails",
                                                                         {
                                                                           state:
-                                                                          {
-                                                                            data: item?._id,
-                                                                          },
+                                                                            {
+                                                                              data: item?._id,
+                                                                            },
                                                                         },
                                                                       );
                                                                     }}
@@ -6793,12 +6830,15 @@ const addchargeapiHospital = async () => {
                                     <div className="card patientnotes">
                                       <div className="card-header service-list justify-content-between">
                                         <h6>Reports</h6>
-                                        <button className="add-button" onClick={(e) =>
-                                          handleClickOpen10(
-                                            e,
-                                            selectedTreatmentId,
-                                          )
-                                        }>
+                                        <button
+                                          className="add-button"
+                                          onClick={(e) =>
+                                            handleClickOpen10(
+                                              e,
+                                              selectedTreatmentId,
+                                            )
+                                          }
+                                        >
                                           <i className="fa fa-plus text-white"></i>
                                         </button>
                                       </div>
@@ -6814,12 +6854,8 @@ const addchargeapiHospital = async () => {
                                                 {usrFount === "Admin" ? (
                                                   <>
                                                     {" "}
-                                                    <th>
-                                                      Reports
-                                                    </th>
-                                                    <th>
-                                                      Action
-                                                    </th>
+                                                    <th>Reports</th>
+                                                    <th>Action</th>
                                                   </>
                                                 ) : (
                                                   ""
@@ -6828,69 +6864,69 @@ const addchargeapiHospital = async () => {
                                             </thead>
                                             <tbody>
                                               {reportsFilered1 &&
-                                                reportsFilered1.length > 0 ? (
-                                                reportsFilered1.map(
-                                                  (item) => (
-                                                    <tr key={item._id}>
-                                                      <td>{item?.treatment_course_name}</td>
-                                                      <td>{item?.reportTitle}</td>
-                                                      <td> {new Date(
+                                              reportsFilered1.length > 0 ? (
+                                                reportsFilered1.map((item) => (
+                                                  <tr key={item._id}>
+                                                    <td>
+                                                      {
+                                                        item?.treatment_course_name
+                                                      }
+                                                    </td>
+                                                    <td>{item?.reportTitle}</td>
+                                                    <td>
+                                                      {" "}
+                                                      {new Date(
                                                         item?.treatment_report_date,
                                                       ).toLocaleDateString(
                                                         "en-GB",
                                                       )}
-                                                      </td>
-                                                      <td> {item?.platform ===
-                                                        1
+                                                    </td>
+                                                    <td>
+                                                      {" "}
+                                                      {item?.platform === 1
                                                         ? "CRM"
-                                                        : "Hospital"}</td>
-                                                      {usrFount ===
-                                                        "Admin" ? (
-                                                        <>
-                                                          {" "}
-                                                          <td>
-                                                            <a
-                                                              href={`${image}${item.treatmentReport}`}
-                                                              target="_blank"
-                                                              rel="noreferrer"
-                                                            >
-                                                              Download
-                                                              Report
-                                                            </a>
-                                                          </td>
-                                                          <td className="action-icon">
-                                                            <i
-                                                              className="fa-solid fa-trash text-danger"
-                                                              style={{
-                                                                cursor:
-                                                                  "pointer",
-                                                              }}
-                                                              onClick={() =>
-                                                                handledeleteReport(
-                                                                  item,
-                                                                )
-                                                              }
-                                                            ></i>
-                                                            <i
-                                                              className="fa-solid fa-pen-to-square"
-                                                              onClick={() =>
-                                                                handleEditreport(
-                                                                  item,
-                                                                  info,
-                                                                )
-                                                              }
-                                                            ></i>
-                                                          </td>
-                                                        </>
-                                                      ) : (
-                                                        ""
-                                                      )}
-
-
-
-                                                    </tr>
-                                                  )
-                                                )
+                                                        : "Hospital"}
+                                                    </td>
+                                                    {usrFount === "Admin" ? (
+                                                      <>
+                                                        {" "}
+                                                        <td>
+                                                          <a
+                                                            href={`${image}${item.treatmentReport}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                          >
+                                                            Download Report
+                                                          </a>
+                                                        </td>
+                                                        <td className="action-icon">
+                                                          <i
+                                                            className="fa-solid fa-trash text-danger"
+                                                            style={{
+                                                              cursor: "pointer",
+                                                            }}
+                                                            onClick={() =>
+                                                              handledeleteReport(
+                                                                item,
+                                                              )
+                                                            }
+                                                          ></i>
+                                                          <i
+                                                            className="fa-solid fa-pen-to-square"
+                                                            onClick={() =>
+                                                              handleEditreport(
+                                                                item,
+                                                                info,
+                                                              )
+                                                            }
+                                                          ></i>
+                                                        </td>
+                                                      </>
+                                                    ) : (
+                                                      ""
+                                                    )}
+                                                  </tr>
+                                                ))
                                               ) : (
                                                 <tr>
                                                   <td
@@ -6906,8 +6942,8 @@ const addchargeapiHospital = async () => {
                                             </tbody>
                                           </table>
                                         </div>
-                                    
-                                        {doctorReviewNotes?.documents?.length > 0 && (
+                                        {doctorReviewNotes?.documents?.length >
+                                          0 && (
                                           <>
                                             <div className="treat-hd my-3">
                                               <h6>Treatment Plan Documents</h6>
@@ -6923,19 +6959,18 @@ const addchargeapiHospital = async () => {
                                                       onClick={() =>
                                                         window.open(
                                                           `${imageUrl}/${doc?.file}`,
-                                                          "_blank"
+                                                          "_blank",
                                                         )
                                                       }
                                                     >
                                                       View {index + 1}
                                                     </button>
                                                   </span>
-                                                )
+                                                ),
                                               )}
                                             </div>
                                           </>
                                         )}
-                                    
                                         <div className="treat-hd my-3">
                                           <h6>Doctor Review</h6>
                                           <span className="line"></span>
@@ -6944,21 +6979,31 @@ const addchargeapiHospital = async () => {
                                           <div className="col-md-6">
                                             <div className="">
                                               <h6>Recommendation</h6>
-                                              <p>{doctorReviewNotes?.doctorReview?.review_notes}</p>
+                                              <p>
+                                                {
+                                                  doctorReviewNotes
+                                                    ?.doctorReview?.review_notes
+                                                }
+                                              </p>
                                             </div>
                                           </div>
                                           <div className="col-md-3">
                                             <div className="">
                                               <h6>Notes</h6>
-                                              <p>{doctorReviewNotes?.doctorReview?.Recommendations}</p>
+                                              <p>
+                                                {
+                                                  doctorReviewNotes
+                                                    ?.doctorReview
+                                                    ?.Recommendations
+                                                }
+                                              </p>
                                             </div>
                                           </div>
                                           <div className="col-md-3">
                                             <div className="">
                                               <h6>Documentation</h6>
-                                              {doctorReviewNotes
-                                                ?.doctorReview?.images
-                                                ?.length > 0 ? (
+                                              {doctorReviewNotes?.doctorReview
+                                                ?.images?.length > 0 ? (
                                                 <button
                                                   className="viewbtn"
                                                   onClick={() =>
@@ -6977,18 +7022,17 @@ const addchargeapiHospital = async () => {
                                           </div>
                                         </div>
                                         <div className="row">
-                                          {doctorReviewNotes?.doctorReview?.comments &&
-                                            doctorReviewNotes?.doctorReview?.comments
-                                              .length > 0 && (
+                                          {doctorReviewNotes?.doctorReview
+                                            ?.comments &&
+                                            doctorReviewNotes?.doctorReview
+                                              ?.comments.length > 0 && (
                                               <div className="col-md-12">
-
                                                 {/* Accordion */}
                                                 <div
                                                   className="accordion"
                                                   id="doctorReviewCommentsAccordion"
                                                 >
                                                   <div className="accordion-item border-0">
-
                                                     {/* Header */}
                                                     <h2
                                                       className="accordion-header"
@@ -7003,8 +7047,6 @@ const addchargeapiHospital = async () => {
                                                         aria-controls="doctorReviewCommentsCollapse"
                                                       >
                                                         <div className="d-flex align-items-center gap-2">
-                                                         
-
                                                           <span>Comments</span>
                                                         </div>
                                                       </button>
@@ -7016,7 +7058,6 @@ const addchargeapiHospital = async () => {
                                                       data-bs-parent="#doctorReviewCommentsAccordion"
                                                     >
                                                       <div className="accordion-body p-0 pt-3">
-
                                                         <div className="row gy-3">
                                                           {doctorReviewNotes?.doctorReview?.comments.map(
                                                             (
@@ -7032,10 +7073,11 @@ const addchargeapiHospital = async () => {
                                                               >
                                                                 <div className="card customstylecard">
                                                                   <div className="card-body">
-
                                                                     <div className="note-view">
                                                                       <h3 className="card-title">
-                                                                        {comment.user_type}{" "}
+                                                                        {
+                                                                          comment.user_type
+                                                                        }{" "}
                                                                         Note
                                                                       </h3>
                                                                     </div>
@@ -7043,14 +7085,12 @@ const addchargeapiHospital = async () => {
                                                                     <div className="experience-box">
                                                                       <ul className="experience-list">
                                                                         <li className="mb-0">
-
                                                                           <div className="experience-user">
                                                                             <div className="before-circle"></div>
                                                                           </div>
 
                                                                           <div className="experience-content">
                                                                             <div className="timeline-content">
-
                                                                               <a
                                                                                 href="#/"
                                                                                 className="name"
@@ -7065,7 +7105,7 @@ const addchargeapiHospital = async () => {
                                                                                 comment
                                                                                   .images
                                                                                   .length >
-                                                                                0 && (
+                                                                                  0 && (
                                                                                   <div className="mt-2 mb-2">
                                                                                     {comment.images.map(
                                                                                       (
@@ -7078,7 +7118,7 @@ const addchargeapiHospital = async () => {
                                                                                           )
                                                                                             ? img
                                                                                             : image +
-                                                                                            img;
+                                                                                              img;
 
                                                                                         return (
                                                                                           <button
@@ -7106,40 +7146,35 @@ const addchargeapiHospital = async () => {
                                                                                 )}
 
                                                                               <div>
-                                                                                Date -{" "}
+                                                                                Date
+                                                                                -{" "}
                                                                                 {comment.Date
                                                                                   ? new Date(
-                                                                                    comment.Date,
-                                                                                  ).toLocaleDateString(
-                                                                                    "en-GB",
-                                                                                  )
+                                                                                      comment.Date,
+                                                                                    ).toLocaleDateString(
+                                                                                      "en-GB",
+                                                                                    )
                                                                                   : new Date(
-                                                                                    comment.createdAt,
-                                                                                  ).toLocaleDateString(
-                                                                                    "en-GB",
-                                                                                  )}
+                                                                                      comment.createdAt,
+                                                                                    ).toLocaleDateString(
+                                                                                      "en-GB",
+                                                                                    )}
                                                                               </div>
-
                                                                             </div>
                                                                           </div>
-
                                                                         </li>
                                                                       </ul>
                                                                     </div>
-
                                                                   </div>
                                                                 </div>
                                                               </div>
                                                             ),
                                                           )}
                                                         </div>
-
                                                       </div>
                                                     </div>
-
                                                   </div>
                                                 </div>
-
                                               </div>
                                             )}
                                         </div>
@@ -7223,10 +7258,10 @@ const addchargeapiHospital = async () => {
                                                     <td>
                                                       {item.appointment_Date
                                                         ? new Date(
-                                                          item.appointment_Date,
-                                                        )
-                                                          .toISOString()
-                                                          .slice(0, 10)
+                                                            item.appointment_Date,
+                                                          )
+                                                            .toISOString()
+                                                            .slice(0, 10)
                                                         : ""}
                                                     </td>
                                                     <td>{item.note}</td>
@@ -7273,7 +7308,16 @@ const addchargeapiHospital = async () => {
                                     <div className="card patientnotes">
                                       <div className="card-header service-list justify-content-between">
                                         <h6>Notes</h6>
-                                        <button className="add-button" onClick={(e) => handleClickOpenNotes(e, selectedTreatmentId, info,)}>
+                                        <button
+                                          className="add-button"
+                                          onClick={(e) =>
+                                            handleClickOpenNotes(
+                                              e,
+                                              selectedTreatmentId,
+                                              info,
+                                            )
+                                          }
+                                        >
                                           <i className="fa fa-plus text-white"></i>
                                         </button>
                                       </div>
@@ -7291,19 +7335,27 @@ const addchargeapiHospital = async () => {
                                             </thead>
                                             <tbody>
                                               {notesTable &&
-                                                notesTable.length > 0 ? (
+                                              notesTable.length > 0 ? (
                                                 notesTable.map(
                                                   (item, index) => {
                                                     return (
                                                       <tr
-                                                        key={
-                                                          item._id || index
-                                                        }
+                                                        key={item._id || index}
                                                       >
-                                                        <td title={item.note} style={{ width: "50%", cursor: 'pointer' }}>
+                                                        <td
+                                                          title={item.note}
+                                                          style={{
+                                                            width: "50%",
+                                                            cursor: "pointer",
+                                                          }}
+                                                        >
                                                           {item.note
-                                                            ? item.note.length > 110
-                                                              ? item.note.slice(0, 110) + "..."
+                                                            ? item.note.length >
+                                                              110
+                                                              ? item.note.slice(
+                                                                  0,
+                                                                  110,
+                                                                ) + "..."
                                                               : item.note
                                                             : "-"}
                                                         </td>
@@ -7311,15 +7363,14 @@ const addchargeapiHospital = async () => {
                                                         <td>
                                                           {item?.date
                                                             ? new Date(
-                                                              item.date,
-                                                            ).toLocaleDateString(
-                                                              "en-GB",
-                                                            )
+                                                                item.date,
+                                                              ).toLocaleDateString(
+                                                                "en-GB",
+                                                              )
                                                             : "-"}
                                                         </td>
                                                         <td>
-                                                          {item.platform ==
-                                                            "1"
+                                                          {item.platform == "1"
                                                             ? "CRM"
                                                             : "Hospital"}{" "}
                                                         </td>
@@ -7328,26 +7379,24 @@ const addchargeapiHospital = async () => {
                                                             ?.treatmentNoteImages
                                                             ?.length > 0
                                                             ? item.treatmentNoteImages.map(
-                                                              (
-                                                                img,
-                                                                index,
-                                                              ) => (
-                                                                <button
-                                                                  key={
-                                                                    index
-                                                                  }
-                                                                  className="btn btn-sm btn-primary me-1"
-                                                                  onClick={() =>
-                                                                    window.open(
-                                                                      `https://sisccltd.com/omca_crm/${img}`,
-                                                                      "_blank",
-                                                                    )
-                                                                  }
-                                                                >
-                                                                  View
-                                                                </button>
-                                                              ),
-                                                            )
+                                                                (
+                                                                  img,
+                                                                  index,
+                                                                ) => (
+                                                                  <button
+                                                                    key={index}
+                                                                    className="btn btn-sm btn-primary me-1"
+                                                                    onClick={() =>
+                                                                      window.open(
+                                                                        `https://sisccltd.com/omca_crm/${img}`,
+                                                                        "_blank",
+                                                                      )
+                                                                    }
+                                                                  >
+                                                                    View
+                                                                  </button>
+                                                                ),
+                                                              )
                                                             : "-"}
                                                         </td>
 
@@ -7400,15 +7449,19 @@ const addchargeapiHospital = async () => {
                           );
                         })}
                       </>
-                    )
-                    }
+                    )}
                   </div>
                 </div>
-              </div >
-              <div className={`tab-pane ${mainTab === "Attende" ? "show active" : ""}`} id="atten-cont">
+              </div>
+              <div
+                className={`tab-pane ${mainTab === "Attende" ? "show active" : ""}`}
+                id="atten-cont"
+              >
                 <div className="main-tab-hd justify-content-end">
                   <div className="">
-                    <button onClick={(e) => handleClickOpen2(e, selectedTreatmentId)} className="add-button"
+                    <button
+                      onClick={(e) => handleClickOpen2(e, selectedTreatmentId)}
+                      className="add-button"
                     >
                       <span>
                         <i className="fa fa-plus"></i>
@@ -7444,7 +7497,6 @@ const addchargeapiHospital = async () => {
                                 <TableCell>Action</TableCell>
                               </TableRow>
                             </TableHead>
-
                             <TableBody>
                               {attandantnew.length === 0 ? (
                                 <TableRow>
@@ -7463,7 +7515,8 @@ const addchargeapiHospital = async () => {
                                       {item?.attendant_relation || "N/A"}
                                     </TableCell>
                                     <TableCell>
-                                      {item.phoneCode}{" "} {item?.attendant_contact || "N/A"}
+                                      {item.phoneCode}{" "}
+                                      {item?.attendant_contact || "N/A"}
                                     </TableCell>
                                     <TableCell>
                                       {item?.country || "N/A"}
@@ -7474,29 +7527,29 @@ const addchargeapiHospital = async () => {
                                     <TableCell className="d-flex gap-2">
                                       {item?.attendant_passport?.length > 0
                                         ? item.attendant_passport.map(
-                                          (file, fIndex) => {
-                                            const filePath =
-                                              typeof file === "object"
-                                                ? file?.path
-                                                : file;
-                                            return (
-                                              <div key={fIndex}>
-                                                <a
-                                                  href={`https://sisccltd.com/omca_crm/${filePath}`}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                  className="viewbtn"
-                                                >
-                                                  View{" "}
-                                                  {item.attendant_passport
-                                                    .length > 1
-                                                    ? fIndex + 1
-                                                    : ""}
-                                                </a>
-                                              </div>
-                                            );
-                                          },
-                                        )
+                                            (file, fIndex) => {
+                                              const filePath =
+                                                typeof file === "object"
+                                                  ? file?.path
+                                                  : file;
+                                              return (
+                                                <div key={fIndex}>
+                                                  <a
+                                                    href={`https://sisccltd.com/omca_crm/${filePath}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="viewbtn"
+                                                  >
+                                                    View{" "}
+                                                    {item.attendant_passport
+                                                      .length > 1
+                                                      ? fIndex + 1
+                                                      : ""}
+                                                  </a>
+                                                </div>
+                                              );
+                                            },
+                                          )
                                         : "Not Uploaded"}
                                     </TableCell>
                                     <TableCell className="action-icon">
@@ -7522,207 +7575,533 @@ const addchargeapiHospital = async () => {
                   </div>
                 </div>
               </div>
-              <div className={`tab-pane ${mainTab === "Patient_Enquiry" ? "show active" : ""}`} id="atten-cont">
+              <div
+                className={`tab-pane ${mainTab === "Patient_Enquiry" ? "show active" : ""}`}
+                id="atten-cont"
+              >
                 <div className="main-tab-hd justify-content-end">
-                  <div className="">
-                 
-                  </div>
+                  <div className=""></div>
                 </div>
                 <div className="card-box">
                   <div className="row gx-3 gy-3">
                     <div className="col-md-12">
                       <div className="table-responsive">
-                      <div className="card-box">
-  {/* Tabs */}
-  <ul className="nav nav-tabs mb-3">
-    <li className="nav-item">
-      <button
-        className={`nav-link ${tabValue === 0 ? "active" : ""}`}
-        onClick={() => setTabValue(0)}
-      >
-        Enquiry
-      </button>
-    </li>
+                        <div className="card-box">
+                          {/* Tabs */}
+                          <ul className="nav nav-tabs mb-3">
+                            <li className="nav-item">
+                              <button
+                                className={`nav-link ${tabValue === 0 ? "active" : ""}`}
+                                onClick={() => setTabValue(0)}
+                              >
+                                Enquiry
+                              </button>
+                            </li>
 
-    <li className="nav-item">
-      <button
-        className={`nav-link ${tabValue === 1 ? "active" : ""}`}
-        onClick={() => setTabValue(1)}
-      >
-        Air Ambulance
-      </button>
-    </li>
+                            <li className="nav-item">
+                              <button
+                                className={`nav-link ${tabValue === 1 ? "active" : ""}`}
+                                onClick={() => setTabValue(1)}
+                              >
+                                Ambulance Servie
+                              </button>
+                            </li>
+                            <li className="nav-item">
+                              <button
+                                className={`nav-link ${tabValue === 2 ? "active" : ""}`}
+                                onClick={() => setTabValue(2)}
+                              >
+                               Air Medical Escort
+                              </button>
+                            </li>
 
-    <li className="nav-item">
-      <button
-        className={`nav-link ${tabValue === 2 ? "active" : ""}`}
-        onClick={() => setTabValue(2)}
-      >
-        Medical Escort
-      </button>
-    </li>
+                            <li className="nav-item">
+                              <button
+                                className={`nav-link ${tabValue === 3 ? "active" : ""}`}
+                                onClick={() => setTabValue(3)}
+                              >
+                               Treatment Estimate
+                              </button>
+                            </li>
+                          </ul>
+                          <div className="row gx-3 gy-3">
+                            <div className="col-md-12">
+                              <div className="table-responsive">
+                                {/* Enquiry */}
+                                {tabValue === 0 && (
+                                  <div>
+                                    <TableContainer className="table-responsive">
+                                      <Table className="table-no-card">
+                                        <TableHead>
+                                          <TableRow>
+                                            <TableCell>Sr.No.</TableCell>
+                                            <TableCell>Enquiry IDs</TableCell>
+                                            <TableCell>Country</TableCell>
+                                            <TableCell>Treating In</TableCell>
+                                            <TableCell>Date/Time</TableCell>
+                                            <TableCell>Action</TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {dataForConfirmedEnq.map(
+                                            (info, i) => (
+                                              <TableRow key={info._id}>
+                                                <TableCell>{i + 1}</TableCell>
+                                                <TableCell>
+                                                  {info.enquiryId}
+                                                </TableCell>
+                                              
+                                                <TableCell>
+                                                  {" "}
+                                                  {info?.country?.length > 10
+                                                    ? info.country.slice(
+                                                        0,
+                                                        10,
+                                                      ) + "..."
+                                                    : info.country}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {" "}
+                                                  {info?.treating_in_country
+                                                    ?.length > 10
+                                                    ? info.treating_in_country.slice(
+                                                        0,
+                                                        10,
+                                                      ) + "..."
+                                                    : info.treating_in_country}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {/* {new Date(
+                                                    info.createdAt,
+                                                  ).toLocaleDateString("en-GB")} */}
+                                                  {new Date(info.createdAt).toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+})}
+                                                  {" "}
+                                                  {new Date(
+                                                    info.createdAt,
+                                                  ).toLocaleTimeString(
+                                                    "en-GB",
+                                                    {
+                                                      hour: "2-digit",
+                                                      minute: "2-digit",
+                                                      hour12: true,
+                                                    },
+                                                  )}
+                                                </TableCell>
+                                                <TableCell className="action-icon">
+                                                  <VisibilityIcon
+                                                    className="eye-icon"
+                                                    onClick={(e) =>
+                                                      ViewDetail(
+                                                        e,
+                                                        tabValue,
+                                                        info,
+                                                      )
+                                                    }
+                                                  />
+                                                  {info?.hasDoctorReview ===
+                                                  true ? (
+                                                    ""
+                                                  ) : (
+                                                    <i
+                                                      className="fa-solid fa-stethoscope"
+                                                      onClick={(e) =>
+                                                        handleClickOpen4(
+                                                          e,
+                                                          info.enquiryId,
+                                                          info,
+                                                        )
+                                                      }
+                                                    ></i>
+                                                  )}
+                                                  {info?.hasAppointment ===
+                                                  true ? (
+                                                    ""
+                                                  ) : (
+                                                    <i
+                                                      className="fa-solid fa-calendar-plus"
+                                                      title="Add Appointment"
+                                                      style={{
+                                                        cursor: "pointer",
+                                                      }}
+                                                      onClick={() =>
+                                                        handleOpenAppointment(
+                                                          info,
+                                                        )
+                                                      }
+                                                    ></i>
+                                                  )}
+                                                </TableCell>
+                                              </TableRow>
+                                            ),
+                                          )}
+                                        </TableBody>
+                                      </Table>
+                                    </TableContainer>
+                                  </div>
+                                )}
+                                {tabValue === 1 && (
+                                  <div>
+                                    <div>
+                                      <TableContainer className="table-responsive">
+                                        <Table className="table-no-card">
+                                          <TableHead>
+                                            <TableRow>
+                                              <TableCell>Sr.No.</TableCell>
+                                              <TableCell>Enquiry IDs</TableCell>
+                                              <TableCell>Country</TableCell>
+                                              <TableCell>Treating In</TableCell>
+                                              <TableCell>Date/Time</TableCell>
+                                              <TableCell>Action</TableCell>
+                                            </TableRow>
+                                          </TableHead>
+                                          <TableBody>
+                                            {ambulanceData?.length > 0 ? (
+                                              ambulanceData.map((info, i) => (
+                                                <TableRow key={info._id}>
+                                                  <TableCell>{i + 1}</TableCell>
 
-    <li className="nav-item">
-      <button
-        className={`nav-link ${tabValue === 3 ? "active" : ""}`}
-        onClick={() => setTabValue(3)}
-      >
-        Medical Treatment
-      </button>
-    </li>
-  </ul>
+                                                  <TableCell>
+                                                    {info.enquiryId}
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    {info?.country?.length > 10
+                                                      ? info.country.slice(
+                                                          0,
+                                                          10,
+                                                        ) + "..."
+                                                      : info.country}
+                                                  </TableCell>
 
-  {/* Tab Content */}
-  <div className="row gx-3 gy-3">
-    <div className="col-md-12">
-      <div className="table-responsive">
+                                                  <TableCell>
+                                                    {info?.treating_in_country
+                                                      ?.length > 10
+                                                      ? info.treating_in_country.slice(
+                                                          0,
+                                                          10,
+                                                        ) + "..."
+                                                      : info.treating_in_country}
+                                                  </TableCell>
 
-        {/* Enquiry */}
-        {tabValue === 0 && (
-          <div>
-            <h5>Enquiry Content</h5>
+                                                  <TableCell>
+                                                     {new Date(info.created_at).toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+})}{" "}{" "}
+                                                    {new Date(
+                                                      info.created_at,
+                                                    ).toLocaleTimeString(
+                                                      "en-GB",
+                                                      {
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                        hour12: true,
+                                                      },
+                                                    )}
+                                                  </TableCell>
 
-            <TableContainer  className="table-responsive">
-                    <Table className="table-no-card">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Sr.No.</TableCell>
-                           <TableCell>
-                                                        Enquiry IDs
-                                                    </TableCell>
-                          <TableCell>
-                              Name
-                          </TableCell>
-                           <TableCell>
-                              Country
-                          </TableCell>
-                           <TableCell>
-                              Treating In
-                          </TableCell>
-                      
-                                          <TableCell>
-                              Date/Time
-                          </TableCell>
-                         {/* <TableCell>
-                              Status
-                          </TableCell> */}
-                          <TableCell>Action</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {dataForConfirmedEnq.map((info, i) => (
-                          <TableRow key={info._id}>
-                            <TableCell>
-                               {i + 1 }  
-                            </TableCell>
-                             <TableCell>{info.enquiryId}</TableCell>
-                            <TableCell> {info?.name?.length > 10
-                                  ? info.name.slice(0, 10) + "..."
-                                  : info.name}</TableCell>
-                            <TableCell> {info?.country?.length > 10
-                                  ? info.country.slice(0, 10) + "..."
-                                  : info.country}</TableCell>
-                            <TableCell> {info?.treatingIn?.length > 10
-                                  ? info.treatingIn.slice(0, 10) + "..."
-                                  : info.treatingIn}</TableCell>
-                            <TableCell>{new Date(info.createdAt).toLocaleDateString("en-GB")}/{new Date(info.createdAt).toLocaleTimeString('en-GB', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-          })}</TableCell>
-                           {/* <TableCell>
-                                        {   
-                                             <label className="active-switch">
-                                               <input
-                                                 className="active-switch-input "
-                                                 type="checkbox"
-                                                //  checked={Boolean(info.status)}
-                                                //  onChange={() => {
-                                                //    dataActiveInactive(
-                                                //      info._id,
-                                                //      info.status
-                                                //    );
-                                                //  }}
-                                               />
-                                               <span
-                                                 className="active-switch-label "
-                                                 data-on="Active"
-                                                 data-off="Inactive"
-                                               ></span>
-                                               <span className="active-switch-handle"></span>
-                                             </label>
-                                           }
-                                         </TableCell> */}
-                            <TableCell className="action-icon">
-                            <VisibilityIcon
-                                                             className="eye-icon"
-                                                             onClick={(e) => ViewDetail(e, tabValue, info)}
-                                                           />
-                                                             { info?.hasDoctorReview ===true ?"":
-                                                            <i className="fa-solid fa-stethoscope"
-                                  onClick={(e) =>
-                                    handleClickOpen4(e, info.enquiryId, info)
-                                  }
-                                ></i>}
-                                { info?.hasAppointment ===true ?"":
-                                 <i className="fa-solid fa-calendar-plus"
-                                  title="Add Appointment"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => handleOpenAppointment(info)}
-                                ></i>}
-                              {/* {role === "Admin" && (
-                                <i
-                                  className="fa fa-trash ms-1"
-                                  onClick={() => handleDelete(info._id)}
-                                ></i>
-                              )} */}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                      {/* <div className="d-flex justify-content-end mt-2">
-                        <Pagination
-                          count={Math.ceil(filteredRows.length / rowsPerPage)}
-                          page={page + 1}
-                          onChange={(e, value) => setPage(value - 1)}
-                        />
-                      </div> */}
-                  </TableContainer>
-          </div>
-        )}
+                                                  <TableCell className="action-icon">
+                                                    <VisibilityIcon
+                                                      className="eye-icon"
+                                                      onClick={(e) =>
+                                                        ViewDetail(
+                                                          e,
+                                                          tabValue,
+                                                          info,
+                                                        )
+                                                      }
+                                                    />
 
-        {/* Air Ambulance */}
-        {tabValue === 1 && (
-          <div>
-            <h5>Air Ambulance Content</h5>
+                                                    {info?.hasDoctorReview !==
+                                                      true && (
+                                                      <i
+                                                        className="fa-solid fa-stethoscope"
+                                                        onClick={(e) =>
+                                                          handleClickOpen4(
+                                                            e,
+                                                            info.enquiryId,
+                                                            info,
+                                                          )
+                                                        }
+                                                      ></i>
+                                                    )}
 
-            {/* Your Air Ambulance table/component here */}
-          </div>
-        )}
+                                                    {info?.hasAppointment !==
+                                                      true && (
+                                                      <i
+                                                        className="fa-solid fa-calendar-plus"
+                                                        title="Add Appointment"
+                                                        style={{
+                                                          cursor: "pointer",
+                                                        }}
+                                                        onClick={() =>
+                                                          handleOpenAppointment(
+                                                            info,
+                                                          )
+                                                        }
+                                                      ></i>
+                                                    )}
+                                                  </TableCell>
+                                                </TableRow>
+                                              ))
+                                            ) : (
+                                              <TableRow>
+                                                <TableCell
+                                                  colSpan={7}
+                                                  align="center"
+                                                >
+                                                  No Data Found
+                                                </TableCell>
+                                              </TableRow>
+                                            )}
+                                          </TableBody>
+                                        </Table>
+                                      </TableContainer>
+                                    </div>
+                                  </div>
+                                )}
+                                {tabValue === 2 && (
+                                  <div>
+                                    <TableContainer className="table-responsive">
+                                      <Table className="table-no-card">
+                                        <TableHead>
+                                          <TableRow>
+                                            <TableCell>Sr.No.</TableCell>
+                                            <TableCell>Enquiry IDs</TableCell>
+                                            <TableCell>Country</TableCell>
+                                            <TableCell>Treating In</TableCell>
+                                            <TableCell>Date/Time</TableCell>
+                                            <TableCell>Action</TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {airAmbulanceData?.length > 0 ? (
+                                            airAmbulanceData.map((info, i) => (
+                                              <TableRow key={info._id}>
+                                                <TableCell>{i + 1}</TableCell>
 
-        {/* Medical Escort */}
-        {tabValue === 2 && (
-          <div>
-            <h5>Medical Escort Content</h5>
+                                                <TableCell>
+                                                  {info.enquiryId}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {info?.country?.length > 10
+                                                    ? info.country.slice(
+                                                        0,
+                                                        10,
+                                                      ) + "..."
+                                                    : info.country}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {info?.treating_in_country
+                                                    ?.length > 10
+                                                    ? info.treating_in_country.slice(
+                                                        0,
+                                                        10,
+                                                      ) + "..."
+                                                    : info.treating_in_country}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {new Date(info.created_at).toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+})}{" "}
+                                                  {" "}
+                                                  {new Date(
+                                                    info.created_at,
+                                                  ).toLocaleTimeString(
+                                                    "en-GB",
+                                                    {
+                                                      hour: "2-digit",
+                                                      minute: "2-digit",
+                                                      hour12: true,
+                                                    },
+                                                  )}
+                                                </TableCell>
+                                                <TableCell className="action-icon">
+                                                  <VisibilityIcon
+                                                    className="eye-icon"
+                                                    onClick={(e) =>
+                                                      ViewDetail(
+                                                        e,
+                                                        tabValue,
+                                                        info,
+                                                      )
+                                                    }
+                                                  />
+                                                  {info?.hasDoctorReview !==
+                                                    true && (
+                                                    <i
+                                                      className="fa-solid fa-stethoscope"
+                                                      onClick={(e) =>
+                                                        handleClickOpen4(
+                                                          e,
+                                                          info.enquiryId,
+                                                          info,
+                                                        )
+                                                      }
+                                                    ></i>
+                                                  )}
+                                                  {info?.hasAppointment !==
+                                                    true && (
+                                                    <i
+                                                      className="fa-solid fa-calendar-plus"
+                                                      title="Add Appointment"
+                                                      style={{
+                                                        cursor: "pointer",
+                                                      }}
+                                                      onClick={() =>
+                                                        handleOpenAppointment(
+                                                          info,
+                                                        )
+                                                      }
+                                                    ></i>
+                                                  )}
+                                                </TableCell>
+                                              </TableRow>
+                                            ))
+                                          ) : (
+                                            <TableRow>
+                                              <TableCell
+                                                colSpan={7}
+                                                align="center"
+                                              >
+                                                No Data Found
+                                              </TableCell>
+                                            </TableRow>
+                                          )}
+                                        </TableBody>
+                                      </Table>
+                                    </TableContainer>
+                                  </div>
+                                )}
+                                {tabValue === 3 && (
+                                  <div>
+                                    <TableContainer className="table-responsive">
+                                      <Table className="table-no-card">
+                                        <TableHead>
+                                          <TableRow>
+                                            <TableCell>Sr.No.</TableCell>
+                                            <TableCell>Enquiry IDs</TableCell>
+                                            <TableCell>Country</TableCell>
+                                            <TableCell>Treating In</TableCell>
+                                            <TableCell>Date/Time</TableCell>
+                                            <TableCell>Action</TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {treatmentData1?.length > 0 ? (
+                                            treatmentData1.map((info, i) => (
+                                              <TableRow key={info._id}>
+                                                <TableCell>{i + 1}</TableCell>
 
-            {/* Your Medical Escort table/component here */}
-          </div>
-        )}
+                                                <TableCell>
+                                                  {info.enquiryId}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {info?.country?.length > 10
+                                                    ? info.country.slice(
+                                                        0,
+                                                        10,
+                                                      ) + "..."
+                                                    : info.country}
+                                                </TableCell>
 
-        {/* Medical Treatment */}
-        {tabValue === 3 && (
-          <div>
-            <h5>Medical Treatment Content</h5>
-
-            {/* Your Medical Treatment table/component here */}
-          </div>
-        )}
-
-      </div>
-    </div>
-  </div>
-</div>
+                                                <TableCell>
+                                                  {info?.treatingIn?.length > 10
+                                                    ? info.treatingIn.slice(
+                                                        0,
+                                                        10,
+                                                      ) + "..."
+                                                    : info.treatingIn}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {/* {new Date(
+                                                    info.created_at,
+                                                  ).toLocaleDateString(
+                                                    "en-GB",
+                                                  )} */}
+                                                      {new Date(info.created_at).toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+})}{" "}
+                                                  {new Date(
+                                                    info.created_at,
+                                                  ).toLocaleTimeString(
+                                                    "en-GB",
+                                                    {
+                                                      hour: "2-digit",
+                                                      minute: "2-digit",
+                                                      hour12: true,
+                                                    },
+                                                  )}
+                                                </TableCell>
+                                                <TableCell className="action-icon">
+                                                  <VisibilityIcon
+                                                    className="eye-icon"
+                                                    onClick={(e) =>
+                                                      ViewDetail(
+                                                        e,
+                                                        tabValue,
+                                                        info,
+                                                      )
+                                                    }
+                                                  />
+                                                  {info?.hasDoctorReview !==
+                                                    true && (
+                                                    <i
+                                                      className="fa-solid fa-stethoscope"
+                                                      onClick={(e) =>
+                                                        handleClickOpen4(
+                                                          e,
+                                                          info.enquiryId,
+                                                          info,
+                                                        )
+                                                      }
+                                                    ></i>
+                                                  )}
+                                                  {info?.hasAppointment !==
+                                                    true && (
+                                                    <i
+                                                      className="fa-solid fa-calendar-plus"
+                                                      title="Add Appointment"
+                                                      style={{
+                                                        cursor: "pointer",
+                                                      }}
+                                                      onClick={() =>
+                                                        handleOpenAppointment(
+                                                          info,
+                                                        )
+                                                      }
+                                                    ></i>
+                                                  )}
+                                                </TableCell>
+                                              </TableRow>
+                                            ))
+                                          ) : (
+                                            <TableRow>
+                                              <TableCell
+                                                colSpan={7}
+                                                align="center"
+                                              >
+                                                No Data Found
+                                              </TableCell>
+                                            </TableRow>
+                                          )}
+                                        </TableBody>
+                                      </Table>
+                                    </TableContainer>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -7748,15 +8127,13 @@ const addchargeapiHospital = async () => {
             </div>
           </div>
           <DialogContent className="main-box view-table-detail">
-            <Box
-              noValidate
-              component="form"
-              className="contact-form"
-            >
+            <Box noValidate component="form" className="contact-form">
               <div className="row">
                 <div className="col-md-12">
                   <div className="field-set">
-                    <label>Treatment course<span className="text-danger">*</span></label>
+                    <label>
+                      Treatment course<span className="text-danger">*</span>
+                    </label>
                     <Autocomplete
                       options={Treatment || []}
                       getOptionLabel={(option) => option.name || ""}
@@ -7778,7 +8155,9 @@ const addchargeapiHospital = async () => {
                 </div>
                 <div className="col-md-12">
                   <div className="field-set">
-                    <label>Select Hospital<span className="text-danger">*</span></label>
+                    <label>
+                      Select Hospital<span className="text-danger">*</span>
+                    </label>
                     <Autocomplete
                       multiple
                       options={hospitlID || []}
@@ -7828,13 +8207,18 @@ const addchargeapiHospital = async () => {
                 </div>
                 <div className="col-md-12">
                   <div className="field-set">
-                    <label>Doctor Notes<span className="text-danger"></span></label>
+                    <label>
+                      Doctor Notes<span className="text-danger"></span>
+                    </label>
                     <select
                       name="doctorReviewId"
                       className="form-control"
                       onChange={handechangesearch}
-                      defaultValue="" >
-                      <option value="" disabled>Select</option>
+                      defaultValue=""
+                    >
+                      <option value="" disabled>
+                        Select
+                      </option>
                       {doctorReviewData1?.map((item) => (
                         // <option key={item._id} value={item._id}>
                         //   {item.review_notes}
@@ -7874,7 +8258,9 @@ const addchargeapiHospital = async () => {
                 </div>
                 <div className="col-md-12">
                   <div className="field-set">
-                    <label>Notes<span className="text-danger">*</span></label>
+                    <label>
+                      Notes<span className="text-danger">*</span>
+                    </label>
                     <input
                       className="form-control"
                       onChange={(e) => {
@@ -7895,8 +8281,8 @@ const addchargeapiHospital = async () => {
               </DialogActions>
             </Box>
           </DialogContent>
-        </Dialog >
-      </React.Fragment >
+        </Dialog>
+      </React.Fragment>
       <React.Fragment>
         <Dialog
           fullWidth
@@ -9810,283 +10196,225 @@ const addchargeapiHospital = async () => {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-       <React.Fragment>
-              <Dialog
-                fullWidth={fullWidth}
-                maxWidth={maxWidth}
-                open={open4}
-                onClose={handleClose4}
-              >
-                <div className="main-card-header">
-                  <div className="note-hd">
-                    <h6>Doctor Review</h6>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={open4}
+          onClose={handleClose4}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Doctor Review</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose4}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Review Notes<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id="w3review"
+                      name="discussionNotes"
+                      rows="4"
+                      cols="50"
+                      className="form-control"
+                      placeholder="Review"
+                      onChange={handleNoteChange}
+                      value={note}
+                    />
+                    <span style={{ color: "red" }}>
+                      {blogErr && !note ? "Please Enter Your  note" : ""}
+                    </span>
                   </div>
-                  <div className="cross-icon" onClick={handleClose4}>
-                    <i class="fa-solid fa-xmark"></i>
+                  <div className="field-set">
+                    <label>
+                      Upload Images<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      multiple
+                      onChange={handleImageChange}
+                      name="upload_image"
+                      id=""
+                    />
                   </div>
-                </div>
-                <DialogContent className="main-box">
-                  <Box
-                    noValidate
-                    component="form"
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "fit-content",
-                    }}
-                    className="contact-form"
-                  >
-                    <Box>
-                      <form id="contact-form">
-                        <div className="field-set">
-                          <label>
-                            Review Notes<span className="text-danger">*</span>
-                          </label>
-                          <textarea
-                            id="w3review"
-                            name="discussionNotes"
-                            rows="4"
-                            cols="50"
-                            className="form-control"
-                            placeholder="Review"
-                            onChange={handleNoteChange}
-                            value={note}
-                          />
-                          <span style={{ color: "red" }}>
-                            {blogErr && !note ? "Please Enter Your  note" : ""}
-                          </span>
-                        </div>
-                        <div className="field-set">
-                          <label>
-                            Upload Images<span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="file"
-                            className="form-control"
-                            multiple
-                            onChange={handleImageChange}
-                            name="upload_image"
-                            id=""
-                          />
-                        </div>
-                        <div className="field-set">
-                          <label>
-                            Recommendations<span className="text-danger">*</span>
-                          </label>
-                          <textarea
-                            id=""
-                            name="recommend"
-                            rows="4"
-                            cols="50"
-                            onChange={handleRecommendChange}
-                            className="form-control"
-                            value={recommend}
-                            placeholder="Recommendations"
-                          />
-                        </div>
-                        <DialogActions className="submit-main">
-                          <Button
-                            type="submit"
-                            variant="contained"
-                            onClick={handleNotesdataqw}
-                          >
-                            Submit
-                          </Button>
-                        </DialogActions>
-                      </form>
-                    </Box>
-                  </Box>
-                </DialogContent>
-              </Dialog>
-              <ToastContainer />
-            </React.Fragment>
-              <React.Fragment>
-                    <Dialog
-                      open={openAppointment}
-                      onClose={handleCloseAppointment}
-                      fullWidth
-                      maxWidth="sm"
+                  <div className="field-set">
+                    <label>
+                      Recommendations<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id=""
+                      name="recommend"
+                      rows="4"
+                      cols="50"
+                      onChange={handleRecommendChange}
+                      className="form-control"
+                      value={recommend}
+                      placeholder="Recommendations"
+                    />
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={handleNotesdataqw}
                     >
-                      <div className="main-card-header">
-                        <div className="note-hd">
-                          <h6>Add Appointment</h6>
-                        </div>
-                        <div className="cross-icon" onClick={handleCloseAppointment}>
-                          <i className="fa-solid fa-xmark"></i>
-                        </div>
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <ToastContainer />
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          open={openAppointment}
+          onClose={handleCloseAppointment}
+          fullWidth
+          maxWidth="sm"
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Appointment</h6>
+            </div>
+            <div className="cross-icon" onClick={handleCloseAppointment}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="view-table-detail">
+            <Box className="contact-form">
+              <div className="field-set mb-2">
+                <FormControl fullWidth size="small">
+                  <label>Select Hospital</label>
+                  <Select
+                    value={appointmentData.hospital_id || ""}
+                    onChange={(e) => {
+                      const selectedId = e.target.value;
+
+                      const selectedHospital = hospitalList.find(
+                        (item) => item.id === selectedId,
+                      );
+
+                      setAppointmentData((prev) => ({
+                        ...prev,
+                        hospital_id: selectedId,
+                        hospitalName: selectedHospital?.name || "",
+                        hospital_email: selectedHospital?.email || "",
+                      }));
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          maxHeight: 250,
+                        },
+                      },
+                    }}
+                  >
+                    {hospitalList.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="field-set">
+                <label>Health Issue</label>
+                <input
+                  type="text"
+                  name="health_issue"
+                  className="form-control"
+                  value={appointmentData.health_issue}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
+              <div className="field-set">
+                <label>Date</label>
+                <span className="text-danger">*</span>
+                <input
+                  type="date"
+                  name="appointment_Date"
+                  className="form-control"
+                  value={appointmentData.appointment_Date}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
+              <div className="field-set">
+                <label>Time</label>
+                <span className="text-danger">*</span>
+                <input
+                  type="time"
+                  name="appointment_Time"
+                  className="form-control"
+                  value={appointmentData.appointment_Time}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
+              <div className="field-set">
+                <label>Notes</label>
+                <span className="text-danger">*</span>
+                <textarea
+                  name="Notes"
+                  className="form-control"
+                  value={appointmentData.Notes}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
+              <div className="field-set">
+                <label>
+                  Upload Reports / Documents{" "}
+                  <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="file"
+                  className="form-control"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files);
+                    setImages(files);
+                  }}
+                />
+                {images.length > 0 && (
+                  <div style={{ marginTop: "10px" }}>
+                    {images.map((file, index) => (
+                      <div key={index} style={{ fontSize: "12px" }}>
+                        📄 {file.name}
                       </div>
-                      <DialogContent className="view-table-detail">
-                        <Box className="contact-form">
-                          <div className="field-set mb-2">
-                            <FormControl fullWidth size="small">
-                              <label>Select Hospital</label>
-                              <Select
-                                value={appointmentData.hospital_id || ""}
-                                onChange={(e) => {
-                                  const selectedId = e.target.value;
-            
-                                  const selectedHospital = hospitalList.find(
-                                    (item) => item.id === selectedId,
-                                  );
-            
-                                  setAppointmentData((prev) => ({
-                                    ...prev,
-                                    hospital_id: selectedId,
-                                    hospitalName: selectedHospital?.name || "",
-                                    hospital_email: selectedHospital?.email || "",
-                                  }));
-                                }}
-                                MenuProps={{
-                                  PaperProps: {
-                                    style: {
-                                      maxHeight: 250,
-                                    },
-                                  },
-                                }}
-                              >
-                                {hospitalList.map((item) => (
-                                  <MenuItem key={item.id} value={item.id}>
-                                    {item.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </div>
-                          <div className="field-set">
-                            <label>Health Issue</label>
-                            <input
-                              type="text"
-                              name="health_issue"
-                              className="form-control"
-                              value={appointmentData.health_issue}
-                              onChange={handleAppointmentChange}
-                            />
-                          </div>
-                          <div className="field-set">
-                            <label>Date</label>
-                            <span className="text-danger">*</span>
-                            <input
-                              type="date"
-                              name="appointment_Date"
-                              className="form-control"
-                              value={appointmentData.appointment_Date}
-                              onChange={handleAppointmentChange}
-                            />
-                          </div>
-                          <div className="field-set">
-                            <label>Time</label>
-                            <span className="text-danger">*</span>
-                            <input
-                              type="time"
-                              name="appointment_Time"
-                              className="form-control"
-                              value={appointmentData.appointment_Time}
-                              onChange={handleAppointmentChange}
-                            />
-                          </div>
-                          <div className="field-set">
-                            <label>Notes</label>
-                            <span className="text-danger">*</span>
-                            <textarea
-                              name="Notes"
-                              className="form-control"
-                              value={appointmentData.Notes}
-                              onChange={handleAppointmentChange}
-                            />
-                          </div>
-                          <div className="field-set">
-                            <label>
-                              Upload Reports / Documents{" "}
-                              <span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="file"
-                              className="form-control"
-                              multiple
-                              onChange={(e) => {
-                                const files = Array.from(e.target.files);
-                                setImages(files);
-                              }}
-                            />
-                            {images.length > 0 && (
-                              <div style={{ marginTop: "10px" }}>
-                                {images.map((file, index) => (
-                                  <div key={index} style={{ fontSize: "12px" }}>
-                                    📄 {file.name}
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          <DialogActions className="submit-main">
-                            <Button onClick={handleCloseAppointment}>Cancel</Button>
-                            <Button variant="contained" onClick={handleSubmitAppointment}>Submit</Button>
-                          </DialogActions>
-                        </Box>
-                      </DialogContent>
-                    </Dialog>
-                  </React.Fragment>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <DialogActions className="submit-main">
+                <Button onClick={handleCloseAppointment}>Cancel</Button>
+                <Button variant="contained" onClick={handleSubmitAppointment}>
+                  Submit
+                </Button>
+              </DialogActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
     </>
   );
 }
 export default PatientDetail;
-// Explain your current project architecture.
-// What is the event loop in Node.js?
-// Difference between synchronous and asynchronous programming?
-// What is callback hell?
-// Difference between Promise and async/await?
-// What is middleware in Express.js?
-// Difference between app.use() and app.get()?
-// What is JWT authentication?
-// Difference between authentication and authorization?
-// How do you secure APIs?
-// What is bcrypt and why do we use it?
-// How does role-based authentication work?
-// Explain complete login flow in MERN stack.
-// What is CORS?
-// Difference between PUT and PATCH?
-// Difference between req.params, req.query, and req.body?
-// How do you handle file uploads in Node.js?
-// What is Multer?
-// How do you implement pagination?
-// How do you implement search functionality?
-// What is MongoDB aggregation?
-// What is indexing in MongoDB?
-// Difference between find() and aggregate()?
-// Difference between SQL and MongoDB?
-// What is populate in MongoDB?
-// Difference between embedded and referenced documents?
-// What is lean() in Mongoose?
-// What are Mongoose hooks?
-// How do you optimize slow APIs?
-// How do you optimize MongoDB queries?
-// What challenges have you faced in your current project?
-// Explain Redux flow.
-// Difference between local state and Redux state?
-// What is Redux Toolkit?
-// What is useEffect?
-// Difference between useMemo and useCallback?
-// What is prop drilling?
-// What is lifting state up?
-// Controlled vs uncontrolled components?
-// What is virtual DOM?
-// Difference between == and ===?
-// Difference between var, let, and const?
-// What is closure in JavaScript?
-// What is hoisting?
-// What is debounce and throttle?
-// Reverse a string without reverse().
-// Find duplicate values in array.
-// Flatten nested array.
-// What is PM2?
-// How do you deploy backend applications?
-// What environment variables do you use in production?
-// How do you handle global error handling?
-// Explain REST API principles.
-// What HTTP status codes do you commonly use?
-// Difference between monolithic and microservices architecture?
-// How do you handle large datasets in frontend tables?
-// Explain one bug you solved recently.
-// How do you coordinate with frontend/backend team members?
-// Why are you switching your current company?
-// Why should we hire you?
