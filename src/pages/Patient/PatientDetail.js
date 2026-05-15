@@ -1311,7 +1311,7 @@ function PatientDetail() {
         }
         setNote2("");
         setDate2("");
-        setImages([]); 
+        setImages([]);
         setNoteErr({
           note2: false,
           date2: false,
@@ -7611,7 +7611,7 @@ function PatientDetail() {
                                 className={`nav-link ${tabValue === 2 ? "active" : ""}`}
                                 onClick={() => setTabValue(2)}
                               >
-                               Air Medical Escort
+                                Air Medical Escort
                               </button>
                             </li>
 
@@ -7620,7 +7620,7 @@ function PatientDetail() {
                                 className={`nav-link ${tabValue === 3 ? "active" : ""}`}
                                 onClick={() => setTabValue(3)}
                               >
-                               Treatment Estimate
+                                Treatment Estimate
                               </button>
                             </li>
                           </ul>
@@ -7650,7 +7650,7 @@ function PatientDetail() {
                                                 <TableCell>
                                                   {info.enquiryId}
                                                 </TableCell>
-                                              
+
                                                 <TableCell>
                                                   {" "}
                                                   {info?.country?.length > 10
@@ -7662,24 +7662,27 @@ function PatientDetail() {
                                                 </TableCell>
                                                 <TableCell>
                                                   {" "}
-                                                  {info?.treating_in_country
-                                                    ?.length > 10
-                                                    ? info.treating_in_country.slice(
+                                                  {info?.treatingIn?.length > 10
+                                                    ? info.treatingIn.slice(
                                                         0,
                                                         10,
                                                       ) + "..."
-                                                    : info.treating_in_country}
+                                                    : info.treatingIn}
                                                 </TableCell>
                                                 <TableCell>
                                                   {/* {new Date(
                                                     info.createdAt,
                                                   ).toLocaleDateString("en-GB")} */}
-                                                  {new Date(info.createdAt).toLocaleDateString("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-})}
-                                                  {" "}
+                                                  {new Date(
+                                                    info.createdAt,
+                                                  ).toLocaleDateString(
+                                                    "en-GB",
+                                                    {
+                                                      day: "numeric",
+                                                      month: "short",
+                                                      year: "numeric",
+                                                    },
+                                                  )}{" "}
                                                   {new Date(
                                                     info.createdAt,
                                                   ).toLocaleTimeString(
@@ -7787,11 +7790,16 @@ function PatientDetail() {
                                                   </TableCell>
 
                                                   <TableCell>
-                                                     {new Date(info.created_at).toLocaleDateString("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-})}{" "}{" "}
+                                                    {new Date(
+                                                      info.created_at,
+                                                    ).toLocaleDateString(
+                                                      "en-GB",
+                                                      {
+                                                        day: "numeric",
+                                                        month: "short",
+                                                        year: "numeric",
+                                                      },
+                                                    )}{" "}
                                                     {new Date(
                                                       info.created_at,
                                                     ).toLocaleTimeString(
@@ -7905,12 +7913,16 @@ function PatientDetail() {
                                                     : info.treating_in_country}
                                                 </TableCell>
                                                 <TableCell>
-                                                  {new Date(info.created_at).toLocaleDateString("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-})}{" "}
-                                                  {" "}
+                                                  {new Date(
+                                                    info.created_at,
+                                                  ).toLocaleDateString(
+                                                    "en-GB",
+                                                    {
+                                                      day: "numeric",
+                                                      month: "short",
+                                                      year: "numeric",
+                                                    },
+                                                  )}{" "}
                                                   {new Date(
                                                     info.created_at,
                                                   ).toLocaleTimeString(
@@ -8025,11 +8037,16 @@ function PatientDetail() {
                                                   ).toLocaleDateString(
                                                     "en-GB",
                                                   )} */}
-                                                      {new Date(info.created_at).toLocaleDateString("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-})}{" "}
+                                                  {new Date(
+                                                    info.created_at,
+                                                  ).toLocaleDateString(
+                                                    "en-GB",
+                                                    {
+                                                      day: "numeric",
+                                                      month: "short",
+                                                      year: "numeric",
+                                                    },
+                                                  )}{" "}
                                                   {new Date(
                                                     info.created_at,
                                                   ).toLocaleTimeString(
@@ -8219,16 +8236,17 @@ function PatientDetail() {
                       <option value="" disabled>
                         Select
                       </option>
-                      {doctorReviewData1?.map((item) => (
-                        // <option key={item._id} value={item._id}>
-                        //   {item.review_notes}
-                        // </option>
-                        <option key={item._id} value={item._id}>
-                          {item.review_notes.length > 75
-                            ? item.review_notes.slice(0, 75) + "..."
-                            : item.review_notes}
-                        </option>
-                      ))}
+                      {doctorReviewData1?.map((item) => {
+                        const reviewText = item?.review_notes || "";
+
+                        return (
+                          <option key={item._id} value={item._id}>
+                            {reviewText.length > 75
+                              ? reviewText.slice(0, 75) + "..."
+                              : reviewText || "No Review Notes"}
+                          </option>
+                        );
+                      })}
                     </select>
                     {errors.drreviewnotes && (
                       <small className="text-danger">
