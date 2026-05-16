@@ -9,6 +9,8 @@ import { GetAllCountries2 } from "../../reducer/Countries";
 import { Autocomplete, TextField } from "@mui/material";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 import uploadImage from "../../img/image (6).png";
+import { AdminBaseUrl } from "../../Basurl/Baseurl";
+import axios from "axios";
 const allowedTypes = [
   "image/jpeg",
   "image/png",
@@ -124,13 +126,81 @@ export default function AddEnquiry() {
     const data = await res.json();
     return data?.data || null;
   };
+
+  const handleCreateTreatment = async () => {
+  const { value: treatmentName } = await Swal.fire({
+    title: "Create Treatment Plan",
+    input: "text",
+    inputLabel: "Treatment Name",
+    inputPlaceholder: "Enter treatment name",
+    showCancelButton: true,
+    confirmButtonText: "Create",
+    inputValidator: (value) => {
+      if (!value) {
+        return "Treatment name is required";
+      }
+    },
+  });
+
+  if (treatmentName) {
+    const payload ={name:treatmentName}
+    try {
+      const response = await axios.post(`${AdminBaseUrl}treatment/add`,payload)
+      // const response = await fetch(
+      //   "YOUR_CREATE_TREATMENT_API",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       name: treatmentName,
+      //     }),
+      //   }
+      // );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        dispatch(GetAllTreatment());
+        Swal.fire(
+          "Success",
+          data.message || "Treatment created successfully",
+          "success"
+        );
+
+        // Refresh Treatment List
+      } else {
+        Swal.fire(
+          "Error",
+          data.message || "Failed to create treatment",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    
+      Swal.fire(
+        "Error",
+        error?.response?.data?.message || error.message || "Something went wrong",
+        "error"
+      );
+    }
+  }
+};
   return (
     <div className="page-wrapper">
       <div className="content">
         <div className="row gx-3">
           <div className="col-md-12">
             <div className="topmainhd">
-              <h6><i class="fa-solid fa-arrow-left-long me-2" onClick={() => window.history.back()}></i>New Enquiry</h6>
+              <h6>
+                <i
+                  class="fa-solid fa-arrow-left-long me-2"
+                  onClick={() => window.history.back()}
+                ></i>
+                New Enquiry
+              </h6>
             </div>
           </div>
           <div className="col-md-12">
@@ -196,13 +266,26 @@ export default function AddEnquiry() {
                 }
                 console.log(formData);
                 try {
-                  const result = await dispatch(
-                    AddEnquirys(formData),
-                  ).unwrap();
+                  const result = await dispatch(AddEnquirys(formData)).unwrap();
                   Swal.fire(result.message, "", "success");
                   navigate("/Admin/Inquiry");
                 } catch (err) {
-                  Swal.fire(err?.message || "Something went wrong", "error");
+                  let errorMessage = "Something went wrong";
+
+                  // If backend sends validation errors
+                  if (err?.errors) {
+                    errorMessage = Object.values(err.errors).join("<br>");
+                  }
+                  // If backend sends normal message
+                  else if (err?.message) {
+                    errorMessage = err.message;
+                  }
+
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    html: errorMessage,
+                  });
                 }
                 setSubmitting(false);
               }}
@@ -215,7 +298,10 @@ export default function AddEnquiry() {
                         <div className="row gx-3 gy-3">
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>NIC/Passport<span className="text-danger">*</span></label>
+                              <label>
+                                NIC/Passport
+                                <span className="text-danger">*</span>
+                              </label>
                               <div style={{ position: "relative" }}>
                                 <Field
                                   className="form-control"
@@ -226,7 +312,9 @@ export default function AddEnquiry() {
                                     setPassportValue(value);
                                   }}
                                 />
-                                <img src={uploadImage} alt="autofill"
+                                <img
+                                  src={uploadImage}
+                                  alt="autofill"
                                   onClick={async () => {
                                     const value =
                                       passportValue ||
@@ -253,7 +341,8 @@ export default function AddEnquiry() {
                                         ...prev,
                                         ...data,
                                         country: selectedCountry?.name || "",
-                                        dial_code: selectedCountry?.dial_code || "",
+                                        dial_code:
+                                          selectedCountry?.dial_code || "",
                                         passport_num: value,
                                       }));
 
@@ -291,7 +380,9 @@ export default function AddEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Country<span className="text-danger">*</span></label>
+                              <label>
+                                Country<span className="text-danger">*</span>
+                              </label>
                               <Field name="country">
                                 {({ form }) => {
                                   const selectedCountry =
@@ -321,8 +412,8 @@ export default function AddEnquiry() {
                                       ListboxProps={{
                                         style: {
                                           maxHeight: 250,
-                                          overflow: "auto"
-                                        }
+                                          overflow: "auto",
+                                        },
                                       }}
                                       renderInput={(params) => (
                                         <TextField
@@ -343,20 +434,37 @@ export default function AddEnquiry() {
                                   );
                                 }}
                               </Field>
-                              <ErrorMessage name="country" component="div" className="text-danger" />
+                              <ErrorMessage
+                                name="country"
+                                component="div"
+                                className="text-danger"
+                              />
                             </div>
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Phone No / WhatsApp<span className="text-danger">*</span></label>
-                              <div className="country-code" style={{ position: "relative" }}>
-                                <Field className="form-control code-dial" name="dial_code" disabled />
+                              <label>
+                                Phone No / WhatsApp
+                                <span className="text-danger">*</span>
+                              </label>
+                              <div
+                                className="country-code"
+                                style={{ position: "relative" }}
+                              >
+                                <Field
+                                  className="form-control code-dial"
+                                  name="dial_code"
+                                  disabled
+                                />
                                 <Field
                                   className="form-control code-in"
                                   name="emergency_contact_no"
                                   onChange={(e) => {
                                     const value = e.target.value;
-                                    setFieldValue("emergency_contact_no", value);
+                                    setFieldValue(
+                                      "emergency_contact_no",
+                                      value,
+                                    );
                                     setPhoneValue(value);
                                   }}
                                 />
@@ -389,7 +497,8 @@ export default function AddEnquiry() {
                                         ...prev,
                                         ...data,
                                         country: selectedCountry?.name || "",
-                                        dial_code: selectedCountry?.dial_code || "",
+                                        dial_code:
+                                          selectedCountry?.dial_code || "",
                                         emergency_contact_no: value,
                                       }));
                                       Swal.fire(
@@ -426,7 +535,9 @@ export default function AddEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Email<span className="text-danger">*</span></label>
+                              <label>
+                                Email<span className="text-danger">*</span>
+                              </label>
                               <Field
                                 className="form-control"
                                 name="email"
@@ -547,7 +658,10 @@ export default function AddEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Emergency Contact No With Country Code<span className="text-danger"></span></label>
+                              <label>
+                                Emergency Contact No With Country Code
+                                <span className="text-danger"></span>
+                              </label>
                               <div className="country-code">
                                 <Field
                                   className="form-control code-dial"
@@ -673,7 +787,8 @@ export default function AddEnquiry() {
                           <div className="col-md-4">
                             <div className="set-field">
                               <label>
-                                Referral Name<span className="text-danger"></span>
+                                Referral Name
+                                <span className="text-danger"></span>
                               </label>
                               <Field
                                 className="form-control"
@@ -688,27 +803,52 @@ export default function AddEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Treatment Name<span className="text-danger"></span></label>
+                            <div className="d-flex justify-content-between align-items-center">
+  <label>
+    Treatment Name
+    <span className="text-danger"></span>
+  </label>
+
+  <button
+    type="button"
+    className="btn btn-sm btn-primary"
+    onClick={handleCreateTreatment}
+  >
+    + Create
+  </button>
+</div>
+                              {/* <label>
+                                Treatment Name
+                                <span className="text-danger"></span>
+                              </label> */}
                               <Field name="disease_name">
                                 {({ form, meta }) => (
                                   <>
                                     <Autocomplete
                                       options={Treatment || []}
-                                      getOptionLabel={(option) => option?.name || ""}
+                                      getOptionLabel={(option) =>
+                                        option?.name || ""
+                                      }
                                       value={form.values.disease || null}
                                       isOptionEqualToValue={(option, value) =>
                                         option.id === value?.id
                                       }
                                       onChange={(e, newValue) => {
                                         form.setFieldValue("disease", newValue);
-                                        form.setFieldValue("disease_name", newValue?.name || "");
-                                        form.setFieldValue("disease_id", newValue?.id || "");
+                                        form.setFieldValue(
+                                          "disease_name",
+                                          newValue?.name || "",
+                                        );
+                                        form.setFieldValue(
+                                          "disease_id",
+                                          newValue?.id || "",
+                                        );
                                       }}
                                       ListboxProps={{
                                         style: {
                                           maxHeight: 250,
-                                          overflow: "auto"
-                                        }
+                                          overflow: "auto",
+                                        },
                                       }}
                                       renderInput={(params) => (
                                         <TextField
@@ -723,12 +863,16 @@ export default function AddEnquiry() {
                                             },
                                           }}
                                           placeholder="Select Treatment Plan"
-                                          error={meta.touched && Boolean(meta.error)}
+                                          error={
+                                            meta.touched && Boolean(meta.error)
+                                          }
                                         />
                                       )}
                                     />
                                     {meta.touched && meta.error && (
-                                      <div className="text-danger">{meta.error}</div>
+                                      <div className="text-danger">
+                                        {meta.error}
+                                      </div>
                                     )}
                                   </>
                                 )}
@@ -737,7 +881,10 @@ export default function AddEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>Treating In Country<span className="text-danger">*</span></label>
+                              <label>
+                                Treating In Country
+                                <span className="text-danger">*</span>
+                              </label>
                               <Field name="treatingIn">
                                 {({ form }) => {
                                   const selectedCountry =
@@ -763,8 +910,8 @@ export default function AddEnquiry() {
                                       ListboxProps={{
                                         style: {
                                           maxHeight: 250,
-                                          overflow: "auto"
-                                        }
+                                          overflow: "auto",
+                                        },
                                       }}
                                       renderInput={(params) => (
                                         <TextField
@@ -785,7 +932,11 @@ export default function AddEnquiry() {
                                   );
                                 }}
                               </Field>
-                              <ErrorMessage name="treatingIn" component="div" className="text-danger" />
+                              <ErrorMessage
+                                name="treatingIn"
+                                component="div"
+                                className="text-danger"
+                              />
                             </div>
                           </div>
                         </div>
@@ -826,15 +977,31 @@ export default function AddEnquiry() {
                                 <div className="row gx-3 gy-3">
                                   <div className="col-md-4">
                                     <div className="set-field">
-                                      <label>Attendant Full Name<span className="text-danger">*</span></label>
-                                      <Field className="form-control" name="patient_relation_name" />
-                                      <ErrorMessage name="patient_relation_name" component="div" className="text-danger" />
+                                      <label>
+                                        Attendant Full Name
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <Field
+                                        className="form-control"
+                                        name="patient_relation_name"
+                                      />
+                                      <ErrorMessage
+                                        name="patient_relation_name"
+                                        component="div"
+                                        className="text-danger"
+                                      />
                                     </div>
                                   </div>
                                   <div className="col-md-4">
                                     <div className="set-field">
-                                      <label>Attendant Relationship with Patient<span className="text-danger">*</span></label>
-                                      <Field className="form-control" name="patient_relation" />
+                                      <label>
+                                        Attendant Relationship with Patient
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <Field
+                                        className="form-control"
+                                        name="patient_relation"
+                                      />
                                       <ErrorMessage
                                         name="patient_relation"
                                         component="div"
@@ -844,8 +1011,14 @@ export default function AddEnquiry() {
                                   </div>
                                   <div className="col-md-4">
                                     <div className="set-field">
-                                      <label>Attendant Contact Number<span className="text-danger">*</span></label>
-                                      <div className="country-code" style={{ position: "relative" }}>
+                                      <label>
+                                        Attendant Contact Number
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <div
+                                        className="country-code"
+                                        style={{ position: "relative" }}
+                                      >
                                         <Field
                                           className="form-control code-dial"
                                           name="dial_code"
@@ -856,7 +1029,10 @@ export default function AddEnquiry() {
                                           name="patient_relation_no"
                                           onChange={(e) => {
                                             const value = e.target.value;
-                                            setFieldValue("patient_relation_no", value);
+                                            setFieldValue(
+                                              "patient_relation_no",
+                                              value,
+                                            );
                                             setPhoneValue(value);
                                           }}
                                         />
@@ -877,17 +1053,22 @@ export default function AddEnquiry() {
                                           * (i)
                                         </span>
                                       </label>
-                                      <input className="form-control"
+                                      <input
+                                        className="form-control"
                                         type="file"
                                         name="patient_relation_id"
                                         multiple
                                         accept={allowedTypes.join(",")}
                                         onChange={(e) => {
-                                          const files = Array.from(e.target.files);
+                                          const files = Array.from(
+                                            e.target.files,
+                                          );
                                           const validFiles = [];
 
                                           for (const file of files) {
-                                            if (!allowedTypes.includes(file.type)) {
+                                            if (
+                                              !allowedTypes.includes(file.type)
+                                            ) {
                                               Swal.fire(
                                                 "Invalid file type!",
                                                 "Only image, PDF, Word & Excel files are allowed",
@@ -910,7 +1091,10 @@ export default function AddEnquiry() {
                                             validFiles.push(file);
                                           }
 
-                                          setFieldValue("patient_relation_id", validFiles);
+                                          setFieldValue(
+                                            "patient_relation_id",
+                                            validFiles,
+                                          );
                                         }}
                                       />
                                       <ErrorMessage
@@ -922,8 +1106,14 @@ export default function AddEnquiry() {
                                   </div>
                                   <div className="col-md-4">
                                     <div className="set-field">
-                                      <label>Attendant Address<span className="text-danger">*</span></label>
-                                      <Field className="form-control" name="patient_relation_address" />
+                                      <label>
+                                        Attendant Address
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      <Field
+                                        className="form-control"
+                                        name="patient_relation_address"
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -934,7 +1124,11 @@ export default function AddEnquiry() {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <button className="submit-btn" type="submit" disabled={isSubmitting || loading}>
+                      <button
+                        className="submit-btn"
+                        type="submit"
+                        disabled={isSubmitting || loading}
+                      >
                         {loading ? "Submitting..." : "Submit"}
                       </button>
                     </div>

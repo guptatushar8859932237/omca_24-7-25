@@ -82,15 +82,11 @@ import { useNavigate } from "react-router-dom";
 import { baseurl } from "./Basurl/Baseurl";
 import { logout } from "./reducer/LoginSlice";
 import { useDispatch } from "react-redux";
-
-const IdleLogout = ({ timeout = 300000 }) => { // 5 minutes
+const IdleLogout = ({ timeout = 900000 }) => { // 5 minutes
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const timer = useRef(null);
-
   useEffect(() => {
-
     const logoutUser = async () => {
       try {
         await axios.post(`${baseurl}logout`, {
@@ -99,36 +95,26 @@ const IdleLogout = ({ timeout = 300000 }) => { // 5 minutes
       } catch (error) {
         console.log(error);
       }
-
       dispatch(logout());
       // localStorage.clear();
       navigate("/");
     };
-
     const resetTimer = () => {
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(logoutUser, timeout);
     };
-
     const events = ["mousemove", "keydown", "click", "scroll"];
-
     events.forEach((event) => {
       window.addEventListener(event, resetTimer);
     });
-
     resetTimer();
-
     return () => {
       if (timer.current) clearTimeout(timer.current);
-
       events.forEach((event) => {
         window.removeEventListener(event, resetTimer);
       });
     };
-
   }, [timeout, dispatch, navigate]);
-
   return null;
 };
-
 export default IdleLogout;

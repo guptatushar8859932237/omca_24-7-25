@@ -3138,6 +3138,43 @@ function PatientDetail() {
       console.log(error);
     }
   };
+
+ const handledeltePayment = async (a, b, c) => {
+  console.log(a, b, c);
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "You want to delete this payment!",
+    icon: "warning",
+    showCancelButton: true,
+   confirmButtonColor: "#d33" ,
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  });
+  if (result.isConfirmed) {
+    try {
+      const response = await axios.delete(
+        `${baseurl}delete_payment/${a.id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+        dispatch(GetPatientTreatments({ id: location.state.patientId }));
+      Swal.fire(
+        "Deleted!",
+        response?.data?.message || "Payment deleted successfully",
+        "success"
+      );
+    } catch (error) {
+      console.log(error);
+      Swal.fire(
+        "Error!",
+        error?.response?.data?.message || "Something went wrong",
+        "error"
+      );
+    }
+  }
+};
   const handleclickDeleteTreatment = async (treatment_id) => {
     console.log(treatment_id);
     Swal.fire({
@@ -5402,7 +5439,7 @@ function PatientDetail() {
                                                               <th>Paid For</th>
                                                               <th>Document</th>
                                                               <th>Pdf</th>
-                                                              {/* <th>Action</th> */}
+                                                              <th>Action</th>
                                                             </tr>
                                                           </thead>
                                                           <tbody>
@@ -5476,10 +5513,10 @@ function PatientDetail() {
                                                                         )}
                                                                       </td>
                                                                       <td>-</td>
-                                                                      {/* <td>
+                                                                      <td>
                                                                       <div className="action-icon">
                                                                         <div className="action-icon">
-                                                                          <i
+                                                                          {/* <i
                                                                             className="fa-solid fa-pen-to-square"
                                                                             onClick={() => {
                                                                               hadnlcecEdopenmodalGuestHouse(
@@ -5487,11 +5524,11 @@ function PatientDetail() {
                                                                                 info,
                                                                               );
                                                                             }}
-                                                                          ></i>
+                                                                          ></i> */}
                                                                           <i
                                                                             className="fa-solid fa-trash"
                                                                             onClick={() => {
-                                                                              handledelteguestHouse(
+                                                                              handledeltePayment(
                                                                                 item,
                                                                                 info,
                                                                                 index,
@@ -5500,7 +5537,7 @@ function PatientDetail() {
                                                                           ></i>
                                                                         </div>
                                                                       </div>
-                                                                    </td> */}
+                                                                    </td>
                                                                     </tr>
                                                                   );
                                                                 },
@@ -7597,7 +7634,6 @@ function PatientDetail() {
                                 Enquiry
                               </button>
                             </li>
-
                             <li className="nav-item">
                               <button
                                 className={`nav-link ${tabValue === 1 ? "active" : ""}`}
@@ -7614,7 +7650,6 @@ function PatientDetail() {
                                 Air Medical Escort
                               </button>
                             </li>
-
                             <li className="nav-item">
                               <button
                                 className={`nav-link ${tabValue === 3 ? "active" : ""}`}

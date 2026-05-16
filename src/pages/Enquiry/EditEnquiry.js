@@ -24,7 +24,7 @@ import {
   DialogActions,
   DialogContent,
 } from "@mui/material";
-import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
+import { AdminBaseUrl, baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import { Autocomplete, TextField } from "@mui/material";
 import avtar from "../../img/avtarImg.jpg";
 import axios from "axios";
@@ -235,6 +235,67 @@ export default function EditEnquiry() {
   }, [reviewSuccessMessage, reviewError, dispatch]);
   const openmodalFunction = () => {
     setOpenModal(true);
+  };
+    const handleCreateTreatment = async () => {
+    const { value: treatmentName } = await Swal.fire({
+      title: "Create Treatment Plan",
+      input: "text",
+      inputLabel: "Treatment Name",
+      inputPlaceholder: "Enter treatment name",
+      showCancelButton: true,
+      confirmButtonText: "Create",
+      inputValidator: (value) => {
+        if (!value) {
+          return "Treatment name is required";
+        }
+      },
+    });
+  
+    if (treatmentName) {
+      const payload ={name:treatmentName}
+      try {
+        const response = await axios.post(`${AdminBaseUrl}treatment/add`,payload)
+        // const response = await fetch(
+        //   "YOUR_CREATE_TREATMENT_API",
+        //   {
+        //     method: "POST",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //       name: treatmentName,
+        //     }),
+        //   }
+        // );
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          dispatch(GetAllTreatment());
+          Swal.fire(
+            "Success",
+            data.message || "Treatment created successfully",
+            "success"
+          );
+  
+          // Refresh Treatment List
+        } else {
+          Swal.fire(
+            "Error",
+            data.message || "Failed to create treatment",
+            "error"
+          );
+        }
+      } catch (error) {
+  console.log(error);
+
+  Swal.fire(
+    "Error",
+    error?.response?.data?.message || error.message || "Something went wrong",
+    "error"
+  );
+}
+    }
   };
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -832,10 +893,20 @@ export default function EditEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                              <label>
-                                Treatment name
-                                <span className="text-danger"></span>
-                              </label>
+                             <div className="d-flex justify-content-between align-items-center">
+  <label>
+    Treatment Name
+    <span className="text-danger"></span>
+  </label>
+
+  <button
+    type="button"
+    className="btn btn-sm btn-primary"
+    onClick={handleCreateTreatment}
+  >
+    + Create
+  </button>
+</div>
                               <Autocomplete
                                 options={Treatment || []}
                                 getOptionLabel={(option) => option.name || ""}
