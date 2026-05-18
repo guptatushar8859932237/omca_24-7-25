@@ -4,18 +4,14 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseu11, baseurl, image, imageUrl } from "../../Basurl/Baseurl";
 import avtar from "../../img/avtarImg.jpg";
-// 🔹 file type check
 const getFileType = (file) => {
   const ext = file.split(".").pop().toLowerCase();
   if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
   return "other";
 };
-
-// 🔹 reusable preview component
 const FilePreview = ({ file }) => {
   const fileUrl = `${imageUrl}${file}`;
   const type = getFileType(file);
-
   if (type === "image") {
     return (
       <img
@@ -28,18 +24,16 @@ const FilePreview = ({ file }) => {
       />
     );
   }
-
   return (
     <button
       type="button"
       className="btn btn-outline-primary btn-sm"
       onClick={() => window.open(fileUrl, "_blank")}
     >
-      View 
+      View
     </button>
   );
 };
-
 export default function EnquiryDetail() {
   const location = useLocation();
   const [row, setRows] = useState("");
@@ -70,15 +64,11 @@ export default function EnquiryDetail() {
   const handleclick = () => {
     window.history.back();
   };
-
-
   const renderComments = () => {
     const comments = row?.doctorReview?.comments || [];
-
     if (comments.length === 0) {
       return <p className="text-muted">No comments available</p>;
     }
-
     return comments.map((comment, index) => (
       <div className="col-md-12" key={comment._id || index}>
         <div className="card customstylecard">
@@ -97,8 +87,6 @@ export default function EnquiryDetail() {
                       <a href="#/" className="name">
                         {comment.Notes}
                       </a>
-
-                      {/* Show images if present */}
                       {comment.images && comment.images.length > 0 && (
                         <div className="">
                           {comment.images.map((img, imgIndex) => {
@@ -118,14 +106,13 @@ export default function EnquiryDetail() {
                           })}
                         </div>
                       )}
-
                       <div>
                         Date -{" "}
                         {comment.Date
                           ? new Date(comment.Date).toLocaleDateString("en-GB")
                           : new Date(comment.createdAt).toLocaleDateString(
-                            "en-GB",
-                          )}
+                              "en-GB",
+                            )}
                       </div>
                     </div>
                   </div>
@@ -137,7 +124,6 @@ export default function EnquiryDetail() {
       </div>
     ));
   };
-
   return (
     <>
       <div className="page-wrapper">
@@ -145,7 +131,13 @@ export default function EnquiryDetail() {
           <div className="row gx-3 gy-3">
             <div className="col-md-12">
               <div className="topmainhd">
-                <h6><i class="fa-solid fa-arrow-left-long me-2" onClick={handleclick}></i>View Enquiry</h6>
+                <h6>
+                  <i
+                    class="fa-solid fa-arrow-left-long me-2"
+                    onClick={handleclick}
+                  ></i>
+                  View Enquiry
+                </h6>
               </div>
             </div>
             <div className="col-md-12 gy-0">
@@ -166,16 +158,23 @@ export default function EnquiryDetail() {
                   <div class="col-md-4">
                     <div className="">
                       <h6>Phone No. / WhatsApp</h6>
-                      <p>{row.phoneCode}{row.emergency_contact_no}</p>
+                      <p>
+                        {row.phoneCode}
+                        {row.emergency_contact_no}
+                      </p>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div className="">
                       <h6>Emergency Contact Number</h6>
-                      {
-                        row.patient_emergency_contact_no?
-                        <p>{row.phoneCode}{row.patient_emergency_contact_no}</p>
-                      :""}
+                      {row.patient_emergency_contact_no ? (
+                        <p>
+                          {row.phoneCode}
+                          {row.patient_emergency_contact_no}
+                        </p>
+                      ) : (
+                        ""
+                      )}
                     </div>
                   </div>
                   <div class="col-md-4">
@@ -234,7 +233,8 @@ export default function EnquiryDetail() {
                           row.patient_id_proof.length > 0 &&
                           row.patient_id_proof.map((file, index) => (
                             <div key={index} className="file-preview">
-                              <a href={`${image}${file}`}
+                              <a
+                                href={`${image}${file}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="viewbtn"
@@ -281,13 +281,12 @@ export default function EnquiryDetail() {
                 </div>
               </div>
             </div>
-           
-                {row.discussionNotes?.length === 0 ? (
-                  ""
-                ) : (
-                  <>
-                   <div className="col-md-12">
-              <div className="main_content">
+            {row.discussionNotes?.length === 0 ? (
+              ""
+            ) : (
+              <>
+                <div className="col-md-12">
+                  <div className="main_content">
                     <div className="row gx-3">
                       <div className="col-md-12">
                         <div className="comnthis">
@@ -331,14 +330,13 @@ export default function EnquiryDetail() {
                         )}
                       </div>
                     </div>
-                     </div>
-            </div>
-                  </>
-                )}
-             
-                {row?.doctorReview?.review_notes ?
-            <div className="col-md-12">
-              <div className="main_content">
+                  </div>
+                </div>
+              </>
+            )}
+            {row?.doctorReview?.review_notes ? (
+              <div className="col-md-12">
+                <div className="main_content">
                   <div className="row gx-3">
                     <div className="col-md-12">
                       <div className="comnthis">
@@ -365,7 +363,6 @@ export default function EnquiryDetail() {
                                 const fullUrl = img.startsWith("http")
                                   ? img
                                   : imageUrl + img;
-
                                 return (
                                   <div key={index}>
                                     <button
@@ -394,15 +391,17 @@ export default function EnquiryDetail() {
                       <div className="row gy-3">{renderComments()}</div>
                     </div>
                   </div>
-              </div>
-            </div>
-                  : ""}
-                {row.patient_relation ? (
-            <div className="col-md-12">
-              <div className="main_content">
-                <div className="comnthis">
-                  {row.patient_relation ? <h6>Attendant Details</h6> : ""}
                 </div>
+              </div>
+            ) : (
+              ""
+            )}
+            {row.patient_relation ? (
+              <div className="col-md-12">
+                <div className="main_content">
+                  <div className="comnthis">
+                    {row.patient_relation ? <h6>Attendant Details</h6> : ""}
+                  </div>
                   <div className="row gx-3 gy-3">
                     <div className="col-md-4">
                       <div className="">
@@ -419,7 +418,10 @@ export default function EnquiryDetail() {
                     <div className="col-md-4">
                       <div className="">
                         <h6>Attendant Contact Number</h6>
-                        <p>{row.phoneCode}{row.patient_relation_no}</p>
+                        <p>
+                          {row.phoneCode}
+                          {row.patient_relation_no}
+                        </p>
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -427,7 +429,7 @@ export default function EnquiryDetail() {
                         <h6>Attendant ID Proof</h6>
                         <div className="engpatimg">
                           {Array.isArray(row.patient_relation_id) &&
-                            row.patient_relation_id.length > 0 ? (
+                          row.patient_relation_id.length > 0 ? (
                             row.patient_relation_id.map((file, index) => (
                               <div key={index} className="doc-box viewbtn">
                                 <a href={`${image}${file}`}>View</a>
@@ -446,12 +448,11 @@ export default function EnquiryDetail() {
                       </div>
                     </div>
                   </div>
-                    </div>
-            </div>
-                ) : (
-                  ""
-                )}
-            
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>

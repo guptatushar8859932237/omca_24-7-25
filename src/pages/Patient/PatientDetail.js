@@ -2107,7 +2107,6 @@ function PatientDetail() {
   const handleNoteChange = (e) => {
     setNote(e.target.value);
   };
-
   const handleClose1editapp = () => {
     setOeditappp(false);
   };
@@ -2154,24 +2153,19 @@ function PatientDetail() {
       const formattedDate = date
         ? new Date(date).toISOString().split("T")[0]
         : "";
-
       // 🔥 COMMON VALIDATION (for both)
       if (!hospitalData?.hospital_id) {
         return Swal.fire("Please select hospital", "", "warning");
       }
-
       if (!note) {
         return Swal.fire("Note is required", "", "warning");
       }
-
       if (!formattedDate) {
         return Swal.fire("Date is required", "", "warning");
       }
-
       if (!statuddropdown) {
         return Swal.fire("Mode is required", "", "warning");
       }
-
       // 🔥 OFFLINE VALIDATION
       if (statuddropdown === "offline") {
         if (!pickuptime) {
@@ -2181,13 +2175,11 @@ function PatientDetail() {
           return Swal.fire("Driver name is required", "", "warning");
         }
       }
-
       // 🔥 ONLINE VALIDATION (if needed add more)
       if (statuddropdown === "online") {
         // example: you can enforce something extra here
         // if (!someField) return Swal.fire("Required", "", "warning");
       }
-
       const payload = {
         hospitalId: hospitalData.hospital_id,
         note: note,
@@ -2200,9 +2192,7 @@ function PatientDetail() {
           vehicle_no: vehicalnumber,
         }),
       };
-
       console.log(payload);
-
       const response = await axios.put(
         `${baseurl}edit_appointment/${appointmentid}`,
         payload,
@@ -2212,14 +2202,11 @@ function PatientDetail() {
           },
         },
       );
-
       if (response?.data?.success) {
         Swal.fire("Appointment updated successfully!", "", "success");
         setOpen1(false);
-
         getDataapi3(selectedTreatmentId);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
-
         // reset
         setNote("");
         setDate("");
@@ -2458,7 +2445,6 @@ function PatientDetail() {
     if (!fieldValue) {
       newErrors.treatment = "Treatment is required";
     }
-
     if (!hospitalId || hospitalId.length === 0) {
       newErrors.hospitals = "Please select at least one hospital";
     }
@@ -2526,7 +2512,6 @@ function PatientDetail() {
       await swalOnTop.fire("Error", errorMsg, "error");
     }
   };
-
   const handlechangeGdoc = (e) => {
     const selectedFiles = Array.from(e.target.files); // 👈 important
     setFiles(selectedFiles);
@@ -2678,14 +2663,11 @@ function PatientDetail() {
         });
         return;
       }
-
       const formData = new FormData();
       formData.append("status", dataStatus);
-
       files.forEach((file) => {
         formData.append("documents", file);
       });
-
       const response = await axios.put(
         `${baseurl}updateHospitalStatus/${datainfo._id}/${dataHospitalID}`,
         formData,
@@ -2695,7 +2677,6 @@ function PatientDetail() {
           },
         },
       );
-
       if (response?.data?.success) {
         await Swal.fire("Success", "Hospital approved successfully", "success");
         closemodaldocumnt();
@@ -2717,7 +2698,6 @@ function PatientDetail() {
       await Swal.fire("Error", errorMsg, "error");
     }
   };
-
   const closemodaldocumnt = () => {
     setOpenModalDovPlan(false);
   };
@@ -2792,7 +2772,6 @@ function PatientDetail() {
       // console.log(error);
     }
   };
-
   const handkekeypreees = (e) => {
     const charCode = e.charCode;
     if (charCode < 48 || charCode > 57) {
@@ -2830,7 +2809,6 @@ function PatientDetail() {
           },
         },
       );
-
       if (response.data.success) {
         setDataImperial(false);
         setNoteHospital2("");
@@ -2855,7 +2833,6 @@ function PatientDetail() {
     if (!selectedTreatmentId) return null;
     return tretment?.find((t) => t.treatment_id === selectedTreatmentId);
   };
-
   const handleMainTabChange = (tab) => {
     setMainTab(tab);
     localStorage.setItem("patientMainTab", tab);
@@ -2873,7 +2850,6 @@ function PatientDetail() {
     });
     const status = info.treatment_status;
     const treatmentName = info.treatment_name;
-
     setSelectedTreatmentId(tId);
     setTreatMentNAem(status);
     setTreatmentNameHeading(d);
@@ -2989,7 +2965,6 @@ function PatientDetail() {
       // console.log(error);
     }
   };
-
   const handleclickpharmacycharge = (info) => {
     console.log(info);
     setTreatmntidPharmacy(info.treatment_id);
@@ -2998,7 +2973,6 @@ function PatientDetail() {
   };
   const deletepharmacy = async (info, index) => {
     console.log(info);
-
     // 🔥 Confirmation popup
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -3008,10 +2982,8 @@ function PatientDetail() {
       confirmButtonText: "Yes, delete it!",
       cancelButtonText: "Cancel",
     });
-
     // ❌ If user cancels → stop
     if (!result.isConfirmed) return;
-
     try {
       const response = await axios.delete(
         `${baseurl}deletePharmacyCharge/${info.treatment_id}`,
@@ -3029,12 +3001,10 @@ function PatientDetail() {
         text: response?.data?.message || "Pharmacy charge deleted successfully",
         icon: "success",
       });
-
       // 🔄 Optional: refresh data
       // getPharmacyData();
     } catch (error) {
       console.log(error);
-
       // ❌ Error Swal
       Swal.fire({
         title: "Error!",
@@ -3045,7 +3015,6 @@ function PatientDetail() {
       });
     }
   };
-
   const getAllPaidTo = async () => {
     try {
       const response = await axios.get(`${baseurl}getAllPaidTo`);
@@ -3057,7 +3026,6 @@ function PatientDetail() {
       console.log(error);
     }
   };
-
   const handleclickpcloseacycharge = () => {
     setOpenPharmacyModal(false);
     setOpenPharmacyModal(false);
@@ -3096,7 +3064,6 @@ function PatientDetail() {
       console.log(error);
     }
   };
-
  const handledeltePayment = async (a, b, c) => {
   console.log(a, b, c);
   const result = await Swal.fire({
@@ -3179,7 +3146,6 @@ function PatientDetail() {
       console.log(error);
     }
   };
-
   const handleclickopencharge = (info) => {
     setTreatmentIdCharge(info.treatment_id);
     setOpenmodalCharge(true);
@@ -3200,7 +3166,6 @@ function PatientDetail() {
       price: parseInt(hospitalCharge.price),
       date: hospitalCharge.date,
     };
-
     try {
       const response = await axios.put(
         `${baseurl}editHospitalServiceCharge/${treatmentChargeid}`,
@@ -3211,7 +3176,6 @@ function PatientDetail() {
           },
         },
       );
-
       console.log(response.data);
       handleclickclosecharge();
       setTreatmentChargeid("");
@@ -3226,7 +3190,6 @@ function PatientDetail() {
       });
     } catch (error) {
       console.log(error);
-
       // ❌ Error Swal
       Swal.fire({
         icon: "error",
@@ -3242,7 +3205,6 @@ function PatientDetail() {
   //     price: hospitalCharge.price,
   //     date: hospitalCharge.date,
   //   };
-
   //   try {
   //     const response = await axios.post(
   //       `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
@@ -3253,7 +3215,6 @@ function PatientDetail() {
   //         },
   //       },
   //     );
-
   //     console.log(response.data);
   //     handleclickclosecharge();
   //     setHospitalCharge("");
@@ -3267,7 +3228,6 @@ function PatientDetail() {
   //     });
   //   } catch (error) {
   //     console.log(error);
-
   //     // ❌ Error Swal
   //     Swal.fire({
   //       icon: "error",
@@ -3280,7 +3240,6 @@ function PatientDetail() {
   const addchargeapiHospital = async () => {
     // Convert price to number
     const priceValue = Number(hospitalCharge.price);
-
     // Validation
     if (!hospitalCharge.price || isNaN(priceValue) || priceValue <= 0) {
       Swal.fire({
@@ -3289,16 +3248,13 @@ function PatientDetail() {
         text: "Price must be greater than 0",
         confirmButtonColor: "#d33",
       });
-
       return; // रोक देगा API call
     }
-
     const payload = {
       service_name: hospitalCharge.service_name,
       price: priceValue,
       date: hospitalCharge.date,
     };
-
     try {
       const response = await axios.post(
         `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
@@ -3309,23 +3265,18 @@ function PatientDetail() {
           },
         },
       );
-
       console.log(response.data);
-
       handleclickclosecharge();
-
       setHospitalCharge({
         service_name: "",
         price: "",
         date: "",
       });
-
       dispatch(
         GetPatientTreatments({
           id: location.state.patientId,
         }),
       );
-
       // Success Swal
       Swal.fire({
         icon: "success",
@@ -3335,7 +3286,6 @@ function PatientDetail() {
       });
     } catch (error) {
       console.log(error);
-
       // Error Swal
       Swal.fire({
         icon: "error",
@@ -3347,7 +3297,6 @@ function PatientDetail() {
   };
   const handledeedit123222 = async (info, index) => {
     console.log(info, index);
-
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You want to delete this hospital charge!",
@@ -3357,9 +3306,7 @@ function PatientDetail() {
       cancelButtonColor: "#3b3b3b",
       confirmButtonText: "Yes, delete it!",
     });
-
     if (!result.isConfirmed) return;
-
     try {
       const response = await axios.delete(
         `${baseurl}deleteHospitalServiceCharge/${info.treatment_id}`,
@@ -3372,21 +3319,18 @@ function PatientDetail() {
           },
         },
       );
-
       if (response?.data?.success) {
         Swal.fire({
           icon: "success",
           title: "Deleted!",
           text: "Hospital charge deleted successfully!",
         });
-
         // 🔥 refresh
         getDataapi3(info.treatment_id);
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
       }
     } catch (error) {
       console.log(error);
-
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -3394,18 +3338,14 @@ function PatientDetail() {
       });
     }
   };
-
   // pharmacy
-
   const addhosppharmacyhare = (e) => {
     const { name, value } = e.target;
     setPharmacyvalue({ ...pharmacyvalue, [name]: value });
   };
-
   const addchargeapipharmacy = async () => {
     // Convert price to number
     const priceValue = Number(pharmacyvalue.price);
-
     // Validation
     if (!pharmacyvalue.price || isNaN(priceValue) || priceValue <= 0) {
       Swal.fire({
@@ -3413,16 +3353,13 @@ function PatientDetail() {
         text: "Price must be greater than 0",
         icon: "error",
       });
-
       return; // Stop API call
     }
-
     const payload = {
       service_name: pharmacyvalue.service_name,
       price: priceValue,
       date: pharmacyvalue.date,
     };
-
     try {
       const response = await axios.post(
         `${baseurl}addPharmacyCharge/${treatmntidPharmacy}`,
@@ -3433,23 +3370,18 @@ function PatientDetail() {
           },
         },
       );
-
       getDataapi3(treatmntidPharmacy);
-
       setPharmacyvalue({
         service_name: "",
         price: "",
         date: "",
       });
-
       dispatch(
         GetPatientTreatments({
           id: location.state.patientId,
         }),
       );
-
       handleclickpcloseacycharge();
-
       // Success
       Swal.fire({
         title: "Success!",
@@ -3458,7 +3390,6 @@ function PatientDetail() {
       });
     } catch (error) {
       console.log(error);
-
       // Error
       Swal.fire({
         title: "Error!",
@@ -3497,7 +3428,6 @@ function PatientDetail() {
   //     });
   //   } catch (error) {
   //     console.log(error);
-
   //     // ❌ Error
   //     Swal.fire({
   //       title: "Error!",
@@ -3547,12 +3477,10 @@ function PatientDetail() {
         text: response?.data?.message || "Pharmacy updated successfully",
         icon: "success",
       });
-
       // 🔄 Optional: refresh data
       // getPharmacyData();
     } catch (error) {
       console.log(error);
-
       // ❌ Error Swal
       Swal.fire({
         title: "Error!",
@@ -3563,20 +3491,16 @@ function PatientDetail() {
       });
     }
   };
-
   const handlechangeGuesthouse = (e) => {
     const { name, value, type, files } = e.target;
-
     setFormDataGuestHouse((prev) => ({
       ...prev,
       [name]: type === "file" ? files[0] : value,
     }));
   };
-
   // const submitGuestHouseApi = async () => {
   //   try {
   //     const formData = new FormData();
-
   //     // ✅ append all fields
   //     formData.append("guestHouseName", iniData.guestHouseName || "");
   //     formData.append("dateRangeFrom", iniData.dateRangeFrom || "");
@@ -3585,16 +3509,13 @@ function PatientDetail() {
   //     formData.append("paymentAmount", hospitalCharge.paymentAmount || "");
   //     formData.append("paymentDate", iniData.paymentDate || "");
   //     formData.append("notes", iniData.notes || "");
-
   //     // ✅ file
   //     if (iniData.invoiceFile) {
   //       formData.append("invoiceFile", iniData.invoiceFile);
   //     }
-
   //     // 🔥 API call
   //     const response = await axios.post(
   //       `${baseurl}addGuestHouseCharge`,formData);
-
   //     // ✅ Success Swal
   //     if (response.data.success) {
   //       Swal.fire({
@@ -3603,7 +3524,6 @@ function PatientDetail() {
   //         text: response.data.message || "Data submitted successfully",
   //         confirmButtonColor: "#3085d6",
   //       });
-
   //       handleCloseguesthouse(); // modal close
   //     } else {
   //       Swal.fire({
@@ -3614,7 +3534,6 @@ function PatientDetail() {
   //     }
   //   } catch (error) {
   //     console.error(error);
-
   //     // ❌ Error Swal
   //     Swal.fire({
   //       icon: "error",
@@ -3625,7 +3544,6 @@ function PatientDetail() {
   //     });
   //   }
   // };
-
   const handleClickGuesthuseedit = async () => {
     const data = formDataGuestHouse;
     console.log(data);
@@ -3633,39 +3551,30 @@ function PatientDetail() {
     if (!data.guestHouseName?.trim()) {
       return Swal.fire("Error", "Guest House Name is required", "error");
     }
-
     if (!data.dateRangeFrom) {
       return Swal.fire("Error", "Date Range From is required", "error");
     }
-
     if (!data.dateRangeTo) {
       return Swal.fire("Error", "Date Range To is required", "error");
     }
-
     // ✅ Date logic
     if (new Date(data.dateRangeTo) < new Date(data.dateRangeFrom)) {
       return Swal.fire("Error", "End date must be after start date", "error");
     }
-
     if (!data.numberOfRooms) {
       return Swal.fire("Error", "Number of Rooms is required", "error");
     }
-
     if (!data.paymentAmount) {
       return Swal.fire("Error", "Payment Amount is required", "error");
     }
-
     if (!data.paymentDate) {
       return Swal.fire("Error", "Payment Date is required", "error");
     }
-
     if (!data.notes?.trim()) {
       return Swal.fire("Error", "Notes is required", "error");
     }
-
     try {
       const formData = new FormData();
-
       // ✅ normal fields
       Object.keys(data).forEach((key) => {
         if (
@@ -3676,30 +3585,24 @@ function PatientDetail() {
           formData.append(key, data[key]);
         }
       });
-
       // ✅ file only if selected
       if (data.invoiceFile instanceof File) {
         formData.append("invoiceFile", data.invoiceFile);
       }
-
       // ✅ extra params
       formData.append("treatment_id", treatmentIds1);
       formData.append("patientId", location.state.patientId);
-
       const response = await axios.post(
         `${baseurl}updateGuestHouseCharge/${data.id}`,
         formData,
       );
-
       if (response?.data?.success) {
         Swal.fire({
           icon: "success",
           title: "Success",
           text: response.data.message || "Data updated successfully",
         });
-
         patient_guesthouse(data.treatment_id);
-
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
         handleCloseguesthouse();
       } else {
@@ -3711,7 +3614,6 @@ function PatientDetail() {
       }
     } catch (error) {
       console.error(error);
-
       Swal.fire(
         "Error",
         error.response?.data?.message || "Server error",
@@ -3719,48 +3621,37 @@ function PatientDetail() {
       );
     }
   };
-
   // const handleClickGuesthuseedit = async () => {
   //   const data = formDataGuestHouse;
-
   //   // 🔥 Validation
   //   if (!data.guestHouseName?.trim()) {
   //     return Swal.fire("Error", "Guest House Name is required", "error");
   //   }
-
   //   if (!data.dateRangeFrom) {
   //     return Swal.fire("Error", "Date Range From is required", "error");
   //   }
-
   //   if (!data.dateRangeTo) {
   //     return Swal.fire("Error", "Date Range To is required", "error");
   //   }
-
   //   // ✅ Date logic validation
   //   if (new Date(data.dateRangeTo) < new Date(data.dateRangeFrom)) {
   //     return Swal.fire("Error", "End date must be after start date", "error");
   //   }
-
   //   if (!data.numberOfRooms) {
   //     return Swal.fire("Error", "Number of Rooms is required", "error");
   //   }
-
   //   if (!data.paymentAmount) {
   //     return Swal.fire("Error", "Payment Amount is required", "error");
   //   }
-
   //   if (!data.paymentDate) {
   //     return Swal.fire("Error", "Payment Date is required", "error");
   //   }
-
   //   if (!data.notes?.trim()) {
   //     return Swal.fire("Error", "Notes is required", "error");
   //   }
-
   //   if (!data.invoiceFile) {
   //     return Swal.fire("Error", "Invoice File is required", "error");
   //   }
-
   //   try {
   //     const formData = new FormData();
   //     Object.keys(data).forEach((key) => {
@@ -3770,7 +3661,6 @@ function PatientDetail() {
   //     });
   //     formData.append("treatment_id", treatmentIds1);
   //     formData.append("patientId", location.state.patientId);
-
   //     const response = await axios.post(
   //       `${baseurl}updateGuestHouseCharge/${data.id}`,
   //       formData,
@@ -3792,7 +3682,6 @@ function PatientDetail() {
   //     }
   //   } catch (error) {
   //     console.error(error);
-
   //     Swal.fire(
   //       "Error",
   //       error.response?.data?.message || "Server error",
@@ -3802,45 +3691,35 @@ function PatientDetail() {
   // };
   const submitGuestHouseApi = async () => {
     const data = formDataGuestHouse;
-
     // 🔥 Validation
     if (!data.guestHouseName?.trim()) {
       return Swal.fire("Error", "Guest House Name is required", "error");
     }
-
     if (!data.dateRangeFrom) {
       return Swal.fire("Error", "Date Range From is required", "error");
     }
-
     if (!data.dateRangeTo) {
       return Swal.fire("Error", "Date Range To is required", "error");
     }
-
     // ✅ Date logic validation
     if (new Date(data.dateRangeTo) < new Date(data.dateRangeFrom)) {
       return Swal.fire("Error", "End date must be after start date", "error");
     }
-
     if (!data.numberOfRooms) {
       return Swal.fire("Error", "Number of Rooms is required", "error");
     }
-
     if (!data.paymentAmount) {
       return Swal.fire("Error", "Payment Amount is required", "error");
     }
-
     if (!data.paymentDate) {
       return Swal.fire("Error", "Payment Date is required", "error");
     }
-
     if (!data.notes?.trim()) {
       return Swal.fire("Error", "Notes is required", "error");
     }
-
     if (!data.invoiceFile) {
       return Swal.fire("Error", "Invoice File is required", "error");
     }
-
     try {
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
@@ -3850,7 +3729,6 @@ function PatientDetail() {
       });
       formData.append("treatment_id", treatmentIds1);
       formData.append("patientId", location.state.patientId);
-
       const response = await axios.post(
         `${baseurl}addGuestHouseCharge`,
         formData,
@@ -3873,7 +3751,6 @@ function PatientDetail() {
       }
     } catch (error) {
       console.error(error);
-
       Swal.fire(
         "Error",
         error.response?.data?.message || "Server error",
@@ -3881,14 +3758,12 @@ function PatientDetail() {
       );
     }
   };
-
   const handleclickopenpopup = () => {
     setPopupopenattande(true);
   };
   const handlecliclosepup = () => {
     setPopupopenattande(false);
   };
-
   const handleassignAtendent = async () => {
     try {
       // 🔍 Validation
@@ -3925,12 +3800,10 @@ function PatientDetail() {
         timer: 2000,
         showConfirmButton: false,
       });
-
       // 🔄 Optional Reset
       setSelectedAttendants([]);
     } catch (error) {
       console.error(error);
-
       // ❌ Error Swal
       Swal.fire({
         icon: "error",
@@ -3942,7 +3815,6 @@ function PatientDetail() {
       });
     }
   };
-
   const handleEdit = (item) => {
     setFilesData(item);
     console.log(item);
@@ -3951,9 +3823,7 @@ function PatientDetail() {
   };
   // const handleDelete=(item)=>{
   //   const response = await  axios.delete(`${baseurl}deleteTreatmentAttendee/${item._id}`)
-
   // }
-
   const handleDeletetrtrtrtr = async (item) => {
     try {
       // 🔔 Confirmation Popup
@@ -3966,12 +3836,9 @@ function PatientDetail() {
         cancelButtonText: "Cancel",
         cancelButtonColor: "#6e7881",
       });
-
       if (!result.isConfirmed) return;
-
       // 🚀 API Call
       await axios.delete(`${baseurl}deleteAttendee/${item?._id}`);
-
       // ✅ Success Swal
       getattendantnewai();
       //  dispatch(GetPatientTreatments({id:location.state.patientId}))  // 👈 call your API again
@@ -3984,7 +3851,6 @@ function PatientDetail() {
       });
     } catch (error) {
       console.error(error);
-
       // ❌ Error Swal
       Swal.fire({
         icon: "error",
@@ -3996,7 +3862,6 @@ function PatientDetail() {
       });
     }
   };
-
   const patient_guesthouse = async (treatmentId) => {
     try {
       const response = await axios.get(
@@ -4248,7 +4113,7 @@ function PatientDetail() {
                   data-toggle="tab"
                   onClick={() => handleMainTabChange("Patient_Enquiry")}
                 >
-                 Enquries
+                 Enquiries
                 </a>
               </li>
               <li className="nav-item">
@@ -7597,7 +7462,7 @@ function PatientDetail() {
                                 className={`nav-link ${tabValue === 1 ? "active" : ""}`}
                                 onClick={() => setTabValue(1)}
                               >
-                                Ambulance Servies
+                                Ambulance Services
                               </button>
                             </li>
                             <li className="nav-item">
@@ -8025,11 +7890,6 @@ function PatientDetail() {
                                                     : info.treatingIn}
                                                 </TableCell>
                                                 <TableCell>
-                                                  {/* {new Date(
-                                                    info.created_at,
-                                                  ).toLocaleDateString(
-                                                    "en-GB",
-                                                  )} */}
                                                   {new Date(
                                                     info.created_at,
                                                   ).toLocaleDateString(
@@ -8671,37 +8531,15 @@ function PatientDetail() {
                       {" "}
                       Hospital<span className="text-danger">*</span>
                     </label>
-                    {/* <Autocomplete
-                      disablePortal
-                      options={ishospitalArray || []}
-                      getOptionLabel={(option) => option.hospital_Name || ""}
-                      value={appHospital}
-                      onChange={(e, value) => {
-                        setAppHospital(value);
-                      }}
-                      isOptionEqualToValue={(option, value) =>
-                        option?.hospital_id === value?.hospital_id
-                      }
-                      renderInput={(params) => <TextField {...params} />}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          padding: "0px",
-                          "&:hover fieldset": {
-                            borderColor: "#ced4da",
-                          },
-                        },
-                      }}
-                    /> */}
                     <TextField
                       fullWidth
                       value={hospitalData.hospital_Name || ""}
+                      disabled
                       onChange={(e) => {
                         const value = e.target.value;
-
                         const matchedHospital = ishospitalArray.find(
                           (item) => item.hospital_Name === value,
                         );
-
                         setHospitalData({
                           hospital_Name: value,
                           hospital_email: matchedHospital.hospital_email,

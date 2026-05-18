@@ -720,7 +720,6 @@ export default function Appointments() {
                                     ? "..."
                                     : ""}
                                 </TableCell>
-                                {/* <TableCell>{info.Hospital_name}</TableCell> */}
                                 <TableCell>
                                   <FormControl
                                     sx={{ m: 1, minWidth: 120 }}

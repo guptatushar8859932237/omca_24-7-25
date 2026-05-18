@@ -57,9 +57,9 @@ export default function AddPatientTreatment() {
       });
   };
 
-  useEffect(()=>{
-    dispatch(GetAllTreatment())
-  },[dispatch])
+  useEffect(() => {
+    dispatch(GetAllTreatment());
+  }, [dispatch]);
   useEffect(() => {
     GetActiveService();
   }, []);
@@ -246,14 +246,13 @@ export default function AddPatientTreatment() {
                         <label>
                           Total Charge<span className="text-danger">*</span>
                         </label>
-                         <div className="fixpricee">
-                      <p className="code-dial">USD($)</p>
-                     
-                        <Field
-                          className="form-control code-in"
-                          type="number"
-                          name="total_charge"
-                        />
+                        <div className="fixpricee">
+                          <p className="code-dial">USD($)</p>
+                          <Field
+                            className="form-control code-in"
+                            type="number"
+                            name="total_charge"
+                          />
                         </div>
                         <ErrorMessage
                           name="total_charge"
@@ -305,15 +304,17 @@ export default function AddPatientTreatment() {
                     </div>
                     <div className="col-sm-6">
                       <div className="field-set">
-                        <label>Amount Paid<span className="text-danger">*</span></label>
-                          <div className="fixpricee">
-                      <p className="code-dial">USD($)</p>
-                        <Field
-                          className="form-control code-in"
-                          type="number"
-                          name="amount_paid"
-                        />
-                      </div>
+                        <label>
+                          Amount Paid<span className="text-danger">*</span>
+                        </label>
+                        <div className="fixpricee">
+                          <p className="code-dial">USD($)</p>
+                          <Field
+                            className="form-control code-in"
+                            type="number"
+                            name="amount_paid"
+                          />
+                        </div>
                         <ErrorMessage
                           name="amount_paid"
                           component="div"
@@ -352,7 +353,9 @@ export default function AddPatientTreatment() {
                           <option value="Cash">Cash</option>
                           <option value="UPI">Online via UPI</option>
                           <option value="foundation">foundation</option>
-                          <option value="Internet banking">Internet Banking</option>
+                          <option value="Internet banking">
+                            Internet Banking
+                          </option>
                           <option value="Credit/Debit Card">
                             Debit / Credit Card
                           </option>
@@ -361,14 +364,13 @@ export default function AddPatientTreatment() {
                     </div>
                   </div>
                   <div className="">
-                   <button
-  className="submit-btn"
-  type="submit"
-  disabled={isSubmitting}
->
-  {isSubmitting ? "Submitting..." : "Submit"}
-</button>
-
+                    <button
+                      className="submit-btn"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Submitting..." : "Submit"}
+                    </button>
                   </div>
                 </Form>
               )}
