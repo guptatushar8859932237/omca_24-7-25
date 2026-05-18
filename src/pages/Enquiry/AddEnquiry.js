@@ -128,66 +128,71 @@ export default function AddEnquiry() {
   };
 
   const handleCreateTreatment = async () => {
-  const { value: treatmentName } = await Swal.fire({
-    title: "Create Treatment Plan",
-    input: "text",
-    inputLabel: "Treatment Name",
-    inputPlaceholder: "Enter treatment name",
-    showCancelButton: true,
-    confirmButtonText: "Create",
-    inputValidator: (value) => {
-      if (!value) {
-        return "Treatment name is required";
-      }
-    },
-  });
+    const { value: treatmentName } = await Swal.fire({
+      title: "Create Treatment Plan",
+      input: "text",
+      inputLabel: "Treatment Name",
+      inputPlaceholder: "Enter treatment name",
+      showCancelButton: true,
+      confirmButtonText: "Create",
+      inputValidator: (value) => {
+        if (!value) {
+          return "Treatment name is required";
+        }
+      },
+    });
 
-  if (treatmentName) {
-    const payload ={name:treatmentName}
-    try {
-      const response = await axios.post(`${AdminBaseUrl}treatment/add`,payload)
-      // const response = await fetch(
-      //   "YOUR_CREATE_TREATMENT_API",
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       name: treatmentName,
-      //     }),
-      //   }
-      // );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        dispatch(GetAllTreatment());
-        Swal.fire(
-          "Success",
-          data.message || "Treatment created successfully",
-          "success"
+    if (treatmentName) {
+      const payload = { name: treatmentName };
+      try {
+        const response = await axios.post(
+          `${AdminBaseUrl}treatment/add`,
+          payload,
         );
+        // const response = await fetch(
+        //   "YOUR_CREATE_TREATMENT_API",
+        //   {
+        //     method: "POST",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //       name: treatmentName,
+        //     }),
+        //   }
+        // );
+          console.log(response.data)
+          const data = await response.data;
+          console.log(response, data)
+        if (response.data.success === "true") {
+          dispatch(GetAllTreatment());
+          Swal.fire(
+            "Success",
+            data.message || "Treatment created successfully",
+            "success",
+          );
 
-        // Refresh Treatment List
-      } else {
+          // Refresh Treatment List
+        } else {
+          Swal.fire(
+            "Error",
+            data.message || "Failed to create treatment",
+            "error",
+          );
+        }
+      } catch (error) {
+        console.log(error);
+
         Swal.fire(
           "Error",
-          data.message || "Failed to create treatment",
-          "error"
+          error?.response?.data?.message ||
+            error.message ||
+            "Something went wrong",
+          "error",
         );
       }
-    } catch (error) {
-      console.log(error);
-    
-      Swal.fire(
-        "Error",
-        error?.response?.data?.message || error.message || "Something went wrong",
-        "error"
-      );
     }
-  }
-};
+  };
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -234,8 +239,6 @@ export default function AddEnquiry() {
               validationSchema={basicSchema}
               onSubmit={async (values, { setSubmitting }) => {
                 const formData = new FormData();
-                //                   formData.append("disease_name", values.disease_name);
-                // formData.append("disease_id", values.disease_id);
                 for (const key in values) {
                   if (
                     key !== "patient_id_proof" &&
@@ -245,22 +248,16 @@ export default function AddEnquiry() {
                     formData.append(key, values[key]);
                   }
                 }
-
-                // Patient ID Proof (multiple)
                 if (values.patient_id_proof?.length > 0) {
                   values.patient_id_proof.forEach((file) => {
                     formData.append("patient_id_proof", file);
                   });
                 }
-
-                // ✅ Attendant ID Proof (multiple)
                 if (values.patient_relation_id?.length > 0) {
                   values.patient_relation_id.forEach((file) => {
                     formData.append("patient_relation_id", file);
                   });
                 }
-
-                // Patient profile
                 if (values.patient_Profile) {
                   formData.append("patient_Profile", values.patient_Profile);
                 }
@@ -271,8 +268,6 @@ export default function AddEnquiry() {
                   navigate("/Admin/Inquiry");
                 } catch (err) {
                   let errorMessage = "Something went wrong";
-
-                  // If backend sends validation errors
                   if (err?.errors) {
                     errorMessage = Object.values(err.errors).join("<br>");
                   }
@@ -280,7 +275,6 @@ export default function AddEnquiry() {
                   else if (err?.message) {
                     errorMessage = err.message;
                   }
-
                   Swal.fire({
                     icon: "error",
                     title: "Error",
@@ -803,20 +797,20 @@ export default function AddEnquiry() {
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                            <div className="d-flex justify-content-between align-items-center">
-  <label>
-    Treatment Name
-    <span className="text-danger"></span>
-  </label>
+                              <div className="d-flex justify-content-between align-items-center">
+                                <label>
+                                  Treatment Name
+                                  <span className="text-danger"></span>
+                                </label>
 
-  <button
-    type="button"
-    className="btn btn-sm btn-primary"
-    onClick={handleCreateTreatment}
-  >
-    + Create
-  </button>
-</div>
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-primary"
+                                  onClick={handleCreateTreatment}
+                                >
+                                  + Create
+                                </button>
+                              </div>
                               {/* <label>
                                 Treatment Name
                                 <span className="text-danger"></span>

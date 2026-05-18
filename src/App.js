@@ -62,7 +62,7 @@ import Ambulanceserviceview from "./pages/Enquiry/Ambulanceserviceview";
 import EnquiryDetailAmbulance from "./pages/Enquiry/EnquiryDetailAmbulance";
 import Airambulanceview from "./pages/Enquiry/Airambulanceview";
 import Medicalescortservice from "./pages/Enquiry/Medicalescortservice";
-import GerGeneraalEnquiry from "./pages/Genera Enquiry/GerGeneralEnquiry"
+import GerGeneraalEnquiry from "./pages/Genera Enquiry/GerGeneralEnquiry";
 import Roles from "./pages/Roles/Roles";
 import Nopermission from "./pages/Nopermission";
 function App() {
@@ -83,7 +83,11 @@ function App() {
             />
             <Route path="/Admin" element={<Protected Component={Main} />}>
               <Route index path="/Admin/Permission" element={<Permission />} />
-              <Route index path="/Admin/no-permission" element={<Nopermission />} />
+              <Route
+                index
+                path="/Admin/no-permission"
+                element={<Nopermission />}
+              />
               <Route
                 index
                 path="/Admin/New-Permission"
@@ -254,11 +258,7 @@ function App() {
                 path="/Admin/airambulanceview"
                 element={<Airambulanceview />}
               />
-              <Route
-                index
-                path="/Admin/roles"
-                element={<Roles />}
-              />
+              <Route index path="/Admin/roles" element={<Roles />} />
               <Route
                 index
                 path="/Admin/medicalescortservice"
