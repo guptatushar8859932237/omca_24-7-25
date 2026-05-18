@@ -107,8 +107,9 @@ export default function EditEnquiry() {
       .required("Gender is required"),
     country: Yup.string().required("Country is required"),
     emergency_contact_no: Yup.string()
-      .matches(/^[0-9]+$/, "Only digits are allowed")
-      .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
+  .required("Phone number is required")
+  .matches(/^[0-9]+$/, "Only digits are allowed")
+  .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
     patient_emergency_contact_no: Yup.string()
       .matches(/^[0-9]+$/, "Only digits are allowed")
       .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
@@ -250,26 +251,11 @@ export default function EditEnquiry() {
         }
       },
     });
-  
     if (treatmentName) {
       const payload ={name:treatmentName}
       try {
         const response = await axios.post(`${AdminBaseUrl}treatment/add`,payload)
-        // const response = await fetch(
-        //   "YOUR_CREATE_TREATMENT_API",
-        //   {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //       name: treatmentName,
-        //     }),
-        //   }
-        // );
-  
         const data = await response.json();
-  
         if (response.ok) {
           dispatch(GetAllTreatment());
           Swal.fire(
@@ -277,8 +263,6 @@ export default function EditEnquiry() {
             data.message || "Treatment created successfully",
             "success"
           );
-  
-          // Refresh Treatment List
         } else {
           Swal.fire(
             "Error",
@@ -288,7 +272,6 @@ export default function EditEnquiry() {
         }
       } catch (error) {
   console.log(error);
-
   Swal.fire(
     "Error",
     error?.response?.data?.message || error.message || "Something went wrong",

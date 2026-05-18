@@ -58,7 +58,6 @@ export default function AddEnquiry() {
       then: (schema) => schema.required("Attendant Relationship is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
-
     //   patient_relation_address: Yup.string().when("showAttendant", {
     //   is: true,
     //   then: (schema) => schema.required("Attendant address is required"),
@@ -100,11 +99,9 @@ export default function AddEnquiry() {
   useEffect(() => {
     const initTooltips = () => {
       if (!window.bootstrap) return;
-
       const tooltipTriggerList = document.querySelectorAll(
         '[data-bs-toggle="tooltip"]',
       );
-
       tooltipTriggerList.forEach((el) => {
         if (!el._tooltip) {
           el._tooltip = new window.bootstrap.Tooltip(el, {
@@ -114,7 +111,6 @@ export default function AddEnquiry() {
         }
       });
     };
-
     setTimeout(initTooltips, 300);
   }, [showAttendant, Countries, Treatment]);
   const fetchPatientByPhoneOrPassport = async (params) => {
@@ -126,7 +122,6 @@ export default function AddEnquiry() {
     const data = await res.json();
     return data?.data || null;
   };
-
   const handleCreateTreatment = async () => {
     const { value: treatmentName } = await Swal.fire({
       title: "Create Treatment Plan",
@@ -141,7 +136,6 @@ export default function AddEnquiry() {
         }
       },
     });
-
     if (treatmentName) {
       const payload = { name: treatmentName };
       try {
@@ -149,18 +143,6 @@ export default function AddEnquiry() {
           `${AdminBaseUrl}treatment/add`,
           payload,
         );
-        // const response = await fetch(
-        //   "YOUR_CREATE_TREATMENT_API",
-        //   {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //       name: treatmentName,
-        //     }),
-        //   }
-        // );
           console.log(response.data)
           const data = await response.data;
           console.log(response, data)
@@ -171,8 +153,6 @@ export default function AddEnquiry() {
             data.message || "Treatment created successfully",
             "success",
           );
-
-          // Refresh Treatment List
         } else {
           Swal.fire(
             "Error",
@@ -182,7 +162,6 @@ export default function AddEnquiry() {
         }
       } catch (error) {
         console.log(error);
-
         Swal.fire(
           "Error",
           error?.response?.data?.message ||

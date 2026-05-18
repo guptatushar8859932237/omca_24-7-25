@@ -1237,13 +1237,15 @@ export default function Inquiry() {
                                 ) : (
                                   ""
                                 )}
-                                { info?.hasDoctorReview ===true ?"":
-                                  <i className="fa-solid fa-stethoscope"
-                                  onClick={(e) =>
-                                    handleClickOpen4(e, info.enquiryId, info)
-                                  }
-                                ></i>
-                                 } 
+                               {localStorage.getItem("Role") === "Doctor" &&
+  !info?.hasDoctorReview && (
+    <i
+      className="fa-solid fa-stethoscope"
+      onClick={(e) =>
+        handleClickOpen4(e, info.enquiryId, info)
+      }
+    ></i>
+)}
                                  { info?.hasAppointment ===true ?"":
                                 <i className="fa-solid fa-calendar-plus"
                                   title="Add Appointment"

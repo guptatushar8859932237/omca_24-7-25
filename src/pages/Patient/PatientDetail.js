@@ -2989,48 +2989,6 @@ function PatientDetail() {
       // console.log(error);
     }
   };
-  //   const getDataapi3 = async (tId) => {
-  //     try {
-  //       const treatmentid = selectedTreatmentId || tId;
-  //       const response = await axios.get(
-  //         `${baseurl}getAllTreatmentData/${location.state.patientId}/${treatmentid}`,
-  //       );
-  //       const data = response.data.data;
-  //       const normalizedAttendants = data.attendants.map((att) => {
-  //         let passport = att.attendant_passport;
-  //         // normalize to array
-  //         if (!passport) {
-  //           passport = [];
-  //         } else if (Array.isArray(passport)) {
-  //           passport = passport;
-  //         } else if (typeof passport === "string") {
-  //           try {
-  //             if (passport.startsWith("[")) {
-  //               passport = JSON.parse(passport);
-  //             } else {
-  //               passport = [passport];
-  //             }
-  //           } catch {
-  //             passport = [passport];
-  //           }
-  //         } else if (typeof passport === "object") {
-  //           passport = [passport];
-  //         }
-  //         return {
-  //           ...att,
-  //           attendant_passport: passport,
-  //         };
-  //       });
-  //       console.log(data)
-  //       setAppointmentTabel(data.appointment)
-  //       setPaymentsFilered(data.payment_details);
-  //       setReportsFilered1(data.reports);
-  //       setAttandantFilered(normalizedAttendants);
-  //       setNotesTable(data.notes || []);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
 
   const handleclickpharmacycharge = (info) => {
     console.log(info);
@@ -4283,6 +4241,16 @@ function PatientDetail() {
           </div>
           <div className="patient-tabs">
             <ul className="nav nav-tabs nav-tabs-bottom">
+               <li className="nav-item">
+                <a
+                  className={`nav-link ${mainTab === "Patient_Enquiry" ? "active" : ""}`}
+                  href="#attendecontent"
+                  data-toggle="tab"
+                  onClick={() => handleMainTabChange("Patient_Enquiry")}
+                >
+                 Enquries
+                </a>
+              </li>
               <li className="nav-item">
                 <a
                   className={`nav-link ${mainTab === "Doctor-Review" ? "active" : ""}`}
@@ -4323,16 +4291,7 @@ function PatientDetail() {
                   Attendants
                 </a>
               </li>
-              <li className="nav-item">
-                <a
-                  className={`nav-link ${mainTab === "Patient_Enquiry" ? "active" : ""}`}
-                  href="#attendecontent"
-                  data-toggle="tab"
-                  onClick={() => handleMainTabChange("Patient_Enquiry")}
-                >
-                  Patient Enquiry
-                </a>
-              </li>
+             
             </ul>
             <div className="tab-content">
               <div
@@ -4650,7 +4609,7 @@ function PatientDetail() {
                                               href={`${image}${report.fileName}`}
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              className="report-link"
+                                              className="report-link viewbtn"
                                             >
                                               View
                                             </a>
@@ -4683,7 +4642,7 @@ function PatientDetail() {
                                         {info.documents.map((doc, index) => (
                                           <span key={index}>
                                             <button
-                                              className="viewbtn me-2"
+                                              className="viewbtn  me-2"
                                               onClick={() =>
                                                 window.open(
                                                   `${imageUrl}/${doc.file}`,
@@ -5066,7 +5025,6 @@ function PatientDetail() {
                                             Reports
                                           </button>
                                         </li>
-
                                         <li className="nav-item">
                                           <button
                                             className="nav-link"
@@ -7409,7 +7367,7 @@ function PatientDetail() {
                                                         <td>
                                                           {item.platform == "1"
                                                             ? "CRM"
-                                                            : "Hospital"}{" "}
+                                                            : item.plateform =="2"?"Patient":"Hospital"}
                                                         </td>
                                                         <td>
                                                           {item
@@ -7639,7 +7597,7 @@ function PatientDetail() {
                                 className={`nav-link ${tabValue === 1 ? "active" : ""}`}
                                 onClick={() => setTabValue(1)}
                               >
-                                Ambulance Servie
+                                Ambulance Servies
                               </button>
                             </li>
                             <li className="nav-item">
@@ -7670,7 +7628,7 @@ function PatientDetail() {
                                         <TableHead>
                                           <TableRow>
                                             <TableCell>Sr.No.</TableCell>
-                                            <TableCell>Enquiry IDs</TableCell>
+                                            <TableCell>Enquiry ID</TableCell>
                                             <TableCell>Country</TableCell>
                                             <TableCell>Treating In</TableCell>
                                             <TableCell>Date/Time</TableCell>
@@ -7789,7 +7747,7 @@ function PatientDetail() {
                                           <TableHead>
                                             <TableRow>
                                               <TableCell>Sr.No.</TableCell>
-                                              <TableCell>Enquiry IDs</TableCell>
+                                              <TableCell>Enquiry ID</TableCell>
                                               <TableCell>Country</TableCell>
                                               <TableCell>Treating In</TableCell>
                                               <TableCell>Date/Time</TableCell>
@@ -7914,7 +7872,7 @@ function PatientDetail() {
                                         <TableHead>
                                           <TableRow>
                                             <TableCell>Sr.No.</TableCell>
-                                            <TableCell>Enquiry IDs</TableCell>
+                                            <TableCell>Enquiry ID</TableCell>
                                             <TableCell>Country</TableCell>
                                             <TableCell>Treating In</TableCell>
                                             <TableCell>Date/Time</TableCell>
@@ -8033,7 +7991,7 @@ function PatientDetail() {
                                         <TableHead>
                                           <TableRow>
                                             <TableCell>Sr.No.</TableCell>
-                                            <TableCell>Enquiry IDs</TableCell>
+                                            <TableCell>Enquiry ID</TableCell>
                                             <TableCell>Country</TableCell>
                                             <TableCell>Treating In</TableCell>
                                             <TableCell>Date/Time</TableCell>

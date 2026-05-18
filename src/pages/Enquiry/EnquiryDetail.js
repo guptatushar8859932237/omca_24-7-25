@@ -172,7 +172,10 @@ export default function EnquiryDetail() {
                   <div class="col-md-4">
                     <div className="">
                       <h6>Emergency Contact Number</h6>
-                      <p>{row.phoneCode}{row.patient_emergency_contact_no}</p>
+                      {
+                        row.patient_emergency_contact_no?
+                        <p>{row.phoneCode}{row.patient_emergency_contact_no}</p>
+                      :""}
                     </div>
                   </div>
                   <div class="col-md-4">
