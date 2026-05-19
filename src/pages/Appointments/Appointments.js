@@ -706,7 +706,7 @@ export default function Appointments() {
                                   {new Date(
                                     info.appointment_Date,
                                   ).toLocaleDateString("en-GB")}
-                                  -
+                                  {" "}
                                   {new Date(
                                     info.appointment_Date,
                                   ).toLocaleTimeString([], {
@@ -941,23 +941,9 @@ export default function Appointments() {
                                 <TableCell>{info.city}</TableCell>
                                 <TableCell>{info.health_issue}</TableCell>
                                 <TableCell>
-                                  {info?.apt_on ? (
-                                    <>
-                                      {new Date(info.apt_on).toLocaleDateString(
-                                        "en-GB",
-                                      )}{" "}
-                                      -{" "}
-                                      {new Date(info.apt_on).toLocaleTimeString(
-                                        [],
-                                        {
-                                          hour: "2-digit",
-                                          minute: "2-digit",
-                                        },
-                                      )}
-                                    </>
-                                  ) : (
+                                  {info?.apt_on ? info?.apt_on : 
                                     "-"
-                                  )}
+                                  }
                                 </TableCell>
                                 <TableCell>${info.paid_amount}</TableCell>
                                 <TableCell>
@@ -1102,7 +1088,7 @@ export default function Appointments() {
                                   {new Date(
                                     item?.appointment_Date,
                                   ).toLocaleDateString("en-GB")}
-                                  -
+                                  {" "}
                                   {new Date(
                                     item?.appointment_Date,
                                   ).toLocaleTimeString([], {
