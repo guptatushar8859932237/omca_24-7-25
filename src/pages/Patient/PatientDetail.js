@@ -47,6 +47,9 @@ import {
 } from "@mui/material";
 import html2pdf from "html2pdf.js";
 import { useRef } from "react";
+import { EnquiryStatus } from "../../reducer/EnquirySlice";
+import { Pagination, Stack } from "@mui/material";
+const rowsPerPage = 10;
 function PatientDetail() {
   const navigate = useNavigate();
   const [openGuesthouse, setOpenGuesthouse] = useState(false);
@@ -57,6 +60,7 @@ function PatientDetail() {
   const [pickuptime, setPickuptime] = useState("");
   const [treatmentIds1, setTreatmentIds1] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
+  const [treatmentPage, setTreatmentPage] = useState(0);
   const [openModalDovPlan, setOpenModalDovPlan] = useState(false);
   const [images, setImages] = useState([]);
   const [files, setFiles] = useState(null);
@@ -77,6 +81,7 @@ function PatientDetail() {
   const [dataHospitalID, setDataHospitalID] = useState("");
   const [dataStatus, setDataStatus] = useState("");
   const [openAppointment, setOpenAppointment] = useState(false);
+  const [ambulancePage, setAmbulancePage] = useState(0);
   const [appointmentData, setAppointmentData] = useState({
     hospital_id: "",
     hospitalName: "",
@@ -202,6 +207,7 @@ function PatientDetail() {
   const [payment_details, setPayment_details] = useState([]);
   const [reportsFilered1, setReportsFilered1] = useState([]);
   const [paidTo, setPaidTo] = useState([]);
+  const [airAmbulancePage, setAirAmbulancePage] = useState(0);
   const [paymentsFilered, setPaymentsFilered] = useState([]);
   const [attandantFilered, setAttandantFilered] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -218,6 +224,8 @@ function PatientDetail() {
     notes: "",
     invoiceFile: null,
   });
+  const [page, setPage] = useState(0);
+
   const [editPatientProfile, setEditPatientProfile] = useState(false);
   const [hAndleReport, setHAndleReport] = useState(false);
   const [appointErr, setAppointErr] = useState(false);
@@ -361,6 +369,13 @@ function PatientDetail() {
     setOpen1(true);
     setTreatmentId(selectedTreatmentId);
     setIShospitalArray(hospitalDetails);
+  };
+  const statusMap = {
+    0: "Pending",
+    1: "Confirmed",
+    2: "Hold",
+    3: "Follow-Up",
+    4: "Dead",
   };
   const handleClickOpenNotes = (e, tretmentId, listhospital) => {
     setOpen5(true);
@@ -1437,6 +1452,147 @@ function PatientDetail() {
       return response.data;
     } catch (err) {}
   };
+  // const handleChangeStatusEnquiry = async (event, id, tabValue, data) => {
+  //     console.log(event, id, tabValue, data);
+  //     const { value } = event.target;
+  //     const status = Number(value);
+  //     const result = await Swal.fire({
+  //       title: "Are you sure?",
+  //       text: "Do you really want to update / convert?",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "Yes",
+  //     });
+  //     if (!result.isConfirmed) return;
+  //     if (tabValue === 0) {
+  //       if (status === 1) {
+  //         console.log(data);
+  //         try {
+  //      w     const payload = {
+  //             full_name: data.raw.name,
+  //             email: data.raw.email,
+  //             phone_code: data.raw.phoneCode,
+  //             phone: data.raw.emergency_contact,
+  //             passport_number: data.raw.passport_num,
+  //             user_type: 2,
+  //             doctor_review: data.raw.doctorReview,
+  //             age: data.raw.age,
+  //             address: data.raw.address,
+  //             town: data.raw.town,
+  //             country: data.raw.country,
+  //             passport_number: data.raw.passport_num,
+  //           };
+  //           const response = await axios.post(
+  //             `https://omcacrm.com/omca/api/user_registration`,
+  //             payload,
+  //           );
+  //           if (response.data.success) {
+  //            getDataforconfirmedenq()
+  //             Swal.fire("Success!", "Converted to patient!", "success");
+  //             // dispatch(GetAllEnquiry());
+  //           }
+  //         } catch (err) {
+  //           Swal.fire("Error!", err?.message || "Error", "error");
+  //         }
+  //       } else {
+  //         await dispatch(
+  //           EnquiryStatus({
+  //             id,
+  //             status,
+  //             enquiry_type: "OMCA Enquiry",
+  //           }),
+  //         ).unwrap();
+  //         Swal.fire("Success!", "Status Change Successfully!", "success");
+  //         // dispatch(GetAllEnquiry());
+  //       }
+  //     } else {
+  //       if (status === 1) {
+  //         try {
+  //           if (tabValue === 1) {
+  //             await ambulanceData("Ambulance Service", data.raw);
+  //           }
+  //           if (tabValue === 2) {
+  //             await airAmbulanceData("Air Medical Escort", data.raw);
+  //           }
+  //           if (tabValue === 3) {
+  //             await treatmentData1("Treatment Estimate", data.raw);
+  //           }
+  //           await handleChangtype({ value }, data.raw);
+  //           // Swal.fire("Success!", "Converted to patient!", "success");
+  //           // dispatch(GetAllEnquiry());
+  //         } catch (err) {
+  //           Swal.fire("Error!", err?.message || "Error", "error");
+  //         }
+  //       } else {
+  //         await handleChangtype({ value }, data.raw);
+
+  //         Swal.fire("Success!", "Status changed!", "success");
+  //         get3tabdata()
+  //         // dispatch(GetAllEnquiry());
+  //       }
+  //     }
+  //   };
+  const handleChangeStatusEnquiry = async (event, id, tabValue, data) => {
+    console.log(event, id, tabValue, data);
+
+    const { value } = event.target;
+    const status = Number(value);
+
+    try {
+      // TAB 0
+      if (tabValue === 0) {
+        await dispatch(
+          EnquiryStatus({
+            id,
+            status,
+            user_id: ispatient.user_id,
+            enquiry_type: "OMCA Enquiry",
+          }),
+        ).unwrap();
+
+        Swal.fire("Success!", "Status Changed Successfully!", "success");
+        getDataforconfirmedenq();
+      } else {
+        await handleChangtype({ value }, data.raw);
+        Swal.fire("Success!", "Status Changed Successfully!", "success");
+
+        get3tabdata();
+      }
+    } catch (err) {
+      Swal.fire("Error!", err?.message || "Something went wrong", "error");
+    }
+  };
+  const handleChangtype = async (e, b) => {
+    const value = e?.value || e?.target?.value;
+    console.log(b);
+    const payload = {
+      id: b.id,
+      status: statusMap[Number(value)],
+      model:
+        tabValue === 1
+          ? "AmbulanceRequest"
+          : tabValue === 2
+            ? "AirAmbulance"
+            : tabValue === 3
+              ? "PatientQuery"
+              : "",
+    };
+    console.log("Payload:", payload);
+    try {
+      const response = await axios.post(
+        `${AdminBaseUrl}update_user_request_status`,
+        payload,
+      );
+      Swal.fire("Success!", "Status Changed Successfully!", "success")
+      await get3tabdata();
+      if (response?.data?.success) {
+        console.log("Updated Successfully");
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Error", "Something went wrong", "error");
+    }
+  };
   const handleChangeDetails = async (event, id) => {
     try {
       const { value } = event.target;
@@ -1713,7 +1869,6 @@ function PatientDetail() {
     }
   };
   const handleClickSubmit = async () => {
-    // 🔥 VALIDATION START
     if (!iniData.reportTitle) {
       return Swal.fire("Error", "Report Title is required", "error");
     }
@@ -3064,42 +3219,43 @@ function PatientDetail() {
       console.log(error);
     }
   };
- const handledeltePayment = async (a, b, c) => {
-  console.log(a, b, c);
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "You want to delete this payment!",
-    icon: "warning",
-    showCancelButton: true,
-   confirmButtonColor: "#d33" ,
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete it!",
-  });
-  if (result.isConfirmed) {
-    try {
-      const response = await axios.delete(
-        `${baseurl}delete_payment/${a.id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+  const handledeltePayment = async (a, b, c) => {
+    console.log(a, b, c);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this payment!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `${baseurl}delete_payment/${a.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
           },
-        },
-      );
+        );
         dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      Swal.fire(
-        "Deleted!",
-        response?.data?.message || "Payment deleted successfully",
-        "success"
-      );
-    } catch (error) {
-      console.log(error);
-      Swal.fire(
-        "Error!",
-        error?.response?.data?.message || "Something went wrong",
-        "error"
-      );
+        Swal.fire(
+          "Deleted!",
+          response?.data?.message || "Payment deleted successfully",
+          "success",
+        );
+      } catch (error) {
+        console.log(error);
+        Swal.fire(
+          "Error!",
+          error?.response?.data?.message || "Something went wrong",
+          "error",
+        );
+      }
     }
-  }
-};
+  };
   const handleclickDeleteTreatment = async (treatment_id) => {
     console.log(treatment_id);
     Swal.fire({
@@ -4106,14 +4262,14 @@ function PatientDetail() {
           </div>
           <div className="patient-tabs">
             <ul className="nav nav-tabs nav-tabs-bottom">
-               <li className="nav-item">
+              <li className="nav-item">
                 <a
                   className={`nav-link ${mainTab === "Patient_Enquiry" ? "active" : ""}`}
                   href="#attendecontent"
                   data-toggle="tab"
                   onClick={() => handleMainTabChange("Patient_Enquiry")}
                 >
-                 Enquiries
+                  Enquiries
                 </a>
               </li>
               <li className="nav-item">
@@ -4156,7 +4312,6 @@ function PatientDetail() {
                   Attendants
                 </a>
               </li>
-             
             </ul>
             <div className="tab-content">
               <div
@@ -5337,9 +5492,9 @@ function PatientDetail() {
                                                                       </td>
                                                                       <td>-</td>
                                                                       <td>
-                                                                      <div className="action-icon">
                                                                         <div className="action-icon">
-                                                                          {/* <i
+                                                                          <div className="action-icon">
+                                                                            {/* <i
                                                                             className="fa-solid fa-pen-to-square"
                                                                             onClick={() => {
                                                                               hadnlcecEdopenmodalGuestHouse(
@@ -5348,19 +5503,19 @@ function PatientDetail() {
                                                                               );
                                                                             }}
                                                                           ></i> */}
-                                                                          <i
-                                                                            className="fa-solid fa-trash"
-                                                                            onClick={() => {
-                                                                              handledeltePayment(
-                                                                                item,
-                                                                                info,
-                                                                                index,
-                                                                              );
-                                                                            }}
-                                                                          ></i>
+                                                                            <i
+                                                                              className="fa-solid fa-trash"
+                                                                              onClick={() => {
+                                                                                handledeltePayment(
+                                                                                  item,
+                                                                                  info,
+                                                                                  index,
+                                                                                );
+                                                                              }}
+                                                                            ></i>
+                                                                          </div>
                                                                         </div>
-                                                                      </div>
-                                                                    </td>
+                                                                      </td>
                                                                     </tr>
                                                                   );
                                                                 },
@@ -7232,7 +7387,10 @@ function PatientDetail() {
                                                         <td>
                                                           {item.platform == "1"
                                                             ? "CRM"
-                                                            : item.plateform =="2"?"Patient":"Hospital"}
+                                                            : item.plateform ==
+                                                                "2"
+                                                              ? "Patient"
+                                                              : "Hospital"}
                                                         </td>
                                                         <td>
                                                           {item
@@ -7497,14 +7655,21 @@ function PatientDetail() {
                                             <TableCell>Country</TableCell>
                                             <TableCell>Treating In</TableCell>
                                             <TableCell>Date/Time</TableCell>
+                                            <TableCell>Status</TableCell>
                                             <TableCell>Action</TableCell>
                                           </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                          {dataForConfirmedEnq.map(
-                                            (info, i) => (
+                                          {dataForConfirmedEnq
+                                            .slice(
+                                              page * rowsPerPage,
+                                              page * rowsPerPage + rowsPerPage,
+                                            )
+                                            .map((info, i) => (
                                               <TableRow key={info._id}>
-                                                <TableCell>{i + 1}</TableCell>
+                                                <TableCell>
+                                                  {page * rowsPerPage + i + 1}
+                                                </TableCell>
                                                 <TableCell>
                                                   {info.enquiryId}
                                                 </TableCell>
@@ -7552,6 +7717,76 @@ function PatientDetail() {
                                                     },
                                                   )}
                                                 </TableCell>
+                                                <TableCell>
+                                                  {info.enq_status ===
+                                                  "Confirmed" ? (
+                                                    // ✅ Only show text
+                                                    <span
+                                                      style={{
+                                                        fontWeight: "bold",
+                                                      }}
+                                                    >
+                                                      Confirmed
+                                                    </span>
+                                                  ) : (
+                                                    // ✅ Otherwise show dropdown
+                                                    <FormControl
+                                                      sx={{
+                                                        m: 1,
+                                                        minWidth: 120,
+                                                      }}
+                                                      size="small"
+                                                      className="cont-main"
+                                                    >
+                                                      <Select
+                                                        value={
+                                                          seekerStatus[
+                                                            info.enquiryId
+                                                          ]
+                                                            ? seekerStatus[
+                                                                info.enquiryId
+                                                              ]
+                                                            : info.enq_status ===
+                                                                "Hold"
+                                                              ? "2"
+                                                              : info.enq_status ===
+                                                                  "Follow-Up"
+                                                                ? "3"
+                                                                : info.enq_status ===
+                                                                    "Dead"
+                                                                  ? "4"
+                                                                  : "0"
+                                                        }
+                                                        onChange={(e) =>
+                                                          handleChangeStatusEnquiry(
+                                                            e,
+                                                            info.enquiryId,
+                                                            tabValue,
+                                                            info,
+                                                          )
+                                                        }
+                                                        displayEmpty
+                                                        className="status-direct"
+                                                      >
+                                                        <MenuItem value="0">
+                                                          Pending
+                                                        </MenuItem>
+                                                        <MenuItem value="1">
+                                                          Confirmed
+                                                        </MenuItem>
+                                                        <MenuItem value="2">
+                                                          Hold
+                                                        </MenuItem>
+                                                        <MenuItem value="3">
+                                                          Follow-up
+                                                        </MenuItem>
+                                                        <MenuItem value="4">
+                                                          Closed
+                                                        </MenuItem>
+                                                      </Select>
+                                                    </FormControl>
+                                                  )}
+                                                </TableCell>
                                                 <TableCell className="action-icon">
                                                   <VisibilityIcon
                                                     className="eye-icon"
@@ -7597,11 +7832,24 @@ function PatientDetail() {
                                                   )}
                                                 </TableCell>
                                               </TableRow>
-                                            ),
-                                          )}
+                                            ))}
                                         </TableBody>
                                       </Table>
                                     </TableContainer>
+                                    <Stack spacing={2} mt={2}>
+                                      <Pagination
+                                        className="page-nation"
+                                        count={Math.ceil(
+                                          dataForConfirmedEnq.length /
+                                            rowsPerPage,
+                                        )}
+                                        page={page + 1}
+                                        onChange={(event, value) =>
+                                          setPage(value - 1)
+                                        }
+                                        color="primary"
+                                      />
+                                    </Stack>
                                   </div>
                                 )}
                                 {tabValue === 1 && (
@@ -7616,14 +7864,247 @@ function PatientDetail() {
                                               <TableCell>Country</TableCell>
                                               <TableCell>Treating In</TableCell>
                                               <TableCell>Date/Time</TableCell>
+                                              <TableCell>Status</TableCell>
                                               <TableCell>Action</TableCell>
                                             </TableRow>
                                           </TableHead>
                                           <TableBody>
                                             {ambulanceData?.length > 0 ? (
-                                              ambulanceData.map((info, i) => (
+                                              ambulanceData
+                                                .slice(
+                                                  ambulancePage * rowsPerPage,
+                                                  ambulancePage * rowsPerPage +
+                                                    rowsPerPage,
+                                                )
+                                                .map((info, i) => (
+                                                  <TableRow key={info._id}>
+                                                    <TableCell>
+                                                      {ambulancePage *
+                                                        rowsPerPage +
+                                                        i +
+                                                        1}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {info.enquiryId}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {info?.country?.length >
+                                                      10
+                                                        ? info.country.slice(
+                                                            0,
+                                                            10,
+                                                          ) + "..."
+                                                        : info.country}
+                                                    </TableCell>
+
+                                                    <TableCell>
+                                                      {info?.treating_in_country
+                                                        ?.length > 10
+                                                        ? info.treating_in_country.slice(
+                                                            0,
+                                                            10,
+                                                          ) + "..."
+                                                        : info.treating_in_country}
+                                                    </TableCell>
+
+                                                    <TableCell>
+                                                      {new Date(
+                                                        info.created_at,
+                                                      ).toLocaleDateString(
+                                                        "en-GB",
+                                                        {
+                                                          day: "numeric",
+                                                          month: "short",
+                                                          year: "numeric",
+                                                        },
+                                                      )}{" "}
+                                                      {new Date(
+                                                        info.created_at,
+                                                      ).toLocaleTimeString(
+                                                        "en-GB",
+                                                        {
+                                                          hour: "2-digit",
+                                                          minute: "2-digit",
+                                                          hour12: true,
+                                                        },
+                                                      )}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {info.status ===
+                                                      "Confirmed" ? (
+                                                        // ✅ Only show text
+                                                        <span
+                                                          style={{
+                                                            fontWeight: "bold",
+                                                          }}
+                                                        >
+                                                          Confirmed
+                                                        </span>
+                                                      ) : (
+                                                        // ✅ Otherwise show dropdown
+                                                        <FormControl
+                                                          sx={{
+                                                            m: 1,
+                                                            minWidth: 120,
+                                                          }}
+                                                          size="small"
+                                                          className="cont-main"
+                                                        >
+                                                          <Select
+                                                            value={
+                                                              seekerStatus[
+                                                                info.enquiryId
+                                                              ]
+                                                                ? seekerStatus[
+                                                                    info
+                                                                      .enquiryId
+                                                                  ]
+                                                                : info.status ===
+                                                                    "Hold"
+                                                                  ? "2"
+                                                                  : info.status ===
+                                                                      "Follow-Up"
+                                                                    ? "3"
+                                                                    : info.status ===
+                                                                        "Dead"
+                                                                      ? "4"
+                                                                      : "0"
+                                                            }
+                                                            onChange={(e) =>
+                                                              handleChangtype(
+                                                                e,
+                                                                info,
+                                                                // tabValue,
+                                                                // info,
+                                                              )
+                                                            }
+                                                            displayEmpty
+                                                            className="status-direct"
+                                                          >
+                                                            <MenuItem value="0">
+                                                              Pending
+                                                            </MenuItem>
+                                                            <MenuItem value="1">
+                                                              Confirmed
+                                                            </MenuItem>
+                                                            <MenuItem value="2">
+                                                              Hold
+                                                            </MenuItem>
+                                                            <MenuItem value="3">
+                                                              Follow-up
+                                                            </MenuItem>
+                                                            <MenuItem value="4">
+                                                              Closed
+                                                            </MenuItem>
+                                                          </Select>
+                                                        </FormControl>
+                                                      )}
+                                                    </TableCell>
+
+                                                    <TableCell className="action-icon">
+                                                      <VisibilityIcon
+                                                        className="eye-icon"
+                                                        onClick={(e) =>
+                                                          ViewDetail(
+                                                            e,
+                                                            tabValue,
+                                                            info,
+                                                          )
+                                                        }
+                                                      />
+
+                                                      {info?.hasDoctorReview !==
+                                                        true && (
+                                                        <i
+                                                          className="fa-solid fa-stethoscope"
+                                                          onClick={(e) =>
+                                                            handleClickOpen4(
+                                                              e,
+                                                              info.enquiryId,
+                                                              info,
+                                                            )
+                                                          }
+                                                        ></i>
+                                                      )}
+
+                                                      {info?.hasAppointment !==
+                                                        true && (
+                                                        <i
+                                                          className="fa-solid fa-calendar-plus"
+                                                          title="Add Appointment"
+                                                          style={{
+                                                            cursor: "pointer",
+                                                          }}
+                                                          onClick={() =>
+                                                            handleOpenAppointment(
+                                                              info,
+                                                            )
+                                                          }
+                                                        ></i>
+                                                      )}
+                                                    </TableCell>
+                                                  </TableRow>
+                                                ))
+                                            ) : (
+                                              <TableRow>
+                                                <TableCell
+                                                  colSpan={7}
+                                                  align="center"
+                                                >
+                                                  No Data Found
+                                                </TableCell>
+                                              </TableRow>
+                                            )}
+                                          </TableBody>
+                                        </Table>
+                                      </TableContainer>
+                                      <Stack spacing={2} mt={2}>
+                                        <Pagination
+                                          className="page-nation"
+                                          count={Math.ceil(
+                                            ambulanceData.length / rowsPerPage,
+                                          )}
+                                          page={ambulancePage + 1}
+                                          onChange={(event, value) =>
+                                            setAmbulancePage(value - 1)
+                                          }
+                                          color="primary"
+                                        />
+                                      </Stack>
+                                    </div>
+                                  </div>
+                                )}
+                                {tabValue === 2 && (
+                                  <div>
+                                    <TableContainer className="table-responsive">
+                                      <Table className="table-no-card">
+                                        <TableHead>
+                                          <TableRow>
+                                            <TableCell>Sr.No.</TableCell>
+                                            <TableCell>Enquiry ID</TableCell>
+                                            <TableCell>Country</TableCell>
+                                            <TableCell>Treating In</TableCell>
+                                            <TableCell>Date/Time</TableCell>
+                                            <TableCell>Status</TableCell>
+                                            <TableCell>Action</TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {airAmbulanceData?.length > 0 ? (
+                                            airAmbulanceData
+                                              .slice(
+                                                airAmbulancePage * rowsPerPage,
+                                                airAmbulancePage * rowsPerPage +
+                                                  rowsPerPage,
+                                              )
+                                              .map((info, i) => (
                                                 <TableRow key={info._id}>
-                                                  <TableCell>{i + 1}</TableCell>
+                                                  <TableCell>
+                                                    {airAmbulancePage *
+                                                      rowsPerPage +
+                                                      i +
+                                                      1}
+                                                  </TableCell>
 
                                                   <TableCell>
                                                     {info.enquiryId}
@@ -7636,7 +8117,6 @@ function PatientDetail() {
                                                         ) + "..."
                                                       : info.country}
                                                   </TableCell>
-
                                                   <TableCell>
                                                     {info?.treating_in_country
                                                       ?.length > 10
@@ -7646,7 +8126,6 @@ function PatientDetail() {
                                                         ) + "..."
                                                       : info.treating_in_country}
                                                   </TableCell>
-
                                                   <TableCell>
                                                     {new Date(
                                                       info.created_at,
@@ -7669,7 +8148,76 @@ function PatientDetail() {
                                                       },
                                                     )}
                                                   </TableCell>
-
+                                                  <TableCell>
+                                                    {info.status ===
+                                                    "Confirmed" ? (
+                                                      // ✅ Only show text
+                                                      <span
+                                                        style={{
+                                                          fontWeight: "bold",
+                                                        }}
+                                                      >
+                                                        Confirmed
+                                                      </span>
+                                                    ) : (
+                                                      // ✅ Otherwise show dropdown
+                                                      <FormControl
+                                                        sx={{
+                                                          m: 1,
+                                                          minWidth: 120,
+                                                        }}
+                                                        size="small"
+                                                        className="cont-main"
+                                                      >
+                                                        <Select
+                                                          value={
+                                                            seekerStatus[
+                                                              info.enquiryId
+                                                            ]
+                                                              ? seekerStatus[
+                                                                  info.enquiryId
+                                                                ]
+                                                              : info.status ===
+                                                                  "Hold"
+                                                                ? "2"
+                                                                : info.status ===
+                                                                    "Follow-Up"
+                                                                  ? "3"
+                                                                  : info.status ===
+                                                                      "Dead"
+                                                                    ? "4"
+                                                                    : "0"
+                                                          }
+                                                          onChange={(e) =>
+                                                            handleChangtype(
+                                                              e,
+                                                              info,
+                                                              // tabValue,
+                                                              // info,
+                                                            )
+                                                          }
+                                                          displayEmpty
+                                                          className="status-direct"
+                                                        >
+                                                          <MenuItem value="0">
+                                                            Pending
+                                                          </MenuItem>
+                                                          <MenuItem value="1">
+                                                            Confirmed
+                                                          </MenuItem>
+                                                          <MenuItem value="2">
+                                                            Hold
+                                                          </MenuItem>
+                                                          <MenuItem value="3">
+                                                            Follow-up
+                                                          </MenuItem>
+                                                          <MenuItem value="4">
+                                                            Closed
+                                                          </MenuItem>
+                                                        </Select>
+                                                      </FormControl>
+                                                    )}
+                                                  </TableCell>
                                                   <TableCell className="action-icon">
                                                     <VisibilityIcon
                                                       className="eye-icon"
@@ -7681,7 +8229,6 @@ function PatientDetail() {
                                                         )
                                                       }
                                                     />
-
                                                     {info?.hasDoctorReview !==
                                                       true && (
                                                       <i
@@ -7695,7 +8242,6 @@ function PatientDetail() {
                                                         }
                                                       ></i>
                                                     )}
-
                                                     {info?.hasAppointment !==
                                                       true && (
                                                       <i
@@ -7714,126 +8260,6 @@ function PatientDetail() {
                                                   </TableCell>
                                                 </TableRow>
                                               ))
-                                            ) : (
-                                              <TableRow>
-                                                <TableCell
-                                                  colSpan={7}
-                                                  align="center"
-                                                >
-                                                  No Data Found
-                                                </TableCell>
-                                              </TableRow>
-                                            )}
-                                          </TableBody>
-                                        </Table>
-                                      </TableContainer>
-                                    </div>
-                                  </div>
-                                )}
-                                {tabValue === 2 && (
-                                  <div>
-                                    <TableContainer className="table-responsive">
-                                      <Table className="table-no-card">
-                                        <TableHead>
-                                          <TableRow>
-                                            <TableCell>Sr.No.</TableCell>
-                                            <TableCell>Enquiry ID</TableCell>
-                                            <TableCell>Country</TableCell>
-                                            <TableCell>Treating In</TableCell>
-                                            <TableCell>Date/Time</TableCell>
-                                            <TableCell>Action</TableCell>
-                                          </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                          {airAmbulanceData?.length > 0 ? (
-                                            airAmbulanceData.map((info, i) => (
-                                              <TableRow key={info._id}>
-                                                <TableCell>{i + 1}</TableCell>
-
-                                                <TableCell>
-                                                  {info.enquiryId}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {info?.country?.length > 10
-                                                    ? info.country.slice(
-                                                        0,
-                                                        10,
-                                                      ) + "..."
-                                                    : info.country}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {info?.treating_in_country
-                                                    ?.length > 10
-                                                    ? info.treating_in_country.slice(
-                                                        0,
-                                                        10,
-                                                      ) + "..."
-                                                    : info.treating_in_country}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {new Date(
-                                                    info.created_at,
-                                                  ).toLocaleDateString(
-                                                    "en-GB",
-                                                    {
-                                                      day: "numeric",
-                                                      month: "short",
-                                                      year: "numeric",
-                                                    },
-                                                  )}{" "}
-                                                  {new Date(
-                                                    info.created_at,
-                                                  ).toLocaleTimeString(
-                                                    "en-GB",
-                                                    {
-                                                      hour: "2-digit",
-                                                      minute: "2-digit",
-                                                      hour12: true,
-                                                    },
-                                                  )}
-                                                </TableCell>
-                                                <TableCell className="action-icon">
-                                                  <VisibilityIcon
-                                                    className="eye-icon"
-                                                    onClick={(e) =>
-                                                      ViewDetail(
-                                                        e,
-                                                        tabValue,
-                                                        info,
-                                                      )
-                                                    }
-                                                  />
-                                                  {info?.hasDoctorReview !==
-                                                    true && (
-                                                    <i
-                                                      className="fa-solid fa-stethoscope"
-                                                      onClick={(e) =>
-                                                        handleClickOpen4(
-                                                          e,
-                                                          info.enquiryId,
-                                                          info,
-                                                        )
-                                                      }
-                                                    ></i>
-                                                  )}
-                                                  {info?.hasAppointment !==
-                                                    true && (
-                                                    <i
-                                                      className="fa-solid fa-calendar-plus"
-                                                      title="Add Appointment"
-                                                      style={{
-                                                        cursor: "pointer",
-                                                      }}
-                                                      onClick={() =>
-                                                        handleOpenAppointment(
-                                                          info,
-                                                        )
-                                                      }
-                                                    ></i>
-                                                  )}
-                                                </TableCell>
-                                              </TableRow>
-                                            ))
                                           ) : (
                                             <TableRow>
                                               <TableCell
@@ -7847,6 +8273,19 @@ function PatientDetail() {
                                         </TableBody>
                                       </Table>
                                     </TableContainer>
+                                    <Stack spacing={2} mt={2}>
+                                      <Pagination
+                                        className="page-nation"
+                                        count={Math.ceil(
+                                          airAmbulanceData.length / rowsPerPage,
+                                        )}
+                                        page={airAmbulancePage + 1}
+                                        onChange={(event, value) =>
+                                          setAirAmbulancePage(value - 1)
+                                        }
+                                        color="primary"
+                                      />
+                                    </Stack>
                                   </div>
                                 )}
                                 {tabValue === 3 && (
@@ -7860,99 +8299,180 @@ function PatientDetail() {
                                             <TableCell>Country</TableCell>
                                             <TableCell>Treating In</TableCell>
                                             <TableCell>Date/Time</TableCell>
+                                            <TableCell>Status</TableCell>
                                             <TableCell>Action</TableCell>
                                           </TableRow>
                                         </TableHead>
                                         <TableBody>
                                           {treatmentData1?.length > 0 ? (
-                                            treatmentData1.map((info, i) => (
-                                              <TableRow key={info._id}>
-                                                <TableCell>{i + 1}</TableCell>
-
-                                                <TableCell>
-                                                  {info.enquiryId}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {info?.country?.length > 10
-                                                    ? info.country.slice(
-                                                        0,
-                                                        10,
-                                                      ) + "..."
-                                                    : info.country}
-                                                </TableCell>
-
-                                                <TableCell>
-                                                  {info?.treatingIn?.length > 10
-                                                    ? info.treatingIn.slice(
-                                                        0,
-                                                        10,
-                                                      ) + "..."
-                                                    : info.treatingIn}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {new Date(
-                                                    info.created_at,
-                                                  ).toLocaleDateString(
-                                                    "en-GB",
-                                                    {
-                                                      day: "numeric",
-                                                      month: "short",
-                                                      year: "numeric",
-                                                    },
-                                                  )}{" "}
-                                                  {new Date(
-                                                    info.created_at,
-                                                  ).toLocaleTimeString(
-                                                    "en-GB",
-                                                    {
-                                                      hour: "2-digit",
-                                                      minute: "2-digit",
-                                                      hour12: true,
-                                                    },
-                                                  )}
-                                                </TableCell>
-                                                <TableCell className="action-icon">
-                                                  <VisibilityIcon
-                                                    className="eye-icon"
-                                                    onClick={(e) =>
-                                                      ViewDetail(
-                                                        e,
-                                                        tabValue,
-                                                        info,
-                                                      )
-                                                    }
-                                                  />
-                                                  {info?.hasDoctorReview !==
-                                                    true && (
-                                                    <i
-                                                      className="fa-solid fa-stethoscope"
+                                            treatmentData1
+                                              ?.slice(
+                                                treatmentPage * rowsPerPage,
+                                                treatmentPage * rowsPerPage +
+                                                  rowsPerPage,
+                                              )
+                                              .map((info, i) => (
+                                                <TableRow key={info._id}>
+                                                  <TableCell>
+                                                    {treatmentPage *
+                                                      rowsPerPage +
+                                                      i +
+                                                      1}
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    {info.enquiryId}
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    {info?.country?.length > 10
+                                                      ? info.country.slice(
+                                                          0,
+                                                          10,
+                                                        ) + "..."
+                                                      : info.country}
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    {info?.treating_in_country
+                                                      ?.length > 10
+                                                      ? info.treating_in_country.slice(
+                                                          0,
+                                                          10,
+                                                        ) + "..."
+                                                      : info.treating_in_country}
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    {new Date(
+                                                      info.created_at,
+                                                    ).toLocaleDateString(
+                                                      "en-GB",
+                                                      {
+                                                        day: "numeric",
+                                                        month: "short",
+                                                        year: "numeric",
+                                                      },
+                                                    )}{" "}
+                                                    {new Date(
+                                                      info.created_at,
+                                                    ).toLocaleTimeString(
+                                                      "en-GB",
+                                                      {
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                        hour12: true,
+                                                      },
+                                                    )}
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    {info.status ===
+                                                    "Confirmed" ? (
+                                                      // ✅ Only show text
+                                                      <span
+                                                        style={{
+                                                          fontWeight: "bold",
+                                                        }}
+                                                      >
+                                                        Confirmed
+                                                      </span>
+                                                    ) : (
+                                                      // ✅ Otherwise show dropdown
+                                                      <FormControl
+                                                        sx={{
+                                                          m: 1,
+                                                          minWidth: 120,
+                                                        }}
+                                                        size="small"
+                                                        className="cont-main"
+                                                      >
+                                                        <Select
+                                                          value={
+                                                            seekerStatus[
+                                                              info.enquiryId
+                                                            ]
+                                                              ? seekerStatus[
+                                                                  info.enquiryId
+                                                                ]
+                                                              : info.status ===
+                                                                  "Hold"
+                                                                ? "2"
+                                                                : info.status ===
+                                                                    "Follow-Up"
+                                                                  ? "3"
+                                                                  : info.status ===
+                                                                      "Dead"
+                                                                    ? "4"
+                                                                    : "0"
+                                                          }
+                                                          onChange={(e) =>
+                                                            handleChangtype(
+                                                              e,
+                                                              info,
+                                                              // tabValue,
+                                                              // info,
+                                                            )
+                                                          }
+                                                          displayEmpty
+                                                          className="status-direct"
+                                                        >
+                                                          <MenuItem value="0">
+                                                            Pending
+                                                          </MenuItem>
+                                                          <MenuItem value="1">
+                                                            Confirmed
+                                                          </MenuItem>
+                                                          <MenuItem value="2">
+                                                            Hold
+                                                          </MenuItem>
+                                                          <MenuItem value="3">
+                                                            Follow-up
+                                                          </MenuItem>
+                                                          <MenuItem value="4">
+                                                            Closed
+                                                          </MenuItem>
+                                                        </Select>
+                                                      </FormControl>
+                                                    )}
+                                                  </TableCell>
+                                                  <TableCell className="action-icon">
+                                                    <VisibilityIcon
+                                                      className="eye-icon"
                                                       onClick={(e) =>
-                                                        handleClickOpen4(
+                                                        ViewDetail(
                                                           e,
-                                                          info.enquiryId,
+                                                          tabValue,
                                                           info,
                                                         )
                                                       }
-                                                    ></i>
-                                                  )}
-                                                  {info?.hasAppointment !==
-                                                    true && (
-                                                    <i
-                                                      className="fa-solid fa-calendar-plus"
-                                                      title="Add Appointment"
-                                                      style={{
-                                                        cursor: "pointer",
-                                                      }}
-                                                      onClick={() =>
-                                                        handleOpenAppointment(
-                                                          info,
-                                                        )
-                                                      }
-                                                    ></i>
-                                                  )}
-                                                </TableCell>
-                                              </TableRow>
-                                            ))
+                                                    />
+                                                    {info?.hasDoctorReview !==
+                                                      true && (
+                                                      <i
+                                                        className="fa-solid fa-stethoscope"
+                                                        onClick={(e) =>
+                                                          handleClickOpen4(
+                                                            e,
+                                                            info.enquiryId,
+                                                            info,
+                                                          )
+                                                        }
+                                                      ></i>
+                                                    )}
+                                                    {info?.hasAppointment !==
+                                                      true && (
+                                                      <i
+                                                        className="fa-solid fa-calendar-plus"
+                                                        title="Add Appointment"
+                                                        style={{
+                                                          cursor: "pointer",
+                                                        }}
+                                                        onClick={() =>
+                                                          handleOpenAppointment(
+                                                            info,
+                                                          )
+                                                        }
+                                                      ></i>
+                                                    )}
+                                                  </TableCell>
+                                                </TableRow>
+                                              ))
                                           ) : (
                                             <TableRow>
                                               <TableCell
@@ -7966,6 +8486,19 @@ function PatientDetail() {
                                         </TableBody>
                                       </Table>
                                     </TableContainer>
+                                    <Stack spacing={2} mt={2}>
+                                      <Pagination
+                                        className="page-nation"
+                                        count={Math.ceil(
+                                          treatmentData1.length / rowsPerPage,
+                                        )}
+                                        page={treatmentPage + 1}
+                                        onChange={(event, value) =>
+                                          setTreatmentPage(value - 1)
+                                        }
+                                        color="primary"
+                                      />
+                                    </Stack>
                                   </div>
                                 )}
                               </div>
