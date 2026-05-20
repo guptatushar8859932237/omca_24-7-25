@@ -677,9 +677,9 @@ export default function Appointments() {
                             (pdfRowLimit
                               ? appointments.slice(0, pdfRowLimit)
                               : appointments.slice(
-                                  page * rowsPerPage,
-                                  page * rowsPerPage + rowsPerPage,
-                                )
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage,
+                              )
                             ).map((info, i) => (
                               <TableRow
                                 role="checkbox"
@@ -731,10 +731,10 @@ export default function Appointments() {
                                         info.appointement_status === "Follow-Up"
                                           ? 2
                                           : info.appointement_status ===
-                                              "Complete"
+                                            "Complete"
                                             ? 3
                                             : info.appointement_status ===
-                                                "Cancelled"
+                                              "Cancelled"
                                               ? 4
                                               : "Schedule"
                                       }
@@ -1176,175 +1176,170 @@ export default function Appointments() {
             </div>
           </div>
         </TabPanel>
-        <Dialog
-          open={openEdit}
-          onClose={() => setOpenEdit(false)}
-          fullWidth
-          maxWidth="sm"
-        >
-          <div
-            className="main-card-header "
-            style={{
-              position: "sticky",
-              top: 0,
-              background: "#fff",
-              zIndex: 10,
-            }}
-          >
-            <h6>Edit Appointment</h6>
+        <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth={fullWidth} maxWidth="sm">
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Edit Appointment</h6>
+            </div>
             <div className="cross-icon" onClick={() => setOpenEdit(false)}>
               <i className="fa-solid fa-xmark"></i>
             </div>
           </div>
-          <DialogContent
-            sx={{
-              maxHeight: "70vh", // 👈 थोड़ा बढ़ा दो
-              overflowY: "auto",
-            }}
-          >
-            <Box className="contact-form">
-              <FormControl fullWidth size="small">
-                <label>Select Hospital</label>
-                <Select
-                  value={editData.hospital_id || ""}
-                  onChange={(e) => {
-                    const selectedId = e.target.value;
+          <DialogContent className="main-box view-table-detail">
+            <Box className="contact-form" component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+                minHeight: "350px",
+              }}>
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="field-set">
+                    <FormControl fullWidth size="small">
+                      <label>Select Hospital<span className="text-danger">*</span></label>
+                      <Select
+                        value={editData.hospital_id || ""}
+                        onChange={(e) => {
+                          const selectedId = e.target.value;
 
-                    const selectedHospital = hospitalList.find(
-                      (item) => item.id === selectedId,
-                    );
-                    setEditData((prev) => ({
-                      ...prev,
-                      hospital_id: selectedId,
-                      hospitalName: selectedHospital?.name || "",
-                    }));
-                  }}
-                >
-                  {hospitalList?.map((item) => (
-                    <MenuItem key={item.id} value={item.id}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <div className="field-set">
-                <label>Health Issue</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={editData.health_issue || ""}
-                  onChange={(e) =>
-                    setEditData({ ...editData, health_issue: e.target.value })
-                  }
-                />
-              </div>
-              <div className="set-field">
-                <label>Treatment name</label>
-                <Autocomplete
-                  options={Treatment || []}
-                  getOptionLabel={(option) => option.name || ""}
-                  value={
-                    Treatment?.find(
-                      (item) => item.id == editData.treatment_id,
-                    ) || null
-                  }
-                  onChange={(e, value) => {
-                    setEditData((prev) => ({
-                      ...prev,
-                      treatment_id: value?.id || "",
-                      treatment_name: value?.name || "",
-                    }));
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} placeholder="Select Treatment" />
-                  )}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      padding: "0px",
-                    },
-                  }}
-                />
-              </div>
-              <div className="field-set">
-                <label>Date</label> <span className="text-danger">*</span>
-                <input
-                  type="date"
-                  className="form-control"
-                  value={editData.appointment_Date?.split("T")[0] || ""}
-                  onChange={(e) =>
-                    setEditData({
-                      ...editData,
-                      appointment_Date: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <div className="field-set">
-                <label>Time</label> <span className="text-danger">*</span>
-                <input
-                  type="time"
-                  className="form-control"
-                  value={editData.appointment_Time?.slice(0, 5) || ""}
-                  onChange={(e) =>
-                    setEditData({
-                      ...editData,
-                      appointment_Time: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <div className="field-set">
-                <label>Notes</label> <span className="text-danger">*</span>
-                <textarea
-                  className="form-control"
-                  value={editData.discussionNotes || ""}
-                  onChange={(e) =>
-                    setEditData({
-                      ...editData,
-                      discussionNotes: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              {/* Upload */}
-              <div className="field-set">
-                <label>Upload Reports</label>{" "}
-                <span className="text-danger"></span>
-                <input
-                  type="file"
-                  multiple
-                  className="form-control"
-                  onChange={(e) => setEditImages(Array.from(e.target.files))}
-                />
+                          const selectedHospital = hospitalList.find(
+                            (item) => item.id === selectedId,
+                          );
+                          setEditData((prev) => ({
+                            ...prev,
+                            hospital_id: selectedId,
+                            hospitalName: selectedHospital?.name || "",
+                          }));
+                        }}
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 250,
+                            },
+                          },
+                        }}
+                      >
+                        {hospitalList?.map((item) => (
+                          <MenuItem key={item.id} value={item.id}>
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <div className="field-set">
+                    <label>Health Issue<span className="text-danger">*</span></label>
+                    <input type="text" className="form-control" value={editData.health_issue || ""}
+                      onChange={(e) =>
+                        setEditData({ ...editData, health_issue: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <div className="field-set">
+                    <label>Treatment Name<span className="text-danger">*</span></label>
+                    <Autocomplete
+                      options={Treatment || []}
+                      getOptionLabel={(option) => option.name || ""}
+                      value={
+                        Treatment?.find(
+                          (item) => item.id == editData.treatment_id,
+                        ) || null
+                      }
+                      onChange={(e, value) => {
+                        setEditData((prev) => ({
+                          ...prev,
+                          treatment_id: value?.id || "",
+                          treatment_name: value?.name || "",
+                        }));
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} placeholder="Select Treatment" />
+                      )}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          padding: "0px",
+                        },
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <div className="field-set">
+                    <label>Date<span className="text-danger">*</span></label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={editData.appointment_Date?.split("T")[0] || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          appointment_Date: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <div className="field-set">
+                    <label>Time<span className="text-danger">*</span></label>
+                    <input
+                      type="time"
+                      className="form-control"
+                      value={editData.appointment_Time?.slice(0, 5) || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          appointment_Time: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <div className="field-set">
+                    <label>Notes<span className="text-danger">*</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={editData.discussionNotes || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          discussionNotes: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <div className="field-set">
+                    <label>Upload Reports<span className="text-danger">*</span></label>
+                    <span className="text-danger"></span>
+                    <input
+                      type="file"
+                      multiple
+                      className="form-control"
+                      onChange={(e) => setEditImages(Array.from(e.target.files))}
+                    />
+                  </div>
+                </div>
               </div>
             </Box>
+            <DialogActions className="submit-main">
+              <Button
+                onClick={handleUpdate}
+                className="add-button"
+                variant="contained"
+              >
+                Edit Appointment
+              </Button>
+            </DialogActions>
           </DialogContent>
-          <DialogActions className="submit-main mb-3 me-4">
-            <Button
-              onClick={handleUpdate}
-              className="add-button"
-              // onClick={handleClickEditReport}
-              variant="contained"
-            >
-              Edit Appointment
-            </Button>
-            {/* <Button
-                          // type="submit"
-                          // onClick={handleClickSubmit}
-                          variant="contained"
-                        >
-                          Submit
-                        </Button> */}
-          </DialogActions>
-          {/* <DialogActions>
-    <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
-    <button className="add-button" onClick={handleUpdate}>
-      Update
-    </button>
-  </DialogActions> */}
         </Dialog>
         <Dialog
           fullWidth={fullWidth}
