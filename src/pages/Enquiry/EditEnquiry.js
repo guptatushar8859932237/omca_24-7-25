@@ -77,6 +77,14 @@ export default function EditEnquiry() {
     dispatch(GetAllEnquiry());
     dispatch(GetAllTreatment());
   }, [dispatch]);
+  const noOnlySpaces = (fieldName) =>
+  Yup.string()
+    .transform((value) => value?.trim())
+    .test(
+      "not-only-spaces",
+      `${fieldName} cannot be empty or only spaces`,
+      (value) => value && value.trim().length > 0
+    );
   useEffect(() => {
     if (location.state?.enquiryId && Enquiry.length > 0) {
       const selectedUser = Enquiry.find(
@@ -87,13 +95,17 @@ export default function EditEnquiry() {
     }
   }, [location.state?.enquiryId, Enquiry]);
   const basicSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required").min(2).max(50),
+  name: noOnlySpaces("Name")
+  .min(2, "Name must be at least 2 characters")
+  .max(50, "Name cannot exceed 50 characters")
+  .required("Name is required"),
     email: Yup.string()
       .email("Enter valid email")
       .required("Email is required"),
     age: Yup.string().required("Age is required"),
-    town: Yup.string().required("Town is required"),
-    address: Yup.string().required("Address is required"),
+   town: noOnlySpaces("Town").required("Town is required"),
+address: noOnlySpaces("Address")
+  .required("Address is required"),
     passport_num: Yup.string()
       .trim()
       .uppercase()

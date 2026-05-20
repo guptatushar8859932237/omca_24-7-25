@@ -3316,45 +3316,137 @@ function PatientDetail() {
     setHospitalCharge({ ...hospitalCharge, [name]: value });
   };
   const addchargeapiHedithspital = async () => {
-    const payload = {
-      charge_id: hospitalCharge.id,
-      service_name: hospitalCharge.service_name,
-      price: parseInt(hospitalCharge.price),
-      date: hospitalCharge.date,
-    };
-    try {
-      const response = await axios.put(
-        `${baseurl}editHospitalServiceCharge/${treatmentChargeid}`,
-        payload, // ✅ data goes here
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
-      );
-      console.log(response.data);
-      handleclickclosecharge();
-      setTreatmentChargeid("");
-      setHospitalCharge("");
-      dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      // ✅ Success Swal
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Hospital charge Edit successfully!",
-        confirmButtonColor: "#3085d6",
-      });
-    } catch (error) {
-      console.log(error);
-      // ❌ Error Swal
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error?.response?.data?.message || "Something went wrong!",
-        confirmButtonColor: "#d33",
-      });
-    }
+  // Trim service name
+  const serviceName = hospitalCharge.service_name?.trim();
+
+  // Convert price to number
+  const priceValue = Number(hospitalCharge.price);
+
+  // Service Name Validation
+  if (!serviceName) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Service name is required",
+      confirmButtonColor: "#d33",
+    });
+    return;
+  }
+
+  // Price Required Validation
+  if (hospitalCharge.price === "") {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Price is required",
+      confirmButtonColor: "#d33",
+    });
+    return;
+  }
+
+  // Price Validation
+  if (isNaN(priceValue) || priceValue <= 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Price must be greater than 0",
+      confirmButtonColor: "#d33",
+    });
+    return;
+  }
+
+  const payload = {
+    charge_id: hospitalCharge.id,
+    service_name: serviceName,
+    price: priceValue,
+    date: hospitalCharge.date,
   };
+
+  try {
+    const response = await axios.put(
+      `${baseurl}editHospitalServiceCharge/${treatmentChargeid}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    console.log(response.data);
+
+    handleclickclosecharge();
+    setTreatmentChargeid("");
+
+    setHospitalCharge({
+      service_name: "",
+      price: "",
+      date: "",
+    });
+
+    dispatch(
+      GetPatientTreatments({
+        id: location.state.patientId,
+      })
+    );
+
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Hospital charge edited successfully!",
+      confirmButtonColor: "#3085d6",
+    });
+  } catch (error) {
+    console.log(error);
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error?.response?.data?.message || "Something went wrong!",
+      confirmButtonColor: "#d33",
+    });
+  }
+};
+  // const addchargeapiHedithspital = async () => {
+  //   const payload = {
+  //     charge_id: hospitalCharge.id,
+  //     service_name: hospitalCharge.service_name,
+  //     price: parseInt(hospitalCharge.price),
+  //     date: hospitalCharge.date,
+  //   };
+  //   try {
+  //     const response = await axios.put(
+  //       `${baseurl}editHospitalServiceCharge/${treatmentChargeid}`,
+  //       payload, // ✅ data goes here
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       },
+  //     );
+  //     console.log(response.data);
+  //     handleclickclosecharge();
+  //     setTreatmentChargeid("");
+  //     setHospitalCharge("");
+  //     dispatch(GetPatientTreatments({ id: location.state.patientId }));
+  //     // ✅ Success Swal
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Success",
+  //       text: "Hospital charge Edit successfully!",
+  //       confirmButtonColor: "#3085d6",
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     // ❌ Error Swal
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: error?.response?.data?.message || "Something went wrong!",
+  //       confirmButtonColor: "#d33",
+  //     });
+  //   }
+  // };
   // const addchargeapiHospital = async () => {
   //   const payload = {
   //     service_name: hospitalCharge.service_name,
@@ -3393,64 +3485,152 @@ function PatientDetail() {
   //     });
   //   }
   // };
+  // const addchargeapiHospital = async () => {
+  //   // Convert price to number
+  //   const priceValue = Number(hospitalCharge.price);
+  //   // Validation
+  //   if (!hospitalCharge.price || isNaN(priceValue) || priceValue <= 0) {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Validation Error",
+  //       text: "Price must be greater than 0",
+  //       confirmButtonColor: "#d33",
+  //     });
+  //     return; // रोक देगा API call
+  //   }
+  //   const payload = {
+  //     service_name: hospitalCharge.service_name,
+  //     price: priceValue,
+  //     date: hospitalCharge.date,
+  //   };
+  //   try {
+  //     const response = await axios.post(
+  //       `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
+  //       payload,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       },
+  //     );
+  //     console.log(response.data);
+  //     handleclickclosecharge();
+  //     setHospitalCharge({
+  //       service_name: "",
+  //       price: "",
+  //       date: "",
+  //     });
+  //     dispatch(
+  //       GetPatientTreatments({
+  //         id: location.state.patientId,
+  //       }),
+  //     );
+  //     // Success Swal
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Success",
+  //       text: "Hospital charge added successfully!",
+  //       confirmButtonColor: "#3085d6",
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     // Error Swal
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: error?.response?.data?.message || "Something went wrong!",
+  //       confirmButtonColor: "#d33",
+  //     });
+  //   }
+  // };
   const addchargeapiHospital = async () => {
-    // Convert price to number
-    const priceValue = Number(hospitalCharge.price);
-    // Validation
-    if (!hospitalCharge.price || isNaN(priceValue) || priceValue <= 0) {
-      Swal.fire({
-        icon: "error",
-        title: "Validation Error",
-        text: "Price must be greater than 0",
-        confirmButtonColor: "#d33",
-      });
-      return; // रोक देगा API call
-    }
-    const payload = {
-      service_name: hospitalCharge.service_name,
-      price: priceValue,
-      date: hospitalCharge.date,
-    };
-    try {
-      const response = await axios.post(
-        `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
-      );
-      console.log(response.data);
-      handleclickclosecharge();
-      setHospitalCharge({
-        service_name: "",
-        price: "",
-        date: "",
-      });
-      dispatch(
-        GetPatientTreatments({
-          id: location.state.patientId,
-        }),
-      );
-      // Success Swal
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Hospital charge added successfully!",
-        confirmButtonColor: "#3085d6",
-      });
-    } catch (error) {
-      console.log(error);
-      // Error Swal
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error?.response?.data?.message || "Something went wrong!",
-        confirmButtonColor: "#d33",
-      });
-    }
+  // Trim values
+  const serviceName = hospitalCharge.service_name?.trim();
+  const priceValue = Number(hospitalCharge.price);
+
+  // Service Name Validation
+  if (!serviceName) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Service name is required",
+      confirmButtonColor: "#d33",
+    });
+    return;
+  }
+
+  // Price Required Validation
+  if (hospitalCharge.price === "") {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Price is required",
+      confirmButtonColor: "#d33",
+    });
+    return;
+  }
+
+  // Price Number Validation
+  if (isNaN(priceValue) || priceValue <= 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Price must be greater than 0",
+      confirmButtonColor: "#d33",
+    });
+    return;
+  }
+
+  const payload = {
+    service_name: serviceName,
+    price: priceValue,
+    date: hospitalCharge.date,
   };
+
+  try {
+    const response = await axios.post(
+      `${baseurl}addHospitalCharge/${treatmentIdCharge}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    console.log(response.data);
+
+    handleclickclosecharge();
+
+    setHospitalCharge({
+      service_name: "",
+      price: "",
+      date: "",
+    });
+
+    dispatch(
+      GetPatientTreatments({
+        id: location.state.patientId,
+      })
+    );
+
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Hospital charge added successfully!",
+      confirmButtonColor: "#3085d6",
+    });
+  } catch (error) {
+    console.log(error);
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error?.response?.data?.message || "Something went wrong!",
+      confirmButtonColor: "#d33",
+    });
+  }
+};
   const handledeedit123222 = async (info, index) => {
     console.log(info, index);
     const result = await Swal.fire({

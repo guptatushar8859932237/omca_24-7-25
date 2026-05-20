@@ -18,6 +18,14 @@ import { Autocomplete, TextField } from "@mui/material";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 export default function EditPatient() {
   const navigate = useNavigate();
+const noOnlySpaces = (fieldName) =>
+  Yup.string()
+    .transform((value) => value?.trim())
+    .test(
+      "not-only-spaces",
+      `${fieldName} cannot be empty or only spaces`,
+      (value) => value && value.trim().length > 0
+    );
   const location = useLocation();
   const { Treatment } = useSelector((state) => state.Treatment);
   const dispatch = useDispatch();
@@ -48,15 +56,25 @@ export default function EditPatient() {
       setIspatient(selectedUser || null);
     }
   }, [location.state?.patientId, patient]);
-  const basicSchema = Yup.object().shape({
-    patient_name: Yup.string().required("Patient name is required"),
-    age: Yup.number()
-      .typeError("Age must be a number")
-      .required("Age is required")
-      .integer("Age must be a whole number") // ❌ no decimal
-      .moreThan(0, "Age must be greater than 0") // 🔥 blocks 0 & negative
-      .max(120, "Age cannot exceed 120"),
-    gender: Yup.string().required("Gender is required"),
+ const basicSchema = Yup.object().shape({
+  patient_name: noOnlySpaces("Patient Name")
+    .required("Patient name is required"),
+
+  town: noOnlySpaces("Town")
+    .required("Town is required"),
+
+  address: noOnlySpaces("Address")
+    .required("Address is required"),
+
+  age: Yup.number()
+    .typeError("Age must be a number")
+    .required("Age is required")
+    .integer("Age must be a whole number")
+    .moreThan(0, "Age must be greater than 0")
+    .max(120, "Age cannot exceed 120"),
+
+  gender: Yup.string().required("Gender is required"),
+
     patientNumber: Yup.string().required("Patient ID is required"),
     created_at: Yup.string().required("Date is required"),
     // patientDisease: Yup.string().required("Disease is required"),
@@ -177,82 +195,29 @@ export default function EditPatient() {
                     notificationEnabled: ispatient?.notificationEnabled,
                   }}
                   validationSchema={basicSchema}
-                  //             onSubmit={async (values, { setSubmitting }) => {
-                  //   try {
-                  //     if (!ispatient?.patientId) {
-                  //       Swal.fire("Error!", "Patient ID missing", "error");
-                  //       return;
-                  //     }
-
-                  //     const formData = new FormData();
-
-                  //     Object.keys(values).forEach((key) => {
-                  //       if (key !== "patient_Profile") {
-                  //         formData.append(key, values[key] ?? "");
-                  //       }
-                  //     });
-
-                  //     if (values.patient_Profile instanceof File) {
-                  //       formData.append(
-                  //         "patient_Profile",
-                  //         values.patient_Profile,
-                  //       );
-                  //     }
-
-                  //     await dispatch(
-                  //       EditPatientType({
-                  //         id: ispatient.patientId,
-                  //         data: formData,
-                  //       }),
-                  //     ).unwrap();
-
-                  //     Swal.fire(
-                  //       "Success!",
-                  //       "Patient updated successfully",
-                  //       "success",
-                  //     );
-                  //     navigate("/Admin/patients");
-                  //   } catch (err) {
-                  //     console.error(err);
-                  //     Swal.fire(
-                  //       "Error!",
-                  //       err?.message || "Update failed",
-                  //       "error",
-                  //     );
-                  //   } finally {
-                  //     setSubmitting(false);
-                  //   }
-                  // }}
                   onSubmit={async (values, { setSubmitting }) => {
                     try {
                       if (!ispatient?.patientId) {
                         Swal.fire("Error!", "Patient ID missing", "error");
                         return;
                       }
-
                       const formData = new FormData();
-
                       Object.keys(values).forEach((key) => {
                         if (key !== "patient_Profile" && key !== "id_proof") {
                           formData.append(key, values[key] ?? "");
                         }
                       });
-
-                      // patient profile
                       if (values.patient_Profile instanceof File) {
                         formData.append(
                           "patient_Profile",
                           values.patient_Profile,
                         );
                       }
-
-                      // multiple id proofs
                       if (values.id_proof && values.id_proof.length > 0) {
                         values.id_proof.forEach((file) => {
                           formData.append("id_proof", file);
                         });
                       }
-
                       await dispatch(
                         EditPatientType({
                           id: ispatient.patientId,
@@ -269,13 +234,20 @@ export default function EditPatient() {
                       );
                       navigate("/Admin/patients");
                     } catch (err) {
-                      console.error(err);
-                      Swal.fire(
-                        "Error!",
-                        err?.message || "Update failed",
-                        "error",
-                      );
-                    } finally {
+  console.error(err);
+
+  const errorMessage =
+    err?.response?.data?.message || // axios backend message
+    err?.response?.data?.error ||   // alternative backend error
+    err?.message ||                 // normal JS error
+    "Update failed";
+
+  Swal.fire({
+    icon: "error",
+    title: "Error!",
+    text: errorMessage,
+  });
+} finally {
                       setSubmitting(false);
                     }
                   }}

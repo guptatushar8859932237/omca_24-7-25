@@ -1237,8 +1237,7 @@ export default function Inquiry() {
                                 ) : (
                                   ""
                                 )}
-                               {localStorage.getItem("Role") === "Doctor" &&
-  !info?.hasDoctorReview && (
+                               {!info?.hasDoctorReview && (
     <i
       className="fa-solid fa-stethoscope"
       onClick={(e) =>

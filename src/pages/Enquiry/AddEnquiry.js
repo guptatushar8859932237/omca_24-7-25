@@ -36,13 +36,19 @@ export default function AddEnquiry() {
   }, [dispatch]);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const basicSchema = Yup.object().shape({
-    name: Yup.string().min(2).max(50).required("Name is required"),
+   name: Yup.string()
+  .trim()
+  .min(2, "Please enter a valid name")
+  .max(50)
+  .required("Name is required"),
     //  disease_name: Yup.object()
     // .nullable()
     // .required("Disease name is required"),
     country: Yup.string().required("Country is required"),
     treatingIn: Yup.string().required("Treating In is required"),
-    address: Yup.string().required("Address is required"),
+   address: Yup.string()
+  .trim()
+  .required("Please enter address"),
     patient_relation_name: Yup.string().when("showAttendant", {
       is: true,
       then: (schema) => schema.required("Attendant name is required"),
@@ -65,7 +71,9 @@ export default function AddEnquiry() {
     // }),
     email: Yup.string().matches(emailRegex, "Invalid email").required(),
     age: Yup.string().required("Age is required"),
-    town: Yup.string().required("Town is required"),
+   town: Yup.string()
+  .trim()
+  .required("Please enter town name"),
     // passport_num: Yup.string().required("Passport is required"),
     passport_num: Yup.string()
       .matches(
