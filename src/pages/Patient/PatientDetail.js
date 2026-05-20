@@ -8791,7 +8791,7 @@ function PatientDetail() {
                 <div className="col-md-12">
                   <div className="field-set">
                     <label>
-                      Doctor Notes<span className="text-danger"></span>
+                      Doctor's Review<span className="text-danger"></span>
                     </label>
                     <select
                       name="doctorReviewId"

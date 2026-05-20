@@ -158,7 +158,7 @@ export default function TestForm() {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="d-flex justify-content-between">
         <div>
-          <h2>Test Form</h2>
+          <h2>Test & Scans</h2>
         </div>
         <div>
           <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
@@ -338,7 +338,7 @@ export default function TestForm() {
         <div className="main-card-header">
           <div className="top-fixed-hd">
             <div className="note-hd">
-              <h6>Test Form </h6>
+              <h6>Test & Scans </h6>
             </div>
             <div className="cross-icon" onClick={handleClose}>
               <i className="fa-solid fa-xmark"></i>

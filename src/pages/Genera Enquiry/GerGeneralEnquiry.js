@@ -250,7 +250,7 @@ export default function GerGeneralEnquiry() {
     },
 
     {
-      label: "Test Form",
+      label: "Test & Scans",
       permission: "/Test_Form",
       component: <TestForm />,
     },
