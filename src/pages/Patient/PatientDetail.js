@@ -241,6 +241,7 @@ function PatientDetail() {
     payment_Date: "",
     notes: "",
   });
+  const usrRole = localStorage.getItem("Role");
   const usrFount = localStorage.getItem("_id");
   useEffect(() => {
     gtdatareportsdata();
@@ -6167,7 +6168,7 @@ function PatientDetail() {
                                                             ) : (
                                                               <tr>
                                                                 <td
-                                                                  colSpan="5"
+                                                                  colSpan="12"
                                                                   style={{
                                                                     textAlign:
                                                                       "center",
@@ -6283,7 +6284,7 @@ function PatientDetail() {
                                                                             className="btn btn-sm btn-primary"
                                                                             onClick={() =>
                                                                               window.open(
-                                                                                `${baseu11}${item.attachFile}`,
+                                                                                `${baseu11}/${item.attachFile}`,
                                                                                 "_blank",
                                                                               )
                                                                             }
@@ -6473,7 +6474,7 @@ function PatientDetail() {
                                                             <tr>
                                                               <td
                                                                 colSpan={
-                                                                  usrFount ===
+                                                                  usrRole ===
                                                                     "Admin"
                                                                     ? 9
                                                                     : 7
@@ -6581,7 +6582,7 @@ function PatientDetail() {
                                                             <tr>
                                                               <td
                                                                 colSpan={
-                                                                  usrFount ===
+                                                                  usrRole ===
                                                                     "Admin"
                                                                     ? 9
                                                                     : 7
@@ -6818,7 +6819,7 @@ function PatientDetail() {
                                                   <TableCell>Paid For</TableCell>
                                                   <TableCell>notes</TableCell>
                                                   <TableCell>Document</TableCell>
-                                                  {usrFount === "Admin" ? (
+                                                  {usrRole === "Admin" ? (
                                                     <>
                                                       <TableCell>
                                                         PDF
@@ -6889,13 +6890,13 @@ function PatientDetail() {
                                                               target="_blank"
                                                               rel="noopener noreferrer"
                                                             >
-                                                              <i className="fa fa-eye"></i>
+                                                              <button className="viewbtn">View</button>
                                                             </a>
                                                           ) : (
                                                             "-"
                                                           )}
                                                         </TableCell>
-                                                        {usrFount ===
+                                                        {usrRole ===
                                                           "Admin" ? (
                                                           <>
                                                             <TableCell>
@@ -6941,7 +6942,7 @@ function PatientDetail() {
                                                   <TableRow>
                                                     <TableCell
                                                       colSpan={
-                                                        usrFount === "Admin"
+                                                        usrRole === "Admin"
                                                           ? 9
                                                           : 7
                                                       }
@@ -6987,7 +6988,7 @@ function PatientDetail() {
                                                     <th>Report Title</th>
                                                     <th>Report Date</th>
                                                     <th>Added By</th>
-                                                    {usrFount === "Admin" ? (
+                                                    {usrRole === "Admin" ? (
                                                       <>
                                                         {" "}
                                                         <th>Reports</th>
@@ -7023,7 +7024,7 @@ function PatientDetail() {
                                                             ? "CRM"
                                                             : "Hospital"}
                                                         </td>
-                                                        {usrFount === "Admin" ? (
+                                                        {usrRole === "Admin" ? (
                                                           <>
                                                             {" "}
                                                             <td>
@@ -7505,16 +7506,16 @@ function PatientDetail() {
                                                             <td
                                                               title={item.note}
                                                               style={{
-                                                                width: "50%",
+                                                                width: "20%",
                                                                 cursor: "pointer",
                                                               }}
                                                             >
                                                               {item.note
                                                                 ? item.note.length >
-                                                                  110
+                                                                 30
                                                                   ? item.note.slice(
                                                                     0,
-                                                                    110,
+                                                                    30,
                                                                   ) + "..."
                                                                   : item.note
                                                                 : "-"}
@@ -10075,7 +10076,7 @@ function PatientDetail() {
                     </label>
                     <input
                       type="file"
-                      multiple
+                      // multiple
                       className="form-control"
                       name="treatmentReport"
                       onChange={handleFileChange1}

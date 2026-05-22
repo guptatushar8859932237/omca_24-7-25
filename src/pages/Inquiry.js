@@ -1237,13 +1237,24 @@ export default function Inquiry() {
                                 ) : (
                                   ""
                                 )}
-                               {!info?.hasDoctorReview && (
+                              {tabValue === 0 ? (
+  !info?.hasDoctorReview && (
     <i
       className="fa-solid fa-stethoscope"
       onClick={(e) =>
         handleClickOpen4(e, info.enquiryId, info)
       }
     ></i>
+  )
+) : (
+  Object.keys(info?.raw?.doctor_review || {}).length === 0 && (
+    <i
+      className="fa-solid fa-stethoscope"
+      onClick={(e) =>
+        handleClickOpen4(e, info.enquiryId, info)
+      }
+    ></i>
+  )
 )}
                                  { info?.hasAppointment ===true ?"":
                                 <i className="fa-solid fa-calendar-plus"
