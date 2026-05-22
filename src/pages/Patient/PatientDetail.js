@@ -8403,7 +8403,7 @@ function PatientDetail() {
                                                       className="eye-icon"
                                                       onClick={(e) =>
                                                         ViewDetail(
-                                                          e,
+                                                          e,         
                                                           tabValue,
                                                           info,
                                                         )
