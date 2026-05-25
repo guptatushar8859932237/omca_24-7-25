@@ -225,7 +225,6 @@ function PatientDetail() {
     invoiceFile: null,
   });
   const [page, setPage] = useState(0);
-
   const [editPatientProfile, setEditPatientProfile] = useState(false);
   const [hAndleReport, setHAndleReport] = useState(false);
   const [appointErr, setAppointErr] = useState(false);
