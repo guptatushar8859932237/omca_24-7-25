@@ -225,7 +225,6 @@ function PatientDetail() {
     invoiceFile: null,
   });
   const [page, setPage] = useState(0);
-
   const [editPatientProfile, setEditPatientProfile] = useState(false);
   const [hAndleReport, setHAndleReport] = useState(false);
   const [appointErr, setAppointErr] = useState(false);
@@ -241,6 +240,7 @@ function PatientDetail() {
     payment_Date: "",
     notes: "",
   });
+  const usrRole = localStorage.getItem("Role");
   const usrFount = localStorage.getItem("_id");
   useEffect(() => {
     gtdatareportsdata();
@@ -6174,7 +6174,7 @@ function PatientDetail() {
                                                             ) : (
                                                               <tr>
                                                                 <td
-                                                                  colSpan="5"
+                                                                  colSpan="12"
                                                                   style={{
                                                                     textAlign:
                                                                       "center",
@@ -6290,7 +6290,7 @@ function PatientDetail() {
                                                                             className="btn btn-sm btn-primary"
                                                                             onClick={() =>
                                                                               window.open(
-                                                                                `${baseu11}${item.attachFile}`,
+                                                                                `${baseu11}/${item.attachFile}`,
                                                                                 "_blank",
                                                                               )
                                                                             }
@@ -6480,8 +6480,8 @@ function PatientDetail() {
                                                             <tr>
                                                               <td
                                                                 colSpan={
-                                                                  usrFount ===
-                                                                  "Admin"
+                                                                  usrRole ===
+                                                                    "Admin"
                                                                     ? 9
                                                                     : 7
                                                                 }
@@ -6588,8 +6588,8 @@ function PatientDetail() {
                                                             <tr>
                                                               <td
                                                                 colSpan={
-                                                                  usrFount ===
-                                                                  "Admin"
+                                                                  usrRole ===
+                                                                    "Admin"
                                                                     ? 9
                                                                     : 7
                                                                 }
@@ -6868,10 +6868,8 @@ function PatientDetail() {
                                                     Paid For
                                                   </TableCell>
                                                   <TableCell>notes</TableCell>
-                                                  <TableCell>
-                                                    Document
-                                                  </TableCell>
-                                                  {usrFount === "Admin" ? (
+                                                  <TableCell>Document</TableCell>
+                                                  {usrRole === "Admin" ? (
                                                     <>
                                                       <TableCell>PDF</TableCell>
                                                       <TableCell>
@@ -6927,14 +6925,14 @@ function PatientDetail() {
                                                               target="_blank"
                                                               rel="noopener noreferrer"
                                                             >
-                                                              <i className="fa fa-eye"></i>
+                                                              <button className="viewbtn">View</button>
                                                             </a>
                                                           ) : (
                                                             "-"
                                                           )}
                                                         </TableCell>
-                                                        {usrFount ===
-                                                        "Admin" ? (
+                                                        {usrRole ===
+                                                          "Admin" ? (
                                                           <>
                                                             <TableCell>
                                                               <button
@@ -6978,7 +6976,7 @@ function PatientDetail() {
                                                   <TableRow>
                                                     <TableCell
                                                       colSpan={
-                                                        usrFount === "Admin"
+                                                        usrRole === "Admin"
                                                           ? 9
                                                           : 7
                                                       }
@@ -7027,7 +7025,7 @@ function PatientDetail() {
                                                     <th>Report Title</th>
                                                     <th>Report Date</th>
                                                     <th>Added By</th>
-                                                    {usrFount === "Admin" ? (
+                                                    {usrRole === "Admin" ? (
                                                       <>
                                                         {" "}
                                                         <th>Reports</th>
@@ -7040,26 +7038,32 @@ function PatientDetail() {
                                                 </thead>
                                                 <tbody>
                                                   {reportsFilered1 &&
-                                                  reportsFilered1.length > 0 ? (
-                                                    reportsFilered1.map(
-                                                      (item) => (
-                                                        <tr key={item._id}>
-                                                          <td>
-                                                            {
-                                                              item?.treatment_course_name
-                                                            }
-                                                          </td>
-                                                          <td>
-                                                            {item?.reportTitle}
-                                                          </td>
-                                                          <td>
-                                                            {" "}
-                                                            {new Date(
-                                                              item?.treatment_report_date,
-                                                            ).toLocaleDateString(
-                                                              "en-GB",
-                                                            )}
-                                                          </td>
+                                                    reportsFilered1.length > 0 ? (
+                                                    reportsFilered1.map((item) => (
+                                                      <tr key={item._id}>
+                                                        <td>
+                                                          {
+                                                            item?.treatment_course_name
+                                                          }
+                                                        </td>
+                                                        <td>{item?.reportTitle}</td>
+                                                        <td>
+                                                          {" "}
+                                                          {new Date(
+                                                            item?.treatment_report_date,
+                                                          ).toLocaleDateString(
+                                                            "en-GB",
+                                                          )}
+                                                        </td>
+                                                        <td>
+                                                          {" "}
+                                                          {item?.platform === 1
+                                                            ? "CRM"
+                                                            : "Hospital"}
+                                                        </td>
+                                                         <td>
+      {new Date(item?.treatment_report_date).toLocaleDateString("en-GB")}
+    </td>
                                                           <td>
                                                             {" "}
                                                             {item?.platform ===
@@ -7566,19 +7570,17 @@ function PatientDetail() {
                                                             <td
                                                               title={item.note}
                                                               style={{
-                                                                width: "50%",
-                                                                cursor:
-                                                                  "pointer",
+                                                                width: "20%",
+                                                                cursor: "pointer",
                                                               }}
                                                             >
                                                               {item.note
-                                                                ? item.note
-                                                                    .length >
-                                                                  110
+                                                                ? item.note.length >
+                                                                 30
                                                                   ? item.note.slice(
-                                                                      0,
-                                                                      110,
-                                                                    ) + "..."
+                                                                    0,
+                                                                    30,
+                                                                  ) + "..."
                                                                   : item.note
                                                                 : "-"}
                                                             </td>
@@ -8437,7 +8439,7 @@ function PatientDetail() {
                                                       className="eye-icon"
                                                       onClick={(e) =>
                                                         ViewDetail(
-                                                          e,
+                                                          e,         
                                                           tabValue,
                                                           info,
                                                         )
@@ -10133,7 +10135,7 @@ function PatientDetail() {
                     </label>
                     <input
                       type="file"
-                      multiple
+                      // multiple
                       className="form-control"
                       name="treatmentReport"
                       onChange={handleFileChange1}

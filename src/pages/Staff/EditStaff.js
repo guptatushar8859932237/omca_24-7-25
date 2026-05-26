@@ -249,7 +249,7 @@ export default function EditStaff() {
                   </div>
                   <div className="col-sm-6">
                     <label>
-                      Access Countries <span className="text-danger">*</span>
+                      Access Countries <span className="text-danger"></span>
                     </label>
                     <FormControl fullWidth>
                       <Select
@@ -349,7 +349,7 @@ export default function EditStaff() {
                   </div>
                   <div className="col-sm-6">
                     <div className="field-set">
-                      <label>Profile Image </label>
+                      <label>Profile Image </label><span className="text-danger">*</span>
                       <div className="profile-upload">
                         <div className="upload-img">
                           {selectedImage ? (

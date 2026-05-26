@@ -232,6 +232,31 @@ export default function Medicalescortservice() {
                       <p>{row?.doctor_review?.recommendations || "-"}</p>
                     </div>
                   </div>
+                  <div className="col-md-4">
+                    <div className="">
+                      <h6>Reports</h6>
+                     <p>
+  {Array.isArray(row?.doctor_review?.images) && row.doctor_review.images.length > 0 ? (
+    row.doctor_review.images.map((img, i) => (
+      <button
+        key={i}
+        className="viewbtn"
+        onClick={() => window.open(img, "_blank")}
+      >
+        View
+      </button>
+    ))
+  ) : row?.doctor_review.images ? (
+    <button
+      className="viewbtn"
+      onClick={() => window.open(row.doctor_review.images, "_blank")}
+    >
+      View
+    </button>
+  ) : null}
+</p>
+                    </div>
+                  </div>
                   <div className="col-md-12 gy-0">
                     <div className="docre-hd">
                       <div className="comnthis">

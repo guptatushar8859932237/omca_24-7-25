@@ -19,7 +19,6 @@ import TableRow from "@mui/material/TableRow";
 import Pagination from "@mui/material/Pagination";
 import TextField from "@mui/material/TextField";
 import TableSortLabel from "@mui/material/TableSortLabel";
-
 export default function Staff() {
   const role = localStorage.getItem("Role");
   const navigate = useNavigate();
@@ -30,7 +29,6 @@ export default function Staff() {
   const [page, setPage] = useState(0);
   const [orderBy, setOrderBy] = useState("");
   const [orderDirection, setOrderDirection] = useState("asc");
-
   const rowsPerPage = 10;
   const [pdfRowLimit, setPdfRowLimit] = useState(null);
   const { staff, loading, error } = useSelector((state) => state.staff);

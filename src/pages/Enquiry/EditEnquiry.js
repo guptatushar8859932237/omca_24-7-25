@@ -1049,7 +1049,7 @@ address: noOnlySpaces("Address")
                                     <div className="set-field">
                                       <label>
                                         Review Notes
-                                        <span className="text-danger">*</span>
+                                        <span className="text-danger"></span>
                                       </label>
                                       <textarea className="form-control">
                                         {doctorReviewData?.review_notes ||
@@ -1062,7 +1062,7 @@ address: noOnlySpaces("Address")
                                     <div className="set-field">
                                       <label>
                                         Recommendations
-                                        <span className="text-danger">*</span>
+                                        <span className="text-danger"></span>
                                       </label>
                                       <textarea className="form-control">
                                         {doctorReviewData?.Recommendations ||
@@ -1075,7 +1075,7 @@ address: noOnlySpaces("Address")
                                     <div className="set-field">
                                       <label>
                                         Images
-                                        <span className="text-danger">*</span>
+                                        <span className="text-danger"></span>
                                       </label>
                                       <div className="engpatimg">
                                         {(
