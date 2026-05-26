@@ -17,7 +17,7 @@ import {
 import ClearIcon from "@mui/icons-material/Clear";
 import Swal from "sweetalert2";
 import { useSelector, useDispatch } from "react-redux";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import { GetAllServices, ActiveService } from "../../reducer/ServiceSlice";
 import axios from "axios";
 import TableSortLabel from "@mui/material/TableSortLabel";
@@ -27,7 +27,7 @@ import { usePDF } from "react-to-pdf";
 export default function AllServices() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const role = localStorage.getItem("Role")
+  const role = localStorage.getItem("Role");
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
   const [page, setPage] = useState(0);
   const [showActions, setShowActions] = useState(true);
@@ -72,7 +72,7 @@ export default function AllServices() {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (response.data.success === true) {
@@ -130,61 +130,6 @@ export default function AllServices() {
 
     setRows(sortedData);
   };
-  // const handleSort = (field) => {
-  //     const isAsc = orderBy === field && orderDirection === "asc";
-  //     const direction = isAsc ? "desc" : "asc";
-
-  //     setOrderBy(field);
-  //     setOrderDirection(direction);
-
-  //     const sortedData = [...rows].sort((a, b) => {
-  //       let valA = a[field];
-  //       let valB = b[field];
-
-  //       // ✅ Date sorting
-  //       if (field === "createdAt") {
-  //         return direction === "asc"
-  //           ? new Date(valA) - new Date(valB)
-  //           : new Date(valB) - new Date(valA);
-  //       }
-
-  //       // ✅ Boolean sorting (status)
-  //       if (field === "status") {
-  //         return direction === "asc"
-  //           ? Number(valA) - Number(valB)
-  //           : Number(valB) - Number(valA);
-  //       }
-
-  //       // ✅ String sorting
-  //       if (typeof valA === "string") {
-  //         return direction === "asc"
-  //           ? valA.localeCompare(valB)
-  //           : valB.localeCompare(valA);
-  //       }
-
-  //       return 0;
-  //     });
-
-  //     setRows(sortedData);
-  //   };
-  // const handleDelete = async (e, serviceId) => {
-  //   e.preventDefault();
-  //   const response = await axios.delete(
-  //     `${baseurl}delete_service/${serviceId}`,
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-  //   if (response.data.success === true) {
-  //     await dispatch(GetAllServices());
-  //     Swal.fire("Status!", "Service Deleted successfully", "success");
-  //   } else {
-  //     console.log("coe error", error);
-  //   }
-  // };
   const dataActiveInactive = async (id, currentState) => {
     try {
       setActiveToggleLoading(id);
@@ -204,28 +149,6 @@ export default function AllServices() {
       setActiveToggleLoading(null);
     }
   };
-
-  // const handleFilter = (event) => {
-  //   const value = event.target.value.toLowerCase();
-  //   setFilterValue(value);
-  //   if (!value) {
-  //     setRows(searchApiData);
-  //     return;
-  //   }
-  //   const filtered = searchApiData.filter((item) => {
-  //     const id = item.serviceId?.toLowerCase() || "";
-  //     const name = item.serviceName?.toLowerCase() || "";
-  //     const price = item.price?.toString().toLowerCase() || "";
-  //     const duration = item.duration?.toLowerCase() || "";
-  //     return (
-  //       id.includes(value) ||
-  //       name.includes(value) ||
-  //       price.includes(value) ||
-  //       duration.includes(value)
-  //     );
-  //   });
-  //   setRows(filtered);
-  // };
   const handleFilter = (event) => {
     const value = event.target.value.toLowerCase();
     setFilterValue(value);
@@ -280,7 +203,7 @@ export default function AllServices() {
           Swal.fire(
             "Invalid entry",
             `Please enter a number between 1 and ${maxRows}`,
-            "error"
+            "error",
           );
           return;
         }
@@ -319,40 +242,19 @@ export default function AllServices() {
   useEffect(() => {
     setPage(0);
   }, [rows]);
-
-  // const handleclickpostdatadesltes = async () => {
-  //   setShowActions(false)
-  //   try {
-  //     const response = await axios.get(`${baseurl}get_deleted_services`, {
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     if (response) {
-  //       console.log(response.data.services);
-  //       setRows(response.data.services);
-  //     } else {
-  //       console.log("something went wrong");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
   return (
     <div className="page-wrapper">
       <div className="content">
-        <div className="row">
+        <div className="row gx-3">
           <div className="col-md-12">
             <div className="country-top">
-              <div>
-                <h4 className="page-title mb-0">Manage Services</h4>
+              <div className="topmainhd mb-0">
+                <h6>Manage Services</h6>
               </div>
               <div className="search-btn-main">
-                <div className="mr-3">
+                <div className="">
                   <TextField
                     className="field-count"
-                    sx={{ width: "100%" }}
                     label="Search"
                     size="small"
                     value={filterValue}
@@ -373,40 +275,39 @@ export default function AllServices() {
                 </div>
                 <div>
                   <Link to="/Admin/add-Services" className="add-button">
-                    <i className="fa fa-plus"></i> New Service
+                    <i className="fa fa-plus me-2"></i>New Service
                   </Link>
                 </div>
-                {
-                  role === "Admin" ?
-                    <div>
-                      <Link onClick={handlegetpdfdata} className="add-button ms-2">
-                        <i className="fa fa-file-pdf-o"></i> Pdf
-                      </Link>
-                    </div> : ""}
+                {role === "Admin" ? (
+                  <div>
+                    <Link onClick={handlegetpdfdata} className="add-button">
+                      <i className="fa fa-file-pdf-o me-2"></i>Pdf
+                    </Link>
+                  </div>
+                ) : (
+                  ""
+                )}
+                {localStorage.getItem("Role") === "Admin" ? (
+                  showActions === true ? (
+                    <button
+                      className="add-button"
+                      onClick={handleclickpostdatadesltes}
+                    >
+                      Deleted Data
+                    </button>
+                  ) : (
+                    <button className="add-button" onClick={handleclickondata}>
+                      Services
+                    </button>
+                  )
+                ) : null}
               </div>
             </div>
           </div>
-        </div>
-        <div className="main_content">
-          <div className="row">
-            <div className="col-md-12">
+          <div className="col-md-12">
+            <div className="main_content">
               <div className="table-responsive">
                 <TableContainer component={Paper} style={{ overflowX: "auto" }}>
-                  <div className="action-icon d-flex justify-content-end p-3">
-                    {
-                      localStorage.getItem("Role") === "Admin" ? (
-                        showActions === true ? (
-                          <button className="add-button" onClick={handleclickpostdatadesltes}>
-                            Deleted Data
-                          </button>
-                        ) : (
-                          <button className="add-button" onClick={handleclickondata}>
-                            Services
-                          </button>
-                        )
-                      ) : null
-                    }
-                  </div>
                   <Table
                     stickyHeader
                     aria-label="sticky table"
@@ -416,19 +317,22 @@ export default function AllServices() {
                     <TableHead>
                       <TableRow>
                         <TableCell>Sr.No.</TableCell>
-                        {
-                          !showActions === true ? <>
+                        {!showActions === true ? (
+                          <>
                             <TableCell>Deleted By Name</TableCell>
                             <TableCell>Deleted By Email</TableCell>
                             <TableCell>Deleted By Time</TableCell>
                             <TableCell>Deleted By Date</TableCell>
                           </>
-                            : ""
-                        }
+                        ) : (
+                          ""
+                        )}
                         <TableCell>
                           <TableSortLabel
                             active={orderBy === "serviceId"}
-                            direction={orderBy === "serviceId" ? orderDirection : "asc"}
+                            direction={
+                              orderBy === "serviceId" ? orderDirection : "asc"
+                            }
                             onClick={() => handleSort("serviceId")}
                           >
                             Service ID
@@ -438,7 +342,9 @@ export default function AllServices() {
                         <TableCell>
                           <TableSortLabel
                             active={orderBy === "serviceName"}
-                            direction={orderBy === "serviceName" ? orderDirection : "asc"}
+                            direction={
+                              orderBy === "serviceName" ? orderDirection : "asc"
+                            }
                             onClick={() => handleSort("serviceName")}
                           >
                             Service Name
@@ -447,7 +353,9 @@ export default function AllServices() {
                         <TableCell>
                           <TableSortLabel
                             active={orderBy === "price"}
-                            direction={orderBy === "price" ? orderDirection : "asc"}
+                            direction={
+                              orderBy === "price" ? orderDirection : "asc"
+                            }
                             onClick={() => handleSort("price")}
                           >
                             Price
@@ -456,7 +364,9 @@ export default function AllServices() {
                         <TableCell>
                           <TableSortLabel
                             active={orderBy === "duration"}
-                            direction={orderBy === "duration" ? orderDirection : "asc"}
+                            direction={
+                              orderBy === "duration" ? orderDirection : "asc"
+                            }
                             onClick={() => handleSort("duration")}
                           >
                             Duration
@@ -465,18 +375,24 @@ export default function AllServices() {
                         <TableCell>
                           <TableSortLabel
                             active={orderBy === "description"}
-                            direction={orderBy === "description" ? orderDirection : "asc"}
+                            direction={
+                              orderBy === "description" ? orderDirection : "asc"
+                            }
                             onClick={() => handleSort("description")}
                           >
                             Description
                           </TableSortLabel>
                         </TableCell>
-                        {
-                          showActions === true ? <>
+                        {showActions === true ? (
+                          <>
                             <TableCell>
                               <TableSortLabel
                                 active={orderBy === "isActive"}
-                                direction={orderBy === "isActive" ? orderDirection : "asc"}
+                                direction={
+                                  orderBy === "isActive"
+                                    ? orderDirection
+                                    : "asc"
+                                }
                                 onClick={() => handleSort("isActive")}
                               >
                                 Status
@@ -484,44 +400,54 @@ export default function AllServices() {
                             </TableCell>
                             <TableCell>Action</TableCell>
                           </>
-                            : ""
-                        }
+                        ) : (
+                          ""
+                        )}
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {(pdfRowLimit
                         ? rows.slice(0, pdfRowLimit)
                         : rows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
                       ).map((info, i) => (
                         <TableRow key={info.serviceId}>
                           <TableCell>
                             {pdfRowLimit ? i + 1 : page * rowsPerPage + i + 1}
                           </TableCell>
-                          {
-                            !showActions === true ? <>
+                          {!showActions === true ? (
+                            <>
                               <TableCell>{info?.deletedBy?.name}</TableCell>
                               <TableCell>{info?.deletedBy?.email}</TableCell>
-                              <TableCell> {info?.deletedAt &&
-                                new Date(
-                                  info.deletedAt
-                                ).toLocaleTimeString("en-GB", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}</TableCell>
-                              <TableCell>{new Date(info?.deletedAt).toLocaleDateString('en-GB')}</TableCell>
+                              <TableCell>
+                                {" "}
+                                {info?.deletedAt &&
+                                  new Date(info.deletedAt).toLocaleTimeString(
+                                    "en-GB",
+                                    {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    },
+                                  )}
+                              </TableCell>
+                              <TableCell>
+                                {new Date(info?.deletedAt).toLocaleDateString(
+                                  "en-GB",
+                                )}
+                              </TableCell>
                             </>
-                              : ""
-                          }
+                          ) : (
+                            ""
+                          )}
                           <TableCell>{info.serviceId}</TableCell>
                           <TableCell>{info.serviceName}</TableCell>
                           <TableCell>${info.price}</TableCell>
                           <TableCell>{info.duration}</TableCell>
                           <TableCell>{info.description}</TableCell>
-                          {
-                            showActions === true ? <>
+                          {showActions === true ? (
+                            <>
                               <TableCell>
                                 <label className="active-switch">
                                   <input
@@ -534,7 +460,7 @@ export default function AllServices() {
                                     onChange={() =>
                                       dataActiveInactive(
                                         info.serviceId,
-                                        info.isActive
+                                        info.isActive,
                                       )
                                     }
                                   />
@@ -546,25 +472,30 @@ export default function AllServices() {
                                   <span className="active-switch-handle"></span>
                                 </label>
                               </TableCell>
-                              <TableCell className="action-icon">
-                                <i
-                                  className="fa-solid fa-pen-to-square"
-                                  onClick={(e) => EditButton(e, info.serviceId)}
-                                />
-                                {localStorage.getItem("Role") === "Admin" && (
+                              <TableCell>
+                                <div className="action-icon">
                                   <i
-                                    className="fa-solid fa-trash"
-                                    onClick={(e) => handleDelete(e, info.serviceId)}
-                                  ></i>
-                                )}
+                                    className="fa-solid fa-pen-to-square"
+                                    onClick={(e) =>
+                                      EditButton(e, info.serviceId)
+                                    }
+                                  />
+                                  {localStorage.getItem("Role") === "Admin" && (
+                                    <i
+                                      className="fa-solid fa-trash"
+                                      onClick={(e) =>
+                                        handleDelete(e, info.serviceId)
+                                      }
+                                    ></i>
+                                  )}
+                                </div>
                               </TableCell>
                             </>
-                              : ""
-                          }
-
+                          ) : (
+                            ""
+                          )}
                         </TableRow>
                       ))}
-
                       {rows.length === 0 && (
                         <TableRow>
                           <TableCell colSpan={7} align="center">

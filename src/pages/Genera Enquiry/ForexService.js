@@ -156,165 +156,157 @@ export default function ForexService() {
     }
   };
   return (
-    <div>
+    <>
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div className="d-flex justify-content-between">
-        <div>
-          <h2>Forex Service</h2>
+      <div className="country-top">
+        <div className="topmainhd mb-0">
+          <h6>Forex Service</h6>
         </div>
-        <div>
-          <div style={{ maxWidth: "300px", marginBottom: "15px" }}>
-            <TextField
-              label="Search"
-              size="small"
-              value={filterValue}
-              onChange={handleFilter}
-              InputLabelProps={{ shrink: true }}
-              placeholder="Search..."
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {filterValue && (
-                      <IconButton onClick={handleClearFilter}>
-                        <ClearIcon />
-                      </IconButton>
-                    )}
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: "100%" }}
-            />
-          </div>
+        <div classname="">
+          <TextField
+            label="Search"
+            size="small"
+            value={filterValue}
+            onChange={handleFilter}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {filterValue && (
+                    <IconButton onClick={handleClearFilter}>
+                      <ClearIcon />
+                    </IconButton>
+                  )}
+                </InputAdornment>
+              ),
+            }}
+          />
         </div>
       </div>
-      {/* Search */}
-
-      {/* Table */}
-      <TableContainer component={Paper} style={{ overflowX: "auto" }}>
-        <Table stickyHeader aria-label="sticky table" className="table-no-card">
-          <TableHead>
-            <TableRow>
-              <TableCell>Sr No.</TableCell>
-              <TableCell
-                sortDirection={orderBy === "first_name" ? order : false}
-              >
-                <TableSortLabel
-                  active={orderBy === "first_name"}
-                  direction={orderBy === "first_name" ? order : "asc"}
-                  onClick={() => handleSort("first_name")}
+      <div className="table-responsive">
+        <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+          <Table
+            stickyHeader
+            aria-label="sticky table"
+            className="table-no-card"
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>Sr.No.</TableCell>
+                <TableCell
+                  sortDirection={orderBy === "first_name" ? order : false}
                 >
-                  Name
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sortDirection={orderBy === "email" ? order : false}>
-                <TableSortLabel
-                  active={orderBy === "email"}
-                  direction={orderBy === "email" ? order : "asc"}
-                  onClick={() => handleSort("email")}
+                  <TableSortLabel
+                    active={orderBy === "first_name"}
+                    direction={orderBy === "first_name" ? order : "asc"}
+                    onClick={() => handleSort("first_name")}
+                  >
+                    Name
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === "email" ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === "email"}
+                    direction={orderBy === "email" ? order : "asc"}
+                    onClick={() => handleSort("email")}
+                  >
+                    Email
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell
+                  sortDirection={orderBy === "services" ? order : false}
                 >
-                  Email
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sortDirection={orderBy === "services" ? order : false}>
-                <TableSortLabel
-                  active={orderBy === "services"}
-                  direction={orderBy === "services" ? order : "asc"}
-                  onClick={() => handleSort("services")}
-                >
-                  Services
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sortDirection={orderBy === "phone" ? order : false}>
-                <TableSortLabel
-                  active={orderBy === "phone"}
-                  direction={orderBy === "phone" ? order : "asc"}
-                  onClick={() => handleSort("phone")}
-                >
-                  Phone
-                </TableSortLabel>
-              </TableCell>
-              {/* <TableCell sortDirection={orderBy === "select_date" ? order : false}>
-  <TableSortLabel
-    active={orderBy === "select_date"}
-    direction={orderBy === "select_date" ? order : "asc"}
-    onClick={() => handleSort("select_date")}
-  >
-    Select Date
-  </TableSortLabel>
-</TableCell> */}
-              <TableCell sortDirection={orderBy === "status" ? order : false}>
-                <TableSortLabel
-                  active={orderBy === "status"}
-                  direction={orderBy === "status" ? order : "asc"}
-                  onClick={() => handleSort("status")}
-                >
-                  Status
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((item, i) => (
-                <TableRow key={i}>
-                  <TableCell>{page * rowsPerPage + i + 1}</TableCell>
-                  <TableCell>{item.first_name}</TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.services?.replaceAll("_", " ")}</TableCell>
-                  <TableCell>{item.phone}</TableCell>
-                  {/* <TableCell>{new Date(item.select_date).toLocaleDateString("en-GB")=="01/01/1970"?"":new Date(item.select_date).toLocaleDateString("en-GB")}</TableCell> */}
-                  <TableCell>
-                    <FormControl
-                      sx={{ m: 1, minWidth: 120 }}
-                      size="small"
-                      className="cont-main"
-                    >
-                      <Select
-                        value={item.status}
-                        onChange={(e) => handleChangtype(e, item)}
-                        displayEmpty
-                        inputProps={{
-                          "aria-label": "Without label",
-                        }}
-                        className="status-direct"
+                  <TableSortLabel
+                    active={orderBy === "services"}
+                    direction={orderBy === "services" ? order : "asc"}
+                    onClick={() => handleSort("services")}
+                  >
+                    Services
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === "phone" ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === "phone"}
+                    direction={orderBy === "phone" ? order : "asc"}
+                    onClick={() => handleSort("phone")}
+                  >
+                    Phone
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === "status" ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === "status"}
+                    direction={orderBy === "status" ? order : "asc"}
+                    onClick={() => handleSort("status")}
+                  >
+                    Status
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {paginatedData.length > 0 ? (
+                paginatedData.map((item, i) => (
+                  <TableRow key={i}>
+                    <TableCell>{page * rowsPerPage + i + 1}</TableCell>
+                    <TableCell>{item.first_name}</TableCell>
+                    <TableCell>{item.email}</TableCell>
+                    <TableCell>{item.services?.replaceAll("_", " ")}</TableCell>
+                    <TableCell>{item.phone}</TableCell>
+                    <TableCell>
+                      <FormControl
+                        sx={{ m: 1, minWidth: 120 }}
+                        size="small"
+                        className="cont-main"
                       >
-                        <MenuItem value="Pending">Pending</MenuItem>
-                        <MenuItem value="In-Process">In-Process</MenuItem>
-                        <MenuItem value="Completed">Completed</MenuItem>
-                        <MenuItem value="Cancel">Cancel</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </TableCell>
-                  <TableCell>
-                    <VisibilityIcon
-                      className="eye-icon"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleView(item)}
-                    />
+                        <Select
+                          value={item.status}
+                          onChange={(e) => handleChangtype(e, item)}
+                          displayEmpty
+                          inputProps={{
+                            "aria-label": "Without label",
+                          }}
+                          className="status-direct"
+                        >
+                          <MenuItem value="Pending">Pending</MenuItem>
+                          <MenuItem value="In-Process">In-Process</MenuItem>
+                          <MenuItem value="Completed">Completed</MenuItem>
+                          <MenuItem value="Cancel">Cancel</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <TableCell>
+                      <div className="action-icon">
+                        <VisibilityIcon
+                          className="eye-icon"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleView(item)}
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} align="center">
+                    No Data Found
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={8} align="center">
-                  No Data Found
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        <Stack spacing={2} alignItems="end" marginTop={2} padding={2}>
-          <Pagination
-            count={Math.ceil(filteredData.length / rowsPerPage)}
-            page={page + 1}
-            onChange={(event, value) => setPage(value - 1)}
-            shape="rounded"
-          />
-        </Stack>
-      </TableContainer>
-
+              )}
+            </TableBody>
+          </Table>
+          <Stack spacing={2} alignItems="end" marginTop={2}>
+            <Pagination
+              count={Math.ceil(filteredData.length / rowsPerPage)}
+              page={page + 1}
+              onChange={(event, value) => setPage(value - 1)}
+              shape="rounded"
+            />
+          </Stack>
+        </TableContainer>
+      </div>
       {/* Popup Modal */}
       <Dialog
         fullWidth={fullWidth}
@@ -333,44 +325,10 @@ export default function ForexService() {
           </div>
         </div>
         <DialogContent className="main-box view-table-detail">
-          {/* <Box>
-            {selectedRecord && (
-              <div className="table-responsive dataset">
-                <table className="table table-bordered mb-0">
-                  <tbody>
-                    {Object.entries(selectedRecord)
-                      .filter(([key]) =>
-                        [
-                          "first_name",
-                          "email",
-                          "email",
-                          "phone",
-                          "services",
-                        ].includes(key)
-                      )
-                      .map(([key, value]) => (
-                        <tr key={key}>
-                          <th>
-                            {key
-                              .replace(/_/g, " ")
-                              .replace(/\b\w/g, (char) => char.toUpperCase())}
-                          </th>
-                          <td>{String(value)}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Box> */}
           {selectedRecord && (
             <Box>
               <div className="row">
-                {/* personal */}
                 <div className="col-md-12 mb-3">
-                  {/* <div className="all-hd mb-3">
-                      <h6>Personal Information</h6>
-                    </div> */}
                   <div className="card">
                     <div className="card-body">
                       <div className="row">
@@ -416,6 +374,6 @@ export default function ForexService() {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

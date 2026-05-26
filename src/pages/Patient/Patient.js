@@ -89,39 +89,48 @@ export default function Patient() {
     }
   }, [Treatment]);
   useEffect(() => {
-  dispatch(
-    GetAllPatients({
-      page,
-      limit: rowsPerPage,
-      search: searchTerm,
-      p_status: statusFromUrl || "",
-      patient_type_new: typeFromUrl || "",
-      sortField: orderBy,
-      sortOrder: order,
-    })
-  );
-}, [dispatch, page, rowsPerPage, searchTerm, statusFromUrl, typeFromUrl, orderBy, order]);
+    dispatch(
+      GetAllPatients({
+        page,
+        limit: rowsPerPage,
+        search: searchTerm,
+        p_status: statusFromUrl || "",
+        patient_type_new: typeFromUrl || "",
+        sortField: orderBy,
+        sortOrder: order,
+      }),
+    );
+  }, [
+    dispatch,
+    page,
+    rowsPerPage,
+    searchTerm,
+    statusFromUrl,
+    typeFromUrl,
+    orderBy,
+    order,
+  ]);
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     setPage(1);
   };
-useEffect(() => {
-  // If API returns empty or undefined → clear table
-  if (!patient || patient.length === 0) {
-    setRows([]);
-    setSearchApiData([]);
-  } else {
-    setRows(patient);
-    setSearchApiData(patient);
-  }
-}, [patient]);
-useEffect(() => {
-  // If API gives 404 or error → clear table
-  if (error) {
-    setRows([]);
-    setSearchApiData([]);
-  }
-}, [error]);
+  useEffect(() => {
+    // If API returns empty or undefined → clear table
+    if (!patient || patient.length === 0) {
+      setRows([]);
+      setSearchApiData([]);
+    } else {
+      setRows(patient);
+      setSearchApiData(patient);
+    }
+  }, [patient]);
+  useEffect(() => {
+    // If API gives 404 or error → clear table
+    if (error) {
+      setRows([]);
+      setSearchApiData([]);
+    }
+  }, [error]);
   const EditButton = (e, id) => {
     navigate("/Admin/edit-patient", {
       state: {
@@ -423,123 +432,27 @@ useEffect(() => {
       await filterdataapi(onVaue, "type");
     }
   };
- const handleRequestSort = (property) => {
-  const isAsc = orderBy === property && order === "asc";
-  const direction = isAsc ? "desc" : "asc";
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    const direction = isAsc ? "desc" : "asc";
 
-  setOrder(direction);
-  setOrderBy(property);
-};
- 
+    setOrder(direction);
+    setOrderBy(property);
+  };
+
   return (
     <>
       <div className="page-wrapper">
         <div className="content">
-          <div className="row">
-            <React.Fragment>
-              <Dialog
-                fullWidth={fullWidth}
-                maxWidth={maxWidth}
-                open={openfilter}
-                onClose={closeFitler}
-              >
-                <div className="main-card-header">
-                  <div className="note-hd">
-                    <h6>Filter</h6>
-                  </div>
-                  <div className="cross-icon" onClick={closeFitler}>
-                    <i className="fa-solid fa-xmark"></i>
-                  </div>
-                </div>
-                <DialogContent className="main-box">
-                  <Box
-                    noValidate
-                    component="form"
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "fit-content",
-                    }}
-                    className="contact-form"
-                  >
-                    <Box>
-                      <TableCell>
-                        <FormControl
-                          sx={{ m: 1, minWidth: 500 }}
-                          size="large"
-                          className="cont-main"
-                        >
-                          <Select
-                            placeholder="Filter data"
-                            displayEmpty
-                            value={onVaue}
-                            onChange={(e) => {
-                              setOnVaue(e.target.value);
-                            }}
-                            inputProps={{
-                              "aria-label": "Without label",
-                            }}
-                            className="status-direct"
-                          >
-                            <MenuItem value="" disabled>
-                              <em>Select Filter</em>
-                            </MenuItem>
-                            <MenuItem
-                              disabled
-                              style={{ fontWeight: "bold", color: "#666" }}
-                            >
-                              --- Status ---
-                            </MenuItem>
-                            <MenuItem value="Travelled">Travelled</MenuItem>
-                            <MenuItem value="Confirmed">Confirmed</MenuItem>
-                            <MenuItem value="Pending">Pending</MenuItem>
-                            <MenuItem value="On Hold">On Hold</MenuItem>
-                            <MenuItem value="Treatment Completed">
-                              Treatment Completed
-                            </MenuItem>
-                            <MenuItem value="Cancelled">Cancelled</MenuItem>
-                            <MenuItem value="Local Case">Local Case</MenuItem>
-                            <MenuItem value="Follow Up">Follow Up</MenuItem>
-                            <MenuItem value="Passed Away">Passed Away</MenuItem>
-                            <MenuItem
-                              disabled
-                              style={{ fontWeight: "bold", color: "#666" }}
-                            >
-                              --- Patient Type ---
-                            </MenuItem>
-                            <MenuItem value="Foundation">Foundation</MenuItem>
-                            <MenuItem value="Private">Private</MenuItem>
-                            <MenuItem value="Insurance">Insurance</MenuItem>
-                            <MenuItem value="Insurance + Private">
-                              Insurance + Private
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-                      </TableCell>
-                      <div className="d-flex justify-content-center">
-                        <button
-                          className="add-button ms-2"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            filterdataapiExisting();
-                          }}
-                        >
-                          Filter Data
-                        </button>
-                      </div>
-                    </Box>
-                  </Box>
-                </DialogContent>
-              </Dialog>
-            </React.Fragment>
+          <div className="row gx-3">
             <div className="col-md-12">
               <div className="country-top">
-                <div className="">
-                  <h4 className="page-title mb-0">Manage Patients</h4>
+                <div className="topmainhd mb-0">
+                  <h6>Manage Patients</h6>
                 </div>
-                <div className="d-flex">
+                <div className="patient-top-btn">
                   <div className="search-btn-main">
-                    <div className="mr-3">
+                    <div className="">
                       <TextField
                         label="Search"
                         size="small"
@@ -559,51 +472,50 @@ useEffect(() => {
                       />
                     </div>
                   </div>
-                  <button onClick={handleSampleFile} className="add-button ">
+                  <button onClick={handleSampleFile} className="add-button">
                     <span>
-                      <i className="fa fa-file mx-1"></i>
+                      <i className="fa fa-file me-2"></i>
                     </span>
                     Export File
                   </button>
-                  <button onClick={Filterdata} className="add-button ms-2">
+                  <button onClick={Filterdata} className="add-button">
                     <span>
-                      <i className="fa fa-filter"></i>
+                      <i className="fa fa-filter me-2"></i>
                     </span>
                     Filter
                   </button>
                   {role === "Admin" ? (
-                    <button onClick={downloadPdf} className="add-button ms-2">
+                    <button onClick={downloadPdf} className="add-button">
                       <span>
-                        <i className="fa fa-file-pdf-o"></i>
+                        <i className="fa fa-file-pdf-o me-2"></i>
                       </span>
                       PDF
                     </button>
                   ) : (
                     ""
                   )}
+                  {localStorage.getItem("Role") === "Admin" ? (
+                    showActions === true ? (
+                      <button
+                        className="add-button"
+                        onClick={handleclickpostdatadesltes}
+                      >
+                        Deleted Data
+                      </button>
+                    ) : (
+                      <button
+                        className="add-button"
+                        onClick={handleclickondata}
+                      >
+                        Patient
+                      </button>
+                    )
+                  ) : null}
                 </div>
               </div>
             </div>
-          </div>
-          <div className="main_content">
-            <div className="row">
-              <div className="action-icon d-flex justify-content-end mb-3">
-                {localStorage.getItem("Role") === "Admin" ? (
-                  showActions === true ? (
-                    <button
-                      className="add-button"
-                      onClick={handleclickpostdatadesltes}
-                    >
-                      Deleted Data
-                    </button>
-                  ) : (
-                    <button className="add-button" onClick={handleclickondata}>
-                      Patient
-                    </button>
-                  )
-                ) : null}
-              </div>
-              <div className="col-md-12">
+            <div className="col-md-12">
+              <div className="main_content">
                 <div className="table-responsive" ref={targetRef}>
                   <TableContainer
                     component={Paper}
@@ -970,6 +882,102 @@ useEffect(() => {
           </div>
         </div>
       </div>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={openfilter}
+          onClose={closeFitler}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Filter</h6>
+            </div>
+            <div className="cross-icon" onClick={closeFitler}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <TableCell>
+                  <FormControl
+                    sx={{ m: 1, minWidth: 500 }}
+                    size="large"
+                    className="cont-main"
+                  >
+                    <Select
+                      placeholder="Filter data"
+                      displayEmpty
+                      value={onVaue}
+                      onChange={(e) => {
+                        setOnVaue(e.target.value);
+                      }}
+                      inputProps={{
+                        "aria-label": "Without label",
+                      }}
+                      className="status-direct"
+                    >
+                      <MenuItem value="" disabled>
+                        <em>Select Filter</em>
+                      </MenuItem>
+                      <MenuItem
+                        disabled
+                        style={{ fontWeight: "bold", color: "#666" }}
+                      >
+                        --- Status ---
+                      </MenuItem>
+                      <MenuItem value="Travelled">Travelled</MenuItem>
+                      <MenuItem value="Confirmed">Confirmed</MenuItem>
+                      <MenuItem value="Pending">Pending</MenuItem>
+                      <MenuItem value="On Hold">On Hold</MenuItem>
+                      <MenuItem value="Treatment Completed">
+                        Treatment Completed
+                      </MenuItem>
+                      <MenuItem value="Cancelled">Cancelled</MenuItem>
+                      <MenuItem value="Local Case">Local Case</MenuItem>
+                      <MenuItem value="Follow Up">Follow Up</MenuItem>
+                      <MenuItem value="Passed Away">Passed Away</MenuItem>
+                      <MenuItem
+                        disabled
+                        style={{ fontWeight: "bold", color: "#666" }}
+                      >
+                        --- Patient Type ---
+                      </MenuItem>
+                      <MenuItem value="Foundation">Foundation</MenuItem>
+                      <MenuItem value="Private">Private</MenuItem>
+                      <MenuItem value="Insurance">Insurance</MenuItem>
+                      <MenuItem value="Insurance + Private">
+                        Insurance + Private
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </TableCell>
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="add-button ms-2"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      filterdataapiExisting();
+                    }}
+                  >
+                    Filter Data
+                  </button>
+                </div>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
     </>
   );
 }

@@ -17,6 +17,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import IconButton from "@mui/material/IconButton";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
@@ -449,110 +450,145 @@ export default function Appointments() {
   };
   return (
     <>
-      <div className="page-wrapper" style={{ marginTop: "70px" }}>
-        <Box
-          sx={{
-            borderBottom: 1,
-            borderColor: "divider",
-            mb: 2,
-            marginTop: "10px",
-          }}
-        >
-          <Tabs value={tabValue} onChange={handleTabChange}>
-            <Tab
-              label="Appointments By CRM"
-              sx={{
-                fontSize: "12px",
-                fontWeight: "bold",
-                fontFamily: "Rubik",
-                color: "##666",
-              }}
-            />
-
-            <Tab
-              label="Appointments By APP"
-              sx={{
-                fontSize: "12px",
-                fontWeight: "bold",
-                fontFamily: "Rubik",
-                color: "#666",
-              }}
-            />
-            <Tab
-              label="Enquiry Appointments"
-              sx={{
-                fontSize: "12px",
-                fontWeight: "bold",
-                fontFamily: "Rubik",
-                color: "#666",
-              }}
-            />
-          </Tabs>
-        </Box>
-        <TabPanel value={tabValue} index={0}>
-          <div className="content">
-            <div className="row">
-              <div className="col-md-12">
-                <div className="country-top">
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="row gx-3">
+            <div className="col-md-12">
+              <div className="country-top">
+                <div className="topmainhd mb-0">
+                  <h6>Manage Appointments</h6>
+                </div>
+                <div className="search-btn-main">
                   <div className="">
-                    <h4 className="page-title mb-0">Manage Appointments</h4>
+                    <TextField
+                      sx={{ width: "100%" }}
+                      className="field-count"
+                      label="Search"
+                      id="outlined-size-small"
+                      size="small"
+                      value={filterValue}
+                      onChange={(e) => handleFilter(e)}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end" className="input-set">
+                            {filterValue && (
+                              <IconButton
+                                onClick={handleClearFilter}
+                                edge="end"
+                              >
+                                <ClearIcon />
+                              </IconButton>
+                            )}
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
                   </div>
-                  <div className="search-btn-main">
-                    <div className="">
-                      <TextField
-                        sx={{ width: "100%" }}
-                        className="field-count"
-                        label="Search"
-                        id="outlined-size-small"
-                        size="small"
-                        value={filterValue}
-                        onChange={(e) => handleFilter(e)}
-                        InputLabelProps={{ shrink: true }}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment
-                              position="end"
-                              className="input-set"
-                            >
-                              {filterValue && (
-                                <IconButton
-                                  onClick={handleClearFilter}
-                                  edge="end"
-                                >
-                                  <ClearIcon />
-                                </IconButton>
-                              )}
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </div>
-                    <button
-                      onClick={handleSampleFile}
-                      className="add-button mx-1"
-                    >
+                  <button onClick={handleSampleFile} className="add-button">
+                    <span>
+                      <i className="fa fa-file me-2"></i>
+                    </span>
+                    Export File
+                  </button>
+                  {role === "Admin" ? (
+                    <button onClick={downloadPdf} className="add-button ">
                       <span>
-                        <i className="fa fa-file"></i>
+                        <i className="fa fa-file-pdf-o me-2"></i>
                       </span>
-                      Export File
+                      Pdf
                     </button>
-                    {role === "Admin" ? (
-                      <button onClick={downloadPdf} className="add-button mx-1">
-                        <span>
-                          <i className="fa fa-file-pdf-o"></i>
-                        </span>
-                        Pdf
-                      </button>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>
-            <div className="main_content">
-              <div className="row">
-                <div className="col-md-12">
+            <div className="col-md-12">
+              <Box>
+                <Tabs
+                  value={tabValue}
+                  onChange={handleTabChange}
+                  TabIndicatorProps={{
+                    style: {
+                      display: "none",
+                    },
+                  }}
+                  sx={{
+                    minHeight: "40px",
+                    "& .MuiTabs-flexContainer": {
+                      gap: "10px",
+                    },
+                  }}
+                >
+                  <Tab
+                    label="Appointments By CRM"
+                    sx={{
+                      textTransform: "none",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      fontFamily: "Rubik",
+                      padding: "8px 18px",
+                      lineHeight: "22px",
+                      border: "1px solid #ccc",
+                      borderRadius: "5px",
+                      color: "#666",
+                      transition: "0.3s",
+                      minHeight: "0px",
+                      "&.Mui-selected": {
+                        background: "#22c7b8",
+                        color: "#fff",
+                      },
+                    }}
+                  />
+
+                  <Tab
+                    label="Appointments By APP"
+                    sx={{
+                      textTransform: "none",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      fontFamily: "Rubik",
+                      padding: "8px 18px",
+                      lineHeight: "22px",
+                      border: "1px solid #ccc",
+                      borderRadius: "5px",
+                      color: "#666",
+                      transition: "0.3s",
+                      minHeight: "0px",
+                      "&.Mui-selected": {
+                        background: "#22c7b8",
+                        color: "#fff",
+                      },
+                    }}
+                  />
+
+                  <Tab
+                    label="Enquiry Appointments"
+                    sx={{
+                      textTransform: "none",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      fontFamily: "Rubik",
+                      padding: "8px 18px",
+                      lineHeight: "22px",
+                      border: "1px solid #ccc",
+                      borderRadius: "5px",
+                      color: "#666",
+                      transition: "0.3s",
+                      minHeight: "0px",
+                      "&.Mui-selected": {
+                        background: "#22c7b8",
+                        color: "#fff",
+                      },
+                    }}
+                  />
+                </Tabs>
+              </Box>
+            </div>
+            <div className="col-md-12">
+              <TabPanel value={tabValue} index={0}>
+                <div className="main_content">
                   <div className="table-responsive">
                     <TableContainer
                       component={Paper}
@@ -677,9 +713,9 @@ export default function Appointments() {
                             (pdfRowLimit
                               ? appointments.slice(0, pdfRowLimit)
                               : appointments.slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage,
-                              )
+                                  page * rowsPerPage,
+                                  page * rowsPerPage + rowsPerPage,
+                                )
                             ).map((info, i) => (
                               <TableRow
                                 role="checkbox"
@@ -705,8 +741,7 @@ export default function Appointments() {
                                 <TableCell>
                                   {new Date(
                                     info.appointment_Date,
-                                  ).toLocaleDateString("en-GB")}
-                                  {" "}
+                                  ).toLocaleDateString("en-GB")}{" "}
                                   {new Date(
                                     info.appointment_Date,
                                   ).toLocaleTimeString([], {
@@ -731,10 +766,10 @@ export default function Appointments() {
                                         info.appointement_status === "Follow-Up"
                                           ? 2
                                           : info.appointement_status ===
-                                            "Complete"
+                                              "Complete"
                                             ? 3
                                             : info.appointement_status ===
-                                              "Cancelled"
+                                                "Cancelled"
                                               ? 4
                                               : "Schedule"
                                       }
@@ -775,777 +810,775 @@ export default function Appointments() {
                     </TableContainer>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div
-            id="delete_appointment"
-            className="modal fade delete-modal"
-            role="dialog"
-          >
-            <div className="modal-dialog modal-dialog-centered">
-              <div className="modal-content">
-                <div className="modal-body text-center">
-                  <img
-                    src="assets/img/sent.png"
-                    alt=""
-                    width="50"
-                    height="46"
-                  />
-                  <h3>Are you sure want to delete this Appointment?</h3>
-                  <div className="m-t-20">
-                    {" "}
-                    <a href="#" className="btn btn-white" data-dismiss="modal">
-                      Close
-                    </a>
-                    <button type="submit" className="btn btn-danger">
-                      Delete
-                    </button>
+                <div
+                  id="delete_appointment"
+                  className="modal fade delete-modal"
+                  role="dialog"
+                >
+                  <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                      <div className="modal-body text-center">
+                        <img
+                          src="assets/img/sent.png"
+                          alt=""
+                          width="50"
+                          height="46"
+                        />
+                        <h3>Are you sure want to delete this Appointment?</h3>
+                        <div className="m-t-20">
+                          {" "}
+                          <a
+                            href="#"
+                            className="btn btn-white"
+                            data-dismiss="modal"
+                          >
+                            Close
+                          </a>
+                          <button type="submit" className="btn btn-danger">
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </TabPanel>
-        {/* ---------- TAB 2 : ANOTHER PAGE ---------- */}
-        <TabPanel value={tabValue} index={1}>
-          <div className="main_content">
-            <div className="row">
-              <div className="col-md-12">
-                <div className="table-responsive">
-                  <TableContainer
-                    component={Paper}
-                    style={{ overflowX: "auto" }}
-                    ref={targetRef}
-                  >
-                    <Table
-                      stickyHeader
-                      aria-label="sticky table"
-                      className="table-no-card"
-                    >
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Sr.No.</TableCell>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByAPP === "name"}
-                              direction={
-                                orderByAPP === "name"
-                                  ? orderDirectionAPP
-                                  : "asc"
-                              }
-                              onClick={() => handleSortAPP("name")}
-                            >
-                              Name
-                            </TableSortLabel>
-                          </TableCell>
-                          {/* <TableCell>Patient email</TableCell> */}
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByAPP === "email"}
-                              direction={
-                                orderByAPP === "email"
-                                  ? orderDirectionAPP
-                                  : "asc"
-                              }
-                              onClick={() => handleSortAPP("email")}
-                            >
-                              Email
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByAPP === "city"}
-                              direction={
-                                orderByAPP === "city"
-                                  ? orderDirectionAPP
-                                  : "asc"
-                              }
-                              onClick={() => handleSortAPP("city")}
-                            >
-                              City
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByAPP === "health_issue"}
-                              direction={
-                                orderByAPP === "health_issue"
-                                  ? orderDirectionAPP
-                                  : "asc"
-                              }
-                              onClick={() => handleSortAPP("health_issue")}
-                            >
-                              Disease Name
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByAPP === "apt_on"}
-                              direction={
-                                orderByAPP === "apt_on"
-                                  ? orderDirectionAPP
-                                  : "asc"
-                              }
-                              onClick={() => handleSortAPP("apt_on")}
-                            >
-                              Appointment Date
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByAPP === "paid_amount"}
-                              direction={
-                                orderByAPP === "paid_amount"
-                                  ? orderDirectionAPP
-                                  : "asc"
-                              }
-                              onClick={() => handleSortAPP("paid_amount")}
-                            >
-                              Paid Amount
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell>Action</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {dataApp.length === 0 ? (
-                          <TableRow>
-                            <TableCell colSpan={8} align="center">
-                              No data found
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          dataApp
-                            .slice(
-                              pageAPP * rowsPerPageAPP,
-                              pageAPP * rowsPerPageAPP + rowsPerPageAPP,
-                            )
-                            .map((info, i) => (
-                              <TableRow
-                                role="checkbox"
-                                tabIndex={-1}
-                                key={info.code}
-                              >
+              </TabPanel>
+              <TabPanel value={tabValue} index={1}>
+                <div className="main_content">
+                  <div className="row">
+                    <div className="col-md-12">
+                      <div className="table-responsive">
+                        <TableContainer
+                          component={Paper}
+                          style={{ overflowX: "auto" }}
+                          ref={targetRef}
+                        >
+                          <Table
+                            stickyHeader
+                            aria-label="sticky table"
+                            className="table-no-card"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Sr.No.</TableCell>
                                 <TableCell>
-                                  {pdfRowLimit
-                                    ? i + 1
-                                    : pageAPP * rowsPerPageAPP + i + 1}
-                                </TableCell>
-                                <TableCell title={info?.name}>
-                                  {info?.name?.slice(0, 12)}
-                                  {info?.name?.length > 12 ? "..." : ""}
-                                </TableCell>
-                                {/* <TableCell>{info.name}</TableCell> */}
-                                <TableCell>{info.email}</TableCell>
-                                <TableCell>{info.city}</TableCell>
-                                <TableCell>{info.health_issue}</TableCell>
-                                <TableCell>
-                                  {info?.apt_on ? info?.apt_on : 
-                                    "-"
-                                  }
-                                </TableCell>
-                                <TableCell>${info.paid_amount}</TableCell>
-                                <TableCell>
-                                  <i
-                                    className="fa fa-eye"
-                                    onClick={() => handleView(info)}
-                                    style={{ cursor: "pointer" }}
-                                  ></i>
-                                </TableCell>
-                              </TableRow>
-                            ))
-                        )}
-                      </TableBody>
-                    </Table>
-                    {!pdfRowLimit && (
-                      <Stack spacing={2} alignItems="end" marginTop={2}>
-                        <Pagination
-                          count={Math.ceil(dataApp.length / rowsPerPageAPP)}
-                          page={pageAPP + 1}
-                          onChange={(event, value) => setPageAPP(value - 1)}
-                          shape="rounded"
-                          className="page-item"
-                        />
-                      </Stack>
-                    )}
-                  </TableContainer>
-                </div>
-              </div>
-            </div>
-          </div>
-        </TabPanel>
-        <TabPanel value={tabValue} index={2}>
-          <div className="main_content">
-            <div className="row">
-              <div className="col-md-12">
-                <div className="table-responsive">
-                  <TableContainer
-                    component={Paper}
-                    style={{ overflowX: "auto" }}
-                  >
-                    <Table stickyHeader className="table-no-card">
-                      {/* ✅ TABLE HEADER */}
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Sr.No.</TableCell>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByENQ === "patientName"}
-                              direction={orderDirectionENQ}
-                              onClick={() => handleSortENQ("patientName")}
-                            >
-                              Patient Name
-                            </TableSortLabel>
-                          </TableCell>
-                          {/* <TableCell>
-                            <TableSortLabel
-                              active={orderByENQ === "hospitalName"}
-                              direction={orderDirectionENQ}
-                              onClick={() => handleSortENQ("hospitalName")}
-                            >
-                              Hospital Name
-                            </TableSortLabel>
-                          </TableCell> */}
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByENQ === "health_issue"}
-                              direction={orderDirectionENQ}
-                              onClick={() => handleSortENQ("health_issue")}
-                            >
-                              Health Issue
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByENQ === "treatment_name"}
-                              direction={orderDirectionENQ}
-                              onClick={() => handleSortENQ("treatment_name")}
-                            >
-                              Treatment Name
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByENQ === "appointment_Date"}
-                              direction={orderDirectionENQ}
-                              onClick={() => handleSortENQ("appointment_Date")}
-                            >
-                              Appointment Date
-                            </TableSortLabel>
-                          </TableCell>
-                          {/* 
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderByENQ === "appointment_Time"}
-                              direction={orderDirectionENQ}
-                              onClick={() => handleSortENQ("appointment_Time")}
-                            >
-                              Time
-                            </TableSortLabel>
-                          </TableCell> */}
-                          {/* <TableCell>Notes</TableCell> */}
-                          {/* <TableCell>Reports</TableCell> */}
-                          <TableCell>Status</TableCell>
-                          <TableCell>Action</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {enquiryAppointments.length === 0 ? (
-                          <TableRow>
-                            <TableCell colSpan={8} align="center">
-                              No data found
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          enquiryAppointments
-                            .slice(
-                              pageENQ * rowsPerPageENQ,
-                              pageENQ * rowsPerPageENQ + rowsPerPageENQ,
-                            )
-                            .map((item, i) => (
-                              <TableRow key={i}>
-                                <TableCell>
-                                  {pageENQ * rowsPerPageENQ + i + 1}
-                                </TableCell>
-                                {/* <TableCell>{item?.patientName}</TableCell> */}
-                                <TableCell title={item?.patientName}>
-                                  {item?.patientName?.slice(0, 20)}
-                                  {item?.patientName?.length > 20 ? "..." : ""}
-                                </TableCell>
-                                {/* <TableCell>
-                                  {item?.hospitalName.slice(0, 20) + "..."}
-                                </TableCell> */}
-                                <TableCell>{item?.health_issue}</TableCell>
-                                <TableCell title={item?.treatment_name}>
-                                  {item?.treatment_name?.slice(0, 20)}
-                                  {item?.treatment_name?.length > 20
-                                    ? "..."
-                                    : ""}
-                                </TableCell>
-                                {/* <TableCell>{item?.treatment_name}</TableCell> */}
-                                <TableCell>
-                                  {new Date(
-                                    item?.appointment_Date,
-                                  ).toLocaleDateString("en-GB")}
-                                  {" "}
-                                  {new Date(
-                                    item?.appointment_Date,
-                                  ).toLocaleTimeString([], {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </TableCell>
-                                <TableCell>
-                                  <FormControl
-                                    size="small"
-                                    sx={{ minWidth: 120 }}
-                                    size="small"
-                                    className="cont-main"
+                                  <TableSortLabel
+                                    active={orderByAPP === "name"}
+                                    direction={
+                                      orderByAPP === "name"
+                                        ? orderDirectionAPP
+                                        : "asc"
+                                    }
+                                    onClick={() => handleSortAPP("name")}
                                   >
-                                    <Select
-                                      className="status-direct"
-                                      value={item.status}
-                                      onChange={(e) =>
-                                        handleEnqStatusChange(e, item._id)
-                                      }
-                                    >
-                                      <MenuItem value="Pending">
-                                        Pending
-                                      </MenuItem>
-                                      <MenuItem value="Schedule">
-                                        Schedule
-                                      </MenuItem>
-                                      <MenuItem value="Follow-Up">
-                                        Follow-Up
-                                      </MenuItem>
-                                      <MenuItem value="Complete">
-                                        Complete
-                                      </MenuItem>
-                                      <MenuItem value="Cancelled">
-                                        Cancelled
-                                      </MenuItem>
-                                    </Select>
-                                  </FormControl>
+                                    Name
+                                  </TableSortLabel>
+                                </TableCell>
+                                {/* <TableCell>Patient email</TableCell> */}
+                                <TableCell>
+                                  <TableSortLabel
+                                    active={orderByAPP === "email"}
+                                    direction={
+                                      orderByAPP === "email"
+                                        ? orderDirectionAPP
+                                        : "asc"
+                                    }
+                                    onClick={() => handleSortAPP("email")}
+                                  >
+                                    Email
+                                  </TableSortLabel>
                                 </TableCell>
                                 <TableCell>
-                                  <i
-                                    className="fa fa-eye me-1"
-                                    style={{
-                                      cursor: "pointer",
-                                      color: "#0ba6df",
-                                    }}
-                                    onClick={() => handleViewEnq(item)}
-                                  ></i>
-                                  <i
-                                    className="fa fa-edit"
-                                    style={{
-                                      cursor: "pointer",
-                                      color: "#0ba6df",
-                                    }}
-                                    onClick={() => handleEdit(item)}
-                                  ></i>
-                                  <i
-                                    className="fa fa-trash ms-1"
-                                    style={{
-                                      cursor: "pointer",
-                                      color: "#ff0000",
-                                    }}
-                                    onClick={() => handleDelete(item)}
-                                  ></i>
+                                  <TableSortLabel
+                                    active={orderByAPP === "city"}
+                                    direction={
+                                      orderByAPP === "city"
+                                        ? orderDirectionAPP
+                                        : "asc"
+                                    }
+                                    onClick={() => handleSortAPP("city")}
+                                  >
+                                    City
+                                  </TableSortLabel>
                                 </TableCell>
+                                <TableCell>
+                                  <TableSortLabel
+                                    active={orderByAPP === "health_issue"}
+                                    direction={
+                                      orderByAPP === "health_issue"
+                                        ? orderDirectionAPP
+                                        : "asc"
+                                    }
+                                    onClick={() =>
+                                      handleSortAPP("health_issue")
+                                    }
+                                  >
+                                    Disease Name
+                                  </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                  <TableSortLabel
+                                    active={orderByAPP === "apt_on"}
+                                    direction={
+                                      orderByAPP === "apt_on"
+                                        ? orderDirectionAPP
+                                        : "asc"
+                                    }
+                                    onClick={() => handleSortAPP("apt_on")}
+                                  >
+                                    Appointment Date
+                                  </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                  <TableSortLabel
+                                    active={orderByAPP === "paid_amount"}
+                                    direction={
+                                      orderByAPP === "paid_amount"
+                                        ? orderDirectionAPP
+                                        : "asc"
+                                    }
+                                    onClick={() => handleSortAPP("paid_amount")}
+                                  >
+                                    Paid Amount
+                                  </TableSortLabel>
+                                </TableCell>
+                                <TableCell>Action</TableCell>
                               </TableRow>
-                            ))
-                        )}
-                      </TableBody>
-                    </Table>
-                    <Stack spacing={2} alignItems="end" marginTop={2}>
-                      <Pagination
-                        count={Math.ceil(
-                          enquiryAppointments.length / rowsPerPageENQ,
-                        )}
-                        page={pageENQ + 1}
-                        onChange={(e, val) => setPageENQ(val - 1)}
-                        shape="rounded"
-                        className="page-item"
-                      />
-                    </Stack>
-                  </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                              {dataApp.length === 0 ? (
+                                <TableRow>
+                                  <TableCell colSpan={8} align="center">
+                                    No data found
+                                  </TableCell>
+                                </TableRow>
+                              ) : (
+                                dataApp
+                                  .slice(
+                                    pageAPP * rowsPerPageAPP,
+                                    pageAPP * rowsPerPageAPP + rowsPerPageAPP,
+                                  )
+                                  .map((info, i) => (
+                                    <TableRow
+                                      role="checkbox"
+                                      tabIndex={-1}
+                                      key={info.code}
+                                    >
+                                      <TableCell>
+                                        {pdfRowLimit
+                                          ? i + 1
+                                          : pageAPP * rowsPerPageAPP + i + 1}
+                                      </TableCell>
+                                      <TableCell title={info?.name}>
+                                        {info?.name?.slice(0, 12)}
+                                        {info?.name?.length > 12 ? "..." : ""}
+                                      </TableCell>
+                                      {/* <TableCell>{info.name}</TableCell> */}
+                                      <TableCell>{info.email}</TableCell>
+                                      <TableCell>{info.city}</TableCell>
+                                      <TableCell>{info.health_issue}</TableCell>
+                                      <TableCell>
+                                        {info?.apt_on ? info?.apt_on : "-"}
+                                      </TableCell>
+                                      <TableCell>${info.paid_amount}</TableCell>
+                                      <TableCell>
+                                        <i
+                                          className="fa fa-eye"
+                                          onClick={() => handleView(info)}
+                                          style={{ cursor: "pointer" }}
+                                        ></i>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))
+                              )}
+                            </TableBody>
+                          </Table>
+                          {!pdfRowLimit && (
+                            <Stack spacing={2} alignItems="end" marginTop={2}>
+                              <Pagination
+                                count={Math.ceil(
+                                  dataApp.length / rowsPerPageAPP,
+                                )}
+                                page={pageAPP + 1}
+                                onChange={(event, value) =>
+                                  setPageAPP(value - 1)
+                                }
+                                shape="rounded"
+                                className="page-item"
+                              />
+                            </Stack>
+                          )}
+                        </TableContainer>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabPanel>
+              <TabPanel value={tabValue} index={2}>
+                <div className="main_content">
+                  <div className="row">
+                    <div className="col-md-12">
+                      <div className="table-responsive">
+                        <TableContainer
+                          component={Paper}
+                          style={{ overflowX: "auto" }}
+                        >
+                          <Table stickyHeader className="table-no-card">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Sr.No.</TableCell>
+                                <TableCell>
+                                  <TableSortLabel
+                                    active={orderByENQ === "patientName"}
+                                    direction={orderDirectionENQ}
+                                    onClick={() => handleSortENQ("patientName")}
+                                  >
+                                    Patient Name
+                                  </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                  <TableSortLabel
+                                    active={orderByENQ === "health_issue"}
+                                    direction={orderDirectionENQ}
+                                    onClick={() =>
+                                      handleSortENQ("health_issue")
+                                    }
+                                  >
+                                    Health Issue
+                                  </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                  <TableSortLabel
+                                    active={orderByENQ === "treatment_name"}
+                                    direction={orderDirectionENQ}
+                                    onClick={() =>
+                                      handleSortENQ("treatment_name")
+                                    }
+                                  >
+                                    Treatment Name
+                                  </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                  <TableSortLabel
+                                    active={orderByENQ === "appointment_Date"}
+                                    direction={orderDirectionENQ}
+                                    onClick={() =>
+                                      handleSortENQ("appointment_Date")
+                                    }
+                                  >
+                                    Appointment Date
+                                  </TableSortLabel>
+                                </TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell>Action</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {enquiryAppointments.length === 0 ? (
+                                <TableRow>
+                                  <TableCell colSpan={8} align="center">
+                                    No data found
+                                  </TableCell>
+                                </TableRow>
+                              ) : (
+                                enquiryAppointments
+                                  .slice(
+                                    pageENQ * rowsPerPageENQ,
+                                    pageENQ * rowsPerPageENQ + rowsPerPageENQ,
+                                  )
+                                  .map((item, i) => (
+                                    <TableRow key={i}>
+                                      <TableCell>
+                                        {pageENQ * rowsPerPageENQ + i + 1}
+                                      </TableCell>
+                                      <TableCell title={item?.patientName}>
+                                        {item?.patientName?.slice(0, 20)}
+                                        {item?.patientName?.length > 20
+                                          ? "..."
+                                          : ""}
+                                      </TableCell>
+                                      <TableCell>
+                                        {item?.health_issue}
+                                      </TableCell>
+                                      <TableCell title={item?.treatment_name}>
+                                        {item?.treatment_name?.slice(0, 20)}
+                                        {item?.treatment_name?.length > 20
+                                          ? "..."
+                                          : ""}
+                                      </TableCell>
+                                      <TableCell>
+                                        {new Date(
+                                          item?.appointment_Date,
+                                        ).toLocaleDateString("en-GB")}{" "}
+                                        {new Date(
+                                          item?.appointment_Date,
+                                        ).toLocaleTimeString([], {
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                        })}
+                                      </TableCell>
+                                      <TableCell>
+                                        <FormControl
+                                          size="small"
+                                          sx={{ minWidth: 120 }}
+                                          size="small"
+                                          className="cont-main"
+                                        >
+                                          <Select
+                                            className="status-direct"
+                                            value={item.status}
+                                            onChange={(e) =>
+                                              handleEnqStatusChange(e, item._id)
+                                            }
+                                          >
+                                            <MenuItem value="Pending">
+                                              Pending
+                                            </MenuItem>
+                                            <MenuItem value="Schedule">
+                                              Schedule
+                                            </MenuItem>
+                                            <MenuItem value="Follow-Up">
+                                              Follow-Up
+                                            </MenuItem>
+                                            <MenuItem value="Complete">
+                                              Complete
+                                            </MenuItem>
+                                            <MenuItem value="Cancelled">
+                                              Cancelled
+                                            </MenuItem>
+                                          </Select>
+                                        </FormControl>
+                                      </TableCell>
+                                      <TableCell>
+                                        <div className="action-icon">
+                                          <VisibilityIcon
+                                            className="eye-icon"
+                                            onClick={() => handleViewEnq(item)}
+                                          />
+                                          <i
+                                            className="fa-solid fa-pen-to-square"
+                                            onClick={() => handleEdit(item)}
+                                          ></i>
+                                          <i
+                                            className="fa-solid fa-trash"
+                                            onClick={() => handleDelete(item)}
+                                          ></i>
+                                        </div>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))
+                              )}
+                            </TableBody>
+                          </Table>
+                          <Stack spacing={2} alignItems="end" marginTop={2}>
+                            <Pagination
+                              count={Math.ceil(
+                                enquiryAppointments.length / rowsPerPageENQ,
+                              )}
+                              page={pageENQ + 1}
+                              onChange={(e, val) => setPageENQ(val - 1)}
+                              shape="rounded"
+                              className="page-item"
+                            />
+                          </Stack>
+                        </TableContainer>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabPanel>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Dialog
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+        fullWidth={fullWidth}
+        maxWidth="sm"
+      >
+        <div className="main-card-header">
+          <div className="note-hd">
+            <h6>Edit Appointment</h6>
+          </div>
+          <div className="cross-icon" onClick={() => setOpenEdit(false)}>
+            <i className="fa-solid fa-xmark"></i>
+          </div>
+        </div>
+        <DialogContent className="main-box view-table-detail">
+          <Box
+            className="contact-form"
+            component="form"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              width: "fit-content",
+              minHeight: "350px",
+            }}
+          >
+            <div className="row">
+              <div className="col-md-12">
+                <div className="field-set">
+                  <FormControl fullWidth size="small">
+                    <label>
+                      Select Hospital<span className="text-danger">*</span>
+                    </label>
+                    <Select
+                      value={editData.hospital_id || ""}
+                      onChange={(e) => {
+                        const selectedId = e.target.value;
+
+                        const selectedHospital = hospitalList.find(
+                          (item) => item.id === selectedId,
+                        );
+                        setEditData((prev) => ({
+                          ...prev,
+                          hospital_id: selectedId,
+                          hospitalName: selectedHospital?.name || "",
+                        }));
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            maxHeight: 250,
+                          },
+                        },
+                      }}
+                    >
+                      {hospitalList?.map((item) => (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="field-set">
+                  <label>
+                    Health Issue<span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editData.health_issue || ""}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        health_issue: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="field-set">
+                  <label>
+                    Treatment Name<span className="text-danger">*</span>
+                  </label>
+                  <Autocomplete
+                    options={Treatment || []}
+                    getOptionLabel={(option) => option.name || ""}
+                    value={
+                      Treatment?.find(
+                        (item) => item.id == editData.treatment_id,
+                      ) || null
+                    }
+                    onChange={(e, value) => {
+                      setEditData((prev) => ({
+                        ...prev,
+                        treatment_id: value?.id || "",
+                        treatment_name: value?.name || "",
+                      }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} placeholder="Select Treatment" />
+                    )}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        padding: "0px",
+                      },
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="field-set">
+                  <label>
+                    Date<span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={editData.appointment_Date?.split("T")[0] || ""}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        appointment_Date: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="field-set">
+                  <label>
+                    Time<span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="time"
+                    className="form-control"
+                    value={editData.appointment_Time?.slice(0, 5) || ""}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        appointment_Time: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="field-set">
+                  <label>
+                    Notes<span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editData.discussionNotes || ""}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        discussionNotes: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="field-set">
+                  <label>
+                    Upload Reports<span className="text-danger">*</span>
+                  </label>
+                  <span className="text-danger"></span>
+                  <input
+                    type="file"
+                    multiple
+                    className="form-control"
+                    onChange={(e) => setEditImages(Array.from(e.target.files))}
+                  />
                 </div>
               </div>
             </div>
-          </div>
-        </TabPanel>
-        <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth={fullWidth} maxWidth="sm">
-          <div className="main-card-header">
+          </Box>
+          <DialogActions className="submit-main">
+            <Button
+              onClick={handleUpdate}
+              className="add-button"
+              variant="contained"
+            >
+              Edit Appointment
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={openViewEnq}
+        onClose={handleCloseViewEnq}
+      >
+        <div className="main-card-header">
+          <div className="top-fixed-hd">
             <div className="note-hd">
-              <h6>Edit Appointment</h6>
+              <h6>Enquiry Appointment Details</h6>
             </div>
-            <div className="cross-icon" onClick={() => setOpenEdit(false)}>
+            <div className="cross-icon" onClick={handleCloseViewEnq}>
               <i className="fa-solid fa-xmark"></i>
             </div>
           </div>
-          <DialogContent className="main-box view-table-detail">
-            <Box className="contact-form" component="form"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "fit-content",
-                minHeight: "350px",
-              }}>
+        </div>
+        <DialogContent className="main-box view-table-detail">
+          {selectedEnq && (
+            <Box>
               <div className="row">
-                <div className="col-md-12">
-                  <div className="field-set">
-                    <FormControl fullWidth size="small">
-                      <label>Select Hospital<span className="text-danger">*</span></label>
-                      <Select
-                        value={editData.hospital_id || ""}
-                        onChange={(e) => {
-                          const selectedId = e.target.value;
+                <div className="col-md-12 mb-3">
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Patient Name"
+                            value={selectedEnq.patientName}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Hospital Name"
+                            value={selectedEnq.hospitalName}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Health Issue"
+                            value={selectedEnq.health_issue}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Treatment Name"
+                            value={selectedEnq.treatment_name}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Appointment Date"
+                            value={new Date(
+                              selectedEnq.appointment_Date,
+                            ).toLocaleDateString("en-GB")}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Appointment Time"
+                            value={selectedEnq.appointment_Time}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="Status" value={selectedEnq.status} />
+                        </div>
 
-                          const selectedHospital = hospitalList.find(
-                            (item) => item.id === selectedId,
-                          );
-                          setEditData((prev) => ({
-                            ...prev,
-                            hospital_id: selectedId,
-                            hospitalName: selectedHospital?.name || "",
-                          }));
-                        }}
-                        MenuProps={{
-                          PaperProps: {
-                            style: {
-                              maxHeight: 250,
-                            },
-                          },
-                        }}
-                      >
-                        {hospitalList?.map((item) => (
-                          <MenuItem key={item.id} value={item.id}>
-                            {item.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-                <div className="col-md-12">
-                  <div className="field-set">
-                    <label>Health Issue<span className="text-danger">*</span></label>
-                    <input type="text" className="form-control" value={editData.health_issue || ""}
-                      onChange={(e) =>
-                        setEditData({ ...editData, health_issue: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-md-12">
-                  <div className="field-set">
-                    <label>Treatment Name<span className="text-danger">*</span></label>
-                    <Autocomplete
-                      options={Treatment || []}
-                      getOptionLabel={(option) => option.name || ""}
-                      value={
-                        Treatment?.find(
-                          (item) => item.id == editData.treatment_id,
-                        ) || null
-                      }
-                      onChange={(e, value) => {
-                        setEditData((prev) => ({
-                          ...prev,
-                          treatment_id: value?.id || "",
-                          treatment_name: value?.name || "",
-                        }));
-                      }}
-                      renderInput={(params) => (
-                        <TextField {...params} placeholder="Select Treatment" />
-                      )}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          padding: "0px",
-                        },
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-12">
-                  <div className="field-set">
-                    <label>Date<span className="text-danger">*</span></label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      value={editData.appointment_Date?.split("T")[0] || ""}
-                      onChange={(e) =>
-                        setEditData({
-                          ...editData,
-                          appointment_Date: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-md-12">
-                  <div className="field-set">
-                    <label>Time<span className="text-danger">*</span></label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      value={editData.appointment_Time?.slice(0, 5) || ""}
-                      onChange={(e) =>
-                        setEditData({
-                          ...editData,
-                          appointment_Time: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-md-12">
-                  <div className="field-set">
-                    <label>Notes<span className="text-danger">*</span></label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={editData.discussionNotes || ""}
-                      onChange={(e) =>
-                        setEditData({
-                          ...editData,
-                          discussionNotes: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-md-12">
-                  <div className="field-set">
-                    <label>Upload Reports<span className="text-danger">*</span></label>
-                    <span className="text-danger"></span>
-                    <input
-                      type="file"
-                      multiple
-                      className="form-control"
-                      onChange={(e) => setEditImages(Array.from(e.target.files))}
-                    />
+                        {/* Notes full width */}
+                        <div className="col-md-12">
+                          <h6>Notes</h6>
+                          <p>{selectedEnq.discussionNotes || "-"}</p>
+                        </div>
+
+                        {/* Reports full width */}
+                        <div className="col-md-12 mt-2">
+                          <h6>Reports</h6>
+
+                          {selectedEnq.reports?.length > 0 ? (
+                            selectedEnq.reports.map((file, i) => (
+                              <div key={i}>
+                                <a
+                                  href={`${baseu11}/${file}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  View Report {i + 1}
+                                </a>
+                              </div>
+                            ))
+                          ) : (
+                            <p>-</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </Box>
-            <DialogActions className="submit-main">
-              <Button
-                onClick={handleUpdate}
-                className="add-button"
-                variant="contained"
-              >
-                Edit Appointment
-              </Button>
-            </DialogActions>
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          fullWidth={fullWidth}
-          maxWidth={maxWidth}
-          open={openViewEnq}
-          onClose={handleCloseViewEnq}
-        >
-          <div className="main-card-header">
-            <div className="top-fixed-hd">
-              <div className="note-hd">
-                <h6>Enquiry Appointment Details</h6>
-              </div>
-              <div className="cross-icon" onClick={handleCloseViewEnq}>
-                <i className="fa-solid fa-xmark"></i>
-              </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={open}
+        onClose={handleClose}
+      >
+        <div className="main-card-header">
+          <div className="top-fixed-hd">
+            <div className="note-hd">
+              <h6>Detail's</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose}>
+              <i className="fa-solid fa-xmark"></i>
             </div>
           </div>
-          <DialogContent className="main-box view-table-detail">
-            {selectedEnq && (
-              <Box>
-                <div className="row">
-                  <div className="col-md-12 mb-3">
-                    <div className="card">
-                      <div className="card-body">
-                        <div className="row">
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Patient Name"
-                              value={selectedEnq.patientName}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Hospital Name"
-                              value={selectedEnq.hospitalName}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Health Issue"
-                              value={selectedEnq.health_issue}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Treatment Name"
-                              value={selectedEnq.treatment_name}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Appointment Date"
-                              value={new Date(
-                                selectedEnq.appointment_Date,
-                              ).toLocaleDateString("en-GB")}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Appointment Time"
-                              value={selectedEnq.appointment_Time}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Status"
-                              value={selectedEnq.status}
-                            />
-                          </div>
-
-                          {/* Notes full width */}
-                          <div className="col-md-12">
-                            <h6>Notes</h6>
-                            <p>{selectedEnq.discussionNotes || "-"}</p>
-                          </div>
-
-                          {/* Reports full width */}
-                          <div className="col-md-12 mt-2">
-                            <h6>Reports</h6>
-
-                            {selectedEnq.reports?.length > 0 ? (
-                              selectedEnq.reports.map((file, i) => (
-                                <div key={i}>
-                                  <a
-                                    href={`${baseu11}/${file}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    View Report {i + 1}
-                                  </a>
-                                </div>
-                              ))
-                            ) : (
-                              <p>-</p>
-                            )}
-                          </div>
+        </div>
+        <DialogContent className="main-box view-table-detail">
+          {selectedRecord && (
+            <Box>
+              <div className="row">
+                <div className="col-md-12 mb-3">
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-md-4">
+                          <InfoItem label="Name" value={selectedRecord.name} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Email"
+                            value={selectedRecord.email}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Phone Number"
+                            value={selectedRecord.phone}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Appointment Type"
+                            value={selectedRecord.apt_type}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem label="City" value={selectedRecord.city} />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Country"
+                            value={selectedRecord.country}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Doctor"
+                            value={selectedRecord.doctor}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Health Issue"
+                            value={selectedRecord.health_issue}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Home Visit Address"
+                            value={selectedRecord.home_visit_address}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Paid Amount"
+                            value={selectedRecord.paid_amount}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <InfoItem
+                            label="Treatment"
+                            value={selectedRecord.treatment}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </Box>
-            )}
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          fullWidth={fullWidth}
-          maxWidth={maxWidth}
-          open={open}
-          onClose={handleClose}
-        >
-          <div className="main-card-header">
-            <div className="top-fixed-hd">
-              <div className="note-hd">
-                <h6>Detail's</h6>
               </div>
-              <div className="cross-icon" onClick={handleClose}>
-                <i className="fa-solid fa-xmark"></i>
-              </div>
-            </div>
-          </div>
-          <DialogContent className="main-box view-table-detail">
-            {selectedRecord && (
-              <Box>
-                <div className="row">
-                  <div className="col-md-12 mb-3">
-                    <div className="card">
-                      <div className="card-body">
-                        <div className="row">
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Name"
-                              value={selectedRecord.name}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Email"
-                              value={selectedRecord.email}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Phone Number"
-                              value={selectedRecord.phone}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Appointment Type"
-                              value={selectedRecord.apt_type}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="City"
-                              value={selectedRecord.city}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Country"
-                              value={selectedRecord.country}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Doctor"
-                              value={selectedRecord.doctor}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Health Issue"
-                              value={selectedRecord.health_issue}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Home Visit Address"
-                              value={selectedRecord.home_visit_address}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Paid Amount"
-                              value={selectedRecord.paid_amount}
-                            />
-                          </div>
-                          <div className="col-md-4">
-                            <InfoItem
-                              label="Treatment"
-                              value={selectedRecord.treatment}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Box>
-            )}
-          </DialogContent>
-        </Dialog>
-        <ToastContainer />
-      </div>
+            </Box>
+          )}
+        </DialogContent>
+      </Dialog>
+      <ToastContainer />
     </>
   );
 }
