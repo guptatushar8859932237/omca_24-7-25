@@ -100,29 +100,10 @@ export default function Countries() {
       console.error(error);
     }
   };
-  // const handleFilter = (event) => {
-  //   const value = event.target.value.toLowerCase();
-  //   setFilterValue(value);
-  //   if (value === "") {
-  //     setRows(searchApiData);
-  //   } else {
-  //     const filtered = searchApiData.filter((item) => {
-  //       const name = item.name?.toLowerCase() || "";
-  //       const code = item.code?.toLowerCase() || "";
-  //       const dial_code = item.dial_code?.toLowerCase() || "";
-  //       return (
-  //         name.includes(value) ||
-  //         code.includes(value) ||
-  //         dial_code.includes(value)
-  //       );
-  //     });
-  //     setRows(filtered);
-  //   }
-  // };
   const handleFilter = (event) => {
     const value = event.target.value.toLowerCase();
     setFilterValue(value);
-    setPage(0); 
+    setPage(0);
     if (value === "") {
       setRows(searchApiData);
     } else {
@@ -142,7 +123,7 @@ export default function Countries() {
   const handleClearFilter = () => {
     setFilterValue("");
     setRows(searchApiData);
-    setPage(0); // ⭐ ADD THIS
+    setPage(0);
   };
   useEffect(() => {
     setPage(0);
@@ -152,38 +133,39 @@ export default function Countries() {
     <>
       <div className="page-wrapper">
         <div className="content">
-          <div className="row">
+          <div className="row gx-3">
             <div className="col-md-12">
               <div className="country-top">
-                <h4 className="page-title mb-0">Manage Countries</h4>
+                <div className="topmainhd mb-0">
+                  <h6>Manage Countries</h6>
+                </div>
                 <div className="search-btn-main">
-                  <TextField
-                    className="field-count"
-                    sx={{ width: "100%" }}
-                    label="Search "
-                    size="small"
-                    value={filterValue}
-                    onChange={handleFilter}
-                    InputLabelProps={{ shrink: true }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          {filterValue && (
-                            <IconButton onClick={handleClearFilter} edge="end">
-                              <ClearIcon />
-                            </IconButton>
-                          )}
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+                  <div className="">
+                    <TextField
+                      className="field-count"
+                      label="Search"
+                      size="small"
+                      value={filterValue}
+                      onChange={handleFilter}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {filterValue && (
+                              <IconButton onClick={handleClearFilter} edge="end" className="input-set">
+                                <ClearIcon />
+                              </IconButton>
+                            )}
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="main_content">
-            <div className="row">
-              <div className="col-md-12">
+            <div className="col-md-12">
+              <div className="main_content">
                 <div className="table-responsive">
                   <TableContainer
                     component={Paper}
@@ -207,10 +189,10 @@ export default function Countries() {
                       </TableHead>
                       <TableBody>
                         {rows.length > 0 &&
-                        rows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage,
-                        ).length > 0 ? (
+                          rows.slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          ).length > 0 ? (
                           rows
                             .slice(
                               page * rowsPerPage,
@@ -281,9 +263,9 @@ export default function Countries() {
               </div>
             </div>
           </div>
-          <ToastContainer />
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

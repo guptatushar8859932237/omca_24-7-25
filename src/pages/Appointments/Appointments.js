@@ -454,10 +454,92 @@ export default function Appointments() {
         <div className="content">
           <div className="row gx-3">
             <div className="col-md-12">
+              <div className="topmainhd">
+                <h6>Manage Appointments</h6>
+              </div>
+            </div>
+            <div className="col-md-12">
               <div className="country-top">
-                <div className="topmainhd mb-0">
-                  <h6>Manage Appointments</h6>
-                </div>
+                <Box>
+                  <Tabs
+                    value={tabValue}
+                    onChange={handleTabChange}
+                    TabIndicatorProps={{
+                      style: {
+                        display: "none",
+                      },
+                    }}
+                    sx={{
+                      minHeight: "40px",
+                      "& .MuiTabs-flexContainer": {
+                        gap: "10px",
+                      },
+                    }}
+                  >
+                    <Tab
+                      label="Appointments By CRM"
+                      sx={{
+                        textTransform: "none",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        fontFamily: "Rubik",
+                        padding: "8px 18px",
+                        lineHeight: "22px",
+                        border: "1px solid #ccc",
+                        borderRadius: "5px",
+                        color: "#666",
+                        transition: "0.3s",
+                        minHeight: "0px",
+                        "&.Mui-selected": {
+                          background: "#22c7b8",
+                          color: "#fff",
+                        },
+                      }}
+                    />
+
+                    <Tab
+                      label="Appointments By APP"
+                      sx={{
+                        textTransform: "none",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        fontFamily: "Rubik",
+                        padding: "8px 18px",
+                        lineHeight: "22px",
+                        border: "1px solid #ccc",
+                        borderRadius: "5px",
+                        color: "#666",
+                        transition: "0.3s",
+                        minHeight: "0px",
+                        "&.Mui-selected": {
+                          background: "#22c7b8",
+                          color: "#fff",
+                        },
+                      }}
+                    />
+
+                    <Tab
+                      label="Enquiry Appointments"
+                      sx={{
+                        textTransform: "none",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        fontFamily: "Rubik",
+                        padding: "8px 18px",
+                        lineHeight: "22px",
+                        border: "1px solid #ccc",
+                        borderRadius: "5px",
+                        color: "#666",
+                        transition: "0.3s",
+                        minHeight: "0px",
+                        "&.Mui-selected": {
+                          background: "#22c7b8",
+                          color: "#fff",
+                        },
+                      }}
+                    />
+                  </Tabs>
+                </Box>
                 <div className="search-btn-main">
                   <div className="">
                     <TextField
@@ -503,88 +585,6 @@ export default function Appointments() {
                   )}
                 </div>
               </div>
-            </div>
-            <div className="col-md-12">
-              <Box>
-                <Tabs
-                  value={tabValue}
-                  onChange={handleTabChange}
-                  TabIndicatorProps={{
-                    style: {
-                      display: "none",
-                    },
-                  }}
-                  sx={{
-                    minHeight: "40px",
-                    "& .MuiTabs-flexContainer": {
-                      gap: "10px",
-                    },
-                  }}
-                >
-                  <Tab
-                    label="Appointments By CRM"
-                    sx={{
-                      textTransform: "none",
-                      fontSize: "12px",
-                      fontWeight: 500,
-                      fontFamily: "Rubik",
-                      padding: "8px 18px",
-                      lineHeight: "22px",
-                      border: "1px solid #ccc",
-                      borderRadius: "5px",
-                      color: "#666",
-                      transition: "0.3s",
-                      minHeight: "0px",
-                      "&.Mui-selected": {
-                        background: "#22c7b8",
-                        color: "#fff",
-                      },
-                    }}
-                  />
-
-                  <Tab
-                    label="Appointments By APP"
-                    sx={{
-                      textTransform: "none",
-                      fontSize: "12px",
-                      fontWeight: 500,
-                      fontFamily: "Rubik",
-                      padding: "8px 18px",
-                      lineHeight: "22px",
-                      border: "1px solid #ccc",
-                      borderRadius: "5px",
-                      color: "#666",
-                      transition: "0.3s",
-                      minHeight: "0px",
-                      "&.Mui-selected": {
-                        background: "#22c7b8",
-                        color: "#fff",
-                      },
-                    }}
-                  />
-
-                  <Tab
-                    label="Enquiry Appointments"
-                    sx={{
-                      textTransform: "none",
-                      fontSize: "12px",
-                      fontWeight: 500,
-                      fontFamily: "Rubik",
-                      padding: "8px 18px",
-                      lineHeight: "22px",
-                      border: "1px solid #ccc",
-                      borderRadius: "5px",
-                      color: "#666",
-                      transition: "0.3s",
-                      minHeight: "0px",
-                      "&.Mui-selected": {
-                        background: "#22c7b8",
-                        color: "#fff",
-                      },
-                    }}
-                  />
-                </Tabs>
-              </Box>
             </div>
             <div className="col-md-12">
               <TabPanel value={tabValue} index={0}>

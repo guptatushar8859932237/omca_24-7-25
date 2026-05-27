@@ -92,116 +92,119 @@ export default function Roles() {
   return (
     <div className="page-wrapper">
       <div className="content">
-        <div className="country-top">
-          <h4>Manage Roles</h4>
-          <button className="add-button" onClick={() => setPopupopen(true)}>
-            + New Role
-          </button>
-        </div>
-        <TableContainer component={Paper} style={{ overflowX: "auto" }}>
-          <Table
-            stickyHeader
-            aria-label="sticky table"
-            className="table-no-card"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Sr.No</TableCell>
-                <TableCell>Role</TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((item, index) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                    <TableCell>{item.role}</TableCell>
-                    <TableCell>
-                      {" "}
-                      <i
-                        className="fa-solid fa-trash text-danger"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleDeleteExternal(item)}
-                      ></i>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-          <Stack spacing={2}>
-            <Pagination
-              className="page-nation"
-              count={Math.ceil(rows.length / rowsPerPage)}
-              page={page + 1}
-              onChange={(event, value) => setPage(value - 1)}
-              color="primary"
-            />
-          </Stack>
-        </TableContainer>
-      </div>
-      {/* <Dialog open={popupopen} onClose={() => setPopupopen(false)}>
-        <DialogContent>
-          <Box className="contact-form">
-            <label>Enter Role *</label>
-            <textarea
-              className="form-control"
-              placeholder="Enter role"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-            />
-            <DialogActions>
-              <Button onClick={handleAddRole} variant="contained">
-                Submit
-              </Button>
-            </DialogActions>
-          </Box>
-        </DialogContent>
-      </Dialog> */}
-
-      <React.Fragment>
-        <Dialog
-          fullWidth={true}
-          maxWidth="sm"
-          open={popupopen}
-          onClose={() => setPopupopen(false)}
-        >
-          {/* Header */}
-          <div className="main-card-header">
-            <div className="note-hd">
-              <h6>Add Role</h6>
-            </div>
-            <div className="cross-icon" onClick={() => setPopupopen(false)}>
-              <i className="fa-solid fa-xmark"></i>
+        <div className="row gx-3">
+          <div className="col-md-12">
+            <div className="country-top">
+              <div className="topmainhd mb-0">
+                <h6>Manage Roles</h6>
+              </div>
+              <div className="">
+                <button
+                  className="add-button"
+                  onClick={() => setPopupopen(true)}
+                >
+                  <i className="fa fa-plus me-2"></i>New Role
+                </button>
+              </div>
             </div>
           </div>
-
-          {/* Body */}
-          <DialogContent className="main-box">
-            <Box noValidate component="form" className="contact-form">
-              <div className="field-set">
-                <label>
-                  Role<span className="text-danger">*</span>
-                </label>
-                <textarea
-                  className="form-control"
-                  placeholder="Enter role"
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                />
+          <div className="col-md-12">
+            <div className="main_content">
+              <div className="table-responsive">
+                <TableContainer component={Paper} style={{ overflowX: "auto" }}>
+                  <Table
+                    stickyHeader
+                    aria-label="sticky table"
+                    className="table-no-card"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Sr.No.</TableCell>
+                        <TableCell>Role</TableCell>
+                        <TableCell>Action</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage,
+                        )
+                        .map((item, index) => (
+                          <TableRow key={item.id}>
+                            <TableCell>
+                              {page * rowsPerPage + index + 1}
+                            </TableCell>
+                            <TableCell>{item.role}</TableCell>
+                            <TableCell>
+                              <div className="action-icon">
+                                <i
+                                  className="fa-solid fa-trash"
+                                  onClick={() => handleDeleteExternal(item)}
+                                ></i>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                  <Stack spacing={2}>
+                    <Pagination
+                      className="page-nation"
+                      count={Math.ceil(rows.length / rowsPerPage)}
+                      page={page + 1}
+                      onChange={(event, value) => setPage(value - 1)}
+                      color="primary"
+                    />
+                  </Stack>
+                </TableContainer>
+              </div>
+            </div>
+          </div>
+          <React.Fragment>
+            <Dialog
+              fullWidth={true}
+              maxWidth="sm"
+              open={popupopen}
+              onClose={() => setPopupopen(false)}
+            >
+              {/* Header */}
+              <div className="main-card-header">
+                <div className="note-hd">
+                  <h6>Add Role</h6>
+                </div>
+                <div className="cross-icon" onClick={() => setPopupopen(false)}>
+                  <i className="fa-solid fa-xmark"></i>
+                </div>
               </div>
 
-              {/* Submit */}
-              <DialogActions className="submit-main">
-                <Button variant="contained" onClick={handleAddRole}>
-                  Submit
-                </Button>
-              </DialogActions>
-            </Box>
-          </DialogContent>
-        </Dialog>
-      </React.Fragment>
+              {/* Body */}
+              <DialogContent className="main-box">
+                <Box noValidate component="form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Role<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      className="form-control"
+                      placeholder="Enter role"
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Submit */}
+                  <DialogActions className="submit-main">
+                    <Button variant="contained" onClick={handleAddRole}>
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </Box>
+              </DialogContent>
+            </Dialog>
+          </React.Fragment>
+        </div>
+      </div>
     </div>
   );
 }

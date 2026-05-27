@@ -578,7 +578,7 @@ export default function Inquiry() {
   const handleClearFilter = () => {
     setFilterValue("");
     setRows(searchApiData);
-    setPage(0); // ⭐ RESET PAGE
+    setPage(0);
   };
   useEffect(() => {
     setPage(0);
@@ -777,7 +777,6 @@ export default function Inquiry() {
       formData.append("enq_userName", appointmentData.enq_userName);
       formData.append("enq_phoneNumber", appointmentData?.enq_phoneNumber);
       formData.append("user_id", appointmentData?.user_id);
-      // formData.append("enq_country_code", appointmentData.enq_country_code);
       formData.append("enq_email", appointmentData.enq_email);
       images.forEach((file) => {
         formData.append("reports", file);
@@ -796,24 +795,6 @@ export default function Inquiry() {
     }
   };
   const usrFount = localStorage.getItem("_id");
-  // const handleSubmitAppointment = async () => {
-  //   const { patient_name, doctor_name, date, time } = appointmentData;
-
-  //   if (!patient_name || !doctor_name || !date || !time) {
-  //     return Swal.fire("Error", "All fields are required", "error");
-  //   }
-
-  //   try {
-  //     const res = await axios.post(`${AdminBaseUrl}appointment/store`, appointmentData);
-
-  //     if (res?.data?.success) {
-  //       Swal.fire("Success", "Appointment added successfully", "success");
-  //       handleCloseAppointment();
-  //     }
-  //   } catch (error) {
-  //     Swal.fire("Error", "Something went wrong", "error");
-  //   }
-  // };
   const handleAppointmentChange = (e) => {
     const { name, value } = e.target;
     setAppointmentData((prev) => ({
@@ -881,7 +862,7 @@ export default function Inquiry() {
         console.log(response.data.data);
         setHospitalList(response.data.data);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const getUserId = async () => {
     try {
@@ -910,106 +891,133 @@ export default function Inquiry() {
     <>
       <div className="page-wrapper">
         <div className="content">
-          <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
-            <Tabs value={tabValue} onChange={handleTabChange}>
-              {filteredTabs.map((tab) => (
-                <Tab key={tab.value} label={tab.label} value={tab.value} />
-              ))}
-            </Tabs>
-          </Box>
-          <div className="row">
+          <div className="row gx-3">
+            <div className="col-md-12">
+              <div className="topmainhd">
+                <h6>
+                  {tabValue === 0
+                    ? "Manage Enquiries"
+                    : tabValue === 1
+                      ? "Manage Ambulance Service"
+                      : tabValue === 2
+                        ? "Manage Air Medical escort"
+                        : tabValue === 3
+                          ? "Manage Treatment Estimate"
+                          : ""}
+                </h6>
+              </div>
+            </div>
             <div className="col-md-12">
               <div className="country-top">
                 <div className="">
-                  <h4 className="page-title mb-0">
-                    {tabValue === 0
-                      ? "Enquiries"
-                      : tabValue === 1
-                        ? "Ambulance Service"
-                        : tabValue === 2
-                          ? "Air Medical escort"
-                          : tabValue === 3
-                            ? "Treatment Estimate"
-                            : ""}
-                  </h4>
+                  <Box>
+                    <Tabs
+                      sx={{
+                        minHeight: "40px",
+                        "& .MuiTabs-flexContainer": {
+                          gap: "10px",
+                        },
+                      }}
+                      TabIndicatorProps={{
+                        style: { display: "none" },
+                      }}
+                      value={tabValue}
+                      onChange={handleTabChange}
+                    >
+                      {filteredTabs.map((tab) => (
+                        <Tab
+                          sx={{
+                            textTransform: "none",
+                            fontSize: "12px",
+                            fontWeight: 500,
+                            fontFamily: "Rubik",
+                            padding: "8px 18px",
+                            lineHeight: "22px",
+                            border: "1px solid #ccc",
+                            borderRadius: "5px",
+                            color: "#666",
+                            transition: "0.3s",
+                            minHeight: "0px",
+                            "&.Mui-selected": {
+                              background: "#22c7b8",
+                              color: "#fff",
+                            },
+                          }}
+                          key={tab.value}
+                          label={tab.label}
+                          value={tab.value}
+                        />
+                      ))}
+                    </Tabs>
+                  </Box>
                 </div>
                 <div className="search-btn-main">
-                  <div className="mr-3">
-                    <TextField
-                      sx={{ width: "100%" }}
-                      className="field-count"
-                      label="Search"
-                      id="outlined-required"
-                      size="small"
-                      value={filterValue}
-                      onChange={handleFilter} // Pass event directly
-                      InputLabelProps={{ shrink: true }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            {filterValue && (
-                              <IconButton
-                                onClick={handleClearFilter}
-                                edge="end"
-                                className="input-set"
-                              >
-                                <ClearIcon />
-                              </IconButton>
-                            )}
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </div>
+                  <TextField
+                    className="field-count"
+                    label="Search"
+                    id="outlined-required"
+                    size="small"
+                    value={filterValue}
+                    onChange={handleFilter}
+                    InputLabelProps={{ shrink: true }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          {filterValue && (
+                            <IconButton
+                              onClick={handleClearFilter}
+                              edge="end"
+                              className="input-set"
+                            >
+                              <ClearIcon />
+                            </IconButton>
+                          )}
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
                   {tabValue === 0 ? (
-                    <div className="">
-                      <div className="table-top-btn">
-                        <Link to="/Admin/add-Enquiry" className="add-button">
+                    <>
+                      <Link to="/Admin/add-Enquiry" className="add-button">
+                        <span>
+                          <i className="fa fa-plus me-2"></i>
+                        </span>
+                        New Enquiry
+                      </Link>
+                      <button
+                        onClick={(e) => handleClickOpen3(e)}
+                        className="add-button"
+                      >
+                        <span>
+                          <i className="fa fa-file-excel-o me-2"></i>
+                        </span>
+                        Import File
+                      </button>
+                      <button onClick={handleSampleFile} className="add-button">
+                        <span>
+                          <i className="fa fa-file me-2"></i>
+                        </span>
+                        Export File
+                      </button>
+                      {role === "Admin" ? (
+                        <button onClick={donloadpdf} className="add-button">
                           <span>
-                            <i className="fa fa-plus"></i>
+                            <i className="fa fa-file-pdf-o me-2"></i>
                           </span>
-                          New Enquiry
-                        </Link>
-                        <button
-                          onClick={(e) => handleClickOpen3(e)}
-                          className="add-button"
-                        >
-                          <span>
-                            <i className="fa fa-file-excel-o mx-1"></i>
-                          </span>{" "}
-                          Import File
+                          Pdf
                         </button>
-                        <button
-                          onClick={handleSampleFile}
-                          className="add-button"
-                        >
-                          <span>
-                            <i className="fa fa-file"></i>
-                          </span>
-                          Export File
-                        </button>
-                        {role === "Admin" ? (
-                          <button onClick={donloadpdf} className="add-button">
-                            <span>
-                              <i className="fa fa-file-pdf-o"></i>
-                            </span>
-                            pdf
-                          </button>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
+                      ) : (
+                        ""
+                      )}
+                    </>
                   ) : (
                     ""
                   )}
                 </div>
               </div>
             </div>
-          </div>
-          <div className="main_content">
-            <div className="row">
-              <div className="col-md-12">
+            <div className="col-md-12">
+              <div className="main_content">
                 <div className="table-responsive">
                   <TableContainer
                     component={Paper}
@@ -1072,17 +1080,6 @@ export default function Inquiry() {
                               Treating In
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>
-                            <TableSortLabel
-                              active={orderBy === "createdBy"}
-                              direction={
-                                orderBy === "createdBy" ? orderDirection : "asc"
-                              }
-                              onClick={() => handleRequestSort("createdBy")}
-                            >
-                              Created By
-                            </TableSortLabel>
-                          </TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "date"}
@@ -1109,7 +1106,6 @@ export default function Inquiry() {
                               Status
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>Status</TableCell> */}
                           <TableCell>Actions</TableCell>
                         </TableRow>
                       </TableHead>
@@ -1117,184 +1113,206 @@ export default function Inquiry() {
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage,
-                          )
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
                         ).length > 0 ? (
                           (pdfRowLimit
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage,
+                              )
                           ).map((info, i) => {
-                            console.log(info)
-                            return(
+                            console.log(info);
+                            return (
                               <>
-                               <TableRow
-                              role="checkbox"
-                              tabIndex={-1}
-                              key={info.code}
-                            >
-                              <TableCell>
-                                {pdfRowLimit
-                                  ? i + 1
-                                  : page * rowsPerPage + i + 1}
-                              </TableCell>
-                              <TableCell>{info.enquiryId}</TableCell>
-                              <TableCell
-                                style={{ cursor: "pointer" }}
-                                onClick={(e) => ViewDetail(e, tabValue, info)}
-                              >
-                                {info?.name?.length > 10
-                                  ? info.name.slice(0, 10) + "..."
-                                  : info.name}
-                              </TableCell>
-                              <TableCell>
-                                {" "}
-                                {info?.country?.length > 10
-                                  ? info.country.slice(0, 10) + "..."
-                                  : info.country}
-                              </TableCell>
-                              <TableCell>
-                                {" "}
-                                {info?.treatingIn?.length > 10
-                                  ? info.treatingIn.slice(0, 10) + "..."
-                                  : info.treatingIn}
-                              </TableCell>
-                              {/* <TableCell>{info.createdBy}</TableCell> */}
-                              <TableCell>
-                                {new Date(info.date).toLocaleDateString(
-                                  "en-GB",
-                                )}
-                                -
-                                {new Date(info.date).toLocaleTimeString(
-                                  "en-GB",
-                                  {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                  },
-                                )}
-                              </TableCell>
-
-                              <TableCell>
-                                {info.Enquiry_status === "Confirmed" ? (
-                                  // ✅ Only show text
-                                  <span style={{ fontWeight: "bold" }}>
-                                    Confirmed
-                                  </span>
-                                ) : (
-                                  // ✅ Otherwise show dropdown
-                                  <FormControl
-                                    sx={{ m: 1, minWidth: 120 }}
-                                    size="small"
-                                    className="cont-main"
+                                <TableRow
+                                  role="checkbox"
+                                  tabIndex={-1}
+                                  key={info.code}
+                                >
+                                  <TableCell>
+                                    {pdfRowLimit
+                                      ? i + 1
+                                      : page * rowsPerPage + i + 1}
+                                  </TableCell>
+                                  <TableCell>{info.enquiryId}</TableCell>
+                                  <TableCell
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) =>
+                                      ViewDetail(e, tabValue, info)
+                                    }
                                   >
-                                    <Select
-                                      value={
-                                        seekerStatus[info.enquiryId]
-                                          ? seekerStatus[info.enquiryId]
-                                          : info.Enquiry_status === "Hold"
-                                            ? "2"
-                                            : info.Enquiry_status ===
-                                              "Follow-Up"
-                                              ? "3"
-                                              : info.Enquiry_status === "Dead"
-                                                ? "4"
-                                                : "0"
-                                      }
-                                      onChange={(e) =>
-                                        handleChange(
-                                          e,
-                                          info.enquiryId,
-                                          tabValue,
-                                          info,
-                                        )
-                                      }
-                                      displayEmpty
-                                      className="status-direct"
-                                    >
-                                      <MenuItem value="0">Pending</MenuItem>
-                                      <MenuItem value="1">Confirmed</MenuItem>
-                                      <MenuItem value="2">Hold</MenuItem>
-                                      <MenuItem value="3">Follow-up</MenuItem>
-                                      <MenuItem value="4">Closed</MenuItem>
-                                    </Select>
-                                  </FormControl>
-                                )}
-                              </TableCell>
-                              <TableCell className="action-icon">
-                                {tabValue === 0 ? (
-                                  <>
-                                    <i
-                                      className="fa-solid fa-notes-medical"
-                                      onClick={(e) =>
-                                        handleClickOpen2(e, info.enquiryId)
-                                      }
-                                    ></i>
-                                  </>
-                                ) : (
-                                  ""
-                                )}
-                              {tabValue === 0 ? (
-  !info?.hasDoctorReview && (
-    <i
-      className="fa-solid fa-stethoscope"
-      onClick={(e) =>
-        handleClickOpen4(e, info.enquiryId, info)
-      }
-    ></i>
-  )
-) : (
-  Object.keys(info?.raw?.doctor_review || {}).length === 0 && (
-    <i
-      className="fa-solid fa-stethoscope"
-      onClick={(e) =>
-        handleClickOpen4(e, info.enquiryId, info)
-      }
-    ></i>
-  )
-)}
-                                 { info?.hasAppointment ===true ?"":
-                                <i className="fa-solid fa-calendar-plus"
-                                  title="Add Appointment"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => handleOpenAppointment(info)}
-                                ></i>}
-                                <VisibilityIcon
-                                  className="eye-icon"
-                                  onClick={(e) => ViewDetail(e, tabValue, info)}
-                                />
-                                {tabValue === 0 ? (
-                                  <>
-                                    <i
-                                      className="fa-solid fa-pen-to-square"
-                                      onClick={(e) =>
-                                        EditButton(e, info.enquiryId)
-                                      }
-                                    ></i>
-                                    {localStorage.getItem("Role") ===
-                                      "Admin" && (
+                                    {info?.name?.length > 10
+                                      ? info.name.slice(0, 10) + "..."
+                                      : info.name}
+                                  </TableCell>
+                                  <TableCell>
+                                    {" "}
+                                    {info?.country?.length > 10
+                                      ? info.country.slice(0, 10) + "..."
+                                      : info.country}
+                                  </TableCell>
+                                  <TableCell>
+                                    {" "}
+                                    {info?.treatingIn?.length > 10
+                                      ? info.treatingIn.slice(0, 10) + "..."
+                                      : info.treatingIn}
+                                  </TableCell>
+                                  <TableCell>
+                                    {new Date(info.date).toLocaleDateString(
+                                      "en-GB",
+                                    )}
+                                    -
+                                    {new Date(info.date).toLocaleTimeString(
+                                      "en-GB",
+                                      {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                      },
+                                    )}
+                                  </TableCell>
+
+                                  <TableCell>
+                                    {info.Enquiry_status === "Confirmed" ? (
+                                      // ✅ Only show text
+                                      <span style={{ fontWeight: "bold" }}>
+                                        Confirmed
+                                      </span>
+                                    ) : (
+                                      // ✅ Otherwise show dropdown
+                                      <FormControl
+                                        sx={{ m: 1, minWidth: 120 }}
+                                        size="small"
+                                        className="cont-main"
+                                      >
+                                        <Select
+                                          value={
+                                            seekerStatus[info.enquiryId]
+                                              ? seekerStatus[info.enquiryId]
+                                              : info.Enquiry_status === "Hold"
+                                                ? "2"
+                                                : info.Enquiry_status ===
+                                                    "Follow-Up"
+                                                  ? "3"
+                                                  : info.Enquiry_status ===
+                                                      "Dead"
+                                                    ? "4"
+                                                    : "0"
+                                          }
+                                          onChange={(e) =>
+                                            handleChange(
+                                              e,
+                                              info.enquiryId,
+                                              tabValue,
+                                              info,
+                                            )
+                                          }
+                                          displayEmpty
+                                          className="status-direct"
+                                        >
+                                          <MenuItem value="0">Pending</MenuItem>
+                                          <MenuItem value="1">
+                                            Confirmed
+                                          </MenuItem>
+                                          <MenuItem value="2">Hold</MenuItem>
+                                          <MenuItem value="3">
+                                            Follow-up
+                                          </MenuItem>
+                                          <MenuItem value="4">Closed</MenuItem>
+                                        </Select>
+                                      </FormControl>
+                                    )}
+                                  </TableCell>
+                                  <TableCell className="action-icon">
+                                    {tabValue === 0 ? (
+                                      <>
                                         <i
-                                          className="fa-solid fa-trash"
-                                          onClick={() => handledelete(info)}
+                                          className="fa-solid fa-notes-medical"
+                                          onClick={(e) =>
+                                            handleClickOpen2(e, info.enquiryId)
+                                          }
                                         ></i>
-                                      )}
-                                  </>
-                                ) : (
-                                  <i
-                                    className="fa-solid fa-trash"
-                                    onClick={() => handleDeleteExternal(info)}
-                                  ></i>
-                                )}
-                              </TableCell>
-                            </TableRow>
+                                      </>
+                                    ) : (
+                                      ""
+                                    )}
+                                    {tabValue === 0
+                                      ? !info?.hasDoctorReview && (
+                                          <i
+                                            className="fa-solid fa-stethoscope"
+                                            onClick={(e) =>
+                                              handleClickOpen4(
+                                                e,
+                                                info.enquiryId,
+                                                info,
+                                              )
+                                            }
+                                          ></i>
+                                        )
+                                      : Object.keys(
+                                          info?.raw?.doctor_review || {},
+                                        ).length === 0 && (
+                                          <i
+                                            className="fa-solid fa-stethoscope"
+                                            onClick={(e) =>
+                                              handleClickOpen4(
+                                                e,
+                                                info.enquiryId,
+                                                info,
+                                              )
+                                            }
+                                          ></i>
+                                        )}
+                                    {info?.hasAppointment === true ? (
+                                      ""
+                                    ) : (
+                                      <i
+                                        className="fa-solid fa-calendar-plus"
+                                        title="Add Appointment"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() =>
+                                          handleOpenAppointment(info)
+                                        }
+                                      ></i>
+                                    )}
+                                    <VisibilityIcon
+                                      className="eye-icon"
+                                      onClick={(e) =>
+                                        ViewDetail(e, tabValue, info)
+                                      }
+                                    />
+                                    {tabValue === 0 ? (
+                                      <>
+                                        <i
+                                          className="fa-solid fa-pen-to-square"
+                                          onClick={(e) =>
+                                            EditButton(e, info.enquiryId)
+                                          }
+                                        ></i>
+                                        {localStorage.getItem("Role") ===
+                                          "Admin" && (
+                                          <i
+                                            className="fa-solid fa-trash"
+                                            onClick={() => handledelete(info)}
+                                          ></i>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <i
+                                        className="fa-solid fa-trash"
+                                        onClick={() =>
+                                          handleDeleteExternal(info)
+                                        }
+                                      ></i>
+                                    )}
+                                  </TableCell>
+                                </TableRow>
                               </>
-                            )
-                          }
-                           
-                          )
+                            );
+                          })
                         ) : (
                           <TableRow>
                             <TableCell colSpan={11}>
@@ -1325,458 +1343,456 @@ export default function Inquiry() {
             </div>
           </div>
         </div>
-      </div>
-      <div
-        id="delete_appointment"
-        className="modal fade delete-modal"
-        role="dialog"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-body text-center">
-              <img src="assets/img/sent.png" alt="" width="50" height="46" />
-              <h3>Are you sure want to delete this Appointment?</h3>
-              <div className="m-t-20">
-                {" "}
-                <a href="#" className="btn btn-white" data-dismiss="modal">
-                  Close
-                </a>
-                <button type="submit" className="btn btn-danger">
-                  Delete
-                </button>
+        <div
+          id="delete_appointment"
+          className="modal fade delete-modal"
+          role="dialog"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-body text-center">
+                <img src="assets/img/sent.png" alt="" width="50" height="46" />
+                <h3>Are you sure want to delete this Appointment?</h3>
+                <div className="m-t-20">
+                  {" "}
+                  <a href="#" className="btn btn-white" data-dismiss="modal">
+                    Close
+                  </a>
+                  <button type="submit" className="btn btn-danger">
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <React.Fragment>
-        <Dialog
-          fullWidth={fullWidth}
-          maxWidth={maxWidth}
-          open={open3}
-          onClose={handleClose3}
-        >
-          <div className="main-card-header">
-            <div className="note-hd">
-              <h6>Import Excel File</h6>
-            </div>
-            <div className="cross-icon" onClick={handleClose3}>
-              <i class="fa-solid fa-xmark"></i>
-            </div>
-          </div>
-          <DialogContent className="main-box">
-            <Box
-              noValidate
-              component="form"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "fit-content",
-              }}
-              className="Date / Time-form"
-            >
-              <Box>
-                <form id="contact-form" className="contact-form">
-                  <div className="field-set">
-                    <label>
-                      Choose File<span className="text-danger">*</span>
-                    </label>
-                    <input
-                      className="form-control"
-                      type="file"
-                      id="fileSelect"
-                      accept=".xlsx, .xls, .csv"
-                      onChange={(event) => {
-                        const file = event.target.files[0];
-                        console.log("Selected file:", file);
-                        setSelectedImage(file);
-                      }}
-                    />
-                  </div>
-                  <DialogActions className="submit-main">
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      onClick={(e) => handleImportFile(e)}
-                    >
-                      Submit
-                    </Button>
-                  </DialogActions>
-                </form>
-              </Box>
-            </Box>
-          </DialogContent>
-        </Dialog>
-      </React.Fragment>
-      <React.Fragment>
-        <Dialog
-          open={openAppointment}
-          onClose={handleCloseAppointment}
-          fullWidth
-          maxWidth="sm"
-        >
-          <div className="main-card-header">
-            <div className="note-hd">
-              <h6>Add Appointment</h6>
-            </div>
-            <div className="cross-icon" onClick={handleCloseAppointment}>
-              <i className="fa-solid fa-xmark"></i>
-            </div>
-          </div>
-          <DialogContent className="view-table-detail">
-            <Box className="contact-form">
-              <div className="field-set mb-2">
-                <FormControl fullWidth size="small">
-                  <label>Select Hospital</label>
-                  <Select
-                    value={appointmentData.hospital_id || ""}
-                    onChange={(e) => {
-                      const selectedId = e.target.value;
-
-                      const selectedHospital = hospitalList.find(
-                        (item) => item.id === selectedId,
-                      );
-
-                      setAppointmentData((prev) => ({
-                        ...prev,
-                        hospital_id: selectedId,
-                        hospitalName: selectedHospital?.name || "",
-                        hospital_email: selectedHospital?.email || "",
-                      }));
-                    }}
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          maxHeight: 250,
-                        },
-                      },
-                    }}
-                  >
-                    {hospitalList.map((item) => (
-                      <MenuItem key={item.id} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+        <React.Fragment>
+          <Dialog
+            fullWidth={fullWidth}
+            maxWidth={maxWidth}
+            open={open3}
+            onClose={handleClose3}
+          >
+            <div className="main-card-header">
+              <div className="note-hd">
+                <h6>Import Excel File</h6>
               </div>
-              <div className="field-set">
-                <label>Health Issue</label>
-                <input
-                  type="text"
-                  name="health_issue"
-                  className="form-control"
-                  value={appointmentData.health_issue}
-                  onChange={handleAppointmentChange}
-                />
+              <div className="cross-icon" onClick={handleClose3}>
+                <i class="fa-solid fa-xmark"></i>
               </div>
-              <div className="field-set">
-                <label>Date</label>
-                <span className="text-danger">*</span>
-                <input
-                  type="date"
-                  name="appointment_Date"
-                  className="form-control"
-                  value={appointmentData.appointment_Date}
-                  onChange={handleAppointmentChange}
-                />
-              </div>
-              <div className="field-set">
-                <label>Time</label>
-                <span className="text-danger">*</span>
-                <input
-                  type="time"
-                  name="appointment_Time"
-                  className="form-control"
-                  value={appointmentData.appointment_Time}
-                  onChange={handleAppointmentChange}
-                />
-              </div>
-              <div className="field-set">
-                <label>Notes</label>
-                <span className="text-danger">*</span>
-                <textarea
-                  name="Notes"
-                  className="form-control"
-                  value={appointmentData.Notes}
-                  onChange={handleAppointmentChange}
-                />
-              </div>
-              <div className="field-set">
-                <label>
-                  Upload Reports / Documents{" "}
-                  <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="file"
-                  className="form-control"
-                  multiple
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files);
-                    setImages(files);
-                  }}
-                />
-                {images.length > 0 && (
-                  <div style={{ marginTop: "10px" }}>
-                    {images.map((file, index) => (
-                      <div key={index} style={{ fontSize: "12px" }}>
-                        📄 {file.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <DialogActions className="submit-main">
-                <Button onClick={handleCloseAppointment}>Cancel</Button>
-                <Button variant="contained" onClick={handleSubmitAppointment}>Submit</Button>
-              </DialogActions>
-            </Box>
-          </DialogContent>
-        </Dialog>
-      </React.Fragment>
-      <React.Fragment>
-        <Dialog
-          fullWidth={fullWidth}
-          maxWidth={maxWidth}
-          open={open9}
-          onClose={handleClose2wew}
-        >
-          <div className="main-card-header">
-            <div className="note-hd">
-              <h6>Add Hospitals</h6>
             </div>
-            <div className="cross-icon" onClick={handleClose2wew}>
-              <i class="fa-solid fa-xmark"></i>
-            </div>
-          </div>
-          <DialogContent className="main-box">
-            <Box
-              noValidate
-              component="form"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "fit-content",
-              }}
-              className="contact-form"
-            >
-              <Box>
-                <form id="contact-form">
-                  <div className="col-sm-12">
+            <DialogContent className="main-box">
+              <Box
+                noValidate
+                component="form"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "fit-content",
+                }}
+                className="Date / Time-form"
+              >
+                <Box>
+                  <form id="contact-form" className="contact-form">
                     <div className="field-set">
                       <label>
-                        Select Hospital<span className="text-danger">*</span>
+                        Choose File<span className="text-danger">*</span>
                       </label>
-                      <Autocomplete
-                        multiple
-                        options={
-                          hospital && hospital.length > 0
-                            ? hospital.map((h) => h.name)
-                            : []
-                        }
-                        value={report.hospital || []}
-                        onChange={handleHospitalChange}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            placeholder="Search & Select Hospital"
-                            variant="outlined"
-                            size="small"
-                          />
-                        )}
+                      <input
+                        className="form-control"
+                        type="file"
+                        id="fileSelect"
+                        accept=".xlsx, .xls, .csv"
+                        onChange={(event) => {
+                          const file = event.target.files[0];
+                          console.log("Selected file:", file);
+                          setSelectedImage(file);
+                        }}
                       />
                     </div>
-                  </div>
-                  <DialogActions className="submit-main">
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      onClick={handleNotesdata}
-                    >
-                      Submit
-                    </Button>
-                  </DialogActions>
-                </form>
+                    <DialogActions className="submit-main">
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        onClick={(e) => handleImportFile(e)}
+                      >
+                        Submit
+                      </Button>
+                    </DialogActions>
+                  </form>
+                </Box>
               </Box>
-            </Box>
-          </DialogContent>
-        </Dialog>
-        <ToastContainer />
-      </React.Fragment>
-      <React.Fragment>
-        <Dialog
-          fullWidth={fullWidth}
-          maxWidth={maxWidth}
-          open={open2}
-          onClose={handleClose2}
-        >
-          <div className="main-card-header">
-            <div className="note-hd">
-              <h6>Create Notes</h6>
+            </DialogContent>
+          </Dialog>
+        </React.Fragment>
+        <React.Fragment>
+          <Dialog
+            open={openAppointment}
+            onClose={handleCloseAppointment}
+            fullWidth
+            maxWidth="sm"
+          >
+            <div className="main-card-header">
+              <div className="note-hd">
+                <h6>Add Appointment</h6>
+              </div>
+              <div className="cross-icon" onClick={handleCloseAppointment}>
+                <i className="fa-solid fa-xmark"></i>
+              </div>
             </div>
-            <div className="cross-icon" onClick={handleClose2}>
-              <i class="fa-solid fa-xmark"></i>
-            </div>
-          </div>
-          <DialogContent className="main-box">
-            <Box
-              noValidate
-              component="form"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "fit-content",
-              }}
-              className="contact-form"
-            >
-              <Box>
-                <form id="contact-form">
-                  <div className="field-set">
-                    <label>
-                      Notes<span className="text-danger">*</span>
-                    </label>
-                    <textarea
-                      id="w3review"
-                      name="discussionNotes"
-                      rows="4"
-                      cols="50"
-                      className="form-control"
-                      placeholder="Note"
-                      onChange={(e) => setNote(e.target.value)}
-                      value={note}
-                    />
-                    <span style={{ color: "red" }}>
-                      {blogErr && !note ? "Please Enter Your  note" : ""}
-                    </span>
-                  </div>
-                  <div className="field-set">
-                    <label>
-                      Date<span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      id="birthday"
-                      name="date"
-                      placeholder="Date"
-                      className="form-control"
-                      onChange={(e) => setDate(e.target.value)}
-                      value={date}
-                      min={new Date().toISOString().split("T")[0]}
-                    />
-                    <span style={{ color: "red" }}>
-                      {blogErr && !date ? "Please Enter Your  date" : ""}
-                    </span>
-                  </div>
-                  <DialogActions className="submit-main">
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      onClick={handleNotesdata}
+            <DialogContent className="view-table-detail">
+              <Box className="contact-form">
+                <div className="field-set mb-2">
+                  <FormControl fullWidth size="small">
+                    <label>Select Hospital</label>
+                    <Select
+                      value={appointmentData.hospital_id || ""}
+                      onChange={(e) => {
+                        const selectedId = e.target.value;
+
+                        const selectedHospital = hospitalList.find(
+                          (item) => item.id === selectedId,
+                        );
+
+                        setAppointmentData((prev) => ({
+                          ...prev,
+                          hospital_id: selectedId,
+                          hospitalName: selectedHospital?.name || "",
+                          hospital_email: selectedHospital?.email || "",
+                        }));
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            maxHeight: 250,
+                          },
+                        },
+                      }}
                     >
-                      Submit
-                    </Button>
-                  </DialogActions>
-                </form>
+                      {hospitalList.map((item) => (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className="field-set">
+                  <label>Health Issue</label>
+                  <input
+                    type="text"
+                    name="health_issue"
+                    className="form-control"
+                    value={appointmentData.health_issue}
+                    onChange={handleAppointmentChange}
+                  />
+                </div>
+                <div className="field-set">
+                  <label>Date</label>
+                  <span className="text-danger">*</span>
+                  <input
+                    type="date"
+                    name="appointment_Date"
+                    className="form-control"
+                    value={appointmentData.appointment_Date}
+                    onChange={handleAppointmentChange}
+                  />
+                </div>
+                <div className="field-set">
+                  <label>Time</label>
+                  <span className="text-danger">*</span>
+                  <input
+                    type="time"
+                    name="appointment_Time"
+                    className="form-control"
+                    value={appointmentData.appointment_Time}
+                    onChange={handleAppointmentChange}
+                  />
+                </div>
+                <div className="field-set">
+                  <label>Notes</label>
+                  <span className="text-danger">*</span>
+                  <textarea
+                    name="Notes"
+                    className="form-control"
+                    value={appointmentData.Notes}
+                    onChange={handleAppointmentChange}
+                  />
+                </div>
+                <div className="field-set">
+                  <label>
+                    Upload Reports / Documents{" "}
+                    <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    multiple
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files);
+                      setImages(files);
+                    }}
+                  />
+                  {images.length > 0 && (
+                    <div style={{ marginTop: "10px" }}>
+                      {images.map((file, index) => (
+                        <div key={index} style={{ fontSize: "12px" }}>
+                          📄 {file.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <DialogActions className="submit-main">
+                  <Button onClick={handleCloseAppointment}>Cancel</Button>
+                  <Button variant="contained" onClick={handleSubmitAppointment}>
+                    Submit
+                  </Button>
+                </DialogActions>
               </Box>
-            </Box>
-          </DialogContent>
-        </Dialog>
-        <ToastContainer />
-      </React.Fragment>
-      <React.Fragment>
-        <Dialog
-          fullWidth={fullWidth}
-          maxWidth={maxWidth}
-          open={open4}
-          onClose={handleClose4}
-        >
-          <div className="main-card-header">
-            <div className="note-hd">
-              <h6>Doctor Review</h6>
+            </DialogContent>
+          </Dialog>
+        </React.Fragment>
+        <React.Fragment>
+          <Dialog
+            fullWidth={fullWidth}
+            maxWidth={maxWidth}
+            open={open9}
+            onClose={handleClose2wew}
+          >
+            <div className="main-card-header">
+              <div className="note-hd">
+                <h6>Add Hospitals</h6>
+              </div>
+              <div className="cross-icon" onClick={handleClose2wew}>
+                <i class="fa-solid fa-xmark"></i>
+              </div>
             </div>
-            <div className="cross-icon" onClick={handleClose4}>
-              <i class="fa-solid fa-xmark"></i>
-            </div>
-          </div>
-          <DialogContent className="main-box">
-            <Box
-              noValidate
-              component="form"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "fit-content",
-              }}
-              className="contact-form"
-            >
-              <Box>
-                <form id="contact-form">
-                  <div className="field-set">
-                    <label>
-                      Review Notes<span className="text-danger">*</span>
-                    </label>
-                    <textarea
-                      id="w3review"
-                      name="discussionNotes"
-                      rows="4"
-                      cols="50"
-                      className="form-control"
-                      placeholder="Review"
-                      onChange={handleNoteChange}
-                      value={note}
-                    />
-                    <span style={{ color: "red" }}>
-                      {blogErr && !note ? "Please Enter Your  note" : ""}
-                    </span>
-                  </div>
-                  <div className="field-set">
-                    <label>
-                      Upload Images<span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      multiple
-                      onChange={handleImageChange}
-                      name="upload_image"
-                      id=""
-                    />
-                  </div>
-                  <div className="field-set">
-                    <label>
-                      Recommendations<span className="text-danger">*</span>
-                    </label>
-                    <textarea
-                      id=""
-                      name="recommend"
-                      rows="4"
-                      cols="50"
-                      onChange={handleRecommendChange}
-                      className="form-control"
-                      value={recommend}
-                      placeholder="Recommendations"
-                    />
-                  </div>
-                  <DialogActions className="submit-main">
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      onClick={handleNotesdataqw}
-                    >
-                      Submit
-                    </Button>
-                  </DialogActions>
-                </form>
+            <DialogContent className="main-box">
+              <Box
+                noValidate
+                component="form"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "fit-content",
+                }}
+                className="contact-form"
+              >
+                <Box>
+                  <form id="contact-form">
+                    <div className="col-sm-12">
+                      <div className="field-set">
+                        <label>
+                          Select Hospital<span className="text-danger">*</span>
+                        </label>
+                        <Autocomplete
+                          multiple
+                          options={
+                            hospital && hospital.length > 0
+                              ? hospital.map((h) => h.name)
+                              : []
+                          }
+                          value={report.hospital || []}
+                          onChange={handleHospitalChange}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              placeholder="Search & Select Hospital"
+                              variant="outlined"
+                              size="small"
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <DialogActions className="submit-main">
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        onClick={handleNotesdata}
+                      >
+                        Submit
+                      </Button>
+                    </DialogActions>
+                  </form>
+                </Box>
               </Box>
-            </Box>
-          </DialogContent>
-        </Dialog>
-        <ToastContainer />
-      </React.Fragment>
+            </DialogContent>
+          </Dialog>
+          <ToastContainer />
+        </React.Fragment>
+        <React.Fragment>
+          <Dialog
+            fullWidth={fullWidth}
+            maxWidth={maxWidth}
+            open={open2}
+            onClose={handleClose2}
+          >
+            <div className="main-card-header">
+              <div className="note-hd">
+                <h6>Create Notes</h6>
+              </div>
+              <div className="cross-icon" onClick={handleClose2}>
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+            </div>
+            <DialogContent className="main-box">
+              <Box
+                noValidate
+                component="form"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "fit-content",
+                }}
+                className="contact-form"
+              >
+                <Box>
+                  <form id="contact-form">
+                    <div className="field-set">
+                      <label>
+                        Notes<span className="text-danger">*</span>
+                      </label>
+                      <textarea
+                        id="w3review"
+                        name="discussionNotes"
+                        rows="4"
+                        cols="50"
+                        className="form-control"
+                        placeholder="Note"
+                        onChange={(e) => setNote(e.target.value)}
+                        value={note}
+                      />
+                      <span style={{ color: "red" }}>
+                        {blogErr && !note ? "Please Enter Your  note" : ""}
+                      </span>
+                    </div>
+                    <div className="field-set">
+                      <label>
+                        Date<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="birthday"
+                        name="date"
+                        placeholder="Date"
+                        className="form-control"
+                        onChange={(e) => setDate(e.target.value)}
+                        value={date}
+                        min={new Date().toISOString().split("T")[0]}
+                      />
+                      <span style={{ color: "red" }}>
+                        {blogErr && !date ? "Please Enter Your  date" : ""}
+                      </span>
+                    </div>
+                    <DialogActions className="submit-main">
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        onClick={handleNotesdata}
+                      >
+                        Submit
+                      </Button>
+                    </DialogActions>
+                  </form>
+                </Box>
+              </Box>
+            </DialogContent>
+          </Dialog>
+          <ToastContainer />
+        </React.Fragment>
+        <React.Fragment>
+          <Dialog
+            fullWidth={fullWidth}
+            maxWidth={maxWidth}
+            open={open4}
+            onClose={handleClose4}
+          >
+            <div className="main-card-header">
+              <div className="note-hd">
+                <h6>Doctor Review</h6>
+              </div>
+              <div className="cross-icon" onClick={handleClose4}>
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+            </div>
+            <DialogContent className="main-box">
+              <Box
+                noValidate
+                component="form"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "fit-content",
+                }}
+                className="contact-form"
+              >
+                <Box>
+                  <form id="contact-form">
+                    <div className="field-set">
+                      <label>
+                        Review Notes<span className="text-danger">*</span>
+                      </label>
+                      <textarea
+                        id="w3review"
+                        name="discussionNotes"
+                        rows="4"
+                        cols="50"
+                        className="form-control"
+                        placeholder="Review"
+                        onChange={handleNoteChange}
+                        value={note}
+                      />
+                      <span style={{ color: "red" }}>
+                        {blogErr && !note ? "Please Enter Your  note" : ""}
+                      </span>
+                    </div>
+                    <div className="field-set">
+                      <label>
+                        Upload Images<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="file"
+                        className="form-control"
+                        multiple
+                        onChange={handleImageChange}
+                        name="upload_image"
+                        id=""
+                      />
+                    </div>
+                    <div className="field-set">
+                      <label>
+                        Recommendations<span className="text-danger">*</span>
+                      </label>
+                      <textarea
+                        id=""
+                        name="recommend"
+                        rows="4"
+                        cols="50"
+                        onChange={handleRecommendChange}
+                        className="form-control"
+                        value={recommend}
+                        placeholder="Recommendations"
+                      />
+                    </div>
+                    <DialogActions className="submit-main">
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        onClick={handleNotesdataqw}
+                      >
+                        Submit
+                      </Button>
+                    </DialogActions>
+                  </form>
+                </Box>
+              </Box>
+            </DialogContent>
+          </Dialog>
+          <ToastContainer />
+        </React.Fragment>
+      </div>
     </>
   );
 }
-// localStorage is restricted by the browser’s Same-Origin Policy,
-// so one domain cannot directly access another domain’s localStorage.
-//  To share data between domains, we usually use backend APIs, shared cookies for subdomains,
-//  postMessage for iframe/window communication, or centralized authentication systems like OAuth/SSO.

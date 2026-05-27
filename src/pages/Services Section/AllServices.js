@@ -194,6 +194,9 @@ export default function AllServices() {
         step: "1",
       },
       inputValue: rowsPerPage,
+      customClass: {
+        input: "form-control",
+      },
       showCancelButton: true,
       confirmButtonText: "Generate PDF",
     }).then((result) => {
@@ -273,17 +276,13 @@ export default function AllServices() {
                     }}
                   />
                 </div>
-                <div>
-                  <Link to="/Admin/add-Services" className="add-button">
-                    <i className="fa fa-plus me-2"></i>New Service
-                  </Link>
-                </div>
+                <Link to="/Admin/add-Services" className="add-button">
+                  <i className="fa fa-plus me-2"></i>New Service
+                </Link>
                 {role === "Admin" ? (
-                  <div>
-                    <Link onClick={handlegetpdfdata} className="add-button">
-                      <i className="fa fa-file-pdf-o me-2"></i>Pdf
-                    </Link>
-                  </div>
+                  <Link onClick={handlegetpdfdata} className="add-button">
+                    <i className="fa fa-file-pdf-o me-2"></i>Pdf
+                  </Link>
                 ) : (
                   ""
                 )}

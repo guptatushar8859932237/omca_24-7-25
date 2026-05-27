@@ -451,26 +451,30 @@ export default function Patient() {
                   <h6>Manage Patients</h6>
                 </div>
                 <div className="patient-top-btn">
-                  <div className="search-btn-main">
-                    <div className="">
-                      <TextField
-                        label="Search"
-                        size="small"
-                        value={searchTerm}
-                        onChange={handleSearch}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              {searchTerm && (
-                                <IconButton onClick={() => setSearchTerm("")}>
-                                  <ClearIcon />
-                                </IconButton>
-                              )}
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </div>
+                  <div className="">
+                    <TextField
+                      className="field-count"
+                      label="Search"
+                      id="outlined-required"
+                      size="small"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {searchTerm && (
+                              <IconButton
+                                onClick={() => setSearchTerm("")}
+                                className="input-set"
+                              >
+                                <ClearIcon />
+                              </IconButton>
+                            )}
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
                   </div>
                   <button onClick={handleSampleFile} className="add-button">
                     <span>
@@ -561,15 +565,6 @@ export default function Patient() {
                               Patient Name
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>
-  <TableSortLabel
-    active={orderBy === "patient_disease"}
-    direction={orderBy === "patient_disease" ? order : "asc"}
-    onClick={() => handleRequestSort("patient_disease")}
-  >
-    Patient Disease
-  </TableSortLabel>
-</TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "treatingIn"}
@@ -592,15 +587,6 @@ export default function Patient() {
                               Date/Time
                             </TableSortLabel>
                           </TableCell>
-                          {/* <TableCell>
-                            <TableSortLabel
-                              active={orderBy === "createdBy"}
-                              direction={orderBy === "createdBy" ? order : "asc"}
-                              onClick={() => handleRequestSort("createdBy")}
-                            >
-                              Created By
-                            </TableSortLabel>
-                          </TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "country"}

@@ -112,53 +112,41 @@ export default function Earning() {
     <>
       <div className="page-wrapper">
         <div className="content">
-          <div className="row mb-3">
-            <div className="col-md-12 d-flex justify-content-between align-items-center">
-              <h4 className="page-title">Payments</h4>
-            </div>
-          </div>
-          <div className="main_content">
-            <div className="d-flex justify-content-between me-2 mb-2">
-              <div>
-                <div className="mr-3">
-                  <TextField
-                    sx={{ width: "100%" }}
-                    label="Search"
-                    id="outlined-size-small"
-                    size="small"
-                    className="field-count"
-                    value={searchTerm}
-                    onChange={(e) => {
-                      setSearchTerm(e.target.value);
-                      setPage(0);
-                    }}
-                    InputLabelProps={{ shrink: true }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setSearchTerm("")}
-                            edge="end"
-                          >
-                            <ClearIcon />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+          <div className="row gx-3">
+            <div className="col-md-12">
+              <div className="country-top">
+                <div className="topmainhd mb-0">
+                  <h6>Manage Payments</h6>
+                </div>
+                <div className="search-btn-main">
+                  <div className="">
+                    <TextField
+                      className="field-count"
+                      label="Search"
+                      size="small"
+                      value={searchTerm}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setPage(0);
+                      }}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end" className="input-set">
+                            <IconButton onClick={() => setSearchTerm("")} edge="end">
+                              <ClearIcon />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </div>
+                  <button onClick={downloadPdf} className="add-button"><i className="fa fa-file-pdf-o me-2"></i>PDF</button>
                 </div>
               </div>
-              <div>
-                <button onClick={downloadPdf} className="add-button ms-2">
-                  <span>
-                    <i className="fa fa-file-pdf-o"></i>
-                  </span>
-                  PDF
-                </button>
-              </div>
             </div>
-            <div className="row">
-              <div className="col-md-12">
+            <div className="col-md-12">
+              <div className="main_content">
                 <div className="table-responsive">
                   <TableContainer
                     component={Paper}
@@ -186,9 +174,9 @@ export default function Earning() {
                         {(pdfRowLimit
                           ? filteredRows.slice(0, pdfRowLimit)
                           : filteredRows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                          )
                         ).map((info, i) => (
                           <TableRow
                             role="checkbox"

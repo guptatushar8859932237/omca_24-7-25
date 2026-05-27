@@ -4,13 +4,21 @@ import { GetAllNewPermission } from "../../reducer/NewpermissonsSlice";
 import { NewUpdatePermission } from "../../reducer/NewpermissonsSlice";
 import Swal from "sweetalert2";
 import "./Permission.css";
-import { Box, Button, Dialog, DialogActions, DialogContent } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+} from "@mui/material";
 import { baseurl } from "../../Basurl/Baseurl";
 import axios from "axios";
 export default function PermissionPage() {
   const dispatch = useDispatch();
-  const [popupopenattande, setPopupopenattande] = useState(false)
-  const { NewPermissions, loading, error } = useSelector((state) => state.NewPermissions);
+  const [popupopenattande, setPopupopenattande] = useState(false);
+  const { NewPermissions, loading, error } = useSelector(
+    (state) => state.NewPermissions,
+  );
   const [permissionsData, setPermissionsData] = useState([]);
   const [fullWidth, setFullWidth] = React.useState(true);
   const [note1s, setNote1s] = React.useState("");
@@ -48,7 +56,7 @@ export default function PermissionPage() {
         role: role.role,
         endpoint,
         allow,
-      }))
+      })),
     );
     let timerInterval;
     Swal.fire({
@@ -68,7 +76,9 @@ export default function PermissionPage() {
       },
     });
     try {
-      await dispatch(NewUpdatePermission({ permissions: formattedPermissions })).unwrap();
+      await dispatch(
+        NewUpdatePermission({ permissions: formattedPermissions }),
+      ).unwrap();
       clearInterval(timerInterval);
       Swal.fire("Success!", "Permissions updated successfully!", "success");
       dispatch(GetAllNewPermission());
@@ -80,11 +90,11 @@ export default function PermissionPage() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   const addrole = () => {
-    setPopupopenattande(true)
-  }
+    setPopupopenattande(true);
+  };
   const handlecliclosepup = () => {
-    setPopupopenattande(false)
-  }
+    setPopupopenattande(false);
+  };
 
   const handleassignAtendent = async () => {
     if (!note1s) {
@@ -236,53 +246,26 @@ export default function PermissionPage() {
     // </div>
     <div className="page-wrapper">
       <div className="content">
-
-        <div className="row">
+        <div className="row gx-3">
           <div className="col-md-12">
-
-            <div className="top-save-main">
-
-              <h4 className="page-title mb-0">
-                Manage Permissions
-              </h4>
-
-              <div>
-                {/* <button
-              className="add-button me-2"
-              onClick={addrole}
-            >
-              Add Role
-            </button> */}
-
-                <button
-                  className="add-button"
-                  onClick={handleSubmit}
-                >
+            <div className="country-top">
+              <div className="topmainhd mb-0">
+                <h6>Manage Permissions</h6>
+              </div>
+              <div className="">
+                <button className="add-button" onClick={handleSubmit}>
                   Save Changes
                 </button>
               </div>
-
             </div>
-
           </div>
-        </div>
-
-        <div className="main_content">
-
-          <div className="row">
-
-            <div className="col-md-12">
-
+          <div className="col-md-12">
+            <div className="main_content">
               <div className="permission-table-wrapper">
-
                 <div className="table-responsive permission-scroll">
-
                   <table className="table table-border table-no-card permission-table">
-
                     <thead>
-
                       <tr>
-
                         <th className="sticky-column endpoint-column">
                           ENDPOINTS
                         </th>
@@ -296,98 +279,65 @@ export default function PermissionPage() {
                               {role.role}
                             </th>
                           ))}
-
                       </tr>
-
                     </thead>
-
                     <tbody>
-
                       {permissionsData?.length > 0 &&
-                        Object.keys(
-                          permissionsData[0]?.permissions || {}
-                        ).map((endpoint) => (
-
-                          <tr key={endpoint}>
-
-                            <td className="sticky-column endpoint-name">
-
-                              {endpoint
-                                .replace(/_/g, " ")
-                                .replace(/^\//, "")
-                                .toUpperCase()}
-
-                            </td>
-
-                            {permissionsData?.map((role) => (
-
-                              <td key={role.Id}>
-
-                                <input
-                                  className="form-check-input checkbox-align"
-                                  type="checkbox"
-                                  checked={
-                                    role.permissions[endpoint] === 1
-                                  }
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      role.Id,
-                                      endpoint,
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-
+                        Object.keys(permissionsData[0]?.permissions || {}).map(
+                          (endpoint) => (
+                            <tr key={endpoint}>
+                              <td className="sticky-column endpoint-name">
+                                {endpoint
+                                  .replace(/_/g, " ")
+                                  .replace(/^\//, "")
+                                  .toUpperCase()}
                               </td>
 
-                            ))}
-
-                          </tr>
-
-                        ))}
-
+                              {permissionsData?.map((role) => (
+                                <td key={role.Id}>
+                                  <input
+                                    className="form-check-input checkbox-align"
+                                    type="checkbox"
+                                    checked={role.permissions[endpoint] === 1}
+                                    onChange={(e) =>
+                                      handleCheckboxChange(
+                                        role.Id,
+                                        endpoint,
+                                        e.target.checked,
+                                      )
+                                    }
+                                  />
+                                </td>
+                              ))}
+                            </tr>
+                          ),
+                        )}
                     </tbody>
-
                   </table>
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
       <React.Fragment>
-
         <Dialog
           fullWidth={fullWidth}
           maxWidth={maxWidth}
           open={popupopenattande}
           onClose={handlecliclosepup}
         >
-
           <div className="main-card-header">
-
             <div className="note-hd">
               <h6>Add Role</h6>
             </div>
 
-            <div
-              className="cross-icon"
-              onClick={handlecliclosepup}
-            >
+            <div className="cross-icon" onClick={handlecliclosepup}>
               <i className="fa-solid fa-xmark"></i>
             </div>
-
           </div>
 
           <DialogContent className="main-box">
-
             <Box
               noValidate
               component="form"
@@ -398,58 +348,34 @@ export default function PermissionPage() {
               }}
               className="contact-form"
             >
-
               <Box>
-
-                <form
-                  id="contact-form"
-                  className="contact-form"
-                >
-
+                <form id="contact-form" className="contact-form">
                   <div className="field-set">
-
                     <label>
                       Notes
                       <span className="text-danger">*</span>
                     </label>
 
                     <div className="upload-input">
-
                       <input
                         type="text"
                         value={note1s}
-                        onChange={(e) =>
-                          setNote1s(e.target.value)
-                        }
+                        onChange={(e) => setNote1s(e.target.value)}
                       />
-
                     </div>
-
                   </div>
 
                   <DialogActions className="submit-main">
-
-                    <Button
-                      onClick={handleassignAtendent}
-                      variant="contained"
-                    >
+                    <Button onClick={handleassignAtendent} variant="contained">
                       Submit
                     </Button>
-
                   </DialogActions>
-
                 </form>
-
               </Box>
-
             </Box>
-
           </DialogContent>
-
         </Dialog>
-
       </React.Fragment>
-
     </div>
   );
 }
