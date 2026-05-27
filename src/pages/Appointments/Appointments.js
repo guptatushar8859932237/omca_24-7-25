@@ -1159,10 +1159,13 @@ export default function Appointments() {
                                             className="fa-solid fa-pen-to-square"
                                             onClick={() => handleEdit(item)}
                                           ></i>
-                                          <i
-                                            className="fa-solid fa-trash"
-                                            onClick={() => handleDelete(item)}
-                                          ></i>
+                                          {
+                                            role ==="Admin"?
+                                            <i
+                                              className="fa-solid fa-trash"
+                                              onClick={() => handleDelete(item)}
+                                            ></i>:""
+                                          }
                                         </div>
                                       </TableCell>
                                     </TableRow>

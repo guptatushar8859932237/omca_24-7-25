@@ -113,15 +113,6 @@ export default function AddPatientTreatment() {
       .typeError("Total Charge must be a number")
       .required("Total Charge is required")
       .min(1, "Total Charge must be greater than 0"),
-
-    amount_paid: Yup.number()
-      .typeError("Amount Paid must be a number")
-      .required("Amount Paid is required")
-      .min(1, "Amount Paid must be greater than 0")
-      .max(
-        Yup.ref("total_charge"),
-        "Amount Paid cannot be greater than Total Charge",
-      ),
   });
 
   console.log(personName);
@@ -155,7 +146,6 @@ export default function AddPatientTreatment() {
                 treatment_course_name: "",
                 total_charge: "",
                 services: "",
-                amount_paid: "",
                 paymentMethod: "",
                 Currency: "USD",
               }}
@@ -302,26 +292,7 @@ export default function AddPatientTreatment() {
                         />
                       </div>
                     </div>
-                    <div className="col-sm-6">
-                      <div className="field-set">
-                        <label>
-                          Amount Paid<span className="text-danger">*</span>
-                        </label>
-                        <div className="fixpricee">
-                          <p className="code-dial">USD($)</p>
-                          <Field
-                            className="form-control code-in"
-                            type="number"
-                            name="amount_paid"
-                          />
-                        </div>
-                        <ErrorMessage
-                          name="amount_paid"
-                          component="div"
-                          style={{ color: "red" }}
-                        />
-                      </div>
-                    </div>
+                  
                     <div className="col-sm-6">
                       <div className="field-set">
                         <label>
@@ -350,6 +321,7 @@ export default function AddPatientTreatment() {
                           className="form-control"
                         >
                           <option value="">Select a payment method</option>
+                          <option value="Guarantee of Payment">Guarantee of Payment</option>
                           <option value="Cash">Cash</option>
                           <option value="UPI">Online via UPI</option>
                           <option value="foundation">foundation</option>

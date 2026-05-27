@@ -57,6 +57,7 @@ function PatientDetail() {
   const [seekerStatus, setSeekerStatus] = React.useState({});
   const [treatmentData, setTreatmentData] = useState([]);
   const [recommend, setRecommend] = useState("");
+  const [Title, setTitle] = useState("");
   const [pickuptime, setPickuptime] = useState("");
   const [treatmentIds1, setTreatmentIds1] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
@@ -475,6 +476,7 @@ function PatientDetail() {
         enquiryPayload.append("review_notes", note);
         enquiryPayload.append("Recommendations", recommend); // ⚠️ old API key
         enquiryPayload.append("enquiryId", enqId);
+        enquiryPayload.append("title", Title);
         enquiryPayload.append("user_type", statusRole);
         images.forEach((img) => {
           enquiryPayload.append("images", img);
@@ -494,6 +496,7 @@ function PatientDetail() {
         newPayload.append("review_notes", note);
         newPayload.append("enquiry_id", tratmentenqId);
         newPayload.append("recommendations", recommend);
+        newPayload.append("title", Title);
         newPayload.append("user_type", statusRole);
         newPayload.append("reference_id", enqId);
         newPayload.append("model_type", typeMap[tabValue]);
@@ -1397,9 +1400,13 @@ function PatientDetail() {
       formData.append("paid_to", valueofappointmentpaidto);
       formData.append("paid_for", iniData?.paid_for);
       formData.append("platform", 1);
-      if (iniData?.attachFile) {
-        formData.append("attachFile", iniData.attachFile);
-      }
+     if (iniData?.attachFile?.length > 0) {
+
+  iniData.attachFile.forEach((file) => {
+    formData.append("attachFile", file);
+  });
+
+}
       await dispatch(AddNewTretmentPayment(formData)).unwrap();
       getDataapi3(selectedTreatmentId);
       setOpen3(false);
@@ -1787,12 +1794,13 @@ function PatientDetail() {
     setImagefile(validFiles);
   };
   const handleAttachFile = (e) => {
-    const file = e.target.files[0];
-    setIniData((prev) => ({
-      ...prev,
-      attachFile: file,
-    }));
-  };
+  const files = Array.from(e.target.files);
+
+  setIniData((prev) => ({
+    ...prev,
+    attachFile: files,
+  }));
+};
   const handleViewImages = (images) => {
     if (!images || images.length === 0) return;
     images.forEach((img) => {
@@ -2258,6 +2266,9 @@ function PatientDetail() {
   };
   const handleRecommendChange = (e) => {
     setRecommend(e.target.value);
+  };
+  const handleRecommendTitle = (e) => {
+    setTitle(e.target.value);
   };
   const handleNoteChange = (e) => {
     setNote(e.target.value);
@@ -3828,12 +3839,15 @@ function PatientDetail() {
     }
   };
   const handlechangeGuesthouse = (e) => {
-    const { name, value, type, files } = e.target;
-    setFormDataGuestHouse((prev) => ({
-      ...prev,
-      [name]: type === "file" ? files[0] : value,
-    }));
-  };
+  const { name, value, type, files } = e.target;
+
+  setFormDataGuestHouse((prev) => ({
+    ...prev,
+    [name]: type === "file"
+      ? Array.from(files)
+      : value,
+  }));
+};
   // const submitGuestHouseApi = async () => {
   //   try {
   //     const formData = new FormData();
@@ -3880,83 +3894,175 @@ function PatientDetail() {
   //     });
   //   }
   // };
-  const handleClickGuesthuseedit = async () => {
-    const data = formDataGuestHouse;
-    console.log(data);
-    // 🔥 Validation
-    if (!data.guestHouseName?.trim()) {
-      return Swal.fire("Error", "Guest House Name is required", "error");
-    }
-    if (!data.dateRangeFrom) {
-      return Swal.fire("Error", "Date Range From is required", "error");
-    }
-    if (!data.dateRangeTo) {
-      return Swal.fire("Error", "Date Range To is required", "error");
-    }
-    // ✅ Date logic
-    if (new Date(data.dateRangeTo) < new Date(data.dateRangeFrom)) {
-      return Swal.fire("Error", "End date must be after start date", "error");
-    }
-    if (!data.numberOfRooms) {
-      return Swal.fire("Error", "Number of Rooms is required", "error");
-    }
-    if (!data.paymentAmount) {
-      return Swal.fire("Error", "Payment Amount is required", "error");
-    }
-    if (!data.paymentDate) {
-      return Swal.fire("Error", "Payment Date is required", "error");
-    }
-    if (!data.notes?.trim()) {
-      return Swal.fire("Error", "Notes is required", "error");
-    }
-    try {
-      const formData = new FormData();
-      // ✅ normal fields
-      Object.keys(data).forEach((key) => {
-        if (
-          key !== "invoiceFile" &&
-          data[key] !== null &&
-          data[key] !== undefined
-        ) {
-          formData.append(key, data[key]);
-        }
+const handleClickGuesthuseedit = async () => {
+
+  const data = formDataGuestHouse;
+
+  console.log(data);
+
+  // 🔥 Validation
+  if (!data.guestHouseName?.trim()) {
+    return Swal.fire(
+      "Error",
+      "Guest House Name is required",
+      "error"
+    );
+  }
+
+  if (!data.dateRangeFrom) {
+    return Swal.fire(
+      "Error",
+      "Date Range From is required",
+      "error"
+    );
+  }
+
+  if (!data.dateRangeTo) {
+    return Swal.fire(
+      "Error",
+      "Date Range To is required",
+      "error"
+    );
+  }
+
+  // ✅ Date logic
+  if (
+    new Date(data.dateRangeTo) <
+    new Date(data.dateRangeFrom)
+  ) {
+    return Swal.fire(
+      "Error",
+      "End date must be after start date",
+      "error"
+    );
+  }
+
+  if (!data.numberOfRooms) {
+    return Swal.fire(
+      "Error",
+      "Number of Rooms is required",
+      "error"
+    );
+  }
+
+  if (!data.paymentAmount) {
+    return Swal.fire(
+      "Error",
+      "Payment Amount is required",
+      "error"
+    );
+  }
+
+  if (!data.paymentDate) {
+    return Swal.fire(
+      "Error",
+      "Payment Date is required",
+      "error"
+    );
+  }
+
+  if (!data.notes?.trim()) {
+    return Swal.fire(
+      "Error",
+      "Notes is required",
+      "error"
+    );
+  }
+
+  try {
+
+    const formData = new FormData();
+
+    // ✅ Normal fields
+    Object.keys(data).forEach((key) => {
+
+      if (
+        key !== "invoiceFile" &&
+        data[key] !== null &&
+        data[key] !== undefined
+      ) {
+
+        formData.append(key, data[key]);
+
+      }
+
+    });
+
+    // ✅ Multiple files
+    if (
+      Array.isArray(data.invoiceFile) &&
+      data.invoiceFile.length > 0
+    ) {
+
+      data.invoiceFile.forEach((file) => {
+
+        formData.append("invoiceFile", file);
+
       });
-      // ✅ file only if selected
-      if (data.invoiceFile instanceof File) {
-        formData.append("invoiceFile", data.invoiceFile);
-      }
-      // ✅ extra params
-      formData.append("treatment_id", treatmentIds1);
-      formData.append("patientId", location.state.patientId);
-      const response = await axios.post(
-        `${baseurl}updateGuestHouseCharge/${data.id}`,
-        formData,
+
+    }
+
+    // ✅ Extra params
+    formData.append(
+      "treatment_id",
+      treatmentIds1
+    );
+
+    formData.append(
+      "patientId",
+      location.state.patientId
+    );
+
+    const response = await axios.post(
+      `${baseurl}updateGuestHouseCharge/${data.id}`,
+      formData
+    );
+
+    if (response?.data?.success) {
+
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text:
+          response.data.message ||
+          "Data updated successfully",
+      });
+
+      patient_guesthouse(data.treatment_id);
+
+      dispatch(
+        GetPatientTreatments({
+          id: location.state.patientId,
+        })
       );
-      if (response?.data?.success) {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: response.data.message || "Data updated successfully",
-        });
-        patient_guesthouse(data.treatment_id);
-        dispatch(GetPatientTreatments({ id: location.state.patientId }));
-        handleCloseguesthouse();
-      } else {
-        Swal.fire(
-          "Error",
-          response?.data?.message || "Something went wrong",
-          "error",
-        );
-      }
-    } catch (error) {
-      console.error(error);
+
+      handleCloseguesthouse();
+
+    } else {
+
       Swal.fire(
         "Error",
-        error.response?.data?.message || "Server error",
-        "error",
+        response?.data?.message ||
+          "Something went wrong",
+        "error"
       );
+
     }
-  };
+
+  } catch (error) {
+
+    console.error(error);
+
+    Swal.fire(
+      "Error",
+      error.response?.data?.message ||
+        "Server error",
+      "error"
+    );
+
+  }
+
+};
   // const handleClickGuesthuseedit = async () => {
   //   const data = formDataGuestHouse;
   //   // 🔥 Validation
@@ -4053,16 +4159,29 @@ function PatientDetail() {
     if (!data.notes?.trim()) {
       return Swal.fire("Error", "Notes is required", "error");
     }
-    if (!data.invoiceFile) {
-      return Swal.fire("Error", "Invoice File is required", "error");
-    }
+    // if (!data.invoiceFile) {
+    //   return Swal.fire("Error", "Invoice File is required", "error");
+    // }
     try {
-      const formData = new FormData();
-      Object.keys(data).forEach((key) => {
-        if (data[key] !== null && data[key] !== undefined) {
-          formData.append(key, data[key]);
-        }
-      });
+     const formData = new FormData();
+
+Object.keys(data).forEach((key) => {
+
+  // Multiple Files
+  if (key === "invoiceFile" && Array.isArray(data[key])) {
+
+    data[key].forEach((file) => {
+      formData.append("invoiceFile", file);
+    });
+
+  } else if (data[key] !== null && data[key] !== undefined) {
+
+    // Normal Fields
+    formData.append(key, data[key]);
+
+  }
+
+});
       formData.append("treatment_id", treatmentIds1);
       formData.append("patientId", location.state.patientId);
       const response = await axios.post(
@@ -4518,7 +4637,7 @@ function PatientDetail() {
                               </div>
                               <div className="treatment-body">
                                 <div className="row">
-                                  <div className="col-md-6">
+                                  <div className="col-md-4">
                                     <div className="">
                                       <h5>Recommendations</h5>
                                       <div>
@@ -4556,6 +4675,14 @@ function PatientDetail() {
                                       <h5>Notes</h5>
                                       <p className="notes-text">
                                         {info?.review_notes || "No Notes Added"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-2">
+                                    <div className="">
+                                      <h5>Date</h5>
+                                      <p className="notes-text">
+                                        { new Date(info?.createdAt).toLocaleDateString("en-GB") }
                                       </p>
                                     </div>
                                   </div>
@@ -6125,23 +6252,37 @@ function PatientDetail() {
                                                                           item?.notes
                                                                         }
                                                                       </td>
-                                                                      <td className="pdf-hide">
-                                                                        {item?.invoiceUrl ? (
-                                                                          <button
-                                                                            className="btn btn-sm btn-primary"
-                                                                            onClick={() =>
-                                                                              window.open(
-                                                                                `${baseu11}/${item.invoiceUrl}`,
-                                                                                "_blank",
-                                                                              )
-                                                                            }
-                                                                          >
-                                                                            View
-                                                                          </button>
-                                                                        ) : (
-                                                                          "No File"
-                                                                        )}
-                                                                      </td>
+                                                                  <td className="pdf-hide">
+  {Array.isArray(item?.invoiceUrl) &&
+  item.invoiceUrl.length > 0 ? (
+
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "8px",
+      }}
+    >
+      {item.invoiceUrl.map((file, index) => (
+        <button
+          key={index}
+          className="btn btn-sm btn-primary"
+          onClick={() =>
+            window.open(
+              `${baseu11}/${file}`,
+              "_blank"
+            )
+          }
+        >
+          View 
+        </button>
+      ))}
+    </div>
+
+  ) : (
+    "No File"
+  )}
+</td>
                                                                       <td className="pdf-hide">
                                                                         <div className="action-icon">
                                                                           <div className="action-icon">
@@ -6918,19 +7059,24 @@ function PatientDetail() {
                                                         <TableCell>
                                                           {item?.notes}
                                                         </TableCell>
-                                                        <TableCell className="action-btn">
-                                                          {item?.attachFile ? (
-                                                            <a
-                                                              href={`https://sisccltd.com/omca_crm/${item.attachFile}`}
-                                                              target="_blank"
-                                                              rel="noopener noreferrer"
-                                                            >
-                                                              <button className="viewbtn">View</button>
-                                                            </a>
-                                                          ) : (
-                                                            "-"
-                                                          )}
-                                                        </TableCell>
+                                                       <TableCell className="action-btn">
+  {item?.attachFile?.length > 0 ? (
+    item.attachFile.map((file, index) => (
+      <a
+        key={index}
+        href={`https://sisccltd.com/omca_crm/${file}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <button className="viewbtn">
+          View 
+        </button>
+      </a>
+    ))
+  ) : (
+    "-"
+  )}
+</TableCell>
                                                         {usrRole ===
                                                           "Admin" ? (
                                                           <>
@@ -9990,6 +10136,7 @@ function PatientDetail() {
                     </label>
                     <input
                       type="file"
+                      multiple
                       className="form-control"
                       name="attachFile"
                       onChange={handleAttachFile}
@@ -10379,15 +10526,14 @@ function PatientDetail() {
                       <label>
                         Invoice File{" "}
                         <span className="text-danger">
-                          {isEditGuesthouse === true ? "" : "*"}
                         </span>
                       </label>
                       <input
                         type="file"
                         placeholder="payment Method"
+                        multiple
                         className="form-control"
                         name="invoiceFile"
-                        accept="image/*"
                         required
                         onChange={handlechangeGuesthouse}
                       />
@@ -10857,6 +11003,21 @@ function PatientDetail() {
                       className="form-control"
                       value={recommend}
                       placeholder="Recommendations"
+                    />
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Title<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      id=""
+                      name="Title"
+                      rows="4"
+                      cols="50"
+                      onChange={handleRecommendTitle}
+                      className="form-control"
+                      value={Title}
+                      placeholder="Title"
                     />
                   </div>
                   <DialogActions className="submit-main">

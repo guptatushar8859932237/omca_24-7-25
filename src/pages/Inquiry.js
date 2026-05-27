@@ -58,6 +58,7 @@ export default function Inquiry() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [orderDirection, setOrderDirection] = useState("asc");
   const [orderBy, setOrderBy] = useState("");
+  const [Title, setTitle] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [report, setReport] = useState([]);
@@ -104,6 +105,9 @@ export default function Inquiry() {
   };
   const permissions = localStorage.getItem("permissionArray") || "";
   console.log(permissions);
+  const handleRecommendTitle = (e) => {
+    setTitle(e.target.value);
+  };
   const handleRecommendChange = (e) => {
     setRecommend(e.target.value);
   };
@@ -1470,17 +1474,19 @@ export default function Inquiry() {
                   onChange={handleAppointmentChange}
                 />
               </div>
-              <div className="field-set">
-                <label>Date</label>
-                <span className="text-danger">*</span>
-                <input
-                  type="date"
-                  name="appointment_Date"
-                  className="form-control"
-                  value={appointmentData.appointment_Date}
-                  onChange={handleAppointmentChange}
-                />
-              </div>
+             <div className="field-set">
+  <label>Date</label>
+  <span className="text-danger">*</span>
+
+  <input
+    type="date"
+    name="appointment_Date"
+    className="form-control"
+    value={appointmentData.appointment_Date}
+    onChange={handleAppointmentChange}
+    min={new Date().toISOString().split("T")[0]}
+  />
+</div>
               <div className="field-set">
                 <label>Time</label>
                 <span className="text-danger">*</span>
@@ -1685,12 +1691,12 @@ export default function Inquiry() {
       </React.Fragment>
       <React.Fragment>
         <Dialog
-          fullWidth={fullWidth}
-          maxWidth={maxWidth}
-          open={open4}
-          onClose={handleClose4}
-        >
-          <div className="main-card-header">
+    fullWidth
+    maxWidth="sm"
+    open={open4}
+    onClose={handleClose4}
+  >
+    <div className="main-card-header d-flex justify-content-between align-items-center px-3 py-2">
             <div className="note-hd">
               <h6>Doctor Review</h6>
             </div>
@@ -1700,15 +1706,18 @@ export default function Inquiry() {
           </div>
           <DialogContent className="main-box">
             <Box
-              noValidate
-              component="form"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "fit-content",
-              }}
-              className="contact-form"
-            >
+        noValidate
+        component="form"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+        }}
+         sx={{
+    maxHeight: "70vh",
+    overflowY: "auto",
+  }}
+      >
               <Box>
                 <form id="contact-form">
                   <div className="field-set">
@@ -1757,6 +1766,21 @@ export default function Inquiry() {
                       placeholder="Recommendations"
                     />
                   </div>
+                  <div className="field-set">
+                    <label>
+                      Title<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id=""
+                      name="Title"
+                      rows="4"
+                      cols="50"
+                      onChange={handleRecommendTitle}
+                      className="form-control"
+                      value={Title}
+                      placeholder="Title"
+                    />
+                  </div>
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"
@@ -1776,7 +1800,3 @@ export default function Inquiry() {
     </>
   );
 }
-// localStorage is restricted by the browser’s Same-Origin Policy,
-// so one domain cannot directly access another domain’s localStorage.
-//  To share data between domains, we usually use backend APIs, shared cookies for subdomains,
-//  postMessage for iframe/window communication, or centralized authentication systems like OAuth/SSO.
