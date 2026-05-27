@@ -1275,35 +1275,37 @@ export default function Inquiry() {
                                             }
                                           ></i>
                                         )} */}
-                                        {(localStorage.getItem("Role") === "Admin" ||
-  localStorage.getItem("Role") === "Doctor") &&
-  (tabValue === 0
-    ? !info?.hasDoctorReview && (
-        <i
-          className="fa-solid fa-stethoscope"
-          onClick={(e) =>
-            handleClickOpen4(
-              e,
-              info.enquiryId,
-              info,
-            )
-          }
-        ></i>
-      )
-    : Object.keys(
-        info?.raw?.doctor_review || {},
-      ).length === 0 && (
-        <i
-          className="fa-solid fa-stethoscope"
-          onClick={(e) =>
-            handleClickOpen4(
-              e,
-              info.enquiryId,
-              info,
-            )
-          }
-        ></i>
-      ))}
+                                    {(localStorage.getItem("Role") ===
+                                      "Admin" ||
+                                      localStorage.getItem("Role") ===
+                                        "Doctor") &&
+                                      (tabValue === 0
+                                        ? !info?.hasDoctorReview && (
+                                            <i
+                                              className="fa-solid fa-stethoscope"
+                                              onClick={(e) =>
+                                                handleClickOpen4(
+                                                  e,
+                                                  info.enquiryId,
+                                                  info,
+                                                )
+                                              }
+                                            ></i>
+                                          )
+                                        : Object.keys(
+                                            info?.raw?.doctor_review || {},
+                                          ).length === 0 && (
+                                            <i
+                                              className="fa-solid fa-stethoscope"
+                                              onClick={(e) =>
+                                                handleClickOpen4(
+                                                  e,
+                                                  info.enquiryId,
+                                                  info,
+                                                )
+                                              }
+                                            ></i>
+                                          ))}
                                     {info?.hasAppointment === true ? (
                                       ""
                                     ) : (
