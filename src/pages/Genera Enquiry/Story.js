@@ -271,6 +271,24 @@ export default function Stay() {
                     Guest House
                   </TableSortLabel>
                 </TableCell>
+                 <TableCell sortDirection={orderBy === "date" ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === "date"}
+                    direction={orderBy === "date" ? order : "asc"}
+                    onClick={() => handleSort("date")}
+                  >
+                    Date
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sortDirection={orderBy === "time" ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === "time"}
+                    direction={orderBy === "time" ? order : "asc"}
+                    onClick={() => handleSort("time")}
+                  >
+                    Time
+                  </TableSortLabel>
+                </TableCell>
                 <TableCell sortDirection={orderBy === "date" ? order : false}>
                   <TableSortLabel
                     active={orderBy === "date"}
@@ -300,6 +318,15 @@ export default function Stay() {
                     <TableCell>{item.booking_id}</TableCell>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.guesthouse}</TableCell>
+                     <TableCell>
+                                          {new Date(item.created_at).toLocaleDateString("en-GB")}
+                                        </TableCell> 
+                                    <TableCell>
+  {new Date(item.created_at).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}
+</TableCell>
                     <TableCell>
                       {new Date(item.checkin).toLocaleDateString("en-GB")}
                     </TableCell>

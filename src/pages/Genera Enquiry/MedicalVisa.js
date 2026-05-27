@@ -224,6 +224,24 @@ export default function MedicalVisa() {
                     Phone
                   </TableSortLabel>
                 </TableCell>
+                  <TableCell sortDirection={orderBy === "date" ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === "date"}
+                    direction={orderBy === "date" ? order : "asc"}
+                    onClick={() => handleSort("date")}
+                  >
+                    Date
+                  </TableSortLabel>
+                </TableCell>
+                 <TableCell sortDirection={orderBy === "time" ? order : false}>
+                                  <TableSortLabel
+                                    active={orderBy === "time"}
+                                    direction={orderBy === "time" ? order : "asc"}
+                                    onClick={() => handleSort("time")}
+                                  >
+                                    Time
+                                  </TableSortLabel>
+                                </TableCell>
                 <TableCell>
                   <TableSortLabel
                     active={orderBy === "applying_for"}
@@ -255,6 +273,15 @@ export default function MedicalVisa() {
                     <TableCell>{item.nationality}</TableCell>
                     <TableCell>{item.passport_number}</TableCell>
                     <TableCell>{item.phone_number}</TableCell>
+                     <TableCell>
+                                          {new Date(item.created_at).toLocaleDateString("en-GB")}
+                                        </TableCell> 
+                                    <TableCell>
+  {new Date(item.created_at).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}
+</TableCell>
                     <TableCell>
                       {item.applying_for?.replaceAll("_", " ")}{" "}
                     </TableCell>

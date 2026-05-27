@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import Box from "@mui/material/Box";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
@@ -52,6 +54,8 @@ import { Pagination, Stack } from "@mui/material";
 const rowsPerPage = 10;
 function PatientDetail() {
   const navigate = useNavigate();
+  const pharmacyRefs = useRef([]);
+   const componentRef = useRef();
   const [openGuesthouse, setOpenGuesthouse] = useState(false);
   const [isEditGuesthouse, setIsEditGuesthouse] = useState(false);
   const [seekerStatus, setSeekerStatus] = React.useState({});
@@ -59,6 +63,7 @@ function PatientDetail() {
   const [recommend, setRecommend] = useState("");
   const [Title, setTitle] = useState("");
   const [pickuptime, setPickuptime] = useState("");
+  const [documentName, setDocumentName] = useState("");
   const [treatmentIds1, setTreatmentIds1] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
   const [treatmentPage, setTreatmentPage] = useState(0);
@@ -96,7 +101,7 @@ function PatientDetail() {
     enq_email: "",
     enquiryId: "",
   });
-  const hospitalRef = useRef();
+const hospitalRef = useRef([]);
   const omcaRef = useRef();
   const [guestHouseBookingobj, setGuestHouseBookingobj] = useState({});
   const [hospitalDetails, setHospitalDetails] = useState({});
@@ -190,6 +195,8 @@ function PatientDetail() {
   const [mainTab, setMainTab] = useState(() => {
     return localStorage.getItem("patientMainTab") || "treatment-plans";
   });
+  const omcaRefs = useRef([]);
+  const pharmacyreRefs = useRef([]);
   const [date2, setDate2] = useState();
   const [appHospital, setAppHospital] = useState("");
   const [kys, setKyc] = useState([]);
@@ -267,32 +274,7 @@ function PatientDetail() {
       throw error;
     }
   };
-  const handleDownloadPDF = (ref, fileName = "download.pdf") => {
-    const element = ref?.current;
-    if (!element) return; // ✅ safety
-    element.classList.add("pdf-mode");
-    const opt = {
-      margin: 0, // 🔥 thoda spacing (top, left, bottom, right)
-      filename: fileName, // ✅ dynamic filename
-      html2canvas: {
-        scale: 2,
-        scrollX: 0,
-        scrollY: 0,
-      },
-      jsPDF: {
-        unit: "mm",
-        format: "a4",
-        orientation: "portrait",
-      },
-    };
-    html2pdf()
-      .set(opt)
-      .from(element)
-      .save()
-      .then(() => {
-        element.classList.remove("pdf-mode");
-      });
-  };
+
   const hadnlcecEdopenmodalGuestHouse = (item, info) => {
     console.log(item, info);
     setTreatmentIds1(item.patientId);
@@ -2483,6 +2465,81 @@ function PatientDetail() {
       });
     }
   };
+
+const handleDownloadPDF2 = (
+  refs,
+  index,
+  fileName
+) => {
+  const element = refs.current[index];
+
+  if (!element) {
+    console.log("PDF element not found");
+    return;
+  }
+
+  const options = {
+    margin: 0.3,
+    filename: fileName,
+
+    image: {
+      type: "jpeg",
+      quality: 1,
+    },
+
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      scrollX: 0,
+      scrollY: 0,
+    },
+
+    jsPDF: {
+      unit: "in",
+      format: "a4",
+      orientation: "portrait",
+    },
+  };
+
+  html2pdf()
+    .set(options)
+    .from(element)
+    .save();
+};
+  const handleDownloadPDF1 = (
+  refs,
+  index,
+  fileName
+) => {
+  const element = refs.current[index];
+
+  if (!element) return;
+
+  const options = {
+    margin: 0.3,
+    filename: fileName,
+    image: {
+      type: "jpeg",
+      quality: 1,
+    },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    },
+    jsPDF: {
+      unit: "in",
+      format: "a4",
+      orientation: "portrait",
+    },
+  };
+
+  html2pdf()
+    .set(options)
+    .from(element)
+    .save();
+};
   const EditDelete = async (a, b) => {
     const confirm = await Swal.fire({
       title: "Delete Note?",
@@ -2819,51 +2876,67 @@ function PatientDetail() {
     setDataStatus(status);
     setOpenModalDovPlan(true);
   };
-  const apihitpost = async () => {
-    try {
-      if (!files || files.length === 0) {
-        await Swal.fire({
-          icon: "warning",
-          title: "Document Required",
-          text: "Please upload a document before submitting",
-        });
-        return;
-      }
-      const formData = new FormData();
-      formData.append("status", dataStatus);
-      files.forEach((file) => {
-        formData.append("documents", file);
+const apihitpost = async () => {
+  try {
+    if (!files || files.length === 0) {
+      await Swal.fire({
+        icon: "warning",
+        title: "Document Required",
+        text: "Please upload a document before submitting",
       });
-      const response = await axios.put(
-        `${baseurl}updateHospitalStatus/${datainfo._id}/${dataHospitalID}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
-      if (response?.data?.success) {
-        await Swal.fire("Success", "Hospital approved successfully", "success");
-        closemodaldocumnt();
-        getTreatmentPlan();
-        dispatch(GetPatientTreatments({ id: location.state.patientId }));
-      } else {
-        await Swal.fire(
-          "Error",
-          response?.data?.message || "Status update failed",
-          "error",
-        );
-      }
-    } catch (error) {
-      const errorMsg =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Server error occurred";
-
-      await Swal.fire("Error", errorMsg, "error");
+      return;
     }
-  };
+
+    // Add validation for documentName
+    if (!documentName || documentName.trim() === "") {
+      await Swal.fire({
+        icon: "warning",
+        title: "Document Name Required",
+        text: "Please enter a document name before submitting",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("documentName", documentName);
+    formData.append("status", dataStatus);
+    
+    files.forEach((file) => {
+      formData.append("documents", file);
+    });
+
+    const response = await axios.put(
+      `${baseurl}updateHospitalStatus/${datainfo._id}/${dataHospitalID}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+
+    if (response?.data?.success) {
+      await Swal.fire("Success", "Hospital approved successfully", "success");
+      closemodaldocumnt();
+      getTreatmentPlan();
+      dispatch(GetPatientTreatments({ id: location.state.patientId }));
+    } else {
+      await Swal.fire(
+        "Error",
+        response?.data?.message || "Status update failed",
+        "error",
+      );
+    }
+  } catch (error) {
+    const errorMsg =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Server error occurred";
+
+    await Swal.fire("Error", errorMsg, "error");
+  }
+};
+
   const closemodaldocumnt = () => {
     setOpenModalDovPlan(false);
   };
@@ -3747,6 +3820,38 @@ function PatientDetail() {
       });
     }
   };
+
+
+const handleDownloadPDF = (index) => {
+  const element = hospitalRef.current[index];
+
+  if (!element) return;
+
+  const options = {
+    margin: 0.3,
+    filename: `hospital-${index + 1}.pdf`,
+    image: {
+      type: "jpeg",
+      quality: 1,
+    },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    },
+    jsPDF: {
+      unit: "in",
+      format: "a4",
+      orientation: "portrait",
+    },
+  };
+
+  html2pdf()
+    .set(options)
+    .from(element)
+    .save();
+};
+
   // const addchargeapipharmacy = async () => {
   //   const payload = {
   //     service_name: pharmacyvalue.service_name,
@@ -5455,7 +5560,7 @@ Object.keys(data).forEach((key) => {
                                                     <i
                                                       className="fa-solid fa-trash"
                                                       onClick={() =>
-                                                        handledelete(info)
+                                                        handledelete(info,index)
                                                       }
                                                     ></i>
                                                   )}
@@ -5469,22 +5574,19 @@ Object.keys(data).forEach((key) => {
                                               </h6>
                                             )}
                                             <div className="">
-                                              <a
-                                                href="!#"
-                                                onClick={(e) => {
-                                                  e.preventDefault();
-                                                  handleDownloadPDF(
-                                                    hospitalRef,
-                                                    "hospital.pdf",
-                                                  );
-                                                }}
-                                              >
-                                                <i className="fa-solid fa-download"></i>
-                                              </a>
+                                              <button
+  type="button"
+  className="border-0 bg-transparent"
+  onClick={() => {
+   handleDownloadPDF(index);
+  }}
+>
+  <i className="fa-solid fa-download"></i>
+</button>
                                             </div>
                                           </div>
                                           <div className="card-body">
-                                            <div ref={hospitalRef}>
+                                            <div   ref={(el) => (hospitalRef.current[index] = el)}>
                                               <div className="row gx-3 gy-3">
                                                 <div className="col-md-6">
                                                   <div className="card patientreat">
@@ -5905,18 +6007,19 @@ Object.keys(data).forEach((key) => {
                                           >
                                             <div className="d-flex gap-2 align-items-center">
                                               <h6>OMCA</h6>
-                                              <a
-                                                href="!#"
-                                                onClick={(e) => {
-                                                  e.preventDefault();
-                                                  handleDownloadPDF(
-                                                    omcaRef,
-                                                    "omca.pdf",
-                                                  );
-                                                }}
-                                              >
-                                                <i className="fa-solid fa-download"></i>
-                                              </a>
+                                           <button
+  type="button"
+  className="border-0 bg-transparent"
+  onClick={() => {
+    handleDownloadPDF1(
+      omcaRefs,
+      index,
+      `omca-${index + 1}.pdf`
+    );
+  }}
+>
+  <i className="fa-solid fa-download"></i>
+</button>
                                             </div>
                                             <div className="">
                                               <button
@@ -5935,7 +6038,9 @@ Object.keys(data).forEach((key) => {
                                             </div>
                                           </div>
                                           <div className="card-body">
-                                            <div ref={omcaRef}>
+                                           <div
+  ref={(el) => (omcaRefs.current[index] = el)}
+>
                                               <div className="row gx-3 gy-3">
                                                 <div className="col-md-6">
                                                   <div className="card patientreat">
@@ -6524,9 +6629,19 @@ Object.keys(data).forEach((key) => {
                                             <div className="d-flex align-items-center gap-3">
                                               <h6>Pharmacy</h6>
                                               <div className="">
-                                                <a href="">
-                                                  <i class="fa-solid fa-download me-2"></i>
-                                                </a>
+                                                    <button
+      type="button"
+      className="border-0 bg-transparent"
+      onClick={() => {
+        handleDownloadPDF2(
+          pharmacyRefs,
+          index,
+          `pharmacy-${index + 1}.pdf`
+        );
+      }}
+    >
+      <i className="fa-solid fa-download"></i>
+    </button>
                                               </div>
                                             </div>
                                             <div>
@@ -6544,6 +6659,10 @@ Object.keys(data).forEach((key) => {
                                           </div>
                                           <div className="card-body">
                                             <div className="row gx-3 gy-3">
+                                           <div
+  ref={(el) => (pharmacyRefs.current[index] = el)}
+>
+                                           
                                               <div className="col-md-12">
                                                 <div className="card patientreat">
                                                   <div className="card-header service-list">
@@ -6641,6 +6760,7 @@ Object.keys(data).forEach((key) => {
                                                   </div>
                                                 </div>
                                               </div>
+                                             
                                               <div className="col-md-12">
                                                 <div className="total-amount">
                                                   <h6 className="mb-0">
@@ -6749,6 +6869,7 @@ Object.keys(data).forEach((key) => {
                                                   </div>
                                                 </div>
                                               </div>
+                                                </div>
                                             </div>
                                           </div>
                                           <div
@@ -7173,7 +7294,7 @@ Object.keys(data).forEach((key) => {
                                                     <th>Added By</th>
                                                     {usrRole === "Admin" ? (
                                                       <>
-                                                        {" "}
+                                                       {" "}
                                                         <th>Reports</th>
                                                         <th>Action</th>
                                                       </>
@@ -10360,6 +10481,17 @@ Object.keys(data).forEach((key) => {
             >
               <Box>
                 <div id="contact-form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Document Name<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="documentName"
+                        onChange={(e) => setDocumentName(e.target.value)}
+                    />
+                  </div>
                   <div className="field-set">
                     <label>
                       Document<span className="text-danger">*</span>

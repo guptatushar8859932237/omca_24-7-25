@@ -885,7 +885,7 @@ export default function Inquiry() {
         console.log(response.data.data);
         setHospitalList(response.data.data);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const getUserId = async () => {
     try {
@@ -1121,184 +1121,236 @@ export default function Inquiry() {
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage,
-                          )
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
                         ).length > 0 ? (
                           (pdfRowLimit
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage,
+                              )
                           ).map((info, i) => {
-                            console.log(info)
-                            return(
+                            console.log(info);
+                            return (
                               <>
-                               <TableRow
-                              role="checkbox"
-                              tabIndex={-1}
-                              key={info.code}
-                            >
-                              <TableCell>
-                                {pdfRowLimit
-                                  ? i + 1
-                                  : page * rowsPerPage + i + 1}
-                              </TableCell>
-                              <TableCell>{info.enquiryId}</TableCell>
-                              <TableCell
-                                style={{ cursor: "pointer" }}
-                                onClick={(e) => ViewDetail(e, tabValue, info)}
-                              >
-                                {info?.name?.length > 10
-                                  ? info.name.slice(0, 10) + "..."
-                                  : info.name}
-                              </TableCell>
-                              <TableCell>
-                                {" "}
-                                {info?.country?.length > 10
-                                  ? info.country.slice(0, 10) + "..."
-                                  : info.country}
-                              </TableCell>
-                              <TableCell>
-                                {" "}
-                                {info?.treatingIn?.length > 10
-                                  ? info.treatingIn.slice(0, 10) + "..."
-                                  : info.treatingIn}
-                              </TableCell>
-                              {/* <TableCell>{info.createdBy}</TableCell> */}
-                              <TableCell>
-                                {new Date(info.date).toLocaleDateString(
-                                  "en-GB",
-                                )}
-                                -
-                                {new Date(info.date).toLocaleTimeString(
-                                  "en-GB",
-                                  {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                  },
-                                )}
-                              </TableCell>
-
-                              <TableCell>
-                                {info.Enquiry_status === "Confirmed" ? (
-                                  // ✅ Only show text
-                                  <span style={{ fontWeight: "bold" }}>
-                                    Confirmed
-                                  </span>
-                                ) : (
-                                  // ✅ Otherwise show dropdown
-                                  <FormControl
-                                    sx={{ m: 1, minWidth: 120 }}
-                                    size="small"
-                                    className="cont-main"
+                                <TableRow
+                                  role="checkbox"
+                                  tabIndex={-1}
+                                  key={info.code}
+                                >
+                                  <TableCell>
+                                    {pdfRowLimit
+                                      ? i + 1
+                                      : page * rowsPerPage + i + 1}
+                                  </TableCell>
+                                  <TableCell>{info.enquiryId}</TableCell>
+                                  <TableCell
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) =>
+                                      ViewDetail(e, tabValue, info)
+                                    }
                                   >
-                                    <Select
-                                      value={
-                                        seekerStatus[info.enquiryId]
-                                          ? seekerStatus[info.enquiryId]
-                                          : info.Enquiry_status === "Hold"
-                                            ? "2"
-                                            : info.Enquiry_status ===
-                                              "Follow-Up"
-                                              ? "3"
-                                              : info.Enquiry_status === "Dead"
-                                                ? "4"
-                                                : "0"
-                                      }
-                                      onChange={(e) =>
-                                        handleChange(
-                                          e,
-                                          info.enquiryId,
-                                          tabValue,
-                                          info,
-                                        )
-                                      }
-                                      displayEmpty
-                                      className="status-direct"
-                                    >
-                                      <MenuItem value="0">Pending</MenuItem>
-                                      <MenuItem value="1">Confirmed</MenuItem>
-                                      <MenuItem value="2">Hold</MenuItem>
-                                      <MenuItem value="3">Follow-up</MenuItem>
-                                      <MenuItem value="4">Closed</MenuItem>
-                                    </Select>
-                                  </FormControl>
-                                )}
-                              </TableCell>
-                              <TableCell className="action-icon">
-                                {tabValue === 0 ? (
-                                  <>
-                                    <i
-                                      className="fa-solid fa-notes-medical"
-                                      onClick={(e) =>
-                                        handleClickOpen2(e, info.enquiryId)
-                                      }
-                                    ></i>
-                                  </>
-                                ) : (
-                                  ""
-                                )}
-                              {tabValue === 0 ? (
-  !info?.hasDoctorReview && (
-    <i
-      className="fa-solid fa-stethoscope"
-      onClick={(e) =>
-        handleClickOpen4(e, info.enquiryId, info)
-      }
-    ></i>
-  )
-) : (
-  Object.keys(info?.raw?.doctor_review || {}).length === 0 && (
-    <i
-      className="fa-solid fa-stethoscope"
-      onClick={(e) =>
-        handleClickOpen4(e, info.enquiryId, info)
-      }
-    ></i>
-  )
-)}
-                                 { info?.hasAppointment ===true ?"":
-                                <i className="fa-solid fa-calendar-plus"
-                                  title="Add Appointment"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => handleOpenAppointment(info)}
-                                ></i>}
-                                <VisibilityIcon
-                                  className="eye-icon"
-                                  onClick={(e) => ViewDetail(e, tabValue, info)}
-                                />
-                                {tabValue === 0 ? (
-                                  <>
-                                    <i
-                                      className="fa-solid fa-pen-to-square"
-                                      onClick={(e) =>
-                                        EditButton(e, info.enquiryId)
-                                      }
-                                    ></i>
-                                    {localStorage.getItem("Role") ===
-                                      "Admin" && (
+                                    {info?.name?.length > 10
+                                      ? info.name.slice(0, 10) + "..."
+                                      : info.name}
+                                  </TableCell>
+                                  <TableCell>
+                                    {" "}
+                                    {info?.country?.length > 10
+                                      ? info.country.slice(0, 10) + "..."
+                                      : info.country}
+                                  </TableCell>
+                                  <TableCell>
+                                    {" "}
+                                    {info?.treatingIn?.length > 10
+                                      ? info.treatingIn.slice(0, 10) + "..."
+                                      : info.treatingIn}
+                                  </TableCell>
+                                  {/* <TableCell>{info.createdBy}</TableCell> */}
+                                  <TableCell>
+                                    {new Date(info.date).toLocaleDateString(
+                                      "en-GB",
+                                    )}
+                                    -
+                                    {new Date(info.date).toLocaleTimeString(
+                                      "en-GB",
+                                      {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                      },
+                                    )}
+                                  </TableCell>
+
+                                  <TableCell>
+                                    {info.Enquiry_status === "Confirmed" ? (
+                                      // ✅ Only show text
+                                      <span style={{ fontWeight: "bold" }}>
+                                        Confirmed
+                                      </span>
+                                    ) : (
+                                      // ✅ Otherwise show dropdown
+                                      <FormControl
+                                        sx={{ m: 1, minWidth: 120 }}
+                                        size="small"
+                                        className="cont-main"
+                                      >
+                                        <Select
+                                          value={
+                                            seekerStatus[info.enquiryId]
+                                              ? seekerStatus[info.enquiryId]
+                                              : info.Enquiry_status === "Hold"
+                                                ? "2"
+                                                : info.Enquiry_status ===
+                                                    "Follow-Up"
+                                                  ? "3"
+                                                  : info.Enquiry_status ===
+                                                      "Dead"
+                                                    ? "4"
+                                                    : "0"
+                                          }
+                                          onChange={(e) =>
+                                            handleChange(
+                                              e,
+                                              info.enquiryId,
+                                              tabValue,
+                                              info,
+                                            )
+                                          }
+                                          displayEmpty
+                                          className="status-direct"
+                                        >
+                                          <MenuItem value="0">Pending</MenuItem>
+                                          <MenuItem value="1">
+                                            Confirmed
+                                          </MenuItem>
+                                          <MenuItem value="2">Hold</MenuItem>
+                                          <MenuItem value="3">
+                                            Follow-up
+                                          </MenuItem>
+                                          <MenuItem value="4">Closed</MenuItem>
+                                        </Select>
+                                      </FormControl>
+                                    )}
+                                  </TableCell>
+                                  <TableCell className="action-icon">
+                                    {tabValue === 0 ? (
+                                      <>
                                         <i
-                                          className="fa-solid fa-trash"
-                                          onClick={() => handledelete(info)}
+                                          className="fa-solid fa-notes-medical"
+                                          onClick={(e) =>
+                                            handleClickOpen2(e, info.enquiryId)
+                                          }
                                         ></i>
-                                      )}
-                                  </>
-                                ) : (
-                                  <i
-                                    className="fa-solid fa-trash"
-                                    onClick={() => handleDeleteExternal(info)}
-                                  ></i>
-                                )}
-                              </TableCell>
-                            </TableRow>
+                                      </>
+                                    ) : (
+                                      ""
+                                    )}
+                                    {/* {tabValue === 0
+                                      ? !info?.hasDoctorReview && (
+                                          <i
+                                            className="fa-solid fa-stethoscope"
+                                            onClick={(e) =>
+                                              handleClickOpen4(
+                                                e,
+                                                info.enquiryId,
+                                                info,
+                                              )
+                                            }
+                                          ></i>
+                                        )
+                                      : Object.keys(
+                                          info?.raw?.doctor_review || {},
+                                        ).length === 0 && (
+                                          <i
+                                            className="fa-solid fa-stethoscope"
+                                            onClick={(e) =>
+                                              handleClickOpen4(
+                                                e,
+                                                info.enquiryId,
+                                                info,
+                                              )
+                                            }
+                                          ></i>
+                                        )} */}
+                                        {(localStorage.getItem("Role") === "Admin" ||
+  localStorage.getItem("Role") === "Doctor") &&
+  (tabValue === 0
+    ? !info?.hasDoctorReview && (
+        <i
+          className="fa-solid fa-stethoscope"
+          onClick={(e) =>
+            handleClickOpen4(
+              e,
+              info.enquiryId,
+              info,
+            )
+          }
+        ></i>
+      )
+    : Object.keys(
+        info?.raw?.doctor_review || {},
+      ).length === 0 && (
+        <i
+          className="fa-solid fa-stethoscope"
+          onClick={(e) =>
+            handleClickOpen4(
+              e,
+              info.enquiryId,
+              info,
+            )
+          }
+        ></i>
+      ))}
+                                    {info?.hasAppointment === true ? (
+                                      ""
+                                    ) : (
+                                      <i
+                                        className="fa-solid fa-calendar-plus"
+                                        title="Add Appointment"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() =>
+                                          handleOpenAppointment(info)
+                                        }
+                                      ></i>
+                                    )}
+                                    <VisibilityIcon
+                                      className="eye-icon"
+                                      onClick={(e) =>
+                                        ViewDetail(e, tabValue, info)
+                                      }
+                                    />
+                                    {tabValue === 0 ? (
+                                      <>
+                                        <i
+                                          className="fa-solid fa-pen-to-square"
+                                          onClick={(e) =>
+                                            EditButton(e, info.enquiryId)
+                                          }
+                                        ></i>
+                                        {localStorage.getItem("Role") ===
+                                          "Admin" && (
+                                          <i
+                                            className="fa-solid fa-trash"
+                                            onClick={() => handledelete(info)}
+                                          ></i>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <i
+                                        className="fa-solid fa-trash"
+                                        onClick={() =>
+                                          handleDeleteExternal(info)
+                                        }
+                                      ></i>
+                                    )}
+                                  </TableCell>
+                                </TableRow>
                               </>
-                            )
-                          }
-                           
-                          )
+                            );
+                          })
                         ) : (
                           <TableRow>
                             <TableCell colSpan={11}>
@@ -1474,19 +1526,19 @@ export default function Inquiry() {
                   onChange={handleAppointmentChange}
                 />
               </div>
-             <div className="field-set">
-  <label>Date</label>
-  <span className="text-danger">*</span>
+              <div className="field-set">
+                <label>Date</label>
+                <span className="text-danger">*</span>
 
-  <input
-    type="date"
-    name="appointment_Date"
-    className="form-control"
-    value={appointmentData.appointment_Date}
-    onChange={handleAppointmentChange}
-    min={new Date().toISOString().split("T")[0]}
-  />
-</div>
+                <input
+                  type="date"
+                  name="appointment_Date"
+                  className="form-control"
+                  value={appointmentData.appointment_Date}
+                  onChange={handleAppointmentChange}
+                  min={new Date().toISOString().split("T")[0]}
+                />
+              </div>
               <div className="field-set">
                 <label>Time</label>
                 <span className="text-danger">*</span>
@@ -1534,7 +1586,9 @@ export default function Inquiry() {
               </div>
               <DialogActions className="submit-main">
                 <Button onClick={handleCloseAppointment}>Cancel</Button>
-                <Button variant="contained" onClick={handleSubmitAppointment}>Submit</Button>
+                <Button variant="contained" onClick={handleSubmitAppointment}>
+                  Submit
+                </Button>
               </DialogActions>
             </Box>
           </DialogContent>
@@ -1690,13 +1744,8 @@ export default function Inquiry() {
         <ToastContainer />
       </React.Fragment>
       <React.Fragment>
-        <Dialog
-    fullWidth
-    maxWidth="sm"
-    open={open4}
-    onClose={handleClose4}
-  >
-    <div className="main-card-header d-flex justify-content-between align-items-center px-3 py-2">
+        <Dialog fullWidth maxWidth="sm" open={open4} onClose={handleClose4}>
+          <div className="main-card-header d-flex justify-content-between align-items-center px-3 py-2">
             <div className="note-hd">
               <h6>Doctor Review</h6>
             </div>
@@ -1706,18 +1755,18 @@ export default function Inquiry() {
           </div>
           <DialogContent className="main-box">
             <Box
-        noValidate
-        component="form"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-        }}
-         sx={{
-    maxHeight: "70vh",
-    overflowY: "auto",
-  }}
-      >
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+              }}
+              sx={{
+                maxHeight: "70vh",
+                overflowY: "auto",
+              }}
+            >
               <Box>
                 <form id="contact-form">
                   <div className="field-set">

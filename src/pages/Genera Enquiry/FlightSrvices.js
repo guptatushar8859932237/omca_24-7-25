@@ -224,6 +224,24 @@ export default function FlightSrvices() {
                     Date
                   </TableSortLabel>
                 </TableCell>
+                 <TableCell sortDirection={orderBy === "date" ? order : false}>
+                                                  <TableSortLabel
+                                                    active={orderBy === "date"}
+                                                    direction={orderBy === "date" ? order : "asc"}
+                                                    onClick={() => handleSort("created_at")}
+                                                  >
+                                                    Date
+                                                  </TableSortLabel>
+                                                </TableCell>
+                                                <TableCell sortDirection={orderBy === "time" ? order : false}>
+                                                  <TableSortLabel
+                                                    active={orderBy === "time"}
+                                                    direction={orderBy === "time" ? order : "asc"}
+                                                    onClick={() => handleSort("created_at")}
+                                                  >
+                                                    Time
+                                                  </TableSortLabel>
+                                                </TableCell>
                 <TableCell sortDirection={orderBy === "status" ? order : false}>
                   <TableSortLabel
                     active={orderBy === "status"}
@@ -246,6 +264,15 @@ export default function FlightSrvices() {
                     <TableCell>{item.phone}</TableCell>
                     <TableCell>
                       {new Date(item.select_date).toLocaleDateString("en-GB")}
+                    </TableCell>
+                     <TableCell>
+                                                              {new Date(item.created_at).toLocaleDateString("en-GB")}
+                                                            </TableCell> 
+                                                        <TableCell>
+                      {new Date(item.created_at).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </TableCell>
                     <TableCell>
                       <FormControl
