@@ -119,6 +119,57 @@ export default function AddPatientTreatment() {
   const handleback = () => {
     window.history.back();
   };
+
+   const handleCreateTreatment = async () => {
+      const { value: treatmentName } = await Swal.fire({
+        title: "Create Treatment Plan",
+        input: "text",
+        inputLabel: "Treatment Name",
+        inputPlaceholder: "Enter treatment name",
+        showCancelButton: true,
+        confirmButtonText: "Create",
+        inputValidator: (value) => {
+          if (!value) {
+            return "Treatment name is required";
+          }
+        },
+      });
+      if (treatmentName) {
+        const payload = { name: treatmentName };
+        try {
+          const response = await axios.post(
+            `${AdminBaseUrl}treatment/add`,
+            payload,
+          );
+            console.log(response.data)
+            const data = await response.data;
+            console.log(response, data)
+          if (response.data.success === "true") {
+            dispatch(GetAllTreatment());
+            Swal.fire(
+              "Success",
+              data.message || "Treatment created successfully",
+              "success",
+            );
+          } else {
+            Swal.fire(
+              "Error",
+              data.message || "Failed to create treatment",
+              "error",
+            );
+          }
+        } catch (error) {
+          console.log(error);
+          Swal.fire(
+            "Error",
+            error?.response?.data?.message ||
+              error.message ||
+              "Something went wrong",
+            "error",
+          );
+        }
+      }
+    };
   return (
     <>
       <div className="page-wrapper">
@@ -187,10 +238,25 @@ export default function AddPatientTreatment() {
                       </div>
                     </div>
                     <div className="col-sm-6">
-                      <div className="field-set">
+                      <div className="field-set  ">
+                        <div className="d-flex justify-content-between align-items-center">
+ <div>
                         <label>
                           Treatment course<span className="text-danger">*</span>
                         </label>
+                        </div>
+                        <div>
+
+                          <button
+                                  type="button"
+                                  className="btn btn-sm btn-primary"
+                                  onClick={handleCreateTreatment}
+                                  >
+                                  + Create
+                                </button>
+                                  </div>
+                        </div>
+                       
                         <Autocomplete
                           disablePortal
                           options={Treatment || []}

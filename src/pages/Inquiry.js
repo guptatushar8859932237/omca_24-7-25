@@ -582,7 +582,7 @@ export default function Inquiry() {
   const handleClearFilter = () => {
     setFilterValue("");
     setRows(searchApiData);
-    setPage(0);
+    setPage(0); // ⭐ RESET PAGE
   };
   useEffect(() => {
     setPage(0);
@@ -781,6 +781,7 @@ export default function Inquiry() {
       formData.append("enq_userName", appointmentData.enq_userName);
       formData.append("enq_phoneNumber", appointmentData?.enq_phoneNumber);
       formData.append("user_id", appointmentData?.user_id);
+      // formData.append("enq_country_code", appointmentData.enq_country_code);
       formData.append("enq_email", appointmentData.enq_email);
       images.forEach((file) => {
         formData.append("reports", file);
@@ -799,6 +800,24 @@ export default function Inquiry() {
     }
   };
   const usrFount = localStorage.getItem("_id");
+  // const handleSubmitAppointment = async () => {
+  //   const { patient_name, doctor_name, date, time } = appointmentData;
+
+  //   if (!patient_name || !doctor_name || !date || !time) {
+  //     return Swal.fire("Error", "All fields are required", "error");
+  //   }
+
+  //   try {
+  //     const res = await axios.post(`${AdminBaseUrl}appointment/store`, appointmentData);
+
+  //     if (res?.data?.success) {
+  //       Swal.fire("Success", "Appointment added successfully", "success");
+  //       handleCloseAppointment();
+  //     }
+  //   } catch (error) {
+  //     Swal.fire("Error", "Something went wrong", "error");
+  //   }
+  // };
   const handleAppointmentChange = (e) => {
     const { name, value } = e.target;
     setAppointmentData((prev) => ({
@@ -895,133 +914,106 @@ export default function Inquiry() {
     <>
       <div className="page-wrapper">
         <div className="content">
-          <div className="row gx-3">
-            <div className="col-md-12">
-              <div className="topmainhd">
-                <h6>
-                  {tabValue === 0
-                    ? "Manage Enquiries"
-                    : tabValue === 1
-                      ? "Manage Ambulance Service"
-                      : tabValue === 2
-                        ? "Manage Air Medical escort"
-                        : tabValue === 3
-                          ? "Manage Treatment Estimate"
-                          : ""}
-                </h6>
-              </div>
-            </div>
+          <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
+            <Tabs value={tabValue} onChange={handleTabChange}>
+              {filteredTabs.map((tab) => (
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
+              ))}
+            </Tabs>
+          </Box>
+          <div className="row">
             <div className="col-md-12">
               <div className="country-top">
                 <div className="">
-                  <Box>
-                    <Tabs
-                      sx={{
-                        minHeight: "40px",
-                        "& .MuiTabs-flexContainer": {
-                          gap: "10px",
-                        },
-                      }}
-                      TabIndicatorProps={{
-                        style: { display: "none" },
-                      }}
-                      value={tabValue}
-                      onChange={handleTabChange}
-                    >
-                      {filteredTabs.map((tab) => (
-                        <Tab
-                          sx={{
-                            textTransform: "none",
-                            fontSize: "12px",
-                            fontWeight: 500,
-                            fontFamily: "Rubik",
-                            padding: "8px 18px",
-                            lineHeight: "22px",
-                            border: "1px solid #ccc",
-                            borderRadius: "5px",
-                            color: "#666",
-                            transition: "0.3s",
-                            minHeight: "0px",
-                            "&.Mui-selected": {
-                              background: "#22c7b8",
-                              color: "#fff",
-                            },
-                          }}
-                          key={tab.value}
-                          label={tab.label}
-                          value={tab.value}
-                        />
-                      ))}
-                    </Tabs>
-                  </Box>
+                  <h4 className="page-title mb-0">
+                    {tabValue === 0
+                      ? "Enquiries"
+                      : tabValue === 1
+                        ? "Ambulance Service"
+                        : tabValue === 2
+                          ? "Air Medical escort"
+                          : tabValue === 3
+                            ? "Treatment Estimate"
+                            : ""}
+                  </h4>
                 </div>
                 <div className="search-btn-main">
-                  <TextField
-                    className="field-count"
-                    label="Search"
-                    id="outlined-required"
-                    size="small"
-                    value={filterValue}
-                    onChange={handleFilter}
-                    InputLabelProps={{ shrink: true }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          {filterValue && (
-                            <IconButton
-                              onClick={handleClearFilter}
-                              edge="end"
-                              className="input-set"
-                            >
-                              <ClearIcon />
-                            </IconButton>
-                          )}
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+                  <div className="mr-3">
+                    <TextField
+                      sx={{ width: "100%" }}
+                      className="field-count"
+                      label="Search"
+                      id="outlined-required"
+                      size="small"
+                      value={filterValue}
+                      onChange={handleFilter} // Pass event directly
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {filterValue && (
+                              <IconButton
+                                onClick={handleClearFilter}
+                                edge="end"
+                                className="input-set"
+                              >
+                                <ClearIcon />
+                              </IconButton>
+                            )}
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </div>
                   {tabValue === 0 ? (
-                    <>
-                      <Link to="/Admin/add-Enquiry" className="add-button">
-                        <span>
-                          <i className="fa fa-plus me-2"></i>
-                        </span>
-                        New Enquiry
-                      </Link>
-                      <button
-                        onClick={(e) => handleClickOpen3(e)}
-                        className="add-button"
-                      >
-                        <span>
-                          <i className="fa fa-file-excel-o me-2"></i>
-                        </span>
-                        Import File
-                      </button>
-                      <button onClick={handleSampleFile} className="add-button">
-                        <span>
-                          <i className="fa fa-file me-2"></i>
-                        </span>
-                        Export File
-                      </button>
-                      {role === "Admin" ? (
-                        <button onClick={donloadpdf} className="add-button">
+                    <div className="">
+                      <div className="table-top-btn">
+                        <Link to="/Admin/add-Enquiry" className="add-button">
                           <span>
-                            <i className="fa fa-file-pdf-o me-2"></i>
+                            <i className="fa fa-plus"></i>
                           </span>
-                          Pdf
+                          New Enquiry
+                        </Link>
+                        <button
+                          onClick={(e) => handleClickOpen3(e)}
+                          className="add-button"
+                        >
+                          <span>
+                            <i className="fa fa-file-excel-o mx-1"></i>
+                          </span>{" "}
+                          Import File
                         </button>
-                      ) : (
-                        ""
-                      )}
-                    </>
+                        <button
+                          onClick={handleSampleFile}
+                          className="add-button"
+                        >
+                          <span>
+                            <i className="fa fa-file"></i>
+                          </span>
+                          Export File
+                        </button>
+                        {role === "Admin" ? (
+                          <button onClick={donloadpdf} className="add-button">
+                            <span>
+                              <i className="fa fa-file-pdf-o"></i>
+                            </span>
+                            pdf
+                          </button>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
                   ) : (
                     ""
                   )}
                 </div>
               </div>
             </div>
-            <div className="col-md-12">
-              <div className="main_content">
+          </div>
+          <div className="main_content">
+            <div className="row">
+              <div className="col-md-12">
                 <div className="table-responsive">
                   <TableContainer
                     component={Paper}
@@ -1084,6 +1076,17 @@ export default function Inquiry() {
                               Treating In
                             </TableSortLabel>
                           </TableCell>
+                          {/* <TableCell>
+                            <TableSortLabel
+                              active={orderBy === "createdBy"}
+                              direction={
+                                orderBy === "createdBy" ? orderDirection : "asc"
+                              }
+                              onClick={() => handleRequestSort("createdBy")}
+                            >
+                              Created By
+                            </TableSortLabel>
+                          </TableCell> */}
                           <TableCell>
                             <TableSortLabel
                               active={orderBy === "date"}
@@ -1110,6 +1113,7 @@ export default function Inquiry() {
                               Status
                             </TableSortLabel>
                           </TableCell>
+                          {/* <TableCell>Status</TableCell> */}
                           <TableCell>Actions</TableCell>
                         </TableRow>
                       </TableHead>
@@ -1164,6 +1168,7 @@ export default function Inquiry() {
                                       ? info.treatingIn.slice(0, 10) + "..."
                                       : info.treatingIn}
                                   </TableCell>
+                                  {/* <TableCell>{info.createdBy}</TableCell> */}
                                   <TableCell>
                                     {new Date(info.date).toLocaleDateString(
                                       "en-GB",
@@ -1243,7 +1248,7 @@ export default function Inquiry() {
                                     ) : (
                                       ""
                                     )}
-                                    {tabValue === 0
+                                    {/* {tabValue === 0
                                       ? !info?.hasDoctorReview && (
                                           <i
                                             className="fa-solid fa-stethoscope"
@@ -1269,7 +1274,38 @@ export default function Inquiry() {
                                               )
                                             }
                                           ></i>
-                                        )}
+                                        )} */}
+                                    {(localStorage.getItem("Role") ===
+                                      "Admin" ||
+                                      localStorage.getItem("Role") ===
+                                        "Doctor") &&
+                                      (tabValue === 0
+                                        ? !info?.hasDoctorReview && (
+                                            <i
+                                              className="fa-solid fa-stethoscope"
+                                              onClick={(e) =>
+                                                handleClickOpen4(
+                                                  e,
+                                                  info.enquiryId,
+                                                  info,
+                                                )
+                                              }
+                                            ></i>
+                                          )
+                                        : Object.keys(
+                                            info?.raw?.doctor_review || {},
+                                          ).length === 0 && (
+                                            <i
+                                              className="fa-solid fa-stethoscope"
+                                              onClick={(e) =>
+                                                handleClickOpen4(
+                                                  e,
+                                                  info.enquiryId,
+                                                  info,
+                                                )
+                                              }
+                                            ></i>
+                                          ))}
                                     {info?.hasAppointment === true ? (
                                       ""
                                     ) : (
@@ -1347,58 +1383,164 @@ export default function Inquiry() {
             </div>
           </div>
         </div>
-        <div
-          id="delete_appointment"
-          className="modal fade delete-modal"
-          role="dialog"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-body text-center">
-                <img src="assets/img/sent.png" alt="" width="50" height="46" />
-                <h3>Are you sure want to delete this Appointment?</h3>
-                <div className="m-t-20">
-                  {" "}
-                  <a href="#" className="btn btn-white" data-dismiss="modal">
-                    Close
-                  </a>
-                  <button type="submit" className="btn btn-danger">
-                    Delete
-                  </button>
-                </div>
+      </div>
+      <div
+        id="delete_appointment"
+        className="modal fade delete-modal"
+        role="dialog"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body text-center">
+              <img src="assets/img/sent.png" alt="" width="50" height="46" />
+              <h3>Are you sure want to delete this Appointment?</h3>
+              <div className="m-t-20">
+                {" "}
+                <a href="#" className="btn btn-white" data-dismiss="modal">
+                  Close
+                </a>
+                <button type="submit" className="btn btn-danger">
+                  Delete
+                </button>
               </div>
             </div>
           </div>
         </div>
-        <React.Fragment>
-          <Dialog
-            fullWidth={fullWidth}
-            maxWidth={maxWidth}
-            open={open3}
-            onClose={handleClose3}
-          >
-            <div className="main-card-header">
-              <div className="note-hd">
-                <h6>Import Excel File</h6>
-              </div>
-              <div className="cross-icon" onClick={handleClose3}>
-                <i class="fa-solid fa-xmark"></i>
-              </div>
-<<<<<<< HEAD
-=======
-             <div className="field-set">
-  <label>Date</label>
-  <span className="text-danger">*</span>
+      </div>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={open3}
+          onClose={handleClose3}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Import Excel File</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose3}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="Date / Time-form"
+            >
+              <Box>
+                <form id="contact-form" className="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Choose File<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      className="form-control"
+                      type="file"
+                      id="fileSelect"
+                      accept=".xlsx, .xls, .csv"
+                      onChange={(event) => {
+                        const file = event.target.files[0];
+                        console.log("Selected file:", file);
+                        setSelectedImage(file);
+                      }}
+                    />
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={(e) => handleImportFile(e)}
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          open={openAppointment}
+          onClose={handleCloseAppointment}
+          fullWidth
+          maxWidth="sm"
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Appointment</h6>
+            </div>
+            <div className="cross-icon" onClick={handleCloseAppointment}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="view-table-detail">
+            <Box className="contact-form">
+              <div className="field-set mb-2">
+                <FormControl fullWidth size="small">
+                  <label>Select Hospital</label>
+                  <Select
+                    value={appointmentData.hospital_id || ""}
+                    onChange={(e) => {
+                      const selectedId = e.target.value;
 
-  <input
-    type="date"
-    name="appointment_Date"
-    className="form-control"
-    value={appointmentData.appointment_Date}
-    onChange={handleAppointmentChange}
-    min={new Date().toISOString().split("T")[0]}
-  />
-</div>
+                      const selectedHospital = hospitalList.find(
+                        (item) => item.id === selectedId,
+                      );
+
+                      setAppointmentData((prev) => ({
+                        ...prev,
+                        hospital_id: selectedId,
+                        hospitalName: selectedHospital?.name || "",
+                        hospital_email: selectedHospital?.email || "",
+                      }));
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          maxHeight: 250,
+                        },
+                      },
+                    }}
+                  >
+                    {hospitalList.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="field-set">
+                <label>Health Issue</label>
+                <input
+                  type="text"
+                  name="health_issue"
+                  className="form-control"
+                  value={appointmentData.health_issue}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
+              <div className="field-set">
+                <label>Date</label>
+                <span className="text-danger">*</span>
+
+                <input
+                  type="date"
+                  name="appointment_Date"
+                  className="form-control"
+                  value={appointmentData.appointment_Date}
+                  onChange={handleAppointmentChange}
+                  min={new Date().toISOString().split("T")[0]}
+                />
+              </div>
               <div className="field-set">
                 <label>Time</label>
                 <span className="text-danger">*</span>
@@ -1446,7 +1588,9 @@ export default function Inquiry() {
               </div>
               <DialogActions className="submit-main">
                 <Button onClick={handleCloseAppointment}>Cancel</Button>
-                <Button variant="contained" onClick={handleSubmitAppointment}>Submit</Button>
+                <Button variant="contained" onClick={handleSubmitAppointment}>
+                  Submit
+                </Button>
               </DialogActions>
             </Box>
           </DialogContent>
@@ -1462,246 +1606,60 @@ export default function Inquiry() {
           <div className="main-card-header">
             <div className="note-hd">
               <h6>Add Hospitals</h6>
->>>>>>> 7b3a248b96f8ec49b2eba6836d4c175b3b5fca9c
             </div>
-            <DialogContent className="main-box">
-              <Box
-                noValidate
-                component="form"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "fit-content",
-                }}
-                className="Date / Time-form"
-              >
-                <Box>
-                  <form id="contact-form" className="contact-form">
+            <div className="cross-icon" onClick={handleClose2wew}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form">
+                  <div className="col-sm-12">
                     <div className="field-set">
                       <label>
-                        Choose File<span className="text-danger">*</span>
+                        Select Hospital<span className="text-danger">*</span>
                       </label>
-                      <input
-                        className="form-control"
-                        type="file"
-                        id="fileSelect"
-                        accept=".xlsx, .xls, .csv"
-                        onChange={(event) => {
-                          const file = event.target.files[0];
-                          console.log("Selected file:", file);
-                          setSelectedImage(file);
-                        }}
+                      <Autocomplete
+                        multiple
+                        options={
+                          hospital && hospital.length > 0
+                            ? hospital.map((h) => h.name)
+                            : []
+                        }
+                        value={report.hospital || []}
+                        onChange={handleHospitalChange}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder="Search & Select Hospital"
+                            variant="outlined"
+                            size="small"
+                          />
+                        )}
                       />
                     </div>
-                    <DialogActions className="submit-main">
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={(e) => handleImportFile(e)}
-                      >
-                        Submit
-                      </Button>
-                    </DialogActions>
-                  </form>
-                </Box>
-              </Box>
-            </DialogContent>
-          </Dialog>
-        </React.Fragment>
-        <React.Fragment>
-          <Dialog
-            open={openAppointment}
-            onClose={handleCloseAppointment}
-            fullWidth
-            maxWidth="sm"
-          >
-            <div className="main-card-header">
-              <div className="note-hd">
-                <h6>Add Appointment</h6>
-              </div>
-              <div className="cross-icon" onClick={handleCloseAppointment}>
-                <i className="fa-solid fa-xmark"></i>
-              </div>
-            </div>
-            <DialogContent className="view-table-detail">
-              <Box className="contact-form">
-                <div className="field-set mb-2">
-                  <FormControl fullWidth size="small">
-                    <label>Select Hospital</label>
-                    <Select
-                      value={appointmentData.hospital_id || ""}
-                      onChange={(e) => {
-                        const selectedId = e.target.value;
-
-                        const selectedHospital = hospitalList.find(
-                          (item) => item.id === selectedId,
-                        );
-
-                        setAppointmentData((prev) => ({
-                          ...prev,
-                          hospital_id: selectedId,
-                          hospitalName: selectedHospital?.name || "",
-                          hospital_email: selectedHospital?.email || "",
-                        }));
-                      }}
-                      MenuProps={{
-                        PaperProps: {
-                          style: {
-                            maxHeight: 250,
-                          },
-                        },
-                      }}
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={handleNotesdata}
                     >
-                      {hospitalList.map((item) => (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-                <div className="field-set">
-                  <label>Health Issue</label>
-                  <input
-                    type="text"
-                    name="health_issue"
-                    className="form-control"
-                    value={appointmentData.health_issue}
-                    onChange={handleAppointmentChange}
-                  />
-                </div>
-                <div className="field-set">
-                  <label>Date</label>
-                  <span className="text-danger">*</span>
-                  <input
-                    type="date"
-                    name="appointment_Date"
-                    className="form-control"
-                    value={appointmentData.appointment_Date}
-                    onChange={handleAppointmentChange}
-                  />
-                </div>
-                <div className="field-set">
-                  <label>Time</label>
-                  <span className="text-danger">*</span>
-                  <input
-                    type="time"
-                    name="appointment_Time"
-                    className="form-control"
-                    value={appointmentData.appointment_Time}
-                    onChange={handleAppointmentChange}
-                  />
-                </div>
-                <div className="field-set">
-                  <label>Notes</label>
-                  <span className="text-danger">*</span>
-                  <textarea
-                    name="Notes"
-                    className="form-control"
-                    value={appointmentData.Notes}
-                    onChange={handleAppointmentChange}
-                  />
-                </div>
-                <div className="field-set">
-                  <label>
-                    Upload Reports / Documents{" "}
-                    <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    multiple
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files);
-                      setImages(files);
-                    }}
-                  />
-                  {images.length > 0 && (
-                    <div style={{ marginTop: "10px" }}>
-                      {images.map((file, index) => (
-                        <div key={index} style={{ fontSize: "12px" }}>
-                          📄 {file.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <DialogActions className="submit-main">
-                  <Button onClick={handleCloseAppointment}>Cancel</Button>
-                  <Button variant="contained" onClick={handleSubmitAppointment}>
-                    Submit
-                  </Button>
-                </DialogActions>
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
               </Box>
-<<<<<<< HEAD
-            </DialogContent>
-          </Dialog>
-        </React.Fragment>
-        <React.Fragment>
-          <Dialog
-            fullWidth={fullWidth}
-            maxWidth={maxWidth}
-            open={open9}
-            onClose={handleClose2wew}
-          >
-            <div className="main-card-header">
-              <div className="note-hd">
-                <h6>Add Hospitals</h6>
-              </div>
-              <div className="cross-icon" onClick={handleClose2wew}>
-                <i class="fa-solid fa-xmark"></i>
-              </div>
-            </div>
-            <DialogContent className="main-box">
-              <Box
-                noValidate
-                component="form"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "fit-content",
-                }}
-                className="contact-form"
-              >
-                <Box>
-                  <form id="contact-form">
-                    <div className="col-sm-12">
-                      <div className="field-set">
-                        <label>
-                          Select Hospital<span className="text-danger">*</span>
-                        </label>
-                        <Autocomplete
-                          multiple
-                          options={
-                            hospital && hospital.length > 0
-                              ? hospital.map((h) => h.name)
-                              : []
-                          }
-                          value={report.hospital || []}
-                          onChange={handleHospitalChange}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              placeholder="Search & Select Hospital"
-                              variant="outlined"
-                              size="small"
-                            />
-                          )}
-                        />
-                      </div>
-                    </div>
-                    <DialogActions className="submit-main">
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={handleNotesdata}
-                      >
-                        Submit
-                      </Button>
-                    </DialogActions>
-                  </form>
-                </Box>
-=======
             </Box>
           </DialogContent>
         </Dialog>
@@ -1709,12 +1667,87 @@ export default function Inquiry() {
       </React.Fragment>
       <React.Fragment>
         <Dialog
-    fullWidth
-    maxWidth="sm"
-    open={open4}
-    onClose={handleClose4}
-  >
-    <div className="main-card-header d-flex justify-content-between align-items-center px-3 py-2">
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={open2}
+          onClose={handleClose2}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Create Notes</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose2}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form id="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Notes<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id="w3review"
+                      name="discussionNotes"
+                      rows="4"
+                      cols="50"
+                      className="form-control"
+                      placeholder="Note"
+                      onChange={(e) => setNote(e.target.value)}
+                      value={note}
+                    />
+                    <span style={{ color: "red" }}>
+                      {blogErr && !note ? "Please Enter Your  note" : ""}
+                    </span>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Date<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      id="birthday"
+                      name="date"
+                      placeholder="Date"
+                      className="form-control"
+                      onChange={(e) => setDate(e.target.value)}
+                      value={date}
+                      min={new Date().toISOString().split("T")[0]}
+                    />
+                    <span style={{ color: "red" }}>
+                      {blogErr && !date ? "Please Enter Your  date" : ""}
+                    </span>
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={handleNotesdata}
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <ToastContainer />
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog fullWidth maxWidth="sm" open={open4} onClose={handleClose4}>
+          <div className="main-card-header d-flex justify-content-between align-items-center px-3 py-2">
             <div className="note-hd">
               <h6>Doctor Review</h6>
             </div>
@@ -1724,18 +1757,18 @@ export default function Inquiry() {
           </div>
           <DialogContent className="main-box">
             <Box
-        noValidate
-        component="form"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-        }}
-         sx={{
-    maxHeight: "70vh",
-    overflowY: "auto",
-  }}
-      >
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+              }}
+              sx={{
+                maxHeight: "70vh",
+                overflowY: "auto",
+              }}
+            >
               <Box>
                 <form id="contact-form">
                   <div className="field-set">
@@ -1809,187 +1842,12 @@ export default function Inquiry() {
                     </Button>
                   </DialogActions>
                 </form>
->>>>>>> 7b3a248b96f8ec49b2eba6836d4c175b3b5fca9c
               </Box>
-            </DialogContent>
-          </Dialog>
-          <ToastContainer />
-        </React.Fragment>
-        <React.Fragment>
-          <Dialog
-            fullWidth={fullWidth}
-            maxWidth={maxWidth}
-            open={open2}
-            onClose={handleClose2}
-          >
-            <div className="main-card-header">
-              <div className="note-hd">
-                <h6>Create Notes</h6>
-              </div>
-              <div className="cross-icon" onClick={handleClose2}>
-                <i class="fa-solid fa-xmark"></i>
-              </div>
-            </div>
-            <DialogContent className="main-box">
-              <Box
-                noValidate
-                component="form"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "fit-content",
-                }}
-                className="contact-form"
-              >
-                <Box>
-                  <form id="contact-form">
-                    <div className="field-set">
-                      <label>
-                        Notes<span className="text-danger">*</span>
-                      </label>
-                      <textarea
-                        id="w3review"
-                        name="discussionNotes"
-                        rows="4"
-                        cols="50"
-                        className="form-control"
-                        placeholder="Note"
-                        onChange={(e) => setNote(e.target.value)}
-                        value={note}
-                      />
-                      <span style={{ color: "red" }}>
-                        {blogErr && !note ? "Please Enter Your  note" : ""}
-                      </span>
-                    </div>
-                    <div className="field-set">
-                      <label>
-                        Date<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="birthday"
-                        name="date"
-                        placeholder="Date"
-                        className="form-control"
-                        onChange={(e) => setDate(e.target.value)}
-                        value={date}
-                        min={new Date().toISOString().split("T")[0]}
-                      />
-                      <span style={{ color: "red" }}>
-                        {blogErr && !date ? "Please Enter Your  date" : ""}
-                      </span>
-                    </div>
-                    <DialogActions className="submit-main">
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={handleNotesdata}
-                      >
-                        Submit
-                      </Button>
-                    </DialogActions>
-                  </form>
-                </Box>
-              </Box>
-            </DialogContent>
-          </Dialog>
-          <ToastContainer />
-        </React.Fragment>
-        <React.Fragment>
-          <Dialog
-            fullWidth={fullWidth}
-            maxWidth={maxWidth}
-            open={open4}
-            onClose={handleClose4}
-          >
-            <div className="main-card-header">
-              <div className="note-hd">
-                <h6>Doctor Review</h6>
-              </div>
-              <div className="cross-icon" onClick={handleClose4}>
-                <i class="fa-solid fa-xmark"></i>
-              </div>
-            </div>
-            <DialogContent className="main-box">
-              <Box
-                noValidate
-                component="form"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "fit-content",
-                }}
-                className="contact-form"
-              >
-                <Box>
-                  <form id="contact-form">
-                    <div className="field-set">
-                      <label>
-                        Review Notes<span className="text-danger">*</span>
-                      </label>
-                      <textarea
-                        id="w3review"
-                        name="discussionNotes"
-                        rows="4"
-                        cols="50"
-                        className="form-control"
-                        placeholder="Review"
-                        onChange={handleNoteChange}
-                        value={note}
-                      />
-                      <span style={{ color: "red" }}>
-                        {blogErr && !note ? "Please Enter Your  note" : ""}
-                      </span>
-                    </div>
-                    <div className="field-set">
-                      <label>
-                        Upload Images<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="file"
-                        className="form-control"
-                        multiple
-                        onChange={handleImageChange}
-                        name="upload_image"
-                        id=""
-                      />
-                    </div>
-                    <div className="field-set">
-                      <label>
-                        Recommendations<span className="text-danger">*</span>
-                      </label>
-                      <textarea
-                        id=""
-                        name="recommend"
-                        rows="4"
-                        cols="50"
-                        onChange={handleRecommendChange}
-                        className="form-control"
-                        value={recommend}
-                        placeholder="Recommendations"
-                      />
-                    </div>
-                    <DialogActions className="submit-main">
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={handleNotesdataqw}
-                      >
-                        Submit
-                      </Button>
-                    </DialogActions>
-                  </form>
-                </Box>
-              </Box>
-            </DialogContent>
-          </Dialog>
-          <ToastContainer />
-        </React.Fragment>
-      </div>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <ToastContainer />
     </>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 7b3a248b96f8ec49b2eba6836d4c175b3b5fca9c
