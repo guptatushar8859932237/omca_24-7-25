@@ -732,6 +732,9 @@ export default function Patient() {
                                             }}
                                             className="status-direct"
                                           >
+                                            <MenuItem value="None">
+                                              None
+                                            </MenuItem>
                                             <MenuItem value="Private">
                                               Private
                                             </MenuItem>

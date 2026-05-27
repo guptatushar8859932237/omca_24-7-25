@@ -58,6 +58,7 @@ export default function Inquiry() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [orderDirection, setOrderDirection] = useState("asc");
   const [orderBy, setOrderBy] = useState("");
+  const [Title, setTitle] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [report, setReport] = useState([]);
@@ -104,6 +105,9 @@ export default function Inquiry() {
   };
   const permissions = localStorage.getItem("permissionArray") || "";
   console.log(permissions);
+  const handleRecommendTitle = (e) => {
+    setTitle(e.target.value);
+  };
   const handleRecommendChange = (e) => {
     setRecommend(e.target.value);
   };
@@ -1380,6 +1384,85 @@ export default function Inquiry() {
               <div className="cross-icon" onClick={handleClose3}>
                 <i class="fa-solid fa-xmark"></i>
               </div>
+<<<<<<< HEAD
+=======
+             <div className="field-set">
+  <label>Date</label>
+  <span className="text-danger">*</span>
+
+  <input
+    type="date"
+    name="appointment_Date"
+    className="form-control"
+    value={appointmentData.appointment_Date}
+    onChange={handleAppointmentChange}
+    min={new Date().toISOString().split("T")[0]}
+  />
+</div>
+              <div className="field-set">
+                <label>Time</label>
+                <span className="text-danger">*</span>
+                <input
+                  type="time"
+                  name="appointment_Time"
+                  className="form-control"
+                  value={appointmentData.appointment_Time}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
+              <div className="field-set">
+                <label>Notes</label>
+                <span className="text-danger">*</span>
+                <textarea
+                  name="Notes"
+                  className="form-control"
+                  value={appointmentData.Notes}
+                  onChange={handleAppointmentChange}
+                />
+              </div>
+              <div className="field-set">
+                <label>
+                  Upload Reports / Documents{" "}
+                  <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="file"
+                  className="form-control"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files);
+                    setImages(files);
+                  }}
+                />
+                {images.length > 0 && (
+                  <div style={{ marginTop: "10px" }}>
+                    {images.map((file, index) => (
+                      <div key={index} style={{ fontSize: "12px" }}>
+                        📄 {file.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <DialogActions className="submit-main">
+                <Button onClick={handleCloseAppointment}>Cancel</Button>
+                <Button variant="contained" onClick={handleSubmitAppointment}>Submit</Button>
+              </DialogActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
+          open={open9}
+          onClose={handleClose2wew}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Add Hospitals</h6>
+>>>>>>> 7b3a248b96f8ec49b2eba6836d4c175b3b5fca9c
             </div>
             <DialogContent className="main-box">
               <Box
@@ -1550,6 +1633,7 @@ export default function Inquiry() {
                   </Button>
                 </DialogActions>
               </Box>
+<<<<<<< HEAD
             </DialogContent>
           </Dialog>
         </React.Fragment>
@@ -1617,6 +1701,115 @@ export default function Inquiry() {
                     </DialogActions>
                   </form>
                 </Box>
+=======
+            </Box>
+          </DialogContent>
+        </Dialog>
+        <ToastContainer />
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+    fullWidth
+    maxWidth="sm"
+    open={open4}
+    onClose={handleClose4}
+  >
+    <div className="main-card-header d-flex justify-content-between align-items-center px-3 py-2">
+            <div className="note-hd">
+              <h6>Doctor Review</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClose4}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+        noValidate
+        component="form"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+        }}
+         sx={{
+    maxHeight: "70vh",
+    overflowY: "auto",
+  }}
+      >
+              <Box>
+                <form id="contact-form">
+                  <div className="field-set">
+                    <label>
+                      Review Notes<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id="w3review"
+                      name="discussionNotes"
+                      rows="4"
+                      cols="50"
+                      className="form-control"
+                      placeholder="Review"
+                      onChange={handleNoteChange}
+                      value={note}
+                    />
+                    <span style={{ color: "red" }}>
+                      {blogErr && !note ? "Please Enter Your  note" : ""}
+                    </span>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Upload Images<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      multiple
+                      onChange={handleImageChange}
+                      name="upload_image"
+                      id=""
+                    />
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Recommendations<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id=""
+                      name="recommend"
+                      rows="4"
+                      cols="50"
+                      onChange={handleRecommendChange}
+                      className="form-control"
+                      value={recommend}
+                      placeholder="Recommendations"
+                    />
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Title<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id=""
+                      name="Title"
+                      rows="4"
+                      cols="50"
+                      onChange={handleRecommendTitle}
+                      className="form-control"
+                      value={Title}
+                      placeholder="Title"
+                    />
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={handleNotesdataqw}
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+>>>>>>> 7b3a248b96f8ec49b2eba6836d4c175b3b5fca9c
               </Box>
             </DialogContent>
           </Dialog>
@@ -1795,4 +1988,8 @@ export default function Inquiry() {
       </div>
     </>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7b3a248b96f8ec49b2eba6836d4c175b3b5fca9c
