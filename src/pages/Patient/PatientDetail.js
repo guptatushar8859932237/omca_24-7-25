@@ -5165,7 +5165,6 @@ function PatientDetail() {
                                                         </div>
                                                       </button>
                                                     </h2>
-
                                                     {/* Body */}
                                                     <div
                                                       id={`doctorCommentsCollapse${index}`}
