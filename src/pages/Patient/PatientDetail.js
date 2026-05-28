@@ -20,6 +20,9 @@ import { AddHospitalForPatient } from "../../reducer/PatientTreatmentSlice";
 import { GetAllHositalData } from "../../reducer/HospitalSlice";
 import { GetAllCountries, GetAllCountries2 } from "../../reducer/Countries";
 import { AppointmentForPatient } from "../../reducer/PatientTreatmentSlice";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { Fancybox } from "@fancyapps/ui";
+
 import {
   AdminBaseUrl,
   baseu11,
@@ -259,6 +262,24 @@ function PatientDetail() {
   }, []);
   useEffect(() => {
     getTreatmentPlan();
+  }, []);
+
+  useEffect(() => {
+    Fancybox.bind("[data-fancybox='gallery']", {
+      Thumbs: false,
+      Toolbar: {
+        display: [
+          "zoom",
+          "slideshow",
+          "fullscreen",
+          "close",
+        ],
+      },
+    });
+
+    return () => {
+      Fancybox.destroy();
+    };
   }, []);
   const getextraservice = async () => {
     try {
@@ -4507,7 +4528,7 @@ function PatientDetail() {
                                             <div className="doctorcontent">
                                               <h5>Hospital</h5>
                                               {info?.hospitals?.map((item, i) => (
-                                                <div key={i} className="d-flex justify-content-between align-items-center">
+                                                <div key={i} className="aprovemain">
                                                   <p>{item.name}</p>
                                                   {info.isAnyHospitalApproved !==
                                                     false && (
@@ -4518,7 +4539,7 @@ function PatientDetail() {
                                                   {info.isAnyHospitalApproved !==
                                                     true && (
                                                       <button
-                                                        className="add-button"
+                                                        className="add-button approvebtn"
                                                         onClick={() =>
                                                           approveReject(
                                                             info,
@@ -4550,12 +4571,11 @@ function PatientDetail() {
                                                     {/* Images First */}
                                                     {info?.reports
                                                       ?.filter((report) =>
-                                                        /\.(jpg|jpeg|png|gif|webp)$/i.test(
-                                                          report.fileName,
-                                                        ),
+                                                        /\.(jpg|jpeg|png|gif|webp)$/i.test(report.fileName),
                                                       )
                                                       .map((report, index) => {
                                                         const fileUrl = `${image}${report.fileName}`;
+
                                                         return (
                                                           <div
                                                             key={index}
@@ -4563,8 +4583,8 @@ function PatientDetail() {
                                                           >
                                                             <a
                                                               href={fileUrl}
-                                                              target="_blank"
-                                                              rel="noopener noreferrer"
+                                                              data-fancybox="gallery"
+                                                              data-caption={`Report ${index + 1}`}
                                                             >
                                                               <img
                                                                 src={fileUrl}
@@ -4572,12 +4592,14 @@ function PatientDetail() {
                                                                 className="viewrepot"
                                                               />
                                                             </a>
+
                                                             <span className="removereport">
                                                               <i className="fa-solid fa-xmark"></i>
                                                             </span>
                                                           </div>
                                                         );
                                                       })}
+
                                                     {/* PDF / Other Files After Images */}
                                                     {info?.reports
                                                       ?.filter(
@@ -4603,7 +4625,7 @@ function PatientDetail() {
                                                       })}
                                                   </>
                                                 ) : (
-                                                    <p className="nodtafond">No Report found</p>
+                                                  <p className="nodtafond">No Report found</p>
                                                 )}
                                               </div>
                                               {/* {info?.reports?.length > 0 ? (
@@ -4897,23 +4919,14 @@ function PatientDetail() {
                         </div>
                       </div>
                     </div>
-                    <div
-                      className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`}
-                      id="about-cont"
-                    >
-                      <div className="main-tab-hd d-flex justify-content-end w-100">
-                        <button
-                          onClick={PatientDetailButton}
-                          className="add-button"
-                        >
-                          <span>
-                            <i className="fa fa-plus"></i>
-                          </span>{" "}
-                          Add Treatment
-                        </button>
-                      </div>
-                      <div className="row">
+                    <div className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`} id="about-cont">
+                      <div className="row gx-3">
                         <div className="col-md-12">
+                          <div className="text-end">
+                            <button onClick={PatientDetailButton} className="add-button"><i className="fa fa-plus me-2"></i>Add Treatment</button>
+                          </div>
+                        </div>
+                        <div className="col-md-12 gy-3">
                           {tretment?.length === 0 ? (
                             <p className="nodtafond">
                               No Treatment Added for this patients
@@ -4934,7 +4947,7 @@ function PatientDetail() {
                                 : tretment
                               )?.map((info, index) => {
                                 return (
-                                  <div className="card-box" id="accordion">
+                                  <div className={`accordian-main ${openIndex === index ? "active-accordion" : ""}`} id="accordion">
                                     <div className="treat-card">
                                       <div className="sectabmain">
                                         <div className="treat-id">
@@ -5116,20 +5129,13 @@ function PatientDetail() {
                                         </div>
                                       </div>
                                     </div>
-                                    <div
-                                      className={`collapse ${openIndex === index ? "show" : ""}`}
-                                    >
+                                    <div className={`collapse ${openIndex === index ? "show" : ""}`}>
                                       {activeSubTab === "details" ? (
                                         <>
                                           <div className="row gx-3 gy-3">
                                             {/* for hospital separate data */}
                                             <div className="col-md-12">
-                                              <div
-                                                className="card customstylecard"
-                                                style={{
-                                                  border: "1px solid #0ba6df",
-                                                }}
-                                              >
+                                              <div className="card customstylecard" style={{ border: "1px solid #0ba6df",}}>
                                                 <div
                                                   className="card-header d-flex justify-content-between align-items-center"
                                                   style={{
@@ -5288,7 +5294,7 @@ function PatientDetail() {
                                                             </div>
                                                             <div className="pdf-hide">
                                                               <button
-                                                                className="add-button"
+                                                                className="add-button approvebtn"
                                                                 onClick={() => {
                                                                   handleclickopencharge(
                                                                     info,
@@ -6387,7 +6393,6 @@ function PatientDetail() {
                                                   </div>
                                                 </div>
                                                 <div className="card-body">
-                                                  <div className="row gx-3 gy-3">
                                                     <div
                                                       ref={(el) =>
                                                       (pharmacyRefs.current[
@@ -6395,6 +6400,7 @@ function PatientDetail() {
                                                       ] = el)
                                                       }
                                                     >
+                                                  <div className="row gx-3 gy-3">
                                                       <div className="col-md-12">
                                                         <div className="card patientreat">
                                                           <div className="card-header service-list">
@@ -6533,7 +6539,6 @@ function PatientDetail() {
                                                               <table className="table-card w-100">
                                                                 <thead>
                                                                   <tr>
-                                                                    {/* <th>Payment</th> */}
                                                                     <th>
                                                                       Paid
                                                                       Amount
@@ -6553,7 +6558,6 @@ function PatientDetail() {
                                                                     <th>
                                                                       Method
                                                                     </th>
-                                                                    {/* <th>paid_amount</th> */}
                                                                   </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -6572,10 +6576,6 @@ function PatientDetail() {
                                                                             item._id
                                                                           }
                                                                         >
-                                                                          {/* <td>
-                                                            {item?.service_name ||
-                                                              "-"}
-                                                          </td> */}
                                                                           <td>
                                                                             $
                                                                             {item?.paid_amount ||
@@ -6890,7 +6890,7 @@ function PatientDetail() {
                                                         onClick={(e) =>
                                                           handleClickOpen3()
                                                         }
-                                                        className="add-button"
+                                                        className="add-button approvebtn"
                                                       >
                                                         <i className="fa fa-plus"></i>
                                                       </button>
@@ -6901,7 +6901,7 @@ function PatientDetail() {
                                                             info.treatment_id,
                                                           )
                                                         }
-                                                        className="add-button"
+                                                        className="add-button approvebtn"
                                                       >
                                                         <i class="fa-solid fa-download"></i>
                                                       </button>

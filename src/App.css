@@ -7417,6 +7417,7 @@ input:checked+.slider:before {
 .treat-tabs .nav-link.active {
   border: 0px;
   color: var(--bs-blue-color);
+  background-color:unset;
 }
 
 .treat-tabs .nav-link:hover {
@@ -7644,7 +7645,7 @@ input:checked+.slider:before {
 .collapse-icon {
   height: 30px;
   width: 30px;
-  background-color: #ededed;
+  background-color: var(--bs-blue-color);
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -7652,7 +7653,7 @@ input:checked+.slider:before {
 }
 
 .collapse-icon i {
-  color: var(--bs-heading-color);
+  color: var(--bs-white-color);
   font-size: 14px;
 }
 
@@ -7726,7 +7727,7 @@ input:checked+.slider:before {
 
 .customstylecard .card-header {
   border-bottom: 1px solid #ccc;
-  padding: 16px;
+  padding: 16px !important;
   background-color: #f5f5f5;
 }
 
@@ -8108,4 +8109,39 @@ div:where(.swal2-container) input:where(.swal2-input) {
   color: var(--bs-text-color);
   text-align: center;
   margin: 0px;
+}
+
+.approvebtn {
+  padding: 8px !important;
+  line-height: 12px !important;
+  font-size: 12px !important;
+}
+
+.aprovemain {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  justify-content: space-between;
+}
+
+.aprovemain:last-child {
+  margin-bottom: 0px;
+}
+
+.accordian-main {
+  border: 1px solid #ccc;
+  padding: 15px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.accordian-main:last-child{
+  margin-bottom: 0px;
+}
+.accordian-main.active-accordion {
+  background-color: #fff;
+}
+
+.nav-link:focus-visible{
+  box-shadow: none;
 }

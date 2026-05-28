@@ -55,7 +55,7 @@ export default function EditStaff() {
   if (!editStaff) return <div>Loading...</div>;
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-   role: Yup.string().required("Role is required"),
+    role: Yup.string().required("Role is required"),
     phone_no: Yup.string()
       .required("Phone number is required")
       .matches(/^[0-9]+$/, "Phone number must contain only digits")
@@ -78,7 +78,10 @@ export default function EditStaff() {
       formData.append("gender", values.gender);
       formData.append("country", values.country);
       formData.append("dial_code", values.dial_code);
-      formData.append("roleStatuses",JSON.stringify(values.roleStatuses.filter(Boolean)),)
+      formData.append(
+        "roleStatuses",
+        JSON.stringify(values.roleStatuses.filter(Boolean)),
+      );
       formData.append(
         "accessCountries",
         JSON.stringify(values.accessCountries),
@@ -107,367 +110,412 @@ export default function EditStaff() {
   return (
     <div className="page-wrapper">
       <div className="content">
-        <h4 className="page-title">
-          <i
-            className="fi fi-sr-angle-double-small-left"
-            style={{ cursor: "pointer" }}
-            onClick={() => window.history.back()}
-          ></i>{" "}
-          Edit Staff
-        </h4>
-        <div className="main_content">
-          <Formik
-            enableReinitialize
-            initialValues={{
-              email: editStaff.email || "",
-              role: editStaff.role || "",
-              gender: editStaff.gender || "",
-              phone_no: editStaff.phone_no || "",
-              name: editStaff.name || "",
-              country: editStaff.country || "",
-              dial_code: editStaff.dial_code || "",
-              profileImage: editStaff.profileImage || null,
-              roleStatuses: editStaff.roleStatuses || [],
-              accessCountries: editStaff.accessCountries || [],
-            }}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ setFieldValue, values, isSubmitting }) => (
-              <Form>
-                <div className="row">
-                  <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>Name <span className="text-danger">*</span></label>
-                      <Field className="form-control" name="name" />
-                      <ErrorMessage
-                        name="name"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>Email <span className="text-danger">*</span></label>
-                      <Field
-                        className="form-control"
-                        type="email"
-                        name="email"
-                      />
-                      <ErrorMessage
-                        name="email"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>Country<span className="text-danger">*</span></label>
-                      <Field name="country">
-                        {({ field, form }) => (
-                          <>
-                            <FormControl fullWidth size="small">
-                              <Select
-                                value={field.value}
-                                onChange={(e) => {
-                                  const selectedCountry = Countries.find(
-                                    (item) => item.name === e.target.value,
-                                  );
-                                  form.setFieldValue(
-                                    "country",
-                                    selectedCountry.name,
-                                  );
-                                  form.setFieldValue(
-                                    "dial_code",
-                                    selectedCountry.dial_code,
-                                  );
-                                }}
-                                input={
-                                  <OutlinedInput placeholder="Select Country" />
-                                }
-                                displayEmpty
-                                sx={{ height: 40 }}
-                                MenuProps={{
-                                  PaperProps: { style: { maxHeight: 200 } },
-                                }}
-                              >
-                                <MenuItem value="">
-                                  <em>Select Country</em>
-                                </MenuItem>
-                                {Countries?.map((con) => (
-                                  <MenuItem key={con._id} value={con.name}>
-                                    {con.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                            <ErrorMessage
-                              name="country"
-                              component="div"
-                              className="text-danger"
-                            />
-                          </>
-                        )}
-                      </Field>
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>
-                        Phone No <span className="text-danger">*</span>
-                      </label>
-                      <div className="d-flex">
-                        {/* Dial Code – 30% */}
-                        <input
-                          type="text"
-                          className="form-control"
-                          style={{ width: "10%" }}
-                          value={values.dial_code}
-                          disabled
-                        />
-                        <input
-                          type="text"
-                          className="form-control"
-                          style={{ width: "90%" }}
-                          name="phone_no"
-                          value={values.phone_no}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/[^0-9]/g, "");
-                            setFieldValue("phone_no", val);
-                          }}
-                          placeholder="Enter phone number"
-                        />
-                      </div>
-                      <ErrorMessage
-                        name="phone_no"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <label>
-                      Access Countries <span className="text-danger"></span>
-                    </label>
-                    <FormControl fullWidth>
-                      <Select
-                        multiple
-                        name="accessCountries"
-                        value={values.accessCountries}
-                        onChange={(event) => {
-                          const value = event.target.value;
-                          if (value.includes("All")) {
-                            if (
-                              values.accessCountries.length === Countries.length
-                            ) {
-                              setFieldValue("accessCountries", []);
-                            } else {
-                              setFieldValue(
-                                "accessCountries",
-                                Countries.map((c) => c.name),
-                              );
-                            }
-                          } else {
-                            setFieldValue("accessCountries", value);
-                          }
-                        }}
-                        renderValue={(selected) => selected.join(", ")}
-                        className="form-control"
-                        MenuProps={{
-                          PaperProps: { style: { maxHeight: 300 } },
-                        }}
-                      >
-                        <MenuItem value="All">
-                          <Checkbox
-                            checked={
-                              values.accessCountries.length === Countries.length
-                            }
-                            indeterminate={
-                              values.accessCountries.length > 0 &&
-                              values.accessCountries.length < Countries.length
-                            }
+        <div className="row gx-3">
+          <div className="col-md-12">
+            <div className="topmainhd">
+              <h6>
+                <i
+                  class="fa-solid fa-arrow-left-long me-2"
+                  onClick={() => window.history.back()}
+                ></i>
+                Edit Staff
+              </h6>
+            </div>
+          </div>
+          <div className="col-md-12">
+            <div className="main_content">
+              <Formik
+                enableReinitialize
+                initialValues={{
+                  email: editStaff.email || "",
+                  role: editStaff.role || "",
+                  gender: editStaff.gender || "",
+                  phone_no: editStaff.phone_no || "",
+                  name: editStaff.name || "",
+                  country: editStaff.country || "",
+                  dial_code: editStaff.dial_code || "",
+                  profileImage: editStaff.profileImage || null,
+                  roleStatuses: editStaff.roleStatuses || [],
+                  accessCountries: editStaff.accessCountries || [],
+                }}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ setFieldValue, values, isSubmitting }) => (
+                  <Form>
+                    <div className="row gx-3 gy-3">
+                      <div className="col-md-4">
+                        <div className="set-field">
+                          <label>
+                            Name <span className="text-danger">*</span>
+                          </label>
+                          <Field className="form-control" name="name" />
+                          <ErrorMessage
+                            name="name"
+                            component="div"
+                            className="text-danger"
                           />
-                          <ListItemText primary="Select All" />
-                        </MenuItem>
-                        {Countries?.map((con) => (
-                          <MenuItem key={con._id} value={con.name}>
-                            <Checkbox
-                              checked={values.accessCountries.includes(
-                                con.name,
-                              )}
-                            />
-                            <ListItemText primary={con.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <ErrorMessage
-                      name="accessCountries"
-                      component="div"
-                      className="text-danger"
-                    />
-                  </div>
-                  <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>Role <span className="text-danger">*</span></label>
-                      <Field as="select" name="role" className="form-control">
-                        <option value="">Select Role</option>
-                        {roles123?.map((item, index) => {
-                          return <option value={item.role}>{item.role}</option>;
-                        })}
-                      </Field>
-                      <ErrorMessage
-                        name="role"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <div className="field-set gender-select">
-                      <label>Gender <span className="text-danger">*</span></label>
-                      <br />
-                      <div className="form-check-inline">
-                        <Field type="radio" name="gender" value="Male" /> Male
-                      </div>
-                      <div className="form-check-inline">
-                        <Field type="radio" name="gender" value="Female" />{" "}
-                        Female
-                      </div>
-                      <div className="form-check-inline">
-                        <Field type="radio" name="gender" value="Other" />{" "}
-                        Others
-                      </div>
-                      <ErrorMessage
-                        name="gender"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <div className="field-set">
-                      <label>Profile Image </label><span className="text-danger">*</span>
-                      <div className="profile-upload">
-                        <div className="upload-img">
-                          {selectedImage ? (
-                            <img
-                              src={URL.createObjectURL(selectedImage)}
-                              alt="preview"
-                            />
-                          ) : editStaff?.profileImage ? (
-                            <img
-                              src={`${image}${editStaff.profileImage}`}
-                              alt="current"
-                            />
-                          ) : (
-                            <img src="assets/img/user.jpg" alt="default" />
-                          )}
                         </div>
-                        <div className="upload-input">
-                          <input
-                            type="file"
+                      </div>
+                      <div className="col-md-4">
+                        <div className="set-field">
+                          <label>
+                            Email <span className="text-danger">*</span>
+                          </label>
+                          <Field
                             className="form-control"
-                            onChange={(e) => {
-                              setFieldValue("profileImage", e.target.files[0]);
-                              setSelectedImage(e.target.files[0]);
-                            }}
+                            type="email"
+                            name="email"
+                          />
+                          <ErrorMessage
+                            name="email"
+                            component="div"
+                            className="text-danger"
                           />
                         </div>
                       </div>
-                      <ErrorMessage
-                        name="profileImage"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <label>
-                      Give Permission<span className="text-danger"></span>
-                    </label>
-                    <FormControl fullWidth>
-                      <Select
-                        multiple
-                        value={values.roleStatuses}
-                        name="roleStatuses"
-                        onChange={(event) => {
-                          let value = event.target.value;
-                          value = value.filter((v) => v !== "");
-                          if (value.includes("All")) {
-                            if (
-                              values.roleStatuses.length ===
-                              statusOptions.length
-                            ) {
-                              setFieldValue("roleStatuses", []);
-                            } else {
-                              setFieldValue("roleStatuses", statusOptions);
-                            }
-                          } else {
-                            setFieldValue("roleStatuses", value);
-                          }
-                        }}
-                        className=""
-                        renderValue={(selected) => selected.join(", ")}
-                        MenuProps={{
-                          PaperProps: {
-                            style: { maxHeight: 337 },
-                          },
-                          disableAutoFocusItem: true,
-                        }}
-                      >
-                        <MenuItem
-                          className="custmselect staffpermiss"
-                          value="All"
-                        >
-                          <Checkbox
-                            checked={
-                              values.roleStatuses.length ===
-                              statusOptions.length
-                            }
-                            indeterminate={
-                              values.roleStatuses.length > 0 &&
-                              values.roleStatuses.length < statusOptions.length
-                            }
+                      <div className="col-md-4">
+                        <div className="set-field">
+                          <label>
+                            Country<span className="text-danger">*</span>
+                          </label>
+                          <Field name="country">
+                            {({ field, form }) => (
+                              <>
+                                <FormControl fullWidth size="small">
+                                  <Select
+                                    value={field.value}
+                                    onChange={(e) => {
+                                      const selectedCountry = Countries.find(
+                                        (item) => item.name === e.target.value,
+                                      );
+                                      form.setFieldValue(
+                                        "country",
+                                        selectedCountry.name,
+                                      );
+                                      form.setFieldValue(
+                                        "dial_code",
+                                        selectedCountry.dial_code,
+                                      );
+                                    }}
+                                    input={
+                                      <OutlinedInput placeholder="Select Country" />
+                                    }
+                                    displayEmpty
+                                    sx={{ height: 40 }}
+                                    MenuProps={{
+                                      PaperProps: { style: { maxHeight: 200 } },
+                                    }}
+                                  >
+                                    <MenuItem value="">
+                                      <em>Select Country</em>
+                                    </MenuItem>
+                                    {Countries?.map((con) => (
+                                      <MenuItem key={con._id} value={con.name}>
+                                        {con.name}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+                                <ErrorMessage
+                                  name="country"
+                                  component="div"
+                                  className="text-danger"
+                                />
+                              </>
+                            )}
+                          </Field>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="set-field">
+                          <label>
+                            Phone No <span className="text-danger">*</span>
+                          </label>
+                          <div className="d-flex">
+                            {/* Dial Code – 30% */}
+                            <input
+                              type="text"
+                              className="form-control"
+                              style={{ width: "10%" }}
+                              value={values.dial_code}
+                              disabled
+                            />
+                            <input
+                              type="text"
+                              className="form-control"
+                              style={{ width: "90%" }}
+                              name="phone_no"
+                              value={values.phone_no}
+                              onChange={(e) => {
+                                const val = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  "",
+                                );
+                                setFieldValue("phone_no", val);
+                              }}
+                              placeholder="Enter phone number"
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="phone_no"
+                            component="div"
+                            className="text-danger"
                           />
-                          <ListItemText
-                            className="custmselect"
-                            primary="Select All"
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="set-field">
+                          <label>
+                            Access Countries
+                            <span className="text-danger">*</span>
+                          </label>
+                          <FormControl fullWidth>
+                            <Select
+                              multiple
+                              name="accessCountries"
+                              value={values.accessCountries}
+                              onChange={(event) => {
+                                const value = event.target.value;
+                                if (value.includes("All")) {
+                                  if (
+                                    values.accessCountries.length ===
+                                    Countries.length
+                                  ) {
+                                    setFieldValue("accessCountries", []);
+                                  } else {
+                                    setFieldValue(
+                                      "accessCountries",
+                                      Countries.map((c) => c.name),
+                                    );
+                                  }
+                                } else {
+                                  setFieldValue("accessCountries", value);
+                                }
+                              }}
+                              renderValue={(selected) => selected.join(", ")}
+                              className="form-control"
+                              MenuProps={{
+                                PaperProps: { style: { maxHeight: 300 } },
+                              }}
+                            >
+                              <MenuItem value="All">
+                                <Checkbox
+                                  checked={
+                                    values.accessCountries.length ===
+                                    Countries.length
+                                  }
+                                  indeterminate={
+                                    values.accessCountries.length > 0 &&
+                                    values.accessCountries.length <
+                                      Countries.length
+                                  }
+                                />
+                                <ListItemText primary="Select All" />
+                              </MenuItem>
+                              {Countries?.map((con) => (
+                                <MenuItem key={con._id} value={con.name}>
+                                  <Checkbox
+                                    checked={values.accessCountries.includes(
+                                      con.name,
+                                    )}
+                                  />
+                                  <ListItemText primary={con.name} />
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          <ErrorMessage
+                            name="accessCountries"
+                            component="div"
+                            className="text-danger"
                           />
-                        </MenuItem>
-                        {statusOptions.map((roleStatuses) => (
-                          <MenuItem
-                            className="custmselect staffpermiss"
-                            key={roleStatuses}
-                            value={roleStatuses}
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="set-field">
+                          <label>
+                            Role<span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            as="select"
+                            name="role"
+                            className="form-control"
                           >
-                            <Checkbox
-                              checked={
-                                values.roleStatuses.indexOf(roleStatuses) > -1
-                              }
-                            />
-                            <ListItemText
-                              className="custmselect"
-                              primary={roleStatuses}
-                            />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="submit-btn my-2"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Updating..." : "Submit"}
-                </button>
-              </Form>
-            )}
-          </Formik>
+                            <option value="">Select Role</option>
+                            {roles123?.map((item, index) => {
+                              return (
+                                <option value={item.role}>{item.role}</option>
+                              );
+                            })}
+                          </Field>
+                          <ErrorMessage
+                            name="role"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="set-field gender-select">
+                          <label>
+                            Gender <span className="text-danger">*</span>
+                          </label>
+                        <br></br>
+                          <div className="form-check-inline">
+                            <Field type="radio" name="gender" value="Male" />{" "}
+                            Male
+                          </div>
+                          <div className="form-check-inline">
+                            <Field type="radio" name="gender" value="Female" />{" "}
+                            Female
+                          </div>
+                          <div className="form-check-inline">
+                            <Field type="radio" name="gender" value="Other" />{" "}
+                            Others
+                          </div>
+                          <ErrorMessage
+                            name="gender"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="set-field">
+                          <label>
+                            Profile Image<span className="text-danger">*</span>
+                          </label>
+                          <div className="profile-upload">
+                            <div className="upload-img">
+                              {selectedImage ? (
+                                <img
+                                  src={URL.createObjectURL(selectedImage)}
+                                  alt="preview"
+                                />
+                              ) : editStaff?.profileImage ? (
+                                <img
+                                  src={`${image}${editStaff.profileImage}`}
+                                  alt="current"
+                                />
+                              ) : (
+                                <img src="assets/img/user.jpg" alt="default" />
+                              )}
+                            </div>
+                            <div className="upload-input">
+                              <input
+                                type="file"
+                                className="form-control"
+                                onChange={(e) => {
+                                  setFieldValue(
+                                    "profileImage",
+                                    e.target.files[0],
+                                  );
+                                  setSelectedImage(e.target.files[0]);
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <ErrorMessage
+                            name="profileImage"
+                            component="div"
+                            className="text-danger"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="set-field">
+                          <label>
+                            Give Permission
+                            <span className="text-danger">*</span>
+                          </label>
+                          <FormControl fullWidth>
+                            <Select
+                              multiple
+                              value={values.roleStatuses}
+                              name="roleStatuses"
+                              onChange={(event) => {
+                                let value = event.target.value;
+                                value = value.filter((v) => v !== "");
+                                if (value.includes("All")) {
+                                  if (
+                                    values.roleStatuses.length ===
+                                    statusOptions.length
+                                  ) {
+                                    setFieldValue("roleStatuses", []);
+                                  } else {
+                                    setFieldValue(
+                                      "roleStatuses",
+                                      statusOptions,
+                                    );
+                                  }
+                                } else {
+                                  setFieldValue("roleStatuses", value);
+                                }
+                              }}
+                              className=""
+                              renderValue={(selected) => selected.join(", ")}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: { maxHeight: 337 },
+                                },
+                                disableAutoFocusItem: true,
+                              }}
+                            >
+                              <MenuItem
+                                className="custmselect staffpermiss"
+                                value="All"
+                              >
+                                <Checkbox
+                                  checked={
+                                    values.roleStatuses.length ===
+                                    statusOptions.length
+                                  }
+                                  indeterminate={
+                                    values.roleStatuses.length > 0 &&
+                                    values.roleStatuses.length <
+                                      statusOptions.length
+                                  }
+                                />
+                                <ListItemText
+                                  className="custmselect"
+                                  primary="Select All"
+                                />
+                              </MenuItem>
+                              {statusOptions.map((roleStatuses) => (
+                                <MenuItem
+                                  className="custmselect staffpermiss"
+                                  key={roleStatuses}
+                                  value={roleStatuses}
+                                >
+                                  <Checkbox
+                                    checked={
+                                      values.roleStatuses.indexOf(
+                                        roleStatuses,
+                                      ) > -1
+                                    }
+                                  />
+                                  <ListItemText
+                                    className="custmselect"
+                                    primary={roleStatuses}
+                                  />
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </div>
+                      </div>
+                      <div className="col-md-12">
+                        <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                          {isSubmitting ? "Updating..." : "Submit"}
+                        </button>
+                      </div>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
         </div>
       </div>
     </div>

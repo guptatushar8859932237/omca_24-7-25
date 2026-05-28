@@ -914,51 +914,65 @@ export default function Inquiry() {
     <>
       <div className="page-wrapper">
         <div className="content">
-          <Box>
-            <Tabs value={tabValue} onChange={handleTabChange}>
-              {filteredTabs.map((tab) => (
-                <Tab
-                  sx={{
-                    textTransform: "none",
-                    fontSize: "12px",
-                    fontWeight: 500,
-                    fontFamily: "Rubik",
-                    padding: "8px 18px",
-                    lineHeight: "22px",
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    color: "#666",
-                    transition: "0.3s",
-                    minHeight: "0px",
-                    "&.Mui-selected": {
-                      background: "#22c7b8",
-                      color: "#fff",
-                    },
-                  }}
-                  key={tab.value} label={tab.label} value={tab.value} />
-              ))}
-            </Tabs>
-          </Box>
-          <div className="row">
+          <div className="row gx-3">
+            <div className="col-md-12">
+              <div className="topmainhd">
+                <h6>
+                  {tabValue === 0
+                    ? "Manage Enquiries"
+                    : tabValue === 1
+                      ? "Manage Ambulance Service"
+                      : tabValue === 2
+                        ? "Manage Air Medical escort"
+                        : tabValue === 3
+                          ? "Manage Treatment Estimate"
+                          : ""}
+                </h6>
+              </div>
+            </div>
             <div className="col-md-12">
               <div className="country-top">
                 <div className="">
-                  <h4 className="page-title mb-0">
-                    {tabValue === 0
-                      ? "Enquiries"
-                      : tabValue === 1
-                        ? "Ambulance Service"
-                        : tabValue === 2
-                          ? "Air Medical escort"
-                          : tabValue === 3
-                            ? "Treatment Estimate"
-                            : ""}
-                  </h4>
+                  <Box>
+                    <Tabs value={tabValue} onChange={handleTabChange}
+                      TabIndicatorProps={{
+                        style: {
+                          display: "none",
+                        },
+                      }}
+                      sx={{
+                        minHeight: "40px",
+                        "& .MuiTabs-flexContainer": {
+                          gap: "10px",
+                        },
+                      }}>
+                      {filteredTabs.map((tab) => (
+                        <Tab
+                          sx={{
+                            textTransform: "none",
+                            fontSize: "12px",
+                            fontWeight: 500,
+                            fontFamily: "Rubik",
+                            padding: "8px 18px",
+                            lineHeight: "22px",
+                            border: "1px solid #ccc",
+                            borderRadius: "5px",
+                            color: "#666",
+                            transition: "0.3s",
+                            minHeight: "0px",
+                            "&.Mui-selected": {
+                              background: "#22c7b8",
+                              color: "#fff",
+                            },
+                          }}
+                          key={tab.value} label={tab.label} value={tab.value} />
+                      ))}
+                    </Tabs>
+                  </Box>
                 </div>
                 <div className="search-btn-main">
-                  <div className="mr-3">
+                  <div className="">
                     <TextField
-                      sx={{ width: "100%" }}
                       className="field-count"
                       label="Search"
                       id="outlined-required"
@@ -984,54 +998,24 @@ export default function Inquiry() {
                     />
                   </div>
                   {tabValue === 0 ? (
-                    <div className="">
-                      <div className="table-top-btn">
-                        <Link to="/Admin/add-Enquiry" className="add-button">
-                          <span>
-                            <i className="fa fa-plus"></i>
-                          </span>
-                          New Enquiry
-                        </Link>
-                        <button
-                          onClick={(e) => handleClickOpen3(e)}
-                          className="add-button"
-                        >
-                          <span>
-                            <i className="fa fa-file-excel-o mx-1"></i>
-                          </span>{" "}
-                          Import File
-                        </button>
-                        <button
-                          onClick={handleSampleFile}
-                          className="add-button"
-                        >
-                          <span>
-                            <i className="fa fa-file"></i>
-                          </span>
-                          Export File
-                        </button>
-                        {role === "Admin" ? (
-                          <button onClick={donloadpdf} className="add-button">
-                            <span>
-                              <i className="fa fa-file-pdf-o"></i>
-                            </span>
-                            pdf
-                          </button>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
+                    <>
+                      <Link to="/Admin/add-Enquiry" className="add-button"><i className="fa fa-plus me-2"></i>New Enquiry</Link>
+                      <button onClick={(e) => handleClickOpen3(e)} className="add-button"><i className="fa fa-file-excel-o me-2"></i>Import</button>
+                      <button onClick={handleSampleFile} className="add-button"><i className="fa fa-file me-2"></i>Export</button>
+                      {role === "Admin" ? (
+                        <button onClick={donloadpdf} className="add-button"><i className="fa fa-file-pdf-o me-2"></i>Pdf</button>
+                      ) : (
+                        ""
+                      )}
+                    </>
                   ) : (
                     ""
                   )}
                 </div>
               </div>
             </div>
-          </div>
-          <div className="main_content">
-            <div className="row">
-              <div className="col-md-12">
+            <div className="col-md-12">
+              <div className="main_content">
                 <div className="table-responsive">
                   <TableContainer
                     component={Paper}
@@ -1399,27 +1383,27 @@ export default function Inquiry() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div
-        id="delete_appointment"
-        className="modal fade delete-modal"
-        role="dialog"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-body text-center">
-              <img src="assets/img/sent.png" alt="" width="50" height="46" />
-              <h3>Are you sure want to delete this Appointment?</h3>
-              <div className="m-t-20">
-                {" "}
-                <a href="#" className="btn btn-white" data-dismiss="modal">
-                  Close
-                </a>
-                <button type="submit" className="btn btn-danger">
-                  Delete
-                </button>
+            <div
+              id="delete_appointment"
+              className="modal fade delete-modal"
+              role="dialog"
+            >
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-body text-center">
+                    <img src="assets/img/sent.png" alt="" width="50" height="46" />
+                    <h3>Are you sure want to delete this Appointment?</h3>
+                    <div className="m-t-20">
+                      {" "}
+                      <a href="#" className="btn btn-white" data-dismiss="modal">
+                        Close
+                      </a>
+                      <button type="submit" className="btn btn-danger">
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1865,7 +1849,7 @@ export default function Inquiry() {
           </DialogContent>
         </Dialog>
       </React.Fragment>
-      <ToastContainer />
+      <ToastContainer/>
     </>
   );
 }

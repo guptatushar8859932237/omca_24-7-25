@@ -6,6 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
+    "@fancyapps/ui": "^6.1.14",
     "@mui/icons-material": "^6.1.8",
     "@mui/material": "^6.1.8",
     "@mui/x-charts": "^8.25.0",

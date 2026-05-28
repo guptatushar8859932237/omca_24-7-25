@@ -79,10 +79,10 @@ export default function Staff() {
         typeof err === "string"
           ? err
           : typeof err?.message === "string"
-          ? err.message
-          : typeof err?.message?.message === "string"
-          ? err.message.message
-          : JSON.stringify(err);
+            ? err.message
+            : typeof err?.message?.message === "string"
+              ? err.message.message
+              : JSON.stringify(err);
       Swal.fire({
         title: "Error!",
         text: errorMessage,
@@ -125,7 +125,7 @@ export default function Staff() {
     link.click();
     document.body.removeChild(link);
   };
-   const handleSort = (field) => {
+  const handleSort = (field) => {
     const isAsc = orderBy === field && orderDirection === "asc";
     const direction = isAsc ? "desc" : "asc";
 
@@ -186,163 +186,169 @@ export default function Staff() {
   return (
     <div className="page-wrapper">
       <div className="content">
-        <div className="country-top">
-          <h4 className="page-title mb-0">Manage Staff</h4>
-          <div className="search-btn-main">
-            <TextField
-              label="Search"
-              size="small"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(0);
-              }}
-              className="field-count"
-            />
-            <Link to="/Admin/add-staff" className="add-button">
-              <i className="fa fa-plus"></i> New Staff
-            </Link>
-            <button onClick={handleExportExcel} className="add-button ms-2">
-              Export File
-            </button>
-            {role === "Admin" && (
-              <button onClick={handleGeneratePDF} className="add-button ms-2">
-                PDF
-              </button>
-            )}
+        <div className="row gx-3">
+          <div className="col-md-12">
+            <div className="country-top">
+              <div className="topmainhd mb-0">
+                <h6>Manage Staff</h6>
+              </div>
+              <div className="search-btn-main">
+                <TextField
+                  className="field-count"
+                  label="Search"
+                  id="outlined-size-small"
+                  size="small"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(0);
+                  }}
+                  InputLabelProps={{ shrink: true }}
+                />
+                <Link to="/Admin/add-staff" className="add-button"><i className="fa fa-plus me-2"></i>New Staff</Link>
+                <button onClick={handleExportExcel} className="add-button"><i className="fa fa-file me-2"></i>Export</button>
+                {role === "Admin" && (
+                  <button onClick={handleGeneratePDF} className="add-button"><i className="fa fa-file-pdf-o me-2"></i>Pdf</button>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="col-md-12">
+            <div className="main_content">
+              <TableContainer ref={targetRef} className="table-responsive">
+                <Table className="table-no-card">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Sr.No.</TableCell>
+                      <TableCell>Image</TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={orderBy === "name"}
+                          direction={orderDirection}
+                          onClick={() => handleSort("name")}
+                        >
+                          Name
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={orderBy === "role"}
+                          direction={orderDirection}
+                          onClick={() => handleSort("role")}
+                        >
+                          Role
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={orderBy === "email"}
+                          direction={orderDirection}
+                          onClick={() => handleSort("email")}
+                        >
+                          Email
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={orderBy === "createdAt"}
+                          direction={orderDirection}
+                          onClick={() => handleSort("createdAt")}
+                        >
+                          Date/Time
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={orderBy === "status"}
+                          direction={orderDirection}
+                          onClick={() => handleSort("status")}
+                        >
+                          Status
+                        </TableSortLabel>
+                      </TableCell>
+
+                      <TableCell>Action</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {(pdfRowLimit
+                      ? filteredRows.slice(0, pdfRowLimit)
+                      : filteredRows.slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                    ).map((info, i) => (
+                      <TableRow key={info._id}>
+                        <TableCell>
+                          {pdfRowLimit ? i + 1 : page * rowsPerPage + i + 1}
+                        </TableCell>
+                        <TableCell>
+                          <img
+                            src={`${image}${info.profileImage}`}
+                            className="hos-img"
+                            alt=""
+                          />
+                        </TableCell>
+                        <TableCell>{info.name}</TableCell>
+                        <TableCell>{info.role}</TableCell>
+                        <TableCell>{info.email}</TableCell>
+                        <TableCell>{new Date(info.createdAt).toLocaleDateString("en-GB")}/{new Date(info.createdAt).toLocaleTimeString('en-GB', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true,
+                        })}</TableCell>
+                        <TableCell>
+                          {
+                            <label className="active-switch">
+                              <input
+                                className="active-switch-input "
+                                type="checkbox"
+                                checked={Boolean(info.status)}
+                                onChange={() => {
+                                  dataActiveInactive(
+                                    info._id,
+                                    info.status
+                                  );
+                                }}
+                              />
+                              <span
+                                className="active-switch-label "
+                                data-on="Active"
+                                data-off="Inactive"
+                              ></span>
+                              <span className="active-switch-handle"></span>
+                            </label>
+                          }
+                        </TableCell>
+                        <TableCell className="action-icon">
+                          <i
+                            className="fa-solid fa-pen-to-square"
+                            onClick={() => handleEdit(info._id)}
+                          ></i>
+                          {role === "Admin" && (
+                            <i
+                              className="fa fa-trash ms-1"
+                              onClick={() => handleDelete(info._id)}
+                            ></i>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                {!pdfRowLimit && (
+                  <div className="d-flex justify-content-end mt-2">
+                    <Pagination
+                      count={Math.ceil(filteredRows.length / rowsPerPage)}
+                      page={page + 1}
+                      onChange={(e, value) => setPage(value - 1)}
+                    />
+                  </div>
+                )}
+              </TableContainer>
+            </div>
           </div>
         </div>
-        <TableContainer ref={targetRef} className="table-responsive">
-          <Table className="table-no-card">
-            <TableHead>
-              <TableRow>
-                <TableCell>Sr.No.</TableCell>
-                <TableCell>Image</TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={orderBy === "name"}
-                    direction={orderDirection}
-                    onClick={() => handleSort("name")}
-                  >
-                    Name
-                  </TableSortLabel>
-                </TableCell>
-                 <TableCell>
-                  <TableSortLabel
-                    active={orderBy === "role"}
-                    direction={orderDirection}
-                    onClick={() => handleSort("role")}
-                  >
-                    Role
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={orderBy === "email"}
-                    direction={orderDirection}
-                    onClick={() => handleSort("email")}
-                  >
-                    Email
-                  </TableSortLabel>
-                </TableCell>
-                                <TableCell>
-                  <TableSortLabel
-                    active={orderBy === "createdAt"}
-                    direction={orderDirection}
-                    onClick={() => handleSort("createdAt")}
-                  >
-                    Date/Time
-                  </TableSortLabel>
-                </TableCell>
-               <TableCell>
-                  <TableSortLabel
-                    active={orderBy === "status"}
-                    direction={orderDirection}
-                    onClick={() => handleSort("status")}
-                  >
-                    Status
-                  </TableSortLabel>
-                </TableCell>
-
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(pdfRowLimit
-                ? filteredRows.slice(0, pdfRowLimit)
-                : filteredRows.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-              ).map((info, i) => (
-                <TableRow key={info._id}>
-                  <TableCell>
-                    {pdfRowLimit ? i + 1 : page * rowsPerPage + i + 1}
-                  </TableCell>
-                  <TableCell>
-                    <img
-                      src={`${image}${info.profileImage}`}
-                      className="hos-img"
-                      alt=""
-                    />
-                  </TableCell>
-                  <TableCell>{info.name}</TableCell>
-                  <TableCell>{info.role}</TableCell>
-                  <TableCell>{info.email}</TableCell>
-                  <TableCell>{new Date(info.createdAt).toLocaleDateString("en-GB")}/{new Date(info.createdAt).toLocaleTimeString('en-GB', {
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: true,
-})}</TableCell>
-                 <TableCell>
-                              {   
-                                   <label className="active-switch">
-                                     <input
-                                       className="active-switch-input "
-                                       type="checkbox"
-                                       checked={Boolean(info.status)}
-                                       onChange={() => {
-                                         dataActiveInactive(
-                                           info._id,
-                                           info.status
-                                         );
-                                       }}
-                                     />
-                                     <span
-                                       className="active-switch-label "
-                                       data-on="Active"
-                                       data-off="Inactive"
-                                     ></span>
-                                     <span className="active-switch-handle"></span>
-                                   </label>
-                                 }
-                               </TableCell>
-                  <TableCell className="action-icon">
-                    <i
-                      className="fa-solid fa-pen-to-square"
-                      onClick={() => handleEdit(info._id)}
-                    ></i>
-                    {role === "Admin" && (
-                      <i
-                        className="fa fa-trash ms-1"
-                        onClick={() => handleDelete(info._id)}
-                      ></i>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {!pdfRowLimit && (
-            <div className="d-flex justify-content-end mt-2">
-              <Pagination
-                count={Math.ceil(filteredRows.length / rowsPerPage)}
-                page={page + 1}
-                onChange={(e, value) => setPage(value - 1)}
-              />
-            </div>
-          )}
-        </TableContainer>
       </div>
     </div>
   );
