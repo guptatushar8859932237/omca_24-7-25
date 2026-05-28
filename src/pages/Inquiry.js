@@ -885,7 +885,7 @@ export default function Inquiry() {
         console.log(response.data.data);
         setHospitalList(response.data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const getUserId = async () => {
     try {
@@ -914,10 +914,28 @@ export default function Inquiry() {
     <>
       <div className="page-wrapper">
         <div className="content">
-          <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
+          <Box>
             <Tabs value={tabValue} onChange={handleTabChange}>
               {filteredTabs.map((tab) => (
-                <Tab key={tab.value} label={tab.label} value={tab.value} />
+                <Tab
+                  sx={{
+                    textTransform: "none",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    fontFamily: "Rubik",
+                    padding: "8px 18px",
+                    lineHeight: "22px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    color: "#666",
+                    transition: "0.3s",
+                    minHeight: "0px",
+                    "&.Mui-selected": {
+                      background: "#22c7b8",
+                      color: "#fff",
+                    },
+                  }}
+                  key={tab.value} label={tab.label} value={tab.value} />
               ))}
             </Tabs>
           </Box>
@@ -1121,16 +1139,16 @@ export default function Inquiry() {
                         {(pdfRowLimit
                           ? rows.slice(0, pdfRowLimit)
                           : rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
                         ).length > 0 ? (
                           (pdfRowLimit
                             ? rows.slice(0, pdfRowLimit)
                             : rows.slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage,
-                              )
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
                           ).map((info, i) => {
                             console.log(info);
                             return (
@@ -1204,10 +1222,10 @@ export default function Inquiry() {
                                               : info.Enquiry_status === "Hold"
                                                 ? "2"
                                                 : info.Enquiry_status ===
-                                                    "Follow-Up"
+                                                  "Follow-Up"
                                                   ? "3"
                                                   : info.Enquiry_status ===
-                                                      "Dead"
+                                                    "Dead"
                                                     ? "4"
                                                     : "0"
                                           }
@@ -1278,34 +1296,34 @@ export default function Inquiry() {
                                     {(localStorage.getItem("Role") ===
                                       "Admin" ||
                                       localStorage.getItem("Role") ===
-                                        "Doctor") &&
+                                      "Doctor") &&
                                       (tabValue === 0
                                         ? !info?.hasDoctorReview && (
-                                            <i
-                                              className="fa-solid fa-stethoscope"
-                                              onClick={(e) =>
-                                                handleClickOpen4(
-                                                  e,
-                                                  info.enquiryId,
-                                                  info,
-                                                )
-                                              }
-                                            ></i>
-                                          )
+                                          <i
+                                            className="fa-solid fa-stethoscope"
+                                            onClick={(e) =>
+                                              handleClickOpen4(
+                                                e,
+                                                info.enquiryId,
+                                                info,
+                                              )
+                                            }
+                                          ></i>
+                                        )
                                         : Object.keys(
-                                            info?.raw?.doctor_review || {},
-                                          ).length === 0 && (
-                                            <i
-                                              className="fa-solid fa-stethoscope"
-                                              onClick={(e) =>
-                                                handleClickOpen4(
-                                                  e,
-                                                  info.enquiryId,
-                                                  info,
-                                                )
-                                              }
-                                            ></i>
-                                          ))}
+                                          info?.raw?.doctor_review || {},
+                                        ).length === 0 && (
+                                          <i
+                                            className="fa-solid fa-stethoscope"
+                                            onClick={(e) =>
+                                              handleClickOpen4(
+                                                e,
+                                                info.enquiryId,
+                                                info,
+                                              )
+                                            }
+                                          ></i>
+                                        ))}
                                     {info?.hasAppointment === true ? (
                                       ""
                                     ) : (
@@ -1334,11 +1352,11 @@ export default function Inquiry() {
                                         ></i>
                                         {localStorage.getItem("Role") ===
                                           "Admin" && (
-                                          <i
-                                            className="fa-solid fa-trash"
-                                            onClick={() => handledelete(info)}
-                                          ></i>
-                                        )}
+                                            <i
+                                              className="fa-solid fa-trash"
+                                              onClick={() => handledelete(info)}
+                                            ></i>
+                                          )}
                                       </>
                                     ) : (
                                       <i
