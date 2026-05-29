@@ -5,7 +5,7 @@ import "select2";
 
 export default function AddAppointments() {
   const selectRef = useRef();
-
+// 3eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
   useEffect(() => {
     $(selectRef.current).select2();
 
