@@ -6,6 +6,15 @@ import "select2";
 export default function AddAppointments() {
   const selectRef = useRef();
 // 3eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+
+
+
+// sdfsd
+// f
+// sdf
+// sdf
+// s
+// df
   useEffect(() => {
     $(selectRef.current).select2();
 
