@@ -2,10 +2,22 @@ import React, { useEffect, useRef } from "react";
 import $ from "jquery";
 import "select2/dist/css/select2.min.css";
 import "select2";
+
 export default function AddAppointments() {
   const selectRef = useRef();
+// 3eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+
+
+
+// sdfsd
+// f
+// sdf
+// sdf
+// s
+// df
   useEffect(() => {
     $(selectRef.current).select2();
+
     return () => {
       $(selectRef.current).select2("destroy");
     };

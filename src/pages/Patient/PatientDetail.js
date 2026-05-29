@@ -4872,7 +4872,7 @@ const handleEditPayment = async (payment, info) => {
                                                       <tr>
                                                         <td>1</td>
                                                        <td>
-  {info.documents?.[0]?.documentName || "No Document Name"}
+  {info.documents?.[0]?.documentName || "No Document"}
 </td>
                                                         <td>
                                                           {info.documents.map(
@@ -11326,7 +11326,21 @@ const handleEditPayment = async (payment, info) => {
                       placeholder="Recommendations"
                     />
                   </div>
-                  
+                  <div className="field-set">
+                    <label>
+                      Title<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      id=""
+                      name="Title"
+                      rows="4"
+                      cols="50"
+                      onChange={handleRecommendTitle}
+                      className="form-control"
+                      value={Title}
+                      placeholder="Title"
+                    />
+                  </div>
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"
