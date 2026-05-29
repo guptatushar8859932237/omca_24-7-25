@@ -41,9 +41,7 @@ export default function EditPatientTreatment() {
         "Total Charge must be a number"
       )
       .required("Total Charge is required")
-      .positive(
-        "Total Charge must be greater than 0"
-      ),
+   
   });
   // ================= FETCH TREATMENTS =================
   useEffect(() => {
@@ -327,7 +325,6 @@ export default function EditPatientTreatment() {
                           className="form-control"
                           type="number"
                           name="total_charge"
-                          min="1"
                         />
                       </div>
                       <ErrorMessage

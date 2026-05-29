@@ -60,15 +60,18 @@ function PatientDetail() {
   const pharmacyRefs = useRef([]);
   const componentRef = useRef();
   const [openGuesthouse, setOpenGuesthouse] = useState(false);
+  const [openPaymentmodal, setOpenPaymentmodal] = useState(false);
   const [isEditGuesthouse, setIsEditGuesthouse] = useState(false);
   const [seekerStatus, setSeekerStatus] = React.useState({});
   const [treatmentData, setTreatmentData] = useState([]);
   const [recommend, setRecommend] = useState("");
+  const [treatmentInfo, setTreatmentInfo] = useState({});
   const [Title, setTitle] = useState("");
   const [pickuptime, setPickuptime] = useState("");
   const [documentName, setDocumentName] = useState("");
   const [treatmentIds1, setTreatmentIds1] = useState("");
   const [vehicalnumber, setVehicalnumber] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [treatmentPage, setTreatmentPage] = useState(0);
   const [openModalDovPlan, setOpenModalDovPlan] = useState(false);
   const [images, setImages] = useState([]);
@@ -296,6 +299,10 @@ function PatientDetail() {
     }
   };
 
+  const handleAttachFile11 = (e) => {
+  setSelectedFiles(Array.from(e.target.files));
+};
+
   const hadnlcecEdopenmodalGuestHouse = (item, info) => {
     console.log(item, info);
     setTreatmentIds1(item.patientId);
@@ -314,10 +321,14 @@ function PatientDetail() {
     setFormDataGuestHouse("");
     setOpenGuesthouse(false);
   };
-  const AddpaymentOnchnage = (e) => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
-  };
+ const AddpaymentOnchnage = (e) => {
+  const { name, value } = e.target;
+
+  setData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
   const handleAppointmentChange = (e) => {
     const { name, value } = e.target;
     setAppointmentData((prev) => ({
@@ -1677,18 +1688,29 @@ function PatientDetail() {
       [name]: value,
     }));
   };
-  const handlefilechangechangeinput = async (e) => {
-    console.log(e.target.value);
-    setValueofappointmentpaidto(e.target.value);
-    try {
-      const response = await axios.get(
-        `${baseurl}/getPaidForByPaidTo/${e.target.value}`,
-      );
-      setDatagetapiPaidto(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ const handlefilechangechangeinput = async (e) => {
+  const paidToId = e.target.value;
+
+  try {
+    // state update
+    setData((prev) => ({
+      ...prev,
+      paid_to: paidToId,
+      paid_for: "", // reset paid_for when paid_to changes
+    }));
+
+    setValueofappointmentpaidto(paidToId);
+
+    // get paid for list
+    const response = await axios.get(
+      `${baseurl}/getPaidForByPaidTo/${paidToId}`
+    );
+
+    setDatagetapiPaidto(response.data.data || []);
+  } catch (error) {
+    console.log("Paid For API Error:", error);
+  }
+};
   const handleFileChange12 = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -2794,6 +2816,11 @@ function PatientDetail() {
       }
     } catch (error) { }
   };
+
+
+  const handleClosepayment3 =()=>{
+    setOpenPaymentmodal(false)
+  }
   const handleclickApprove = (hospitalids, b) => { };
   const approveReject = async (info, hospitalId, status) => {
     setDatainfo(info);
@@ -3605,6 +3632,135 @@ function PatientDetail() {
     }
   };
 
+//  const handleUpdatePayment = async () => {
+//   try {
+//     const formData = new FormData();
+
+//     formData.append("paid_amount", data.paid_amount);
+//     formData.append("paymentMethod", data.paymentMethod);
+//     formData.append("payment_Date", data.payment_Date);
+//     formData.append("paid_to", data.paid_to);
+//     formData.append("paid_for", data.paid_for);
+//     formData.append("notes", data.notes);
+
+//     if (selectedFiles && selectedFiles.length > 0) {
+//       selectedFiles.forEach((file) => {
+//         formData.append("attachFile", file);
+//       });
+//     }
+
+//     const res = await axios.put(`${baseurl}update_treatment_payment/${data.treatment_id}/${data._id}`,
+//       formData,
+//       {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       }, {
+//           headers: {
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//           },
+//         },
+//     );
+
+//     await Swal.fire({
+//       icon: "success",
+//       title: "Success",
+//       text: "Payment updated successfully.",
+//       timer: 2000,
+//       showConfirmButton: false,
+//     });
+
+//     setOpenPaymentmodal(false);
+
+//     console.log(res.data);
+
+//   } catch (error) {
+//     console.log(error);
+
+//     Swal.fire({
+//       icon: "error",
+//       title: "Error",
+//       text:
+//         error?.response?.data?.message ||
+//         "Something went wrong while updating payment.",
+//     });
+//   }
+// };
+const handleUpdatePayment = async () => {
+  try {
+        const formData = new FormData();
+
+    formData.append("paid_amount", data.paid_amount);
+    formData.append("paymentMethod", data.paymentMethod);
+    formData.append("payment_Date", data.payment_Date);
+    formData.append("paid_to", data.paid_to);
+    formData.append("paid_for", data.paid_for);
+    formData.append("notes", data.notes);
+
+    // Attach file only if user selected new file
+    if (selectedFiles && selectedFiles.length > 0) {
+      selectedFiles.forEach((file) => {
+        formData.append("attachFile", file);
+      });
+    }
+
+    // Debug FormData
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    const token = localStorage.getItem("token");
+
+    const res = await axios.put(
+      `${baseurl}update_treatment_payment/${data.treatment_id}/${data._id}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log("API Response:", res);
+    console.log("Response Data:", res.data);
+getDataapi3(data.treatment_id);
+    await Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: res?.data?.message || "Payment updated successfully.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
+    setOpenPaymentmodal(false);
+
+    // Optional: refresh data
+    // getTreatmentDetails();
+  } catch (error) {
+    console.log("Full Error:", error);
+    console.log("Response:", error?.response);
+    console.log("Error Data:", error?.response?.data);
+
+    let errorMessage = "Something went wrong";
+
+    if (error?.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (error?.response?.data?.error) {
+      errorMessage = error.response.data.error;
+    } else if (typeof error?.response?.data === "string") {
+      errorMessage = error.response.data;
+    } else if (error?.message) {
+      errorMessage = error.message;
+    }
+
+    Swal.fire({
+      icon: "error",
+      title: `Error ${error?.response?.status || ""}`,
+      text: errorMessage,
+    });
+  }
+};
   const handleDownloadPDF = (index) => {
     const element = hospitalRef.current[index];
 
@@ -3930,6 +4086,52 @@ function PatientDetail() {
     setOpen2(true);
     setAttendedeaisledit(true);
   };
+//     const handleEditPayment = (payment, info) => {
+
+//   setTreatmentInfo(info);
+
+//   setData({
+//     _id: payment._id,
+//     paid_to: payment.paid_to?._id || "",
+//     paid_for: payment.paid_for?._id || "",
+//     paid_amount: payment.paid_amount || "",
+//     paymentMethod: payment.paymentMethod || "",
+//     payment_Date: payment.payment_Date?.split("T")[0] || "",
+//     notes: payment.notes || "",
+//   });
+
+//   setOpenPaymentmodal(true);
+// };
+const handleEditPayment = async (payment, info) => {
+  try {
+    console.log("Payment:", payment);
+    console.log("Info:", info);
+
+    // First populate form
+    setData({
+      _id: payment._id || "",
+      treatment_id: payment.treatment_id || info?.treatment_id || "",
+      paid_to: payment?.paid_to?._id || "",
+      paid_for: payment?.paid_for?._id || "",
+      paid_amount: payment?.paid_amount || "",
+      paymentMethod: payment?.paymentMethod || "",
+      payment_Date: payment?.payment_Date
+        ? payment.payment_Date.split("T")[0]
+        : "",
+      notes: payment?.notes || "",
+    });
+    setValueofappointmentpaidto(payment?.paid_to?._id || "");
+    if (payment?.paid_to?._id) {
+      const response = await axios.get(
+        `${baseurl}/getPaidForByPaidTo/${payment.paid_to._id}`
+      );
+      setDatagetapiPaidto(response.data.data || []);
+    }
+    setOpenPaymentmodal(true);
+  } catch (error) {
+    console.log("Edit Payment Error:", error);
+  }
+};
   const handleDeletetrtrtrtr = async (item) => {
     try {
       const result = await Swal.fire({
@@ -7049,6 +7251,15 @@ function PatientDetail() {
                                                                   </TableCell>
                                                                   <TableCell>
                                                                     <i
+                                                                        className="fa-solid fa-pen-to-square"
+                                                                        onClick={() =>
+                                                                          handleEditPayment(
+                                                                            item,
+                                                                            info,
+                                                                          )
+                                                                        }
+                                                                      ></i>
+                                                                    <i
                                                                       className="fa-solid fa-trash text-danger"
                                                                       style={{
                                                                         cursor:
@@ -9976,6 +10187,177 @@ function PatientDetail() {
         <Dialog
           fullWidth={fullWidth}
           maxWidth={maxWidth}
+          open={openPaymentmodal}
+          onClose={handleClosepayment3}
+        >
+          <div className="main-card-header">
+            <div className="note-hd">
+              <h6>Edit Amount</h6>
+            </div>
+            <div className="cross-icon" onClick={handleClosepayment3}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <DialogContent className="main-box">
+            <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+              }}
+              className="contact-form"
+            >
+              <Box>
+                <form
+                  id="contact-form"
+                  className="contact-form view-table-detail"
+                >
+                  <div className="field-set">
+                    <label>
+                      Paid To <span className="text-danger">*</span>
+                    </label>
+                   <select
+  className="form-control"
+  name="paid_to"
+  value={data.paid_to}
+  onChange={handlefilechangechangeinput}
+>
+  <option value="">Select</option>
+
+  {paidTo?.map((item) => (
+    <option key={item._id} value={item._id}>
+      {item.name}
+    </option>
+  ))}
+</select>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Paid For <span className="text-danger">*</span>
+                    </label>
+                    <select
+  className="form-control"
+  name="paid_for"
+  value={data.paid_for}
+  onChange={AddpaymentOnchnage}
+>
+  <option value="">Select</option>
+
+  {datagetapiPaidto?.map((item) => (
+    <option key={item._id} value={item._id}>
+      {item.name}
+    </option>
+  ))}
+</select>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Attach Invoice <span className="text-danger"></span>
+                    </label>
+                    <input
+                      type="file"
+                      multiple
+                      className="form-control"
+                      name="attachFile"
+                      onChange={handleAttachFile11}
+                    />
+                  </div>
+
+                  <div className="field-set">
+                    <label>
+                      Paid Amount<span className="text-danger">*</span>
+                    </label>
+                    <div className="fixpricee">
+                      <p className="code-dial">USD($)</p>
+                      <input
+                        type="text"
+                        placeholder="paid amount"
+                        className="form-control"
+                        onKeyPress={handleKeyPress}
+                        name="paid_amount"
+                        required=""
+                        onChange={AddpaymentOnchnage}
+                        value={data.paid_amount}
+                      />
+                    </div>
+                  </div>
+                  {/* <div>{info.treatment_due_payment}</div> */}
+                  <div className="field-set">
+                    <label>
+                      Payment Method<span className="text-danger">*</span>
+                    </label>
+                    <select
+                      placeholder="payment Method"
+                      className="form-control"
+                      name="paymentMethod"
+                      required=""
+                      onChange={AddpaymentOnchnage}
+                      value={data.paymentMethod}
+                    >
+                      <option>Select</option>
+                      <option value="Cash">Cash</option>
+                      <option value="UPI">Online via UPI</option>
+                      <option value="foundation">Foundation</option>
+                      <option value="Internet banking">Internet banking</option>
+                      <option value="Via Net Banking">Via Net Banking</option>
+                      <option value="Credit/Debit Card">
+                        Debit Card / Credit Card
+                      </option>
+                    </select>
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Payment Date<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      id="birthday"
+                      name="payment_Date"
+                      placeholder="Appointment Date"
+                      className="form-control"
+                      onChange={AddpaymentOnchnage}
+                      value={data.payment_Date}
+                      max={new Date().toISOString().split("T")[0]} // Prevent future date
+                    />
+                  </div>
+                  <div className="field-set">
+                    <label>
+                      Notes<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="notes"
+                      className="form-control"
+                      name="notes"
+                      required=""
+                      onChange={AddpaymentOnchnage}
+                      value={data.notes}
+                    />
+                  </div>
+                  <DialogActions className="submit-main">
+                    <Button
+                      // type="submit"
+                      onClick={() => {
+                        handleUpdatePayment ();
+                      }}
+                      // onClick={(e) => handleAddTritmentPayment(e)}
+                      variant="contained"
+                    >
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+      <React.Fragment>
+        <Dialog
+          fullWidth={fullWidth}
+          maxWidth={maxWidth}
           open={open3}
           onClose={handleClose3}
         >
@@ -10883,6 +11265,19 @@ function PatientDetail() {
             >
               <Box>
                 <form id="contact-form">
+                    <div className="field-set">
+                    <label>
+                      Title<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      id=""
+                      name="Title"
+                      onChange={handleRecommendTitle}
+                      className="form-control"
+                      value={Title}
+                      placeholder="Title"
+                    />
+                  </div>
                   <div className="field-set">
                     <label>
                       Review Notes<span className="text-danger">*</span>

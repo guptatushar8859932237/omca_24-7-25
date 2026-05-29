@@ -112,7 +112,6 @@ export default function AddPatientTreatment() {
     total_charge: Yup.number()
       .typeError("Total Charge must be a number")
       .required("Total Charge is required")
-      .min(1, "Total Charge must be greater than 0"),
   });
 
   console.log(personName);

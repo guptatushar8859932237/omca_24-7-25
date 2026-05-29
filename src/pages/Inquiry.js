@@ -1773,6 +1773,19 @@ export default function Inquiry() {
             >
               <Box>
                 <form id="contact-form">
+                    <div className="field-set">
+                    <label>
+                      Title<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      id=""
+                      name="Title"
+                      onChange={handleRecommendTitle}
+                      className="form-control"
+                      value={Title}
+                      placeholder="Title"
+                    />
+                  </div>
                   <div className="field-set">
                     <label>
                       Review Notes<span className="text-danger">*</span>
@@ -1819,21 +1832,7 @@ export default function Inquiry() {
                       placeholder="Recommendations"
                     />
                   </div>
-                  <div className="field-set">
-                    <label>
-                      Title<span className="text-danger">*</span>
-                    </label>
-                    <textarea
-                      id=""
-                      name="Title"
-                      rows="4"
-                      cols="50"
-                      onChange={handleRecommendTitle}
-                      className="form-control"
-                      value={Title}
-                      placeholder="Title"
-                    />
-                  </div>
+                
                   <DialogActions className="submit-main">
                     <Button
                       type="submit"
