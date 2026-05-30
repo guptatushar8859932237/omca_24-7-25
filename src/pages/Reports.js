@@ -868,12 +868,12 @@ export default function Reports() {
                           input={
                             <OutlinedInput placeholder="Select Treatment" />
                           }
-                            renderValue={(selected) => {
-    if (!selected) {
-      return <span style={{ color: "#aaa" }}>Select Treatment</span>;
-    }
-    return selected;
-  }}
+                          renderValue={(selected) => {
+                            if (!selected) {
+                              return <span>Select Treatment</span>;
+                            }
+                            return selected;
+                          }}
                           sx={{ height: 40 }}
                           className="select-treatment"
                           MenuProps={{
@@ -914,12 +914,12 @@ export default function Reports() {
                           input={
                             <OutlinedInput placeholder="Select Hospital" />
                           }
-                           renderValue={(selected) => {
-    if (!selected) {
-      return <span style={{ color: "#aaa" }}>Select Hospital</span>;
-    }
-    return selected;
-  }}
+                          renderValue={(selected) => {
+                            if (!selected) {
+                              return <span>Select Hospital</span>;
+                            }
+                            return selected;
+                          }}
                           sx={{ height: 40 }}
                           className="select-hospital"
                           MenuProps={{
@@ -1016,7 +1016,7 @@ export default function Reports() {
                         <TableCell>Sr.No.</TableCell>
                         <TableCell>Patient Id</TableCell>
                         <TableCell>Patient Name</TableCell>
-                        <TableCell> Contact No</TableCell>
+                        <TableCell>Contact No</TableCell>
                         <TableCell>Email</TableCell>
                         <TableCell>Date</TableCell>
                         <TableCell>Country</TableCell>
@@ -1026,43 +1026,43 @@ export default function Reports() {
                     <TableBody>
                       {rows.length > 0
                         ? rows
-                            .slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
-                            )
-                            .map((info, i) => {
-                              console.log(info);
-                              return (
-                                <>
-                                  <TableRow
-                                    role="checkbox"
-                                    tabIndex={-1}
-                                    key={info.patientId}
-                                  >
-                                    <TableCell>
-                                      {page * rowsPerPage + i + 1}
-                                    </TableCell>
-                                    <TableCell>{info.patientId}</TableCell>
-                                    <TableCell>{info.patient_name}</TableCell>
-                                    <TableCell>
-                                      {info.emergency_contact
-                                        ? info.emergency_contact
-                                        : info.emergency_contact_no}
-                                    </TableCell>
-                                    <TableCell>{info.email}</TableCell>
-                                    <TableCell>
-                                      {new Date(
-                                        info.createdAt,
-                                      ).toLocaleDateString("en-GB")}
-                                    </TableCell>
-                                    <TableCell>{info.country}</TableCell>
-                                    <TableCell>
-                                      {info?.patient_disease[0]?.disease_name}
-                                    </TableCell>
-                                  </TableRow>
-                                </>
-                              );
-                            })
+                          .slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
+                          .map((info, i) => {
+                            console.log(info);
+                            return (
+                              <>
+                                <TableRow
+                                  role="checkbox"
+                                  tabIndex={-1}
+                                  key={info.patientId}
+                                >
+                                  <TableCell>
+                                    {page * rowsPerPage + i + 1}
+                                  </TableCell>
+                                  <TableCell>{info.patientId}</TableCell>
+                                  <TableCell>{info.patient_name}</TableCell>
+                                  <TableCell>
+                                    {info.emergency_contact
+                                      ? info.emergency_contact
+                                      : info.emergency_contact_no}
+                                  </TableCell>
+                                  <TableCell>{info.email}</TableCell>
+                                  <TableCell>
+                                    {new Date(
+                                      info.createdAt,
+                                    ).toLocaleDateString("en-GB")}
+                                  </TableCell>
+                                  <TableCell>{info.country}</TableCell>
+                                  <TableCell>
+                                    {info?.patient_disease[0]?.disease_name}
+                                  </TableCell>
+                                </TableRow>
+                              </>
+                            );
+                          })
                         : ""}
                     </TableBody>
                   </Table>

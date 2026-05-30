@@ -271,12 +271,7 @@ function PatientDetail() {
     Fancybox.bind("[data-fancybox='gallery']", {
       Thumbs: false,
       Toolbar: {
-        display: [
-          "zoom",
-          "slideshow",
-          "fullscreen",
-          "close",
-        ],
+        display: ["zoom", "slideshow", "fullscreen", "close"],
       },
     });
 
@@ -300,8 +295,8 @@ function PatientDetail() {
   };
 
   const handleAttachFile11 = (e) => {
-  setSelectedFiles(Array.from(e.target.files));
-};
+    setSelectedFiles(Array.from(e.target.files));
+  };
 
   const hadnlcecEdopenmodalGuestHouse = (item, info) => {
     console.log(item, info);
@@ -321,14 +316,14 @@ function PatientDetail() {
     setFormDataGuestHouse("");
     setOpenGuesthouse(false);
   };
- const AddpaymentOnchnage = (e) => {
-  const { name, value } = e.target;
+  const AddpaymentOnchnage = (e) => {
+    const { name, value } = e.target;
 
-  setData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-};
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
   const handleAppointmentChange = (e) => {
     const { name, value } = e.target;
     setAppointmentData((prev) => ({
@@ -1688,29 +1683,29 @@ function PatientDetail() {
       [name]: value,
     }));
   };
- const handlefilechangechangeinput = async (e) => {
-  const paidToId = e.target.value;
+  const handlefilechangechangeinput = async (e) => {
+    const paidToId = e.target.value;
 
-  try {
-    // state update
-    setData((prev) => ({
-      ...prev,
-      paid_to: paidToId,
-      paid_for: "", // reset paid_for when paid_to changes
-    }));
+    try {
+      // state update
+      setData((prev) => ({
+        ...prev,
+        paid_to: paidToId,
+        paid_for: "", // reset paid_for when paid_to changes
+      }));
 
-    setValueofappointmentpaidto(paidToId);
+      setValueofappointmentpaidto(paidToId);
 
-    // get paid for list
-    const response = await axios.get(
-      `${baseurl}/getPaidForByPaidTo/${paidToId}`
-    );
+      // get paid for list
+      const response = await axios.get(
+        `${baseurl}/getPaidForByPaidTo/${paidToId}`,
+      );
 
-    setDatagetapiPaidto(response.data.data || []);
-  } catch (error) {
-    console.log("Paid For API Error:", error);
-  }
-};
+      setDatagetapiPaidto(response.data.data || []);
+    } catch (error) {
+      console.log("Paid For API Error:", error);
+    }
+  };
   const handleFileChange12 = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -2817,10 +2812,9 @@ function PatientDetail() {
     } catch (error) { }
   };
 
-
-  const handleClosepayment3 =()=>{
-    setOpenPaymentmodal(false)
-  }
+  const handleClosepayment3 = () => {
+    setOpenPaymentmodal(false);
+  };
   const handleclickApprove = (hospitalids, b) => { };
   const approveReject = async (info, hospitalId, status) => {
     setDatainfo(info);
@@ -3632,135 +3626,135 @@ function PatientDetail() {
     }
   };
 
-//  const handleUpdatePayment = async () => {
-//   try {
-//     const formData = new FormData();
+  //  const handleUpdatePayment = async () => {
+  //   try {
+  //     const formData = new FormData();
 
-//     formData.append("paid_amount", data.paid_amount);
-//     formData.append("paymentMethod", data.paymentMethod);
-//     formData.append("payment_Date", data.payment_Date);
-//     formData.append("paid_to", data.paid_to);
-//     formData.append("paid_for", data.paid_for);
-//     formData.append("notes", data.notes);
+  //     formData.append("paid_amount", data.paid_amount);
+  //     formData.append("paymentMethod", data.paymentMethod);
+  //     formData.append("payment_Date", data.payment_Date);
+  //     formData.append("paid_to", data.paid_to);
+  //     formData.append("paid_for", data.paid_for);
+  //     formData.append("notes", data.notes);
 
-//     if (selectedFiles && selectedFiles.length > 0) {
-//       selectedFiles.forEach((file) => {
-//         formData.append("attachFile", file);
-//       });
-//     }
+  //     if (selectedFiles && selectedFiles.length > 0) {
+  //       selectedFiles.forEach((file) => {
+  //         formData.append("attachFile", file);
+  //       });
+  //     }
 
-//     const res = await axios.put(`${baseurl}update_treatment_payment/${data.treatment_id}/${data._id}`,
-//       formData,
-//       {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       }, {
-//           headers: {
-//             Authorization: `Bearer ${localStorage.getItem("token")}`,
-//           },
-//         },
-//     );
+  //     const res = await axios.put(`${baseurl}update_treatment_payment/${data.treatment_id}/${data._id}`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }, {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           },
+  //         },
+  //     );
 
-//     await Swal.fire({
-//       icon: "success",
-//       title: "Success",
-//       text: "Payment updated successfully.",
-//       timer: 2000,
-//       showConfirmButton: false,
-//     });
+  //     await Swal.fire({
+  //       icon: "success",
+  //       title: "Success",
+  //       text: "Payment updated successfully.",
+  //       timer: 2000,
+  //       showConfirmButton: false,
+  //     });
 
-//     setOpenPaymentmodal(false);
+  //     setOpenPaymentmodal(false);
 
-//     console.log(res.data);
+  //     console.log(res.data);
 
-//   } catch (error) {
-//     console.log(error);
+  //   } catch (error) {
+  //     console.log(error);
 
-//     Swal.fire({
-//       icon: "error",
-//       title: "Error",
-//       text:
-//         error?.response?.data?.message ||
-//         "Something went wrong while updating payment.",
-//     });
-//   }
-// };
-const handleUpdatePayment = async () => {
-  try {
-        const formData = new FormData();
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text:
+  //         error?.response?.data?.message ||
+  //         "Something went wrong while updating payment.",
+  //     });
+  //   }
+  // };
+  const handleUpdatePayment = async () => {
+    try {
+      const formData = new FormData();
 
-    formData.append("paid_amount", data.paid_amount);
-    formData.append("paymentMethod", data.paymentMethod);
-    formData.append("payment_Date", data.payment_Date);
-    formData.append("paid_to", data.paid_to);
-    formData.append("paid_for", data.paid_for);
-    formData.append("notes", data.notes);
+      formData.append("paid_amount", data.paid_amount);
+      formData.append("paymentMethod", data.paymentMethod);
+      formData.append("payment_Date", data.payment_Date);
+      formData.append("paid_to", data.paid_to);
+      formData.append("paid_for", data.paid_for);
+      formData.append("notes", data.notes);
 
-    // Attach file only if user selected new file
-    if (selectedFiles && selectedFiles.length > 0) {
-      selectedFiles.forEach((file) => {
-        formData.append("attachFile", file);
+      // Attach file only if user selected new file
+      if (selectedFiles && selectedFiles.length > 0) {
+        selectedFiles.forEach((file) => {
+          formData.append("attachFile", file);
+        });
+      }
+
+      // Debug FormData
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      const token = localStorage.getItem("token");
+
+      const res = await axios.put(
+        `${baseurl}update_treatment_payment/${data.treatment_id}/${data._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      console.log("API Response:", res);
+      console.log("Response Data:", res.data);
+      getDataapi3(data.treatment_id);
+      await Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: res?.data?.message || "Payment updated successfully.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      setOpenPaymentmodal(false);
+
+      // Optional: refresh data
+      // getTreatmentDetails();
+    } catch (error) {
+      console.log("Full Error:", error);
+      console.log("Response:", error?.response);
+      console.log("Error Data:", error?.response?.data);
+
+      let errorMessage = "Something went wrong";
+
+      if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error?.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (typeof error?.response?.data === "string") {
+        errorMessage = error.response.data;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      Swal.fire({
+        icon: "error",
+        title: `Error ${error?.response?.status || ""}`,
+        text: errorMessage,
       });
     }
-
-    // Debug FormData
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
-    const token = localStorage.getItem("token");
-
-    const res = await axios.put(
-      `${baseurl}update_treatment_payment/${data.treatment_id}/${data._id}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    console.log("API Response:", res);
-    console.log("Response Data:", res.data);
-getDataapi3(data.treatment_id);
-    await Swal.fire({
-      icon: "success",
-      title: "Success",
-      text: res?.data?.message || "Payment updated successfully.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    setOpenPaymentmodal(false);
-
-    // Optional: refresh data
-    // getTreatmentDetails();
-  } catch (error) {
-    console.log("Full Error:", error);
-    console.log("Response:", error?.response);
-    console.log("Error Data:", error?.response?.data);
-
-    let errorMessage = "Something went wrong";
-
-    if (error?.response?.data?.message) {
-      errorMessage = error.response.data.message;
-    } else if (error?.response?.data?.error) {
-      errorMessage = error.response.data.error;
-    } else if (typeof error?.response?.data === "string") {
-      errorMessage = error.response.data;
-    } else if (error?.message) {
-      errorMessage = error.message;
-    }
-
-    Swal.fire({
-      icon: "error",
-      title: `Error ${error?.response?.status || ""}`,
-      text: errorMessage,
-    });
-  }
-};
+  };
   const handleDownloadPDF = (index) => {
     const element = hospitalRef.current[index];
 
@@ -4086,52 +4080,52 @@ getDataapi3(data.treatment_id);
     setOpen2(true);
     setAttendedeaisledit(true);
   };
-//     const handleEditPayment = (payment, info) => {
+  //     const handleEditPayment = (payment, info) => {
 
-//   setTreatmentInfo(info);
+  //   setTreatmentInfo(info);
 
-//   setData({
-//     _id: payment._id,
-//     paid_to: payment.paid_to?._id || "",
-//     paid_for: payment.paid_for?._id || "",
-//     paid_amount: payment.paid_amount || "",
-//     paymentMethod: payment.paymentMethod || "",
-//     payment_Date: payment.payment_Date?.split("T")[0] || "",
-//     notes: payment.notes || "",
-//   });
+  //   setData({
+  //     _id: payment._id,
+  //     paid_to: payment.paid_to?._id || "",
+  //     paid_for: payment.paid_for?._id || "",
+  //     paid_amount: payment.paid_amount || "",
+  //     paymentMethod: payment.paymentMethod || "",
+  //     payment_Date: payment.payment_Date?.split("T")[0] || "",
+  //     notes: payment.notes || "",
+  //   });
 
-//   setOpenPaymentmodal(true);
-// };
-const handleEditPayment = async (payment, info) => {
-  try {
-    console.log("Payment:", payment);
-    console.log("Info:", info);
+  //   setOpenPaymentmodal(true);
+  // };
+  const handleEditPayment = async (payment, info) => {
+    try {
+      console.log("Payment:", payment);
+      console.log("Info:", info);
 
-    // First populate form
-    setData({
-      _id: payment._id || "",
-      treatment_id: payment.treatment_id || info?.treatment_id || "",
-      paid_to: payment?.paid_to?._id || "",
-      paid_for: payment?.paid_for?._id || "",
-      paid_amount: payment?.paid_amount || "",
-      paymentMethod: payment?.paymentMethod || "",
-      payment_Date: payment?.payment_Date
-        ? payment.payment_Date.split("T")[0]
-        : "",
-      notes: payment?.notes || "",
-    });
-    setValueofappointmentpaidto(payment?.paid_to?._id || "");
-    if (payment?.paid_to?._id) {
-      const response = await axios.get(
-        `${baseurl}/getPaidForByPaidTo/${payment.paid_to._id}`
-      );
-      setDatagetapiPaidto(response.data.data || []);
+      // First populate form
+      setData({
+        _id: payment._id || "",
+        treatment_id: payment.treatment_id || info?.treatment_id || "",
+        paid_to: payment?.paid_to?._id || "",
+        paid_for: payment?.paid_for?._id || "",
+        paid_amount: payment?.paid_amount || "",
+        paymentMethod: payment?.paymentMethod || "",
+        payment_Date: payment?.payment_Date
+          ? payment.payment_Date.split("T")[0]
+          : "",
+        notes: payment?.notes || "",
+      });
+      setValueofappointmentpaidto(payment?.paid_to?._id || "");
+      if (payment?.paid_to?._id) {
+        const response = await axios.get(
+          `${baseurl}/getPaidForByPaidTo/${payment.paid_to._id}`,
+        );
+        setDatagetapiPaidto(response.data.data || []);
+      }
+      setOpenPaymentmodal(true);
+    } catch (error) {
+      console.log("Edit Payment Error:", error);
     }
-    setOpenPaymentmodal(true);
-  } catch (error) {
-    console.log("Edit Payment Error:", error);
-  }
-};
+  };
   const handleDeletetrtrtrtr = async (item) => {
     try {
       const result = await Swal.fire({
@@ -4474,7 +4468,8 @@ const handleEditPayment = async (payment, info) => {
                 </div>
                 <div className="card-body">
                   <div className="tab-content">
-                    <div className={`tab-pane ${mainTab === "Doctor-Review" ? "show active" : ""}`}
+                    <div
+                      className={`tab-pane ${mainTab === "Doctor-Review" ? "show active" : ""}`}
                       id="about-cont126"
                     >
                       <div className="row gx-3 gy-3">
@@ -4518,14 +4513,19 @@ const handleEditPayment = async (payment, info) => {
                                                 ),
                                               )
                                             ) : (
-                                              <p className="nodtafond">No Report found</p>
+                                              <p className="nodtafond">
+                                                No Report found
+                                              </p>
                                             )}
                                           </div>
                                         </div>
                                         <div className="col-md-3">
                                           <div className="doctorcontent">
                                             <h5>Notes</h5>
-                                            <p>{info?.review_notes || "No Notes Added"}</p>
+                                            <p>
+                                              {info?.review_notes ||
+                                                "No Notes Added"}
+                                            </p>
                                           </div>
                                         </div>
                                         <div className="col-md-2">
@@ -4539,7 +4539,7 @@ const handleEditPayment = async (payment, info) => {
                                           </div>
                                         </div>
                                       </div>
-                                      <div className="row">
+                                      <div className="row gx-3 gy-3 mt-0">
                                         {info.comments &&
                                           info.comments.length > 0 && (
                                             <div className="col-md-12">
@@ -4695,16 +4695,24 @@ const handleEditPayment = async (payment, info) => {
                                 );
                               })}
                             </>
-                          )
-                          }
+                          )}
                         </div>
                       </div>
                     </div>
-                    <div className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`} id="about-cont123">
+                    <div
+                      className={`tab-pane ${mainTab === "treatment-plans" ? "show active" : ""}`}
+                      id="about-cont123"
+                    >
                       <div className="row gx-3">
                         <div className="col-md-12">
                           <div className="text-end">
-                            <button onClick={PlanTreatmentPopUp} className="add-button"><i className="fa fa-plus me-2"></i>Add Treatment Plan</button>
+                            <button
+                              onClick={PlanTreatmentPopUp}
+                              className="add-button"
+                            >
+                              <i className="fa fa-plus me-2"></i>Add Treatment
+                              Plan
+                            </button>
                           </div>
                         </div>
                         <div className="col-md-12 gy-3">
@@ -4719,9 +4727,12 @@ const handleEditPayment = async (payment, info) => {
                                   <div className="card doctor-card" key={index}>
                                     <div className="card-header d-flex justify-content-between">
                                       <h6>{info?.treatment?.name}</h6>
-                                      <i onClick={() => {
-                                        handleclickdeleteplan(info);
-                                      }} className="fa fa-trash text-danger"></i>
+                                      <i
+                                        onClick={() => {
+                                          handleclickdeleteplan(info);
+                                        }}
+                                        className="fa-solid fa-trash text-danger"
+                                      ></i>
                                     </div>
                                     <div className="card-body">
                                       <div className="forborder">
@@ -4729,39 +4740,48 @@ const handleEditPayment = async (payment, info) => {
                                           <div className="col-md-6">
                                             <div className="doctorcontent">
                                               <h5>Hospital</h5>
-                                              {info?.hospitals?.map((item, i) => (
-                                                <div key={i} className="aprovemain">
-                                                  <p>{item.name}</p>
-                                                  {info.isAnyHospitalApproved !==
-                                                    false && (
-                                                      <span className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}>
-                                                        {item.status}
-                                                      </span>
-                                                    )}
-                                                  {info.isAnyHospitalApproved !==
-                                                    true && (
-                                                      <button
-                                                        className="add-button approvebtn"
-                                                        onClick={() =>
-                                                          approveReject(
-                                                            info,
-                                                            item.id,
-                                                            "Approved",
-                                                          )
-                                                        }
-                                                      >
-                                                        Approve
-                                                      </button>
-                                                    )
-                                                  }
-                                                </div>
-                                              ))}
+                                              {info?.hospitals?.map(
+                                                (item, i) => (
+                                                  <div
+                                                    key={i}
+                                                    className="aprovemain"
+                                                  >
+                                                    <p>{item.name}</p>
+                                                    {info.isAnyHospitalApproved !==
+                                                      false && (
+                                                        <span
+                                                          className={`status-badge ${item.status === "Approved" ? "approved" : "pending"}`}
+                                                        >
+                                                          {item.status}
+                                                        </span>
+                                                      )}
+                                                    {info.isAnyHospitalApproved !==
+                                                      true && (
+                                                        <button
+                                                          className="add-button approvebtn"
+                                                          onClick={() =>
+                                                            approveReject(
+                                                              info,
+                                                              item.id,
+                                                              "Approved",
+                                                            )
+                                                          }
+                                                        >
+                                                          Approve
+                                                        </button>
+                                                      )}
+                                                  </div>
+                                                ),
+                                              )}
                                             </div>
                                           </div>
                                           <div className="col-md-6">
                                             <div className="doctorcontent">
                                               <h5>Notes</h5>
-                                              <p>{info?.notes || "No Notes Added"}</p>
+                                              <p>
+                                                {info?.notes ||
+                                                  "No Notes Added"}
+                                              </p>
                                             </div>
                                           </div>
                                           <div className="col-md-12">
@@ -4773,16 +4793,14 @@ const handleEditPayment = async (payment, info) => {
                                                     {/* Images First */}
                                                     {info?.reports
                                                       ?.filter((report) =>
-                                                        /\.(jpg|jpeg|png|gif|webp)$/i.test(report.fileName),
+                                                        /\.(jpg|jpeg|png|gif|webp)$/i.test(
+                                                          report.fileName,
+                                                        ),
                                                       )
                                                       .map((report, index) => {
                                                         const fileUrl = `${image}${report.fileName}`;
-
                                                         return (
-                                                          <div
-                                                            key={index}
-                                                            className="position-relative"
-                                                          >
+                                                          <div key={index}>
                                                             <a
                                                               href={fileUrl}
                                                               data-fancybox="gallery"
@@ -4794,10 +4812,6 @@ const handleEditPayment = async (payment, info) => {
                                                                 className="viewrepot"
                                                               />
                                                             </a>
-
-                                                            <span className="removereport">
-                                                              <i className="fa-solid fa-xmark"></i>
-                                                            </span>
                                                           </div>
                                                         );
                                                       })}
@@ -4827,7 +4841,9 @@ const handleEditPayment = async (payment, info) => {
                                                       })}
                                                   </>
                                                 ) : (
-                                                  <p className="nodtafond">No Report found</p>
+                                                  <p className="nodtafond">
+                                                    No Report found
+                                                  </p>
                                                 )}
                                               </div>
                                               {/* {info?.reports?.length > 0 ? (
@@ -4900,7 +4916,9 @@ const handleEditPayment = async (payment, info) => {
                                             </div>
                                           ) : (
                                             <div className="col-md-12 gy-3">
-                                              <p className="nodtafond">No treatment plan found</p>
+                                              <p className="nodtafond">
+                                                No treatment plan found
+                                              </p>
                                             </div>
                                           )}
                                         </div>
@@ -4917,13 +4935,23 @@ const handleEditPayment = async (payment, info) => {
                                               <div className="col-md-6">
                                                 <div className="doctorcontent">
                                                   <h5>Recommendation</h5>
-                                                  <p>{info?.doctorReview?.review_notes}</p>
+                                                  <p>
+                                                    {
+                                                      info?.doctorReview
+                                                        ?.review_notes
+                                                    }
+                                                  </p>
                                                 </div>
                                               </div>
                                               <div className="col-md-3">
                                                 <div className="doctorcontent">
                                                   <h5>Notes</h5>
-                                                  <p>{info?.doctorReview?.Recommendations}</p>
+                                                  <p>
+                                                    {
+                                                      info?.doctorReview
+                                                        ?.Recommendations
+                                                    }
+                                                  </p>
                                                 </div>
                                               </div>
                                               <div className="col-md-3">
@@ -4931,7 +4959,8 @@ const handleEditPayment = async (payment, info) => {
                                                   <h5>Documentation</h5>
                                                   {info?.doctorReview?.images
                                                     ?.length > 0 ? (
-                                                    <button className="viewbtn"
+                                                    <button
+                                                      className="viewbtn"
                                                       onClick={() =>
                                                         window.open(
                                                           `
@@ -4939,7 +4968,8 @@ const handleEditPayment = async (payment, info) => {
                                                           "_blank",
                                                         )
                                                       }
-                                                    >View
+                                                    >
+                                                      View
                                                     </button>
                                                   ) : (
                                                     <span></span>
@@ -4949,7 +4979,7 @@ const handleEditPayment = async (payment, info) => {
                                               {info?.doctorReview?.comments &&
                                                 info?.doctorReview?.comments
                                                   .length > 0 && (
-                                                  <div className="col-md-12">
+                                                  <div className="col-md-12 gy-3">
                                                     {/* Accordion */}
                                                     <div
                                                       className="accordion"
@@ -5106,7 +5136,9 @@ const handleEditPayment = async (payment, info) => {
                                             </>
                                           ) : (
                                             <div className="col-md-12 gy-3">
-                                              <p className="nodtafond">No doctor review found</p>
+                                              <p className="nodtafond">
+                                                No doctor review found
+                                              </p>
                                             </div>
                                           )}
                                         </div>
@@ -5116,16 +5148,23 @@ const handleEditPayment = async (payment, info) => {
                                 );
                               })}
                             </>
-                          )
-                          }
+                          )}
                         </div>
                       </div>
                     </div>
-                    <div className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`} id="about-cont">
+                    <div
+                      className={`tab-pane ${mainTab === "treatment" ? "show active" : ""}`}
+                      id="about-cont"
+                    >
                       <div className="row gx-3">
                         <div className="col-md-12">
                           <div className="text-end">
-                            <button onClick={PatientDetailButton} className="add-button"><i className="fa fa-plus me-2"></i>Add Treatment</button>
+                            <button
+                              onClick={PatientDetailButton}
+                              className="add-button"
+                            >
+                              <i className="fa fa-plus me-2"></i>Add Treatment
+                            </button>
                           </div>
                         </div>
                         <div className="col-md-12 gy-3">
@@ -5149,7 +5188,10 @@ const handleEditPayment = async (payment, info) => {
                                 : tretment
                               )?.map((info, index) => {
                                 return (
-                                  <div className={`accordian-main ${openIndex === index ? "active-accordion" : ""}`} id="accordion">
+                                  <div
+                                    className={`accordian-main ${openIndex === index ? "active-accordion" : ""}`}
+                                    id="accordion"
+                                  >
                                     <div className="treat-card">
                                       <div className="sectabmain">
                                         <div className="treat-id">
@@ -5331,13 +5373,20 @@ const handleEditPayment = async (payment, info) => {
                                         </div>
                                       </div>
                                     </div>
-                                    <div className={`collapse ${openIndex === index ? "show" : ""}`}>
+                                    <div
+                                      className={`collapse ${openIndex === index ? "show" : ""}`}
+                                    >
                                       {activeSubTab === "details" ? (
                                         <>
                                           <div className="row gx-3 gy-3">
                                             {/* for hospital separate data */}
                                             <div className="col-md-12">
-                                              <div className="card customstylecard" style={{ border: "1px solid #0ba6df",}}>
+                                              <div
+                                                className="card customstylecard"
+                                                style={{
+                                                  border: "1px solid #0ba6df",
+                                                }}
+                                              >
                                                 <div
                                                   className="card-header d-flex justify-content-between align-items-center"
                                                   style={{
@@ -6595,14 +6644,14 @@ const handleEditPayment = async (payment, info) => {
                                                   </div>
                                                 </div>
                                                 <div className="card-body">
-                                                    <div
-                                                      ref={(el) =>
-                                                      (pharmacyRefs.current[
-                                                        index
-                                                      ] = el)
-                                                      }
-                                                    >
-                                                  <div className="row gx-3 gy-3">
+                                                  <div
+                                                    ref={(el) =>
+                                                    (pharmacyRefs.current[
+                                                      index
+                                                    ] = el)
+                                                    }
+                                                  >
+                                                    <div className="row gx-3 gy-3">
                                                       <div className="col-md-12">
                                                         <div className="card patientreat">
                                                           <div className="card-header service-list">
@@ -6674,7 +6723,7 @@ const handleEditPayment = async (payment, info) => {
                                                                               ></i>
 
                                                                               <i
-                                                                                className="fa-solid fa-trash text-danger"
+                                                                                className="fa-solid fa-trash"
                                                                                 style={{
                                                                                   cursor:
                                                                                     "pointer",
@@ -6716,7 +6765,6 @@ const handleEditPayment = async (payment, info) => {
                                                           </div>
                                                         </div>
                                                       </div>
-
                                                       <div className="col-md-12">
                                                         <div className="total-amount">
                                                           <h6 className="mb-0">
@@ -6923,47 +6971,23 @@ const handleEditPayment = async (payment, info) => {
                                                     </div>
                                                   </div>
                                                   <div className="table-responsive">
-                                                    <Table
-                                                      stickyHeader
-                                                      aria-label="attendant table"
-                                                      className="table-no-card"
-                                                    >
+                                                    <Table stickyHeader aria-label="attendant table" className="table-no-card">
                                                       <TableHead>
                                                         <TableRow>
-                                                          <TableCell>
-                                                            Name
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Relation
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Contact
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Country
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Address
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Attendant ID Proof
-                                                          </TableCell>
-                                                          <TableCell>
-                                                            Action
-                                                          </TableCell>
+                                                          <TableCell>Name</TableCell>
+                                                          <TableCell>Relation</TableCell>
+                                                          <TableCell>Contact</TableCell>
+                                                          <TableCell>Country</TableCell>
+                                                          <TableCell>Address</TableCell>
+                                                          <TableCell>Attendant ID Proof</TableCell>
+                                                          <TableCell>Action</TableCell>
                                                         </TableRow>
                                                       </TableHead>
                                                       <TableBody>
                                                         {attandantFilered.length ===
                                                           0 ? (
                                                           <TableRow>
-                                                            <TableCell
-                                                              colSpan={7}
-                                                              align="center"
-                                                            >
-                                                              No attendants
-                                                              found
-                                                            </TableCell>
+                                                            <TableCell colSpan={7} align="center">No attendants found</TableCell>
                                                           </TableRow>
                                                         ) : (
                                                           attandantFilered.map(
@@ -7053,7 +7077,7 @@ const handleEditPayment = async (payment, info) => {
                                                                 </TableCell>
                                                                 <TableCell>
                                                                   <i
-                                                                    className="fa fa-trash ms-2 text-danger"
+                                                                    className="fa-solid fa-trash ms-2 text-danger"
                                                                     style={{
                                                                       cursor:
                                                                         "pointer",
@@ -7109,193 +7133,199 @@ const handleEditPayment = async (payment, info) => {
                                                       </button>
                                                     </div>
                                                   </div>
-                                                  <Table
-                                                    stickyHeader
-                                                    aria-label="sticky table"
-                                                    className="table-no-card"
-                                                  >
-                                                    <TableHead>
-                                                      <TableRow>
-                                                        <TableCell>
-                                                          Payment Date
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Payment Method
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Payment Amount
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Paid To
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Paid For
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          notes
-                                                        </TableCell>
-                                                        <TableCell>
-                                                          Document
-                                                        </TableCell>
-                                                        {usrRole === "Admin" ? (
-                                                          <>
-                                                            <TableCell>
-                                                              PDF
-                                                            </TableCell>
-                                                            <TableCell>
-                                                              Action
-                                                            </TableCell>
-                                                          </>
-                                                        ) : (
-                                                          ""
-                                                        )}
-                                                      </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                      {paymentsFilered &&
-                                                        paymentsFilered.length >
-                                                        0 ? (
-                                                        paymentsFilered.map(
-                                                          (item) => (
-                                                            <TableRow
-                                                              key={item._id}
-                                                            >
-                                                              <TableCell>
-                                                                {new Date(
-                                                                  item?.payment_Date,
-                                                                ).toLocaleDateString(
-                                                                  "en-GB",
-                                                                )}
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {
-                                                                  item?.paymentMethod
-                                                                }
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                $
-                                                                {
-                                                                  item?.paid_amount
-                                                                }
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {
-                                                                  item?.paid_to
-                                                                    ?.name
-                                                                }
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {item?.paid_for.name
-                                                                  ?.split("_")
-                                                                  .map(
-                                                                    (word) =>
-                                                                      word
-                                                                        .charAt(
-                                                                          0,
-                                                                        )
-                                                                        .toUpperCase() +
-                                                                      word.slice(
-                                                                        1,
-                                                                      ),
-                                                                  )
-                                                                  .join(" ")}
-                                                              </TableCell>
-                                                              <TableCell>
-                                                                {item?.notes}
-                                                              </TableCell>
-                                                              <TableCell className="action-btn">
-                                                                {item
-                                                                  ?.attachFile
-                                                                  ?.length > 0
-                                                                  ? item.attachFile.map(
-                                                                    (
-                                                                      file,
-                                                                      index,
-                                                                    ) => (
-                                                                      <a
-                                                                        key={
-                                                                          index
-                                                                        }
-                                                                        href={`https://sisccltd.com/omca_crm/${file}`}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                      >
-                                                                        <button className="viewbtn">
-                                                                          View
-                                                                        </button>
-                                                                      </a>
-                                                                    ),
-                                                                  )
-                                                                  : "-"}
-                                                              </TableCell>
-                                                              {usrRole ===
-                                                                "Admin" ? (
-                                                                <>
-                                                                  <TableCell>
-                                                                    <button
-                                                                      className="add-button"
-                                                                      onClick={() => {
-                                                                        navigate(
-                                                                          "/Admin/Patient-Pdfdetails",
-                                                                          {
-                                                                            state:
-                                                                            {
-                                                                              data: item?._id,
-                                                                            },
-                                                                          },
-                                                                        );
-                                                                      }}
-                                                                    >
-                                                                      <i className="fa fa-download"></i>
-                                                                    </button>
-                                                                  </TableCell>
-                                                                  <TableCell>
-                                                                    <i
-                                                                        className="fa-solid fa-pen-to-square"
-                                                                        onClick={() =>
-                                                                          handleEditPayment(
-                                                                            item,
-                                                                            info,
-                                                                          )
-                                                                        }
-                                                                      ></i>
-                                                                    <i
-                                                                      className="fa-solid fa-trash text-danger"
-                                                                      style={{
-                                                                        cursor:
-                                                                          "pointer",
-                                                                      }}
-                                                                      onClick={() =>
-                                                                        deletePaymentInvoice(
-                                                                          item,
-                                                                        )
-                                                                      }
-                                                                    ></i>
-                                                                  </TableCell>
-                                                                </>
-                                                              ) : (
-                                                                ""
-                                                              )}
-                                                            </TableRow>
-                                                          ),
-                                                        )
-                                                      ) : (
+                                                  <div className="table-responsive">
+                                                    <Table
+                                                      stickyHeader
+                                                      aria-label="sticky table"
+                                                      className="table-no-card"
+                                                    >
+                                                      <TableHead>
                                                         <TableRow>
-                                                          <TableCell
-                                                            colSpan={
-                                                              usrRole ===
-                                                                "Admin"
-                                                                ? 9
-                                                                : 7
-                                                            }
-                                                            align="center"
-                                                          >
-                                                            No Data Found
+                                                          <TableCell>
+                                                            Payment Date
                                                           </TableCell>
+                                                          <TableCell>
+                                                            Payment Method
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            Payment Amount
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            Paid To
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            Paid For
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            Notes
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            Document
+                                                          </TableCell>
+                                                          {usrRole === "Admin" ? (
+                                                            <>
+                                                              <TableCell>
+                                                                PDF
+                                                              </TableCell>
+                                                              <TableCell>
+                                                                Action
+                                                              </TableCell>
+                                                            </>
+                                                          ) : (
+                                                            ""
+                                                          )}
                                                         </TableRow>
-                                                      )}
-                                                    </TableBody>
-                                                  </Table>
+                                                      </TableHead>
+                                                      <TableBody>
+                                                        {paymentsFilered &&
+                                                          paymentsFilered.length >
+                                                          0 ? (
+                                                          paymentsFilered.map(
+                                                            (item) => (
+                                                              <TableRow
+                                                                key={item._id}
+                                                              >
+                                                                <TableCell>
+                                                                  {new Date(
+                                                                    item?.payment_Date,
+                                                                  ).toLocaleDateString(
+                                                                    "en-GB",
+                                                                  )}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  {
+                                                                    item?.paymentMethod
+                                                                  }
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  $
+                                                                  {
+                                                                    item?.paid_amount
+                                                                  }
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  {
+                                                                    item?.paid_to
+                                                                      ?.name
+                                                                  }
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  {item?.paid_for.name
+                                                                    ?.split("_")
+                                                                    .map(
+                                                                      (word) =>
+                                                                        word
+                                                                          .charAt(
+                                                                            0,
+                                                                          )
+                                                                          .toUpperCase() +
+                                                                        word.slice(
+                                                                          1,
+                                                                        ),
+                                                                    )
+                                                                    .join(" ")}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  {item?.notes}
+                                                                </TableCell>
+                                                                <TableCell>
+
+                                                                  {item
+                                                                    ?.attachFile
+                                                                    ?.length > 0
+                                                                    ? item.attachFile.map(
+                                                                      (
+                                                                        file,
+                                                                        index,
+                                                                      ) => (
+                                                                        <a
+                                                                          key={
+                                                                            index
+                                                                          }
+                                                                          href={`https://sisccltd.com/omca_crm/${file}`}
+                                                                          target="_blank"
+                                                                          rel="noopener noreferrer"
+                                                                        >
+                                                                          <button className="viewbtn">
+                                                                            View
+                                                                          </button>
+                                                                        </a>
+                                                                      ),
+                                                                    )
+                                                                    : "-"}
+
+                                                                </TableCell>
+                                                                {usrRole ===
+                                                                  "Admin" ? (
+                                                                  <>
+                                                                    <TableCell>
+                                                                      <button
+                                                                        className="add-button approvebtn"
+                                                                        onClick={() => {
+                                                                          navigate(
+                                                                            "/Admin/Patient-Pdfdetails",
+                                                                            {
+                                                                              state:
+                                                                              {
+                                                                                data: item?._id,
+                                                                              },
+                                                                            },
+                                                                          );
+                                                                        }}
+                                                                      >
+                                                                        <i className="fa fa-download"></i>
+                                                                      </button>
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                      <div className="action-icon">
+                                                                        <i
+                                                                          className="fa-solid fa-pen-to-square"
+                                                                          onClick={() =>
+                                                                            handleEditPayment(
+                                                                              item,
+                                                                              info,
+                                                                            )
+                                                                          }
+                                                                        ></i>
+                                                                        <i
+                                                                          className="fa-solid fa-trash"
+                                                                          style={{
+                                                                            cursor:
+                                                                              "pointer",
+                                                                          }}
+                                                                          onClick={() =>
+                                                                            deletePaymentInvoice(
+                                                                              item,
+                                                                            )
+                                                                          }
+                                                                        ></i>
+                                                                      </div>
+                                                                    </TableCell>
+                                                                  </>
+                                                                ) : (
+                                                                  ""
+                                                                )}
+                                                              </TableRow>
+                                                            ),
+                                                          )
+                                                        ) : (
+                                                          <TableRow>
+                                                            <TableCell
+                                                              colSpan={
+                                                                usrRole ===
+                                                                  "Admin"
+                                                                  ? 9
+                                                                  : 7
+                                                              }
+                                                              align="center"
+                                                            >
+                                                              No Data Found
+                                                            </TableCell>
+                                                          </TableRow>
+                                                        )}
+                                                      </TableBody>
+                                                    </Table>
+                                                  </div>
                                                 </div>
                                               </div>
                                             </div>
@@ -7319,7 +7349,7 @@ const handleEditPayment = async (payment, info) => {
                                                             selectedTreatmentId,
                                                           )
                                                         }
-                                                        className="add-button"
+                                                        className="add-button approvebtn"
                                                       >
                                                         <i className="fa fa-plus text-white"></i>
                                                       </button>
@@ -7329,9 +7359,7 @@ const handleEditPayment = async (payment, info) => {
                                                     <table className="table table-no-card">
                                                       <thead>
                                                         <tr>
-                                                          <th>
-                                                            Treatment Name
-                                                          </th>
+                                                          <th>Treatment Name</th>
                                                           <th>Report Title</th>
                                                           <th>Report Date</th>
                                                           <th>Added By</th>
@@ -7411,7 +7439,7 @@ const handleEditPayment = async (payment, info) => {
                                                                     </td>
                                                                     <td className="action-icon">
                                                                       <i
-                                                                        className="fa-solid fa-trash text-danger"
+                                                                        className="fa-solid fa-trash"
                                                                         style={{
                                                                           cursor:
                                                                             "pointer",
@@ -7462,9 +7490,7 @@ const handleEditPayment = async (payment, info) => {
                                               ?.length > 0 && (
                                                 <>
                                                   <div className="paymntdata">
-                                                    <h6>
-                                                      Treatment Plan Documents
-                                                    </h6>
+                                                    <h6>Treatment Plan Documents</h6>
                                                   </div>
                                                   <div className="table-responsive">
                                                     <table className="table table-no-card">
@@ -7739,7 +7765,7 @@ const handleEditPayment = async (payment, info) => {
                                                           info,
                                                         )
                                                       }
-                                                      className="add-button"
+                                                      className="add-button approvebtn"
                                                     >
                                                       <i className="fa fa-plus text-white"></i>
                                                     </button>
@@ -7775,11 +7801,7 @@ const handleEditPayment = async (payment, info) => {
                                                         appointmentTabel.map(
                                                           (item) => (
                                                             <tr key={item._id}>
-                                                              <td>
-                                                                {
-                                                                  item.appointmentId
-                                                                }
-                                                              </td>
+                                                              <td>{item.appointmentId}</td>
                                                               <td>
                                                                 {item.mode !==
                                                                   "online"
@@ -7816,37 +7838,27 @@ const handleEditPayment = async (payment, info) => {
                                                                     )
                                                                   : ""}
                                                               </td>
+                                                              <td>{item.note}</td>
+                                                              <td><span className="badge bg-primary">{item.status}</span></td>
                                                               <td>
-                                                                {item.note}
-                                                              </td>
-                                                              <td>
-                                                                <span className="badge bg-primary">
-                                                                  {item.status}
-                                                                </span>
-                                                              </td>
-                                                              <td>
-                                                                <td>
-                                                                  <div className="action-icon">
-                                                                    <i
-                                                                      className="fa-solid fa-pen-to-square"
-                                                                      onClick={() =>
-                                                                        handleclickeditfunc(
-                                                                          item,
-                                                                          info,
-                                                                        )
-                                                                      }
-                                                                    ></i>
-                                                                    <i
-                                                                      className="fa-solid fa-trash"
-                                                                      onClick={() =>
-                                                                        handleclickeditdelete(
-                                                                          item,
-                                                                          info,
-                                                                        )
-                                                                      }
-                                                                    ></i>
-                                                                  </div>
-                                                                </td>
+                                                                <div className="action-icon">
+                                                                  <i className="fa-solid fa-pen-to-square"
+                                                                    onClick={() =>
+                                                                      handleclickeditfunc(
+                                                                        item,
+                                                                        info,
+                                                                      )
+                                                                    }
+                                                                  ></i>
+                                                                  <i className="fa-solid fa-trash"
+                                                                    onClick={() =>
+                                                                      handleclickeditdelete(
+                                                                        item,
+                                                                        info,
+                                                                      )
+                                                                    }
+                                                                  ></i>
+                                                                </div>
                                                               </td>
                                                             </tr>
                                                           ),
@@ -8036,11 +8048,20 @@ const handleEditPayment = async (payment, info) => {
                         </div>
                       </div>
                     </div>
-                    <div className={`tab-pane ${mainTab === "Attende" ? "show active" : ""}`} id="atten-cont">
+                    <div
+                      className={`tab-pane ${mainTab === "Attende" ? "show active" : ""}`}
+                      id="atten-cont"
+                    >
                       <div className="row gx-3">
                         <div className="col-md-12">
                           <div className="text-end">
-                            <button onClick={(e) => handleClickOpen2(e, selectedTreatmentId)} className="add-button"><i className="fa fa-plus me-2"></i>
+                            <button
+                              onClick={(e) =>
+                                handleClickOpen2(e, selectedTreatmentId)
+                              }
+                              className="add-button"
+                            >
+                              <i className="fa fa-plus me-2"></i>
                               Add Attendant
                             </button>
                           </div>
@@ -8098,8 +8119,7 @@ const handleEditPayment = async (payment, info) => {
                                           {item?.attendant_address}
                                         </TableCell>
                                         <TableCell className="d-flex gap-2">
-                                          {item?.attendant_passport?.length >
-                                            0
+                                          {item?.attendant_passport?.length > 0
                                             ? item.attendant_passport.map(
                                               (file, fIndex) => {
                                                 const filePath =
@@ -8115,8 +8135,7 @@ const handleEditPayment = async (payment, info) => {
                                                       className="viewbtn"
                                                     >
                                                       View{" "}
-                                                      {item
-                                                        .attendant_passport
+                                                      {item.attendant_passport
                                                         .length > 1
                                                         ? fIndex + 1
                                                         : ""}
@@ -8151,11 +8170,14 @@ const handleEditPayment = async (payment, info) => {
                         </div>
                       </div>
                     </div>
-                    <div className={`tab-pane ${mainTab === "Patient_Enquiry" ? "show active" : ""}`}
-                      id="atten-cont">
+                    <div
+                      className={`tab-pane ${mainTab === "Patient_Enquiry" ? "show active" : ""}`}
+                      id="atten-cont"
+                    >
                       <div className="row gx-3">
                         <div className="col-md-12">
-                          <ul className="nav nav-tabs enqurytab"
+                          <ul
+                            className="nav nav-tabs enqurytab"
                             style={{
                               marginBottom: 20,
                               display: "flex",
@@ -8419,10 +8441,8 @@ const handleEditPayment = async (payment, info) => {
                                               </TableCell>
                                               <TableCell>
                                                 {info?.country?.length > 10
-                                                  ? info.country.slice(
-                                                    0,
-                                                    10,
-                                                  ) + "..."
+                                                  ? info.country.slice(0, 10) +
+                                                  "..."
                                                   : info.country}
                                               </TableCell>
 
@@ -8439,28 +8459,21 @@ const handleEditPayment = async (payment, info) => {
                                               <TableCell>
                                                 {new Date(
                                                   info.created_at,
-                                                ).toLocaleDateString(
-                                                  "en-GB",
-                                                  {
-                                                    day: "numeric",
-                                                    month: "short",
-                                                    year: "numeric",
-                                                  },
-                                                )}{" "}
+                                                ).toLocaleDateString("en-GB", {
+                                                  day: "numeric",
+                                                  month: "short",
+                                                  year: "numeric",
+                                                })}{" "}
                                                 {new Date(
                                                   info.created_at,
-                                                ).toLocaleTimeString(
-                                                  "en-GB",
-                                                  {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                    hour12: true,
-                                                  },
-                                                )}
+                                                ).toLocaleTimeString("en-GB", {
+                                                  hour: "2-digit",
+                                                  minute: "2-digit",
+                                                  hour12: true,
+                                                })}
                                               </TableCell>
                                               <TableCell>
-                                                {info.status ===
-                                                  "Confirmed" ? (
+                                                {info.status === "Confirmed" ? (
                                                   // ✅ Only show text
                                                   <span
                                                     style={{
@@ -8499,10 +8512,7 @@ const handleEditPayment = async (payment, info) => {
                                                                 : "0"
                                                       }
                                                       onChange={(e) =>
-                                                        handleChangtype(
-                                                          e,
-                                                          info,
-                                                        )
+                                                        handleChangtype(e, info)
                                                       }
                                                       displayEmpty
                                                       className="status-direct"
@@ -8573,10 +8583,7 @@ const handleEditPayment = async (payment, info) => {
                                           ))
                                       ) : (
                                         <TableRow>
-                                          <TableCell
-                                            colSpan={7}
-                                            align="center"
-                                          >
+                                          <TableCell colSpan={7} align="center">
                                             No Data Found
                                           </TableCell>
                                         </TableRow>
@@ -9001,7 +9008,7 @@ const handleEditPayment = async (payment, info) => {
             </div>
           </div>
         </div>
-      </div >
+      </div>
       <React.Fragment>
         <Dialog
           fullWidth
@@ -10218,39 +10225,39 @@ const handleEditPayment = async (payment, info) => {
                     <label>
                       Paid To <span className="text-danger">*</span>
                     </label>
-                   <select
-  className="form-control"
-  name="paid_to"
-  value={data.paid_to}
-  onChange={handlefilechangechangeinput}
->
-  <option value="">Select</option>
+                    <select
+                      className="form-control"
+                      name="paid_to"
+                      value={data.paid_to}
+                      onChange={handlefilechangechangeinput}
+                    >
+                      <option value="">Select</option>
 
-  {paidTo?.map((item) => (
-    <option key={item._id} value={item._id}>
-      {item.name}
-    </option>
-  ))}
-</select>
+                      {paidTo?.map((item) => (
+                        <option key={item._id} value={item._id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="field-set">
                     <label>
                       Paid For <span className="text-danger">*</span>
                     </label>
                     <select
-  className="form-control"
-  name="paid_for"
-  value={data.paid_for}
-  onChange={AddpaymentOnchnage}
->
-  <option value="">Select</option>
+                      className="form-control"
+                      name="paid_for"
+                      value={data.paid_for}
+                      onChange={AddpaymentOnchnage}
+                    >
+                      <option value="">Select</option>
 
-  {datagetapiPaidto?.map((item) => (
-    <option key={item._id} value={item._id}>
-      {item.name}
-    </option>
-  ))}
-</select>
+                      {datagetapiPaidto?.map((item) => (
+                        <option key={item._id} value={item._id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="field-set">
                     <label>
@@ -10340,7 +10347,7 @@ const handleEditPayment = async (payment, info) => {
                     <Button
                       // type="submit"
                       onClick={() => {
-                        handleUpdatePayment ();
+                        handleUpdatePayment();
                       }}
                       // onClick={(e) => handleAddTritmentPayment(e)}
                       variant="contained"
@@ -11265,7 +11272,7 @@ const handleEditPayment = async (payment, info) => {
             >
               <Box>
                 <form id="contact-form">
-                    <div className="field-set">
+                  <div className="field-set">
                     <label>
                       Title<span className="text-danger">*</span>
                     </label>

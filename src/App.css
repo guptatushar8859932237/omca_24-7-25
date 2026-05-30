@@ -6330,6 +6330,8 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 /* .field-count label {
@@ -7417,7 +7419,7 @@ input:checked+.slider:before {
 .treat-tabs .nav-link.active {
   border: 0px;
   color: var(--bs-blue-color);
-  background-color:unset;
+  background-color: unset;
 }
 
 .treat-tabs .nav-link:hover {
@@ -8135,13 +8137,48 @@ div:where(.swal2-container) input:where(.swal2-input) {
   border-radius: 10px;
   margin-bottom: 20px;
 }
-.accordian-main:last-child{
+
+.accordian-main:last-child {
   margin-bottom: 0px;
 }
+
 .accordian-main.active-accordion {
   background-color: #fff;
 }
 
-.nav-link:focus-visible{
+.nav-link:focus-visible {
   box-shadow: none;
+}
+
+.MuiList-root .MuiButtonBase-root {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.rmdp-arrow,
+.rmdp-right i {
+  margin: 0px !important;
+}
+
+.rmdp-arrow-container {
+  align-items: center;
+  margin: 0px !important;
+}
+
+.rmdp-arrow-container:hover {
+  box-shadow: unset !important;
+}
+
+.rmdp-shadow {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px !important;
+  border: 0px !important;
+}
+
+.rmdp-header {
+  margin: 0px !important;
+}
+
+.rmdp-ep-shadow:after {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px !important;
 }

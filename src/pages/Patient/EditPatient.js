@@ -12,20 +12,25 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { AdminBaseUrl, AdminBaseUrl1, baseurl, image } from "../../Basurl/Baseurl";
+import {
+  AdminBaseUrl,
+  AdminBaseUrl1,
+  baseurl,
+  image,
+} from "../../Basurl/Baseurl";
 import axios from "axios";
 import { Autocomplete, TextField } from "@mui/material";
 import { GetAllTreatment } from "../../reducer/TreatmentSlice";
 export default function EditPatient() {
   const navigate = useNavigate();
-const noOnlySpaces = (fieldName) =>
-  Yup.string()
-    .transform((value) => value?.trim())
-    .test(
-      "not-only-spaces",
-      `${fieldName} cannot be empty or only spaces`,
-      (value) => value && value.trim().length > 0
-    );
+  const noOnlySpaces = (fieldName) =>
+    Yup.string()
+      .transform((value) => value?.trim())
+      .test(
+        "not-only-spaces",
+        `${fieldName} cannot be empty or only spaces`,
+        (value) => value && value.trim().length > 0,
+      );
   const location = useLocation();
   const { Treatment } = useSelector((state) => state.Treatment);
   const dispatch = useDispatch();
@@ -56,24 +61,23 @@ const noOnlySpaces = (fieldName) =>
       setIspatient(selectedUser || null);
     }
   }, [location.state?.patientId, patient]);
- const basicSchema = Yup.object().shape({
-  patient_name: noOnlySpaces("Patient Name")
-    .required("Patient name is required"),
+  const basicSchema = Yup.object().shape({
+    patient_name: noOnlySpaces("Patient Name").required(
+      "Patient name is required",
+    ),
 
-  town: noOnlySpaces("Town")
-    .required("Town is required"),
+    town: noOnlySpaces("Town").required("Town is required"),
 
-  address: noOnlySpaces("Address")
-    .required("Address is required"),
+    address: noOnlySpaces("Address").required("Address is required"),
 
-  age: Yup.number()
-    .typeError("Age must be a number")
-    .required("Age is required")
-    .integer("Age must be a whole number")
-    .moreThan(0, "Age must be greater than 0")
-    .max(120, "Age cannot exceed 120"),
+    age: Yup.number()
+      .typeError("Age must be a number")
+      .required("Age is required")
+      .integer("Age must be a whole number")
+      .moreThan(0, "Age must be greater than 0")
+      .max(120, "Age cannot exceed 120"),
 
-  gender: Yup.string().required("Gender is required"),
+    gender: Yup.string().required("Gender is required"),
 
     patientNumber: Yup.string().required("Patient ID is required"),
     created_at: Yup.string().required("Date is required"),
@@ -82,12 +86,10 @@ const noOnlySpaces = (fieldName) =>
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    emergency_contact_no: Yup.string()
-      .matches(
-        /^[0-9]{8,15}$/,
-        "Emergency Contact Number be Digit and between 8-15 digits",
-      )
-    ,
+    emergency_contact_no: Yup.string().matches(
+      /^[0-9]{8,15}$/,
+      "Emergency Contact Number be Digit and between 8-15 digits",
+    ),
     patient_relation_no: Yup.string().matches(
       /^[0-9]{8,15}$/,
       "Patient Relation Number be Digit and between 8-15 digits",
@@ -99,24 +101,23 @@ const noOnlySpaces = (fieldName) =>
   const handleDeleteDoc = async (docName) => {
     try {
       await axios.delete(
-        `${baseurl}delete_id_proof/${ispatient.patientNumber}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        `${baseurl}delete_id_proof/${ispatient.patientNumber}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      }
-        ,
         {
           data: { file: docName }, // 👈 important (backend usually needs file name)
-        }
+        },
       );
 
       Swal.fire("Deleted!", "Document removed successfully", "success");
 
       // update UI instantly
-      const updatedDocs =
-        ispatient?.patient_kyc?.[0]?.id_proof?.filter(
-          (doc) => doc !== docName
-        );
+      const updatedDocs = ispatient?.patient_kyc?.[0]?.id_proof?.filter(
+        (doc) => doc !== docName,
+      );
 
       setIspatient((prev) => ({
         ...prev,
@@ -136,23 +137,20 @@ const noOnlySpaces = (fieldName) =>
     <>
       <div className="page-wrapper">
         <div className="content">
-          <div className="row">
+          <div className="row gx-3">
             <div className="col-md-12">
-              <h4 className="page-title">
-                <span>
+              <div className="topmainhd">
+                <h6>
                   <i
-                    className="fi fi-sr-angle-double-small-left"
-                    style={{ cursor: "pointer" }}
+                    class="fa-solid fa-arrow-left-long me-2"
                     onClick={() => window.history.back()}
                   ></i>
-                </span>
-                Edit Patients
-              </h4>
+                  Edit Patients
+                </h6>
+              </div>
             </div>
-          </div>
-          <div className="main_content">
-            <div className="row">
-              <div className="col-lg-12">
+            <div className="col-md-12">
+              <div className="main_content">
                 <Formik
                   enableReinitialize
                   initialValues={{
@@ -171,8 +169,7 @@ const noOnlySpaces = (fieldName) =>
                     address: ispatient?.address || "",
                     patientDisease:
                       ispatient?.patient_disease?.[0]?.disease_name || "",
-                    disease_id:
-                      ispatient?.patient_disease?.[0]?.id || "",
+                    disease_id: ispatient?.patient_disease?.[0]?.id || "",
                     created_at: ispatient?.createdAt
                       ? ispatient.createdAt.split("T")[0]
                       : "",
@@ -225,8 +222,11 @@ const noOnlySpaces = (fieldName) =>
                         }),
                       ).unwrap();
                       formData.append("from", "crm");
-                      const response = await axios.post(`${AdminBaseUrl1}user_update_profile`, formData)
-                      console.log(response)
+                      const response = await axios.post(
+                        `${AdminBaseUrl1}user_update_profile`,
+                        formData,
+                      );
+                      console.log(response);
                       Swal.fire(
                         "Success!",
                         "Patient updated successfully",
@@ -234,25 +234,31 @@ const noOnlySpaces = (fieldName) =>
                       );
                       navigate("/Admin/patients");
                     } catch (err) {
-  console.error(err);
+                      console.error(err);
 
-  const errorMessage =
-    err?.response?.data?.message || // axios backend message
-    err?.response?.data?.error ||   // alternative backend error
-    err?.message ||                 // normal JS error
-    "Update failed";
+                      const errorMessage =
+                        err?.response?.data?.message || // axios backend message
+                        err?.response?.data?.error || // alternative backend error
+                        err?.message || // normal JS error
+                        "Update failed";
 
-  Swal.fire({
-    icon: "error",
-    title: "Error!",
-    text: errorMessage,
-  });
-} finally {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: errorMessage,
+                      });
+                    } finally {
                       setSubmitting(false);
                     }
                   }}
                 >
-                  {({ isSubmitting, values, setFieldValue, errors, touched }) => (
+                  {({
+                    isSubmitting,
+                    values,
+                    setFieldValue,
+                    errors,
+                    touched,
+                  }) => (
                     <Form>
                       <div className="row">
                         <div className="col-md-4">
@@ -314,7 +320,6 @@ const noOnlySpaces = (fieldName) =>
                                       ))}
                                     </Select>
                                   </FormControl>
-
                                   <ErrorMessage
                                     name="country"
                                     component="div"
@@ -483,7 +488,7 @@ const noOnlySpaces = (fieldName) =>
                           <div className="field-set">
                             <label>
                               Emergency Contact Number
-                              <span className="text-danger"></span>
+                              <span className="text-danger">*</span>
                             </label>
                             <div className="country-code">
                               <Field
@@ -524,7 +529,7 @@ const noOnlySpaces = (fieldName) =>
                           <div className="field-set">
                             <label>
                               Patient ID Proof{" "}
-                              <span className="text-danger"></span>
+                              <span className="text-danger">*</span>
                             </label>
 
                             <input
@@ -550,17 +555,20 @@ const noOnlySpaces = (fieldName) =>
                             />
 
                             <div className="engpatimg">
-
                               {/* New Uploaded Files */}
                               {previewDocs.length > 0 &&
                                 previewDocs.map((doc, index) => (
                                   <div className="file-preview" key={index}>
-                                    <span className="delete-icon"
+                                    <span
+                                      className="delete-icon"
                                       onClick={() => {
-                                        const updated = previewDocs.filter((_, i) => i !== index);
+                                        const updated = previewDocs.filter(
+                                          (_, i) => i !== index,
+                                        );
                                         setPreviewDocs(updated);
                                         setFieldValue("id_proof", updated);
-                                      }}>
+                                      }}
+                                    >
                                       <i className="fa-solid fa-xmark"></i>
                                     </span>
                                     <button
@@ -570,28 +578,36 @@ const noOnlySpaces = (fieldName) =>
                                     >
                                       View
                                     </button>
-
                                   </div>
                                 ))}
 
                               {/* Existing Docs from API */}
 
                               {previewDocs.length === 0 &&
-                                ispatient?.patient_kyc?.[0]?.id_proof?.map((doc, index) => (
-                                  <div className="file-preview" key={index}>
-                                    <span className="delete-icon" onClick={() => handleDeleteDoc(doc)}>
-                                      <i className="fa-solid fa-xmark"></i>
-                                    </span>
-                                    <button
-                                      type="button"
-                                      className="viewbtn"
-                                      onClick={() => window.open(`${image}/${doc}`, "_blank")}
-                                    >
-                                      View
-                                    </button>
-                                  </div>
-                                ))}
-
+                                ispatient?.patient_kyc?.[0]?.id_proof?.map(
+                                  (doc, index) => (
+                                    <div className="file-preview" key={index}>
+                                      <span
+                                        className="delete-icon"
+                                        onClick={() => handleDeleteDoc(doc)}
+                                      >
+                                        <i className="fa-solid fa-xmark"></i>
+                                      </span>
+                                      <button
+                                        type="button"
+                                        className="viewbtn"
+                                        onClick={() =>
+                                          window.open(
+                                            `${image}/${doc}`,
+                                            "_blank",
+                                          )
+                                        }
+                                      >
+                                        View
+                                      </button>
+                                    </div>
+                                  ),
+                                )}
                             </div>
                           </div>
                         </div>
@@ -599,7 +615,7 @@ const noOnlySpaces = (fieldName) =>
                           <div className="field-set">
                             <label>
                               Patient Profile
-                              <span className="text-danger"></span>
+                              <span className="text-danger">*</span>
                             </label>
                             <input
                               type="file"
@@ -645,7 +661,7 @@ const noOnlySpaces = (fieldName) =>
                           <div className="field-set">
                             <label>
                               Referral Name{" "}
-                              <span className="text-danger"></span>
+                              <span className="text-danger">*</span>
                             </label>
                             <Field
                               className="form-control"
@@ -659,90 +675,39 @@ const noOnlySpaces = (fieldName) =>
                             />
                           </div>
                         </div>
-                        {/* <div className="col-md-4">
+                        <div className="col-md-4">
                           <div className="field-set">
                             <label>
                               Treatment Name
                               <span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              className="form-control"
-                              type="text"
-                              name="patientDisease"
-                            />
-                                <ErrorMessage
-                                  name="patientDisease"
-                                  component="div"
-                                  className="text-danger"
-                                />
-                          </div>
-                        </div> */}
-                        {/* <div className="col-md-4">
-  <div className="field-set">
-    <label>
-      Treatment Name
-      <span className="text-danger"></span>
-    </label>
-
-    <Autocomplete
-      options={Treatment || []}
-      getOptionLabel={(option) => option.name || ""}
-      value={
-        Treatment?.find(
-          (item) => item.name === values.patientDisease
-        ) || null
-      }
-      onChange={(e, value) => {
-        setFieldValue("patientDisease", value?.name || "");
-        setFieldValue("disease_id", value?.id || "");
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Select Treatment"
-          error={Boolean(
-            values.patientDisease === "" &&
-            basicSchema?.fields?.patientDisease
-          )}
-        />
-      )}
-      sx={{
-        "& .MuiOutlinedInput-root": {
-          padding: "0px",
-        },
-      }}
-    />
-
-    <ErrorMessage
-      name="patientDisease"
-      component="div"
-      className="text-danger"
-    />
-  </div>
-</div> */}
-                        <div className="col-md-4">
-                          <div className="field-set">
-                            <label>
-                              Treatment Name<span className="text-danger"></span>
                             </label>
                             <Autocomplete
                               options={Treatment || []}
                               getOptionLabel={(option) => option.name || ""}
                               value={
                                 Treatment?.find(
-                                  (item) => item.name === values.patientDisease
+                                  (item) => item.name === values.patientDisease,
                                 ) || null
                               }
                               onChange={(e, value) => {
-                                setFieldValue("patientDisease", value?.name || "");
+                                setFieldValue(
+                                  "patientDisease",
+                                  value?.name || "",
+                                );
                                 setFieldValue("disease_id", value?.id || "");
                               }}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
                                   placeholder="Select Treatment"
-                                  error={Boolean(touched.patientDisease && errors.patientDisease)}
-                                  helperText={touched.patientDisease && errors.patientDisease}
+                                  error={Boolean(
+                                    touched.patientDisease &&
+                                    errors.patientDisease,
+                                  )}
+                                  helperText={
+                                    touched.patientDisease &&
+                                    errors.patientDisease
+                                  }
                                 />
                               )}
                               sx={{

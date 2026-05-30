@@ -543,7 +543,6 @@ export default function Appointments() {
                 <div className="search-btn-main">
                   <div className="">
                     <TextField
-                      sx={{ width: "100%" }}
                       className="field-count"
                       label="Search"
                       id="outlined-size-small"
