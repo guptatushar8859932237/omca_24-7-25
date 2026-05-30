@@ -4887,7 +4887,9 @@ function PatientDetail() {
                                                     <tbody>
                                                       <tr>
                                                         <td>1</td>
-                                                        <td>Blood pressure</td>
+                                                       <td>
+  {info.documents?.[0]?.documentName || "No Document"}
+</td>
                                                         <td>
                                                           {info.documents.map(
                                                             (doc, index) => (
