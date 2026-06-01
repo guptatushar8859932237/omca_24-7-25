@@ -1487,7 +1487,7 @@ export default function Inquiry() {
             <Box className="contact-form">
               <div className="field-set mb-2">
                 <FormControl fullWidth size="small">
-                  <label>Select Hospital</label>
+                  <label>Select Hospital<span className="text-danger">*</span></label>
                   <Select
                     value={appointmentData.hospital_id || ""}
                     onChange={(e) => {
@@ -1521,7 +1521,7 @@ export default function Inquiry() {
                 </FormControl>
               </div>
               <div className="field-set">
-                <label>Health Issue</label>
+                <label>Health Issue<span className="text-danger">*</span></label>
                 <input
                   type="text"
                   name="health_issue"
@@ -1531,9 +1531,7 @@ export default function Inquiry() {
                 />
               </div>
               <div className="field-set">
-                <label>Date</label>
-                <span className="text-danger">*</span>
-
+                <label>Date<span className="text-danger">*</span></label>
                 <input
                   type="date"
                   name="appointment_Date"
@@ -1589,7 +1587,6 @@ export default function Inquiry() {
                 )}
               </div>
               <DialogActions className="submit-main">
-                <Button onClick={handleCloseAppointment}>Cancel</Button>
                 <Button variant="contained" onClick={handleSubmitAppointment}>
                   Submit
                 </Button>

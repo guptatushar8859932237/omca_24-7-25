@@ -212,112 +212,112 @@ export default function Medicalescortservice() {
             {
               row?.doctor_review?.review_notes ?
 
-            <div className="col-md-12">
-              <div className="main_content">
-                <div className="row gx-3 gy-3">
-                  <div className="col-md-12">
-                    <div className="comnthis">
-                      <h6>Doctor Review</h6>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="">
-                      <h6>Review Notes</h6>
-                      <p>{row?.doctor_review?.review_notes || "-"}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="">
-                      <h6>Recommendations</h6>
-                      <p>{row?.doctor_review?.recommendations || "-"}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="">
-                      <h6>Reports</h6>
-                     <p>
-  {Array.isArray(row?.doctor_review?.images) && row.doctor_review.images.length > 0 ? (
-    row.doctor_review.images.map((img, i) => (
-      <button
-        key={i}
-        className="viewbtn"
-        onClick={() => window.open(img, "_blank")}
-      >
-        View
-      </button>
-    ))
-  ) : row?.doctor_review.images ? (
-    <button
-      className="viewbtn"
-      onClick={() => window.open(row.doctor_review.images, "_blank")}
-    >
-      View
-    </button>
-  ) : null}
-</p>
-                    </div>
-                  </div>
-                  <div className="col-md-12 gy-0">
-                    <div className="docre-hd">
-                      <div className="comnthis">
-                        <h6 className="mb-0">Comments</h6>
-                      </div>
-                      <button className="add-button" type="button" onClick={addcomment}>
-                        Add Comment
-                      </button>
-                    </div>
+                <div className="col-md-12">
+                  <div className="main_content">
                     <div className="row gx-3 gy-3">
-                      {row?.doctor_review?.comments?.length > 0 ? (
-                        row.doctor_review.comments.map((item, index) => (
-                          <div key={index} className="col-md-12">
-                            <div className="card customstylecard">
-                              <div className="card-body">
-                                <div className="experience-box">
-                                  <ul className="experience-list">
-                                    <li className="mb-0">
-                                      <div className="experience-user">
-                                        <div className="before-circle"></div>
-                                      </div>
-                                      <div className="experience-content">
-                                        <div className="timeline-content">
-                                          <a href="#/" className="name">
-                                            {item.comment}
-                                          </a>
-                                          {Array.isArray(item?.images) ? (
-                                            item.images.map((img, i) => (
-                                              <button
-                                                key={i}
-                                                className="viewbtn"
-                                                onClick={() => window.open(img, "_blank")}
-                                              >
-                                                View
-                                              </button>
-                                            ))
-                                          ) : item?.images ? (
-                                            <button
-                                              className="viewbtn"
-                                              onClick={() => window.open(item.images, "_blank")}
-                                            >
-                                              View
-                                            </button>
-                                          ) : null}
-                                        </div>
-                                      </div>
-                                    </li>
-                                  </ul>
+                      <div className="col-md-12">
+                        <div className="comnthis">
+                          <h6>Doctor Review</h6>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="">
+                          <h6>Review Notes</h6>
+                          <p>{row?.doctor_review?.review_notes || "-"}</p>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="">
+                          <h6>Recommendations</h6>
+                          <p>{row?.doctor_review?.recommendations || "-"}</p>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="">
+                          <h6>Reports</h6>
+                          <p>
+                            {Array.isArray(row?.doctor_review?.images) && row.doctor_review.images.length > 0 ? (
+                              row.doctor_review.images.map((img, i) => (
+                                <button
+                                  key={i}
+                                  className="viewbtn"
+                                  onClick={() => window.open(img, "_blank")}
+                                >
+                                  View
+                                </button>
+                              ))
+                            ) : row?.doctor_review.images ? (
+                              <button
+                                className="viewbtn"
+                                onClick={() => window.open(row.doctor_review.images, "_blank")}
+                              >
+                                View
+                              </button>
+                            ) : null}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="col-md-12 gy-0">
+                        <div className="docre-hd">
+                          <div className="comnthis">
+                            <h6 className="mb-0">Comments</h6>
+                          </div>
+                          <button className="add-button" type="button" onClick={addcomment}>
+                            Add Comment
+                          </button>
+                        </div>
+                        <div className="row gx-3 gy-3">
+                          {row?.doctor_review?.comments?.length > 0 ? (
+                            row.doctor_review.comments.map((item, index) => (
+                              <div key={index} className="col-md-12">
+                                <div className="card customstylecard">
+                                  <div className="card-body">
+                                    <div className="experience-box">
+                                      <ul className="experience-list">
+                                        <li className="mb-0">
+                                          <div className="experience-user">
+                                            <div className="before-circle"></div>
+                                          </div>
+                                          <div className="experience-content">
+                                            <div className="timeline-content">
+                                              <a href="#/" className="name">
+                                                {item.comment}
+                                              </a>
+                                              {Array.isArray(item?.images) ? (
+                                                item.images.map((img, i) => (
+                                                  <button
+                                                    key={i}
+                                                    className="viewbtn"
+                                                    onClick={() => window.open(img, "_blank")}
+                                                  >
+                                                    View
+                                                  </button>
+                                                ))
+                                              ) : item?.images ? (
+                                                <button
+                                                  className="viewbtn"
+                                                  onClick={() => window.open(item.images, "_blank")}
+                                                >
+                                                  View
+                                                </button>
+                                              ) : null}
+                                            </div>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p>No comments available</p>
-                      )}
+                            ))
+                          ) : (
+                            <p>No comments available</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>:""
+                </div> : ""
             }
             <div className="col-md-12">
               <div className="main_content">
@@ -357,34 +357,39 @@ export default function Medicalescortservice() {
           onClose={closeCommentModal}
         >
           <div className="main-card-header">
-            <h6>Add Comment</h6>
+            <div className="note-hd">
+              <h6>Add Comment</h6>
+            </div>
             <div className="cross-icon" onClick={closeCommentModal}>
               <i className="fa-solid fa-xmark"></i>
             </div>
           </div>
-
           <DialogContent className="main-box">
             <Box component="form">
-              <div className="field-set">
-                <label>Comment *</label>
-                <textarea
-                  className="form-control"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                />
+              <div className="row gx-3">
+                <div className="col-md-12">
+                  <div className="field-set">
+                    <label>Comment<span className="text-danger">*</span></label>
+                    <textarea
+                      className="form-control"
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <div className="field-set">
+                    <label>Upload Images<span className="text-danger">*</span></label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      multiple
+                      onChange={handleImageChange}
+                    />
+                  </div>
+                </div>
               </div>
-
-              <div className="field-set">
-                <label>Upload Images</label>
-                <input
-                  type="file"
-                  className="form-control"
-                  multiple
-                  onChange={handleImageChange}
-                />
-              </div>
-
-              <DialogActions>
+              <DialogActions className="submit-main">
                 <Button variant="contained" onClick={handleSubmitComment}>
                   Submit
                 </Button>

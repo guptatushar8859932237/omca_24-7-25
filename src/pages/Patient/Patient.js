@@ -693,7 +693,7 @@ export default function Patient() {
                                   >
                                     {info.patient_name.length > 15
                                       ? info.patient_name.substring(0, 15) +
-                                        "..."
+                                      "..."
                                       : info.patient_name}
                                   </TableCell>
                                   <TableCell>{info.treatingIn}</TableCell>
@@ -831,7 +831,7 @@ export default function Patient() {
                                           }
                                         ></i>
                                         {localStorage.getItem("Role") ===
-                                        "Admin" ? (
+                                          "Admin" ? (
                                           <i
                                             className="fa-solid fa-trash"
                                             onClick={(e) => {
@@ -897,76 +897,54 @@ export default function Patient() {
               }}
               className="contact-form"
             >
-              <Box>
-                <TableCell>
-                  <FormControl
-                    sx={{ m: 1, minWidth: 500 }}
-                    size="large"
-                    className="cont-main"
-                  >
-                    <Select
-                      placeholder="Filter data"
-                      displayEmpty
-                      value={onVaue}
-                      onChange={(e) => {
-                        setOnVaue(e.target.value);
-                      }}
-                      inputProps={{
-                        "aria-label": "Without label",
-                      }}
-                      className="status-direct"
-                    >
-                      <MenuItem value="" disabled>
-                        <em>Select Filter</em>
-                      </MenuItem>
-                      <MenuItem
-                        disabled
-                        style={{ fontWeight: "bold", color: "#666" }}
-                      >
-                        --- Status ---
-                      </MenuItem>
-                      <MenuItem value="Travelled">Travelled</MenuItem>
-                      <MenuItem value="Confirmed">Confirmed</MenuItem>
-                      <MenuItem value="Pending">Pending</MenuItem>
-                      <MenuItem value="On Hold">On Hold</MenuItem>
-                      <MenuItem value="Treatment Completed">
-                        Treatment Completed
-                      </MenuItem>
-                      <MenuItem value="Cancelled">Cancelled</MenuItem>
-                      <MenuItem value="Local Case">Local Case</MenuItem>
-                      <MenuItem value="Follow Up">Follow Up</MenuItem>
-                      <MenuItem value="Passed Away">Passed Away</MenuItem>
-                      <MenuItem
-                        disabled
-                        style={{ fontWeight: "bold", color: "#666" }}
-                      >
-                        --- Patient Type ---
-                      </MenuItem>
-                      <MenuItem value="Foundation">Foundation</MenuItem>
-                      <MenuItem value="Private">Private</MenuItem>
-                      <MenuItem value="Insurance">Insurance</MenuItem>
-                      <MenuItem value="Insurance + Private">
-                        Insurance + Private
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                </TableCell>
-                <div className="d-flex justify-content-center">
-                  <button
-                    className="add-button ms-2"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      filterdataapiExisting();
-                    }}
-                  >
-                    Filter Data
-                  </button>
-                </div>
-              </Box>
+              <FormControl fullWidth size="small">
+                <Select
+                  placeholder="Filter data"
+                  displayEmpty
+                  value={onVaue}
+                  onChange={(e) => {
+                    setOnVaue(e.target.value);
+                  }}
+                  sx={{ height: 38 }}
+                  MenuProps={{
+                    PaperProps: { style: { maxHeight: 200 } },
+                  }}
+                  inputProps={{
+                    "aria-label": "Without label",
+                  }}
+                  className="form-control"
+                >
+                  <MenuItem value="">Select Filter</MenuItem>
+                  <MenuItem disabled>--- Status ---</MenuItem>
+                  <MenuItem value="Travelled">Travelled</MenuItem>
+                  <MenuItem value="Confirmed">Confirmed</MenuItem>
+                  <MenuItem value="Pending">Pending</MenuItem>
+                  <MenuItem value="On Hold">On Hold</MenuItem>
+                  <MenuItem value="Treatment Completed">
+                    Treatment Completed
+                  </MenuItem>
+                  <MenuItem value="Cancelled">Cancelled</MenuItem>
+                  <MenuItem value="Local Case">Local Case</MenuItem>
+                  <MenuItem value="Follow Up">Follow Up</MenuItem>
+                  <MenuItem value="Passed Away">Passed Away</MenuItem>
+                  <MenuItem disabled>--- Patient Type ---</MenuItem>
+                  <MenuItem value="Foundation">Foundation</MenuItem>
+                  <MenuItem value="Private">Private</MenuItem>
+                  <MenuItem value="Insurance">Insurance</MenuItem>
+                  <MenuItem value="Insurance + Private">
+                    Insurance + Private
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              <div className="d-flex justify-content-end mt-3">
+                <button className="add-button" onClick={(e) => { e.preventDefault(); filterdataapiExisting(); }}>
+                  Filter Data
+                </button>
+              </div>
             </Box>
           </DialogContent>
-        </Dialog>
-      </React.Fragment>
+        </Dialog >
+      </React.Fragment >
     </>
   );
 }

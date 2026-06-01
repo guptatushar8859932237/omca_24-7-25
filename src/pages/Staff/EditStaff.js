@@ -147,7 +147,7 @@ export default function EditStaff() {
                       <div className="col-md-4">
                         <div className="set-field">
                           <label>
-                            Name <span className="text-danger">*</span>
+                            Name<span className="text-danger">*</span>
                           </label>
                           <Field className="form-control" name="name" />
                           <ErrorMessage
@@ -160,7 +160,7 @@ export default function EditStaff() {
                       <div className="col-md-4">
                         <div className="set-field">
                           <label>
-                            Email <span className="text-danger">*</span>
+                            Email<span className="text-danger">*</span>
                           </label>
                           <Field
                             className="form-control"
@@ -230,21 +230,18 @@ export default function EditStaff() {
                       <div className="col-md-4">
                         <div className="set-field">
                           <label>
-                            Phone No <span className="text-danger">*</span>
+                            Phone No<span className="text-danger">*</span>
                           </label>
-                          <div className="d-flex">
-                            {/* Dial Code – 30% */}
+                          <div className="country-code">
                             <input
                               type="text"
-                              className="form-control"
-                              style={{ width: "10%" }}
+                              className="form-control code-dial"
                               value={values.dial_code}
                               disabled
                             />
                             <input
                               type="text"
-                              className="form-control"
-                              style={{ width: "90%" }}
+                              className="form-control code-in"
                               name="phone_no"
                               value={values.phone_no}
                               onChange={(e) => {
@@ -267,10 +264,9 @@ export default function EditStaff() {
                       <div className="col-md-4">
                         <div className="set-field">
                           <label>
-                            Access Countries
-                            <span className="text-danger">*</span>
+                            Access Countries<span className="text-danger">*</span>
                           </label>
-                          <FormControl fullWidth>
+                          <FormControl fullWidth size="small">
                             <Select
                               multiple
                               name="accessCountries"
@@ -294,7 +290,7 @@ export default function EditStaff() {
                                 }
                               }}
                               renderValue={(selected) => selected.join(", ")}
-                              className="form-control"
+                              sx={{ height: 38 }}
                               MenuProps={{
                                 PaperProps: { style: { maxHeight: 300 } },
                               }}
@@ -308,7 +304,7 @@ export default function EditStaff() {
                                   indeterminate={
                                     values.accessCountries.length > 0 &&
                                     values.accessCountries.length <
-                                      Countries.length
+                                    Countries.length
                                   }
                                 />
                                 <ListItemText primary="Select All" />
@@ -359,9 +355,9 @@ export default function EditStaff() {
                       <div className="col-md-4">
                         <div className="set-field gender-select">
                           <label>
-                            Gender <span className="text-danger">*</span>
+                            Gender<span className="text-danger">*</span>
                           </label>
-                        <br></br>
+                          <br></br>
                           <div className="form-check-inline">
                             <Field type="radio" name="gender" value="Male" />{" "}
                             Male
@@ -426,8 +422,7 @@ export default function EditStaff() {
                       <div className="col-md-4">
                         <div className="set-field">
                           <label>
-                            Give Permission
-                            <span className="text-danger">*</span>
+                            Give Permission<span className="text-danger">*</span>
                           </label>
                           <FormControl fullWidth>
                             <Select
@@ -453,8 +448,8 @@ export default function EditStaff() {
                                   setFieldValue("roleStatuses", value);
                                 }
                               }}
-                              className=""
                               renderValue={(selected) => selected.join(", ")}
+                              sx={{ height: 38 }}
                               MenuProps={{
                                 PaperProps: {
                                   style: { maxHeight: 337 },
@@ -474,7 +469,7 @@ export default function EditStaff() {
                                   indeterminate={
                                     values.roleStatuses.length > 0 &&
                                     values.roleStatuses.length <
-                                      statusOptions.length
+                                    statusOptions.length
                                   }
                                 />
                                 <ListItemText

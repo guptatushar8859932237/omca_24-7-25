@@ -78,13 +78,13 @@ export default function EditEnquiry() {
     dispatch(GetAllTreatment());
   }, [dispatch]);
   const noOnlySpaces = (fieldName) =>
-  Yup.string()
-    .transform((value) => value?.trim())
-    .test(
-      "not-only-spaces",
-      `${fieldName} cannot be empty or only spaces`,
-      (value) => value && value.trim().length > 0
-    );
+    Yup.string()
+      .transform((value) => value?.trim())
+      .test(
+        "not-only-spaces",
+        `${fieldName} cannot be empty or only spaces`,
+        (value) => value && value.trim().length > 0
+      );
   useEffect(() => {
     if (location.state?.enquiryId && Enquiry.length > 0) {
       const selectedUser = Enquiry.find(
@@ -95,17 +95,17 @@ export default function EditEnquiry() {
     }
   }, [location.state?.enquiryId, Enquiry]);
   const basicSchema = Yup.object().shape({
-  name: noOnlySpaces("Name")
-  .min(2, "Name must be at least 2 characters")
-  .max(50, "Name cannot exceed 50 characters")
-  .required("Name is required"),
+    name: noOnlySpaces("Name")
+      .min(2, "Name must be at least 2 characters")
+      .max(50, "Name cannot exceed 50 characters")
+      .required("Name is required"),
     email: Yup.string()
       .email("Enter valid email")
       .required("Email is required"),
     age: Yup.string().required("Age is required"),
-   town: noOnlySpaces("Town").required("Town is required"),
-address: noOnlySpaces("Address")
-  .required("Address is required"),
+    town: noOnlySpaces("Town").required("Town is required"),
+    address: noOnlySpaces("Address")
+      .required("Address is required"),
     passport_num: Yup.string()
       .trim()
       .uppercase()
@@ -119,9 +119,9 @@ address: noOnlySpaces("Address")
       .required("Gender is required"),
     country: Yup.string().required("Country is required"),
     emergency_contact_no: Yup.string()
-  .required("Phone number is required")
-  .matches(/^[0-9]+$/, "Only digits are allowed")
-  .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
+      .required("Phone number is required")
+      .matches(/^[0-9]+$/, "Only digits are allowed")
+      .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
     patient_emergency_contact_no: Yup.string()
       .matches(/^[0-9]+$/, "Only digits are allowed")
       .matches(/^[0-9]{8,15}$/, "Number must be 8 to 15 digits"),
@@ -249,7 +249,7 @@ address: noOnlySpaces("Address")
   const openmodalFunction = () => {
     setOpenModal(true);
   };
-    const handleCreateTreatment = async () => {
+  const handleCreateTreatment = async () => {
     const { value: treatmentName } = await Swal.fire({
       title: "Create Treatment Plan",
       input: "text",
@@ -264,9 +264,9 @@ address: noOnlySpaces("Address")
       },
     });
     if (treatmentName) {
-      const payload ={name:treatmentName}
+      const payload = { name: treatmentName }
       try {
-        const response = await axios.post(`${AdminBaseUrl}treatment/add`,payload)
+        const response = await axios.post(`${AdminBaseUrl}treatment/add`, payload)
         const data = await response.json();
         if (response.ok) {
           dispatch(GetAllTreatment());
@@ -283,13 +283,13 @@ address: noOnlySpaces("Address")
           );
         }
       } catch (error) {
-  console.log(error);
-  Swal.fire(
-    "Error",
-    error?.response?.data?.message || error.message || "Something went wrong",
-    "error"
-  );
-}
+        console.log(error);
+        Swal.fire(
+          "Error",
+          error?.response?.data?.message || error.message || "Something went wrong",
+          "error"
+        );
+      }
     }
   };
   const handleCloseModal = () => {
@@ -530,6 +530,7 @@ address: noOnlySpaces("Address")
                                           selected?.dial_code || "",
                                         );
                                       }}
+                                      sx={{ height: 38 }}
                                       MenuProps={{
                                         PaperProps: {
                                           style: {
@@ -709,7 +710,7 @@ address: noOnlySpaces("Address")
                             <div className="set-field">
                               <label>
                                 Emergency Contact No
-                                <span className="text-danger"></span>
+                                <span className="text-danger">*</span>
                               </label>
                               <div className="country-code">
                                 <Field
@@ -873,7 +874,7 @@ address: noOnlySpaces("Address")
                             <div className="set-field">
                               <label>
                                 Referral Name
-                                <span className="text-danger"></span>
+                                <span className="text-danger">*</span>
                               </label>
                               <Field
                                 className="form-control"
@@ -888,20 +889,20 @@ address: noOnlySpaces("Address")
                           </div>
                           <div className="col-md-4">
                             <div className="set-field">
-                             <div className="d-flex justify-content-between align-items-center">
-  <label>
-    Treatment Name
-    <span className="text-danger"></span>
-  </label>
+                              <div className="d-flex justify-content-between align-items-center mb-1">
+                                <label className="mb-0">
+                                  Treatment Name
+                                  <span className="text-danger">*</span>
+                                </label>
 
-  <button
-    type="button"
-    className="btn btn-sm btn-primary"
-    onClick={handleCreateTreatment}
-  >
-    + Create
-  </button>
-</div>
+                                <button
+                                  type="button"
+                                  className="add-button approvebtn"
+                                  onClick={handleCreateTreatment}
+                                >
+                                  +
+                                </button>
+                              </div>
                               <Autocomplete
                                 options={Treatment || []}
                                 getOptionLabel={(option) => option.name || ""}
@@ -941,6 +942,7 @@ address: noOnlySpaces("Address")
                                   />
                                 )}
                                 sx={{
+                                  height: 38,
                                   "& .MuiOutlinedInput-root": {
                                     padding: "0px",
                                     "&:hover fieldset": {
@@ -975,6 +977,7 @@ address: noOnlySpaces("Address")
                                           e.target.value,
                                         );
                                       }}
+                                      sx={{ height: 38 }}
                                       MenuProps={{
                                         PaperProps: {
                                           style: {
@@ -1038,176 +1041,176 @@ address: noOnlySpaces("Address")
                                 editenquiry.doctorReview.Recommendations ||
                                 (editenquiry.doctorReview.images &&
                                   editenquiry.doctorReview.images.length >
-                                    0)))) && (
-                            <div className="col-md-12">
-                              <div className="comnthis">
-                                <h6>Doctor Review</h6>
-                              </div>
-                              <div className="row gx-3 gy-3">
-                                <>
-                                  <div className="col-md-5">
-                                    <div className="set-field">
-                                      <label>
-                                        Review Notes
-                                        <span className="text-danger"></span>
-                                      </label>
-                                      <textarea className="form-control">
-                                        {doctorReviewData?.review_notes ||
-                                          editenquiry?.doctorReview
-                                            ?.review_notes}
-                                      </textarea>
-                                    </div>
-                                  </div>
-                                  <div className="col-md-5">
-                                    <div className="set-field">
-                                      <label>
-                                        Recommendations
-                                        <span className="text-danger"></span>
-                                      </label>
-                                      <textarea className="form-control">
-                                        {doctorReviewData?.Recommendations ||
-                                          editenquiry?.doctorReview
-                                            ?.Recommendations}
-                                      </textarea>
-                                    </div>
-                                  </div>
-                                  <div className="col-md-2">
-                                    <div className="set-field">
-                                      <label>
-                                        Images
-                                        <span className="text-danger"></span>
-                                      </label>
-                                      <div className="engpatimg">
-                                        {(
-                                          doctorReviewData?.images ||
-                                          editenquiry?.doctorReview?.images ||
-                                          []
-                                        ).map((img, index) => (
-                                          <button
-                                            key={index}
-                                            type="button"
-                                            className="viewbtn"
-                                            onClick={() =>
-                                              window.open(
-                                                `${imageUrl}${img}`,
-                                                "_blank",
-                                              )
-                                            }
-                                          >
-                                            View
-                                          </button>
-                                        ))}
+                                  0)))) && (
+                              <div className="col-md-12">
+                                <div className="comnthis">
+                                  <h6>Doctor Review</h6>
+                                </div>
+                                <div className="row gx-3 gy-3">
+                                  <>
+                                    <div className="col-md-5">
+                                      <div className="set-field">
+                                        <label>
+                                          Review Notes
+                                          <span className="text-danger"></span>
+                                        </label>
+                                        <textarea className="form-control">
+                                          {doctorReviewData?.review_notes ||
+                                            editenquiry?.doctorReview
+                                              ?.review_notes}
+                                        </textarea>
                                       </div>
                                     </div>
-                                  </div>
-                                </>
+                                    <div className="col-md-5">
+                                      <div className="set-field">
+                                        <label>
+                                          Recommendations
+                                          <span className="text-danger"></span>
+                                        </label>
+                                        <textarea className="form-control">
+                                          {doctorReviewData?.Recommendations ||
+                                            editenquiry?.doctorReview
+                                              ?.Recommendations}
+                                        </textarea>
+                                      </div>
+                                    </div>
+                                    <div className="col-md-2">
+                                      <div className="set-field">
+                                        <label>
+                                          Images
+                                          <span className="text-danger"></span>
+                                        </label>
+                                        <div className="engpatimg">
+                                          {(
+                                            doctorReviewData?.images ||
+                                            editenquiry?.doctorReview?.images ||
+                                            []
+                                          ).map((img, index) => (
+                                            <button
+                                              key={index}
+                                              type="button"
+                                              className="viewbtn"
+                                              onClick={() =>
+                                                window.open(
+                                                  `${imageUrl}${img}`,
+                                                  "_blank",
+                                                )
+                                              }
+                                            >
+                                              View
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
                           {((doctorComments && doctorComments.length > 0) ||
                             (editenquiry?.doctorReview?.comments &&
                               editenquiry.doctorReview.comments.length >
-                                0)) && (
-                            <div className="col-md-12">
-                              <div className="docre-hd">
-                                <div className="comnthis">
-                                  <h6 className="mb-0">Comments</h6>
-                                </div>
-                                <button
-                                  className="add-button"
-                                  type="button"
-                                  onClick={openmodalFunction}
-                                >
-                                  Add Comment
-                                </button>
-                              </div>
-                              <div className="row gx-3 gy-3">
-                                {(doctorComments.length > 0
-                                  ? doctorComments
-                                  : editenquiry?.doctorReview?.comments || []
-                                ).map((comment, index) => (
-                                  <div
-                                    className="col-md-12"
-                                    key={comment._id || index}
+                              0)) && (
+                              <div className="col-md-12">
+                                <div className="docre-hd">
+                                  <div className="comnthis">
+                                    <h6 className="mb-0">Comments</h6>
+                                  </div>
+                                  <button
+                                    className="add-button"
+                                    type="button"
+                                    onClick={openmodalFunction}
                                   >
-                                    <div className="card customstylecard">
-                                      <div className="card-body">
-                                        <div className="note-view">
-                                          <h3 className="card-title">
-                                            {comment.user_type} Note
-                                          </h3>
-                                        </div>
-                                        <div className="experience-box">
-                                          <ul className="experience-list">
-                                            <li className="mb-0">
-                                              <div className="experience-user">
-                                                <div className="before-circle"></div>
-                                              </div>
-                                              <div className="experience-content">
-                                                <div className="timeline-content">
-                                                  <a href="#/" className="name">
-                                                    {comment.Notes}
-                                                  </a>
-                                                  {/* Show images if present */}
-                                                  {comment.images &&
-                                                    comment.images.length >
+                                    Add Comment
+                                  </button>
+                                </div>
+                                <div className="row gx-3 gy-3">
+                                  {(doctorComments.length > 0
+                                    ? doctorComments
+                                    : editenquiry?.doctorReview?.comments || []
+                                  ).map((comment, index) => (
+                                    <div
+                                      className="col-md-12"
+                                      key={comment._id || index}
+                                    >
+                                      <div className="card customstylecard">
+                                        <div className="card-body">
+                                          <div className="note-view">
+                                            <h3 className="card-title">
+                                              {comment.user_type} Note
+                                            </h3>
+                                          </div>
+                                          <div className="experience-box">
+                                            <ul className="experience-list">
+                                              <li className="mb-0">
+                                                <div className="experience-user">
+                                                  <div className="before-circle"></div>
+                                                </div>
+                                                <div className="experience-content">
+                                                  <div className="timeline-content">
+                                                    <a href="#/" className="name">
+                                                      {comment.Notes}
+                                                    </a>
+                                                    {/* Show images if present */}
+                                                    {comment.images &&
+                                                      comment.images.length >
                                                       0 && (
-                                                      <div className="">
-                                                        {comment.images.map(
-                                                          (img, imgIndex) => {
-                                                            const fullUrl =
-                                                              img.startsWith(
-                                                                "http",
-                                                              )
-                                                                ? img
-                                                                : imageUrl +
+                                                        <div className="">
+                                                          {comment.images.map(
+                                                            (img, imgIndex) => {
+                                                              const fullUrl =
+                                                                img.startsWith(
+                                                                  "http",
+                                                                )
+                                                                  ? img
+                                                                  : imageUrl +
                                                                   img;
-                                                            return (
-                                                              <button
-                                                                key={imgIndex}
-                                                                type="button"
-                                                                className="viewbtn me-2"
-                                                                onClick={() =>
-                                                                  window.open(
-                                                                    fullUrl,
-                                                                    "_blank",
-                                                                  )
-                                                                }
-                                                              >
-                                                                View
-                                                              </button>
-                                                            );
-                                                          },
-                                                        )}
-                                                      </div>
-                                                    )}
+                                                              return (
+                                                                <button
+                                                                  key={imgIndex}
+                                                                  type="button"
+                                                                  className="viewbtn me-2"
+                                                                  onClick={() =>
+                                                                    window.open(
+                                                                      fullUrl,
+                                                                      "_blank",
+                                                                    )
+                                                                  }
+                                                                >
+                                                                  View
+                                                                </button>
+                                                              );
+                                                            },
+                                                          )}
+                                                        </div>
+                                                      )}
 
-                                                  <div>
-                                                    {" "}
-                                                    {comment.Date
-                                                      ? new Date(
+                                                    <div>
+                                                      {" "}
+                                                      {comment.Date
+                                                        ? new Date(
                                                           comment.Date,
                                                         ).toLocaleDateString(
                                                           "en-GB",
                                                         )
-                                                      : new Date(
+                                                        : new Date(
                                                           comment.createdAt,
                                                         ).toLocaleDateString(
                                                           "en-GB",
                                                         )}
+                                                    </div>
                                                   </div>
                                                 </div>
-                                              </div>
-                                            </li>
-                                          </ul>
+                                              </li>
+                                            </ul>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                ))}
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
                         </div>
                       </div>
                     </div>
@@ -1330,44 +1333,44 @@ address: noOnlySpaces("Address")
                                         {Array.isArray(
                                           editenquiry.patient_relation_id,
                                         ) &&
-                                        editenquiry.patient_relation_id.length >
+                                          editenquiry.patient_relation_id.length >
                                           0
                                           ? editenquiry.patient_relation_id.map(
-                                              (file, index) => {
-                                                const fileUrl = `${imageUrl}${file}`;
-                                                return (
-                                                  <div className="">
-                                                    <div
-                                                      className="file-preview"
-                                                      key={index}
+                                            (file, index) => {
+                                              const fileUrl = `${imageUrl}${file}`;
+                                              return (
+                                                <div className="">
+                                                  <div
+                                                    className="file-preview"
+                                                    key={index}
+                                                  >
+                                                    <span
+                                                      className="delete-icon"
+                                                      onClick={() =>
+                                                        handleDeleteAttendantIdProof(
+                                                          index,
+                                                        )
+                                                      }
                                                     >
-                                                      <span
-                                                        className="delete-icon"
-                                                        onClick={() =>
-                                                          handleDeleteAttendantIdProof(
-                                                            index,
-                                                          )
-                                                        }
-                                                      >
-                                                        <i class="fa-solid fa-xmark"></i>
-                                                      </span>
-                                                      <button
-                                                        type="button"
-                                                        className="viewbtn"
-                                                        onClick={() =>
-                                                          window.open(
-                                                            fileUrl,
-                                                            "_blank",
-                                                          )
-                                                        }
-                                                      >
-                                                        View
-                                                      </button>
-                                                    </div>
+                                                      <i class="fa-solid fa-xmark"></i>
+                                                    </span>
+                                                    <button
+                                                      type="button"
+                                                      className="viewbtn"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          fileUrl,
+                                                          "_blank",
+                                                        )
+                                                      }
+                                                    >
+                                                      View
+                                                    </button>
                                                   </div>
-                                                );
-                                              },
-                                            )
+                                                </div>
+                                              );
+                                            },
+                                          )
                                           : ""}
                                       </div>
                                       <ErrorMessage

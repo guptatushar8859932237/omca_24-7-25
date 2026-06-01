@@ -782,300 +782,286 @@ export default function Reports() {
   return (
     <div className="page-wrapper">
       <div className="content">
-        <div className="row">
+        <div className="row gx-3">
           <div className="col-md-12">
             <div className="country-top">
-              <div className="">
-                <h4 className="page-title mb-0">Reports</h4>
+              <div className="topmainhd mb-0">
+                <h6>Manage Reports</h6>
               </div>
-              {localStorage.getItem("Role") === "Admin" ? (
-                <div className="d-flex gap-2">
-                  <button
-                    className="add-button btn-secondary"
-                    onClick={downloadFilteredReport}
-                  >
-                    Export
-                  </button>
-                  <button onClick={downloadPdf} className="add-button ms-2">
-                    <span>
-                      <i className="fa fa-file-pdf-o"></i>
-                    </span>
-                    PDF
-                  </button>
-                </div>
-              ) : (
-                ""
-              )}
+                {localStorage.getItem("Role") === "Admin" ? (
+                  <div className="d-flex gap-2">
+                    <button className="add-button" onClick={downloadFilteredReport}><i className="fa fa-file me-2"></i>Export</button>
+                    <button onClick={downloadPdf} className="add-button"><i className="fa fa-file-pdf-o me-2"></i>PDF</button>
+                  </div>
+                ) : (
+                  ""
+                )}
             </div>
           </div>
-        </div>
-        <div className="row">
           <div className="col-md-12">
-            <div className="card">
-              <div className="card-body">
-                <div className="row align-items-end">
-                  <div className="col-md-3">
-                    <div className="field-set">
-                      <label>
-                        Country<span className="text-danger">*</span>
-                      </label>
-                      <FormControl fullWidth size="small">
-                        <Select
-                          name="country"
-                          value={report.country}
-                          onChange={submitInputdata}
-                          displayEmpty
-                          input={<OutlinedInput placeholder="Select Country" />}
-                          sx={{ height: 40 }}
-                          className="select-country form-control"
-                          MenuProps={{
-                            PaperProps: {
-                              style: { maxHeight: 200 },
-                            },
-                          }}
-                        >
-                          <MenuItem value="" className="custmselect">
-                            Select Country
-                          </MenuItem>
-                          {Countries && Countries.length > 0 ? (
-                            Countries.map((con, idx) => (
-                              <MenuItem
-                                className="custmselect"
-                                key={idx}
-                                value={con.name}
-                              >
-                                {con.name}
-                              </MenuItem>
-                            ))
-                          ) : (
-                            <MenuItem disabled>No countries available</MenuItem>
-                          )}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="field-set">
-                      <label>
-                        Treatment Name<span className="text-danger">*</span>
-                      </label>
-                      <FormControl fullWidth size="small">
-                        <Select
-                          name="treatment"
-                          // value={report.treatment || ""}
-                          onChange={submitInputdata}
-                          displayEmpty
-                          input={
-                            <OutlinedInput placeholder="Select Treatment" />
-                          }
-                          renderValue={(selected) => {
-                            if (!selected) {
-                              return <span>Select Treatment</span>;
-                            }
-                            return selected;
-                          }}
-                          sx={{ height: 40 }}
-                          className="select-treatment"
-                          MenuProps={{
-                            PaperProps: {
-                              style: { maxHeight: 200 },
-                            },
-                          }}
-                        >
-                          <MenuItem value="" className="custmselect">
-                            Select Treatment
-                          </MenuItem>
-                          {treatmentname && treatmentname.length > 0 ? (
-                            treatmentname.map((item, index) => (
-                              <MenuItem key={index} value={item.name}>
-                                {item.name}
-                              </MenuItem>
-                            ))
-                          ) : (
-                            <MenuItem disabled>
-                              No treatments available
-                            </MenuItem>
-                          )}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="field-set">
-                      <label>
-                        Hospital<span className="text-danger">*</span>
-                      </label>
-                      <FormControl fullWidth size="small">
-                        <Select
-                          name="hospital"
-                          value={report.hospital}
-                          onChange={submitInputdata}
-                          displayEmpty
-                          input={
-                            <OutlinedInput placeholder="Select Hospital" />
-                          }
-                          renderValue={(selected) => {
-                            if (!selected) {
-                              return <span>Select Hospital</span>;
-                            }
-                            return selected;
-                          }}
-                          sx={{ height: 40 }}
-                          className="select-hospital"
-                          MenuProps={{
-                            PaperProps: {
-                              style: { maxHeight: 200 },
-                            },
-                          }}
-                        >
-                          <MenuItem className="custmselect" value="">
-                            Select Hospital
-                          </MenuItem>
-                          {hospital && hospital.length > 0 ? (
-                            hospital.map((item, index) => (
-                              <MenuItem
-                                className="custmselect"
-                                key={index}
-                                value={item.name}
-                              >
-                                {item.name}
-                              </MenuItem>
-                            ))
-                          ) : (
-                            <MenuItem disabled>No hospitals available</MenuItem>
-                          )}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="field-set field-count">
-                      <label>
-                        Select Date<span className="text-danger">*</span>
-                      </label>
-                      <DatePicker
-                        value={dateRange}
-                        format="MM/DD/YYYY"
-                        placeholder="Start Date To End Date"
-                        onChange={setDateRange}
-                        range
-                        numberOfMonths={2}
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="field-set">
-                      <label>
-                        Age<span className="text-danger">*</span>
-                      </label>
-                      <TextField
-                        id="age"
-                        placeholder="Enter Age"
-                        variant="outlined"
-                        size="small"
+            <div className="main_content">
+              <div className="row gx-3 align-items-center">
+                <div className="col-md-3">
+                  <div className="field-set">
+                    <label>
+                      Country<span className="text-danger">*</span>
+                    </label>
+                    <FormControl fullWidth size="small">
+                      <Select
+                        name="country"
+                        value={report.country}
                         onChange={submitInputdata}
-                        name="age"
-                        value={report.age}
-                        fullWidth
-                        className="field-count"
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    </div>
+                        displayEmpty
+                        input={<OutlinedInput placeholder="Select Country" />}
+                        sx={{ height: 40 }}
+                        className="select-country form-control"
+                        MenuProps={{
+                          PaperProps: {
+                            style: { maxHeight: 200 },
+                          },
+                        }}
+                      >
+                        <MenuItem value="" className="custmselect">
+                          Select Country
+                        </MenuItem>
+                        {Countries && Countries.length > 0 ? (
+                          Countries.map((con, idx) => (
+                            <MenuItem
+                              className="custmselect"
+                              key={idx}
+                              value={con.name}
+                            >
+                              {con.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>No countries available</MenuItem>
+                        )}
+                      </Select>
+                    </FormControl>
                   </div>
-                  <div className="col-md-3">
-                    <div className="mb-4">
-                      <div className="mb-4 d-flex gap-2">
-                        <button className="add-button" onClick={getReportData}>
-                          Filter
-                        </button>
-                      </div>
-                    </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="field-set">
+                    <label>Treatment Name<span className="text-danger">*</span></label>
+                    <FormControl fullWidth size="small">
+                      <Select
+                        name="treatment"
+                        // value={report.treatment || ""}
+                        onChange={submitInputdata}
+                        displayEmpty
+                        input={<OutlinedInput placeholder="Select Treatment" />}
+                        sx={{ height: 40 }}
+                        className="select-treatment"
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 200,
+                              width: '100%',
+                              maxWidth: '300px',
+                            }
+                          },
+                        }}
+                        renderValue={(selected) => {
+                          if (!selected) {
+                            return <span>Select Treatment</span>;
+                          }
+                          return selected;
+                        }}
+                      >
+                        <MenuItem value="" className="custmselect">
+                          Select Treatment
+                        </MenuItem>
+                        {treatmentname && treatmentname.length > 0 ? (
+                          treatmentname.map((item, index) => (
+                            <MenuItem className="custmselect" key={index} value={item.name}>
+                              {item.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>
+                            No treatments available
+                          </MenuItem>
+                        )}
+                      </Select>
+                    </FormControl>
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="field-set">
+                    <label>
+                      Hospital<span className="text-danger">*</span>
+                    </label>
+                    <FormControl fullWidth size="small">
+                      <Select
+                        name="hospital"
+                        value={report.hospital}
+                        onChange={submitInputdata}
+                        displayEmpty
+                        input={
+                          <OutlinedInput placeholder="Select Hospital" />
+                        }
+                        renderValue={(selected) => {
+                          if (!selected) {
+                            return <span>Select Hospital</span>;
+                          }
+                          return selected;
+                        }}
+                        sx={{ height: 40 }}
+                        className="select-hospital"
+                        MenuProps={{
+                          PaperProps: {
+                            style: { maxHeight: 200 },
+                          },
+                        }}
+                      >
+                        <MenuItem className="custmselect" value="">
+                          Select Hospital
+                        </MenuItem>
+                        {hospital && hospital.length > 0 ? (
+                          hospital.map((item, index) => (
+                            <MenuItem
+                              className="custmselect"
+                              key={index}
+                              value={item.name}
+                            >
+                              {item.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>No hospitals available</MenuItem>
+                        )}
+                      </Select>
+                    </FormControl>
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="field-set field-count">
+                    <label>
+                      Select Date<span className="text-danger">*</span>
+                    </label>
+                    <DatePicker
+                      value={dateRange}
+                      format="MM/DD/YYYY"
+                      placeholder="Start Date To End Date"
+                      onChange={setDateRange}
+                      range
+                      numberOfMonths={2}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <div className="field-set">
+                    <label>
+                      Age<span className="text-danger">*</span>
+                    </label>
+                    <TextField
+                      id="age"
+                      placeholder="Enter Age"
+                      variant="outlined"
+                      size="small"
+                      onChange={submitInputdata}
+                      name="age"
+                      value={report.age}
+                      fullWidth
+                      className="field-count"
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-3 mt-2">
+                  <div className="">
+                    <button className="add-button" onClick={getReportData}>
+                      Filter
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="main_content">
-          <div className="row">
-            <div className="col-md-12">
-              <div className="table-responsive">
-                <TableContainer
-                  component={Paper}
-                  ref={targetRef}
-                  style={{ overflowX: "auto" }}
-                >
-                  <Table
-                    stickyHeader
-                    aria-label="sticky table"
-                    className="table-no-card"
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Sr.No.</TableCell>
-                        <TableCell>Patient Id</TableCell>
-                        <TableCell>Patient Name</TableCell>
-                        <TableCell>Contact No</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Date</TableCell>
-                        <TableCell>Country</TableCell>
-                        <TableCell>Patient Disease</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.length > 0
-                        ? rows
-                          .slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage,
-                          )
-                          .map((info, i) => {
-                            console.log(info);
-                            return (
-                              <>
-                                <TableRow
-                                  role="checkbox"
-                                  tabIndex={-1}
-                                  key={info.patientId}
-                                >
-                                  <TableCell>
-                                    {page * rowsPerPage + i + 1}
-                                  </TableCell>
-                                  <TableCell>{info.patientId}</TableCell>
-                                  <TableCell>{info.patient_name}</TableCell>
-                                  <TableCell>
-                                    {info.emergency_contact
-                                      ? info.emergency_contact
-                                      : info.emergency_contact_no}
-                                  </TableCell>
-                                  <TableCell>{info.email}</TableCell>
-                                  <TableCell>
-                                    {new Date(
-                                      info.createdAt,
-                                    ).toLocaleDateString("en-GB")}
-                                  </TableCell>
-                                  <TableCell>{info.country}</TableCell>
-                                  <TableCell>
-                                    {info?.patient_disease[0]?.disease_name}
-                                  </TableCell>
-                                </TableRow>
-                              </>
-                            );
-                          })
-                        : ""}
-                    </TableBody>
-                  </Table>
-                  <Stack spacing={2} alignItems="end" marginTop={2}>
-                    <Pagination
-                      count={Math.ceil(rows.length / rowsPerPage)}
-                      page={page + 1}
-                      onChange={(event, value) => setPage(value - 1)}
-                      shape="rounded"
-                      className="page-item"
-                    />
-                  </Stack>
-                </TableContainer>
+          <div className="col-md-12 gy-3">
+            <div className="main_content">
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="table-responsive">
+                    <TableContainer
+                      component={Paper}
+                      ref={targetRef}
+                      style={{ overflowX: "auto" }}
+                    >
+                      <Table
+                        stickyHeader
+                        aria-label="sticky table"
+                        className="table-no-card"
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Sr.No.</TableCell>
+                            <TableCell>Patient Id</TableCell>
+                            <TableCell>Patient Name</TableCell>
+                            <TableCell>Contact No</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Date</TableCell>
+                            <TableCell>Country</TableCell>
+                            <TableCell>Patient Disease</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {rows.length > 0
+                            ? rows
+                              .slice(
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage,
+                              )
+                              .map((info, i) => {
+                                console.log(info);
+                                return (
+                                  <>
+                                    <TableRow
+                                      role="checkbox"
+                                      tabIndex={-1}
+                                      key={info.patientId}
+                                    >
+                                      <TableCell>
+                                        {page * rowsPerPage + i + 1}
+                                      </TableCell>
+                                      <TableCell>{info.patientId}</TableCell>
+                                      <TableCell>{info.patient_name}</TableCell>
+                                      <TableCell>
+                                        {info.emergency_contact
+                                          ? info.emergency_contact
+                                          : info.emergency_contact_no}
+                                      </TableCell>
+                                      <TableCell>{info.email}</TableCell>
+                                      <TableCell>
+                                        {new Date(
+                                          info.createdAt,
+                                        ).toLocaleDateString("en-GB")}
+                                      </TableCell>
+                                      <TableCell>{info.country}</TableCell>
+                                      <TableCell>
+                                        {info?.patient_disease[0]?.disease_name}
+                                      </TableCell>
+                                    </TableRow>
+                                  </>
+                                );
+                              })
+                            : ""}
+                        </TableBody>
+                      </Table>
+                      <Stack spacing={2} alignItems="end" marginTop={2}>
+                        <Pagination
+                          count={Math.ceil(rows.length / rowsPerPage)}
+                          page={page + 1}
+                          onChange={(event, value) => setPage(value - 1)}
+                          shape="rounded"
+                          className="page-item"
+                        />
+                      </Stack>
+                    </TableContainer>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
